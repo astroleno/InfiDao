@@ -1,0 +1,65 @@
+[
+  {
+    "id": "edge-1",
+    "source": "ren-仁",
+    "target": "yi-义",
+    "type": "prerequisite",
+    "weight": 0.9,
+    "bidirectional": false,
+    "description": "仁是内在的道德情感，义是仁的外在行为准则"
+  },
+  {
+    "id": "edge-2",
+    "source": "ren-仁",
+    "target": "li-礼",
+    "type": "supports",
+    "weight": 0.8,
+    "bidirectional": false,
+    "description": "礼是实践仁的具体方式"
+  },
+  {
+    "id": "edge-3",
+    "source": "yi-义",
+    "target": "li-礼",
+    "type": "parallel",
+    "weight": 0.7,
+    "bidirectional": true,
+    "description": "义与礼共同构成儒家的行为规范"
+  },
+  {
+    "id": "edge-4",
+    "source": "dao-道",
+    "target": "wuwei-无为",
+    "type": "implements",
+    "weight": 0.9,
+    "bidirectional": false,
+    "description": "无为是践行道的方法"
+  },
+  {
+    "id": "edge-5",
+    "source": "kong-空",
+    "target": "cibei-慈悲",
+    "type": "supports",
+    "weight": 0.7,
+    "bidirectional": false,
+    "description": "理解空性有助于培养真正的慈悲心"
+  },
+  {
+    "id": "edge-6",
+    "source": "ren-仁",
+    "target": "cibei-慈悲",
+    "type": "similar",
+    "weight": 0.7,
+    "bidirectional": true,
+    "description": "仁与慈悲都强调对他人的关爱，但角度不同"
+  },
+  {
+    "id": "edge-7",
+    "source": "wuwei-无为",
+    "target": "kong-空",
+    "type": "similar",
+    "weight": 0.6,
+    "bidirectional": true,
+    "description": "无为与空都强调不执著，但哲学基础不同"
+  }
+]
