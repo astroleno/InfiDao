@@ -1,0 +1,55 @@
+# Development Dockerfile for InfiDao
+# Includes hot reload and debugging capabilities
+
+FROM node:18-alpine
+
+# Install development dependencies
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    musl-dev \
+    giflib-dev \
+    pixman-dev \
+    pangomm-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    git \
+    curl \
+    bash
+
+# Create app directory
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci && npm cache clean --force
+
+# Copy source code
+COPY --chown=nextjs:nodejs . .
+
+# Create necessary directories
+RUN mkdir -p /app/data/lancedb /app/models/bge-m3 /app/logs && \
+    chown -R nextjs:nodejs /app/data /app/models /app/logs
+
+# Switch to non-root user
+USER nextjs
+
+# Expose ports
+EXPOSE 3000 9229
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Start development server with debugging
+CMD ["npm", "run", "dev"]
