@@ -15,6 +15,7 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
+    const startTime = Date.now();
     const url = `${this.baseURL}${endpoint}`;
     const config: RequestInit = {
       headers: { ...this.defaultHeaders, ...options.headers },
@@ -22,16 +23,30 @@ class ApiClient {
     };
 
     try {
+      console.log(`🚀 API Request [${endpoint}] started`);
+
       const response = await fetch(url, config);
 
       if (!response.ok) {
-        throw new Error(`API request failed: ${response.statusText}`);
+        const responseTime = Date.now() - startTime;
+        console.error(`❌ API Error [${endpoint}] (${responseTime}ms): ${response.status} ${response.statusText}`);
+        throw new Error(`API request failed: ${response.statusText} (${response.status})`);
       }
 
       const data: ApiResponse<T> = await response.json();
+      const responseTime = Date.now() - startTime;
+
+      console.log(`✅ API Success [${endpoint}] (${responseTime}ms)`);
+
+      // Log performance warnings
+      if (responseTime > 3000) {
+        console.warn(`⚠️ Slow API response [${endpoint}] (${responseTime}ms) - consider optimization`);
+      }
+
       return data;
     } catch (error) {
-      console.error(`API Error [${endpoint}]:`, error);
+      const responseTime = Date.now() - startTime;
+      console.error(`❌ API Error [${endpoint}] (${responseTime}ms):`, error);
       throw error;
     }
   }
@@ -53,23 +68,43 @@ class ApiClient {
   }
 
   // Streaming Annotation API
-  async streamAnnotation(request: AnnotateRequest): Promise<Response> {
+  async streamAnnotation(
+    request: AnnotateRequest,
+    onChunk?: (chunk: string) => void,
+    abortSignal?: AbortSignal
+  ): Promise<Response> {
+    const startTime = Date.now();
     const url = `${this.baseURL}/api/annotate`;
 
     try {
+      console.log(`🌊 Streaming API Request [/api/annotate] started`);
+
       const response = await fetch(url, {
         method: 'POST',
-        headers: this.defaultHeaders,
+        headers: {
+          ...this.defaultHeaders,
+          'Accept': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+        },
         body: JSON.stringify(request),
+        signal: abortSignal,
       });
 
       if (!response.ok) {
-        throw new Error(`Streaming annotation failed: ${response.statusText}`);
+        const responseTime = Date.now() - startTime;
+        console.error(`❌ Streaming API Error (${responseTime}ms): ${response.status} ${response.statusText}`);
+        throw new Error(`Streaming annotation failed: ${response.statusText} (${response.status})`);
       }
 
+      console.log(`✅ Streaming API Connected (${Date.now() - startTime}ms)`);
       return response;
     } catch (error) {
-      console.error('Streaming API Error:', error);
+      const responseTime = Date.now() - startTime;
+      if (error.name === 'AbortError') {
+        console.log(`⏹️ Streaming API Cancelled (${responseTime}ms)`);
+      } else {
+        console.error(`❌ Streaming API Error (${responseTime}ms):`, error);
+      }
       throw error;
     }
   }

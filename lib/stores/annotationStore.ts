@@ -37,6 +37,8 @@ interface AnnotationState {
     query: string;
     passage: string;
     model?: LLMProvider;
+    abortSignal?: AbortSignal;
+    onChunk?: (chunk: string) => void;
   }) => Promise<void>;
   stopStreaming: () => void;
   processStreamChunk: (chunk: StreamChunk) => void;

@@ -1,20 +1,24 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
   onSearch: () => void;
+  onRandom: () => void;
   isLoading: boolean;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export function SearchBar({
   value,
   onChange,
   onSearch,
+  onRandom,
   isLoading,
-  placeholder = "输入您的思考或问题..."
+  placeholder = "输入您的思考或问题...",
+  disabled = false
 }: SearchBarProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -22,7 +26,7 @@ export function SearchBar({
   const inputRef = useRef<HTMLInputElement>(null);
   const debouncedValue = useDebounce(value, 300);
 
-  // Sample search suggestions
+  // Sample search suggestions and random words
   const sampleSuggestions = [
     "什么是君子之道",
     "如何修身养性",
@@ -34,6 +38,12 @@ export function SearchBar({
     "如何面对困境",
     "友谊的真正意义",
     "治理国家的原则"
+  ];
+
+  const randomWords = [
+    "仁", "义", "礼", "智", "信", "诚", "孝", "悌", "忠", "恕",
+    "道", "德", "善", "美", "和", "中", "正", "直", "廉", "耻",
+    "学", "思", "行", "知", "言", "听", "观", "察", "问", "辨"
   ];
 
   // Update suggestions based on input
@@ -50,11 +60,20 @@ export function SearchBar({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (value.trim() && !isLoading) {
+    if (value.trim() && !isLoading && !disabled) {
       onSearch();
       setShowSuggestions(false);
     }
   };
+
+  const handleRandom = useCallback(() => {
+    if (isLoading || disabled) return;
+
+    const randomWord = randomWords[Math.floor(Math.random() * randomWords.length)];
+    onChange(randomWord);
+    setShowSuggestions(false);
+    setTimeout(() => onRandom(), 100);
+  }, [isLoading, disabled, onChange, onRandom]);
 
   const handleSuggestionClick = (suggestion: string) => {
     onChange(suggestion);
@@ -102,14 +121,34 @@ export function SearchBar({
             }}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            className="w-full pl-12 pr-32 py-4 text-lg border border-gray-300 rounded-xl focus:outline-none focus:border-primary-500 focus:ring-0 bg-white shadow-sm transition-all duration-200 font-classic"
-            disabled={isLoading}
+            className="w-full pl-12 pr-40 py-4 text-lg border border-gray-300 rounded-xl focus:outline-none focus:border-primary-500 focus:ring-0 bg-white shadow-sm transition-all duration-200 font-classic"
+            disabled={isLoading || disabled}
           />
+
+          {/* Random Button */}
+          <button
+            type="button"
+            onClick={handleRandom}
+            disabled={isLoading || disabled}
+            className="absolute right-20 px-3 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed transition-all duration-200 font-medium text-sm"
+            title="随机选择一个词汇"
+          >
+            {isLoading ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+            ) : (
+              <span className="flex items-center">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                随机
+              </span>
+            )}
+          </button>
 
           {/* Search Button */}
           <button
             type="submit"
-            disabled={!value.trim() || isLoading}
+            disabled={!value.trim() || isLoading || disabled}
             className="absolute right-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 font-medium"
           >
             {isLoading ? (

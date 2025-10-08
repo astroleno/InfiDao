@@ -49,6 +49,8 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(3001, () => console.log('Mock API listening on http://localhost:3001'));
+const PORT = Number(process.env.MOCK_PORT || 3001);
+server.listen(PORT, () => console.log(`Mock API listening on http://localhost:${PORT}`));
+
 
 
