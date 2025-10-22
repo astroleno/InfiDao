@@ -1,6 +1,0 @@
-{
-  "name": "Infinite Wiki",
-  "description": "Explore an infinite wiki where every word is a hyperlink to descriptions generated in real-time.",
-  "requestFramePermissions": [],
-  "prompt": ""
-}

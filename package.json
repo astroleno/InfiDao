@@ -30,6 +30,7 @@
     "postinstall": "npm --prefix web/iw-clone install --no-fund --no-audit || true"
   },
   "dependencies": {
+    "@google/genai": "^1.25.0",
     "@hookform/resolvers": "^3.9.1",
     "@lancedb/lancedb": "^0.5.2",
     "@next/bundle-analyzer": "^14.2.15",
@@ -62,6 +63,7 @@
     "sharp": "^0.33.5",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.4",
+    "tailwindcss-animate": "^1.0.7",
     "uuid": "^10.0.0",
     "vaul": "^1.1.1",
     "zod": "^3.23.8",

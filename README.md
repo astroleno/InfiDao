@@ -18,6 +18,13 @@ InfiDao (六经注我) is an innovative interactive knowledge platform designed 
 - **Real-time Annotations**: AI-generated insights and explanations
 - **Responsive Design**: Beautiful classical Chinese aesthetic with modern UI
 
+### MVP Mode: JSON-first Search
+
+To enable fast iteration with minimal ops cost, the MVP defaults to a lightweight "JSON embeddings + in-memory search" approach:
+- No database required at start; passages and embeddings are stored as JSON/JSONL under `data/`
+- In-memory cosine similarity Top-K search is sufficient for small-to-medium datasets
+- Seamless migration: when the dataset grows, switch to LanceDB/pgvector without changing the public search API
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -73,6 +80,15 @@ InfiDao (六经注我) is an innovative interactive knowledge platform designed 
 
 Visit [http://localhost:3000](http://localhost:3000) to explore the platform!
 
+### MVP Quick Start (JSON Mode)
+
+1. Data: use the built-in sample `data/sixclassics-sample.jsonl`
+2. Embeddings:
+   - Quick try: generate on the fly via API on first run (slower)
+   - Recommended: run an offline script to create `data/embeddings.json` (script to be provided)
+3. Search & Explain: UI sends query → in-memory Top-K over JSON embeddings → use `explantation_prompt.md` to produce three-layer explanation (translation/terms/background)
+4. Migration: keep the same search interface and swap the backend to LanceDB when needed
+
 ## 🛠️ Development
 
 ### Available Scripts
@@ -95,8 +111,8 @@ Visit [http://localhost:3000](http://localhost:3000) to explore the platform!
 | Command | Description |
 |---------|-------------|
 | `npm run download-model` | Download BGE-M3 embedding model |
-| `npm run init-db` | Initialize LanceDB database |
-| `npm run import-data` | Import Six Classics data |
+| `npm run init-db` | Initialize LanceDB database (optional for MVP) |
+| `npm run import-data` | Import Six Classics data (optional for MVP) |
 | `npm run setup` | Complete setup (models + DB + data) |
 | `npm run db:reset` | Reset database completely |
 | `npm run cache:clear` | Clear all cache directories |

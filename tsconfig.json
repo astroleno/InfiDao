@@ -19,14 +19,14 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@/components/*": ["./components/*"],
-      "@/lib/*": ["./lib/*"],
-      "@/app/*": ["./app/*"],
-      "@/types/*": ["./types/*"],
-      "@/hooks/*": ["./hooks/*"],
-      "@/utils/*": ["./lib/utils/*"],
-      "@/config/*": ["./lib/config/*"]
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/app/*": ["./src/app/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/utils/*": ["./src/lib/utils/*"],
+      "@/config/*": ["./src/lib/config/*"]
     },
     "target": "ES2022",
     "forceConsistentCasingInFileNames": true,
@@ -53,7 +53,10 @@
     "node_modules",
     ".next",
     "dist",
-    "build"
+    "build",
+    "ref/**",
+    "scripts/**",
+    "web/iw-clone/**"
   ],
   "ts-node": {
     "esm": true,
