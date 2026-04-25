@@ -1,9 +1,6 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 
 export function Header() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
   return (
     <header className="bg-white/90 backdrop-blur-sm border-b border-gray-200 shadow-sm sticky top-0 z-30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

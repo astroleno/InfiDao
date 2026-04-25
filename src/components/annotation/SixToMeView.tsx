@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 interface SixToMeViewProps {
   text: string;
-  reason: string;
+  reason?: string;
   isLoading: boolean;
 }
 

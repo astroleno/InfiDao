@@ -1,0 +1,12 @@
+{
+  "model": "infidao-local-concept-v1",
+  "dimension": 3,
+  "corpusVersion": "sixclassics-sample-v1",
+  "items": [
+    {
+      "id": "fixture-only",
+      "textHash": "1111111111111111111111111111111111111111111111111111111111111111",
+      "vector": [1, 0, 0]
+    }
+  ]
+}

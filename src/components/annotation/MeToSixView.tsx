@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 interface MeToSixViewProps {
   text: string;
-  reason: string;
+  reason?: string;
   isLoading: boolean;
 }
 

@@ -227,15 +227,20 @@ export default function SimonRogersPage() {
         const distanceFromCenter = (elementCenter - centerY) / centerY;
         const clamped = Math.max(-1.1, Math.min(1.1, distanceFromCenter));
 
-        const rotateX = clamped * 86 - 20;
-        const rotateY = -24;
-        const rotateZ = clamped * 11;
-        const translateZ = -clamped * 420;
-        const translateY = clamped * 110;
+        const maxRotateX = 58;
+        const maxRotateY = 105;
+        const maxRotateZ = 18;
+        const maxTranslateZ = 460;
+        const translateYOffset = 125;
 
-        const scaleFalloff = Math.min(0.38, Math.abs(clamped) * 0.38);
-        const scale = 1 - scaleFalloff;
-        const opacity = 0.36 + (1 - Math.min(1, Math.abs(clamped))) * 0.64;
+        const rotateX = clamped * maxRotateX - 10;
+        const rotateY = clamped * -maxRotateY;
+        const rotateZ = clamped * maxRotateZ;
+        const translateZ = (1 - Math.abs(clamped)) * maxTranslateZ - maxTranslateZ * 0.45;
+        const translateY = clamped * translateYOffset;
+
+        const scale = 0.48 + (1 - Math.abs(clamped)) * 0.58;
+        const opacity = 0.2 + (1 - Math.min(1, Math.abs(clamped))) * 0.8;
 
         element.style.transform = `translateY(${translateY}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg) scale(${scale})`;
         element.style.opacity = opacity.toFixed(3);
@@ -259,8 +264,9 @@ export default function SimonRogersPage() {
         className="animate-scroll-up"
         ref={containerRef}
         style={{
-          perspective: "1400px",
+          perspective: "900px",
           transformStyle: "preserve-3d",
+          transform: "rotateX(9deg) rotateZ(-4deg)",
         }}
       >
         {/* 第一组 */}
@@ -268,13 +274,13 @@ export default function SimonRogersPage() {
           {textLines.map((line, index) => (
             <div
               key={`first-${index}`}
-              className="text-line mb-6 flex justify-center px-8"
+              className="text-line mb-4 flex justify-center px-8"
               style={{
                 transformStyle: "preserve-3d",
-                minHeight: line ? "auto" : "1.5rem",
+                minHeight: line ? "2.8rem" : "1.25rem",
               }}
             >
-              <p className="max-w-4xl text-center font-serif text-lg italic leading-relaxed text-primary md:text-xl lg:text-2xl">
+              <p className="max-w-3xl text-center font-serif text-[1.35rem] italic leading-relaxed text-[#5968ff] md:text-[1.55rem] lg:text-[1.75rem]">
                 {line || '\u00A0'}
               </p>
             </div>
@@ -286,13 +292,13 @@ export default function SimonRogersPage() {
           {textLines.map((line, index) => (
             <div
               key={`second-${index}`}
-              className="text-line mb-6 flex justify-center px-8"
+              className="text-line mb-4 flex justify-center px-8"
               style={{
                 transformStyle: "preserve-3d",
-                minHeight: line ? "auto" : "1.5rem",
+                minHeight: line ? "2.8rem" : "1.25rem",
               }}
             >
-              <p className="max-w-4xl text-center font-serif text-lg italic leading-relaxed text-primary md:text-xl lg:text-2xl">
+              <p className="max-w-3xl text-center font-serif text-[1.35rem] italic leading-relaxed text-[#5968ff] md:text-[1.55rem] lg:text-[1.75rem]">
                 {line || '\u00A0'}
               </p>
             </div>

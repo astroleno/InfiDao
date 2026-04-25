@@ -1,19 +1,18 @@
-import { useState, useEffect } from 'react';
-import { Annotation } from '@/types';
-import { StreamingText } from './StreamingText';
-import { SixToMeView } from './SixToMeView';
-import { MeToSixView } from './MeToSixView';
-import { AnnotationLinks } from './AnnotationLinks';
-import { AnnotationMeta } from './AnnotationMeta';
-import { LoadingSkeleton } from '@/components/ui/Loading';
-import { Button } from '@/components/ui/Button';
+import { useEffect, useState } from "react";
+import type { AnnotationLink, AnnotationResult } from "@/types";
+import { Button } from "@/components/ui/Button";
+import { AnnotationLinks } from "./AnnotationLinks";
+import { AnnotationMeta } from "./AnnotationMeta";
+import { MeToSixView } from "./MeToSixView";
+import { SixToMeView } from "./SixToMeView";
+import { StreamingText } from "./StreamingText";
 
 interface AnnotationPanelProps {
   query: string;
-  annotation: Annotation | null;
+  annotation: AnnotationResult | null;
   isLoading: boolean;
   error: Error | null;
-  onWikiNavigate: (passageId: string) => void;
+  onWikiNavigate: (link: AnnotationLink) => void;
 }
 
 export function AnnotationPanel({
@@ -21,16 +20,15 @@ export function AnnotationPanel({
   annotation,
   isLoading,
   error,
-  onWikiNavigate
+  onWikiNavigate,
 }: AnnotationPanelProps) {
-  const [activeTab, setActiveTab] = useState<'six_to_me' | 'me_to_six'>('six_to_me');
+  const [activeTab, setActiveTab] = useState<"sixToMe" | "meToSix">("sixToMe");
 
-  // Auto-switch tabs based on content availability
   useEffect(() => {
-    if (annotation?.six_to_me && !annotation?.me_to_six) {
-      setActiveTab('six_to_me');
-    } else if (annotation?.me_to_six && !annotation?.six_to_me) {
-      setActiveTab('me_to_six');
+    if (annotation?.sixToMe && !annotation?.meToSix) {
+      setActiveTab("sixToMe");
+    } else if (annotation?.meToSix && !annotation?.sixToMe) {
+      setActiveTab("meToSix");
     }
   }, [annotation]);
 
@@ -70,18 +68,14 @@ export function AnnotationPanel({
             </div>
           </div>
 
-          {/* Streaming Content Area */}
           <div className="space-y-6">
-            {/* User Query Display */}
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
               <div className="text-sm text-amber-600 font-medium mb-2">您的思考</div>
               <div className="text-gray-900 font-classic">{query}</div>
             </div>
 
-            {/* Loading Streaming Text */}
             <StreamingText
-              query={query}
-              isLoading={true}
+              isLoading={isLoading}
               activeTab={activeTab}
               onTabChange={setActiveTab}
             />
@@ -93,17 +87,13 @@ export function AnnotationPanel({
 
   return (
     <div className="annotation-panel bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-      {/* Header */}
       <div className="p-6 border-b border-gray-100">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-900 font-classic">六经注我</h2>
-          <div className="flex items-center space-x-2">
-            <AnnotationMeta annotation={annotation} />
-          </div>
+          <AnnotationMeta annotation={annotation} />
         </div>
       </div>
 
-      {/* User Query Display */}
       <div className="p-6 pb-0">
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
           <div className="text-sm text-amber-600 font-medium mb-2">您的思考</div>
@@ -111,25 +101,24 @@ export function AnnotationPanel({
         </div>
       </div>
 
-      {/* Tab Navigation */}
       <div className="px-6 pt-6">
         <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
           <button
-            onClick={() => setActiveTab('six_to_me')}
+            onClick={() => setActiveTab("sixToMe")}
             className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'six_to_me'
-                ? 'bg-white text-primary-700 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+              activeTab === "sixToMe"
+                ? "bg-white text-primary-700 shadow-sm"
+                : "text-gray-600 hover:text-gray-900"
             }`}
           >
             六经注我
           </button>
           <button
-            onClick={() => setActiveTab('me_to_six')}
+            onClick={() => setActiveTab("meToSix")}
             className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'me_to_six'
-                ? 'bg-white text-primary-700 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+              activeTab === "meToSix"
+                ? "bg-white text-primary-700 shadow-sm"
+                : "text-gray-600 hover:text-gray-900"
             }`}
           >
             我注六经
@@ -137,29 +126,15 @@ export function AnnotationPanel({
         </div>
       </div>
 
-      {/* Content Area */}
       <div className="p-6">
         <div className="space-y-6">
-          {/* Six to Me View */}
-          {activeTab === 'six_to_me' && (
-            <SixToMeView
-              text={annotation.six_to_me}
-              reason={annotation.reason}
-              isLoading={isLoading}
-            />
+          {activeTab === "sixToMe" ? (
+            <SixToMeView text={annotation.sixToMe} isLoading={isLoading} />
+          ) : (
+            <MeToSixView text={annotation.meToSix} isLoading={isLoading} />
           )}
 
-          {/* Me to Six View */}
-          {activeTab === 'me_to_six' && (
-            <MeToSixView
-              text={annotation.me_to_six}
-              reason={annotation.reason}
-              isLoading={isLoading}
-            />
-          )}
-
-          {/* Annotation Links */}
-          {annotation.links && annotation.links.length > 0 && (
+          {annotation.links.length > 0 && (
             <AnnotationLinks
               links={annotation.links}
               onNavigate={onWikiNavigate}
@@ -168,23 +143,11 @@ export function AnnotationPanel({
         </div>
       </div>
 
-      {/* Footer Actions */}
       <div className="p-6 border-t border-gray-100 bg-gray-50">
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-500">
-            匹配度: {Math.round(annotation.score * 100)}%
-          </div>
-          <div className="flex space-x-2">
-            <Button variant="outline" size="sm">
-              收藏
-            </Button>
-            <Button variant="outline" size="sm">
-              分享
-            </Button>
-            <Button size="sm" onClick={() => onWikiNavigate(annotation.passage_id)}>
-              深入探索
-            </Button>
-          </div>
+        <div className="text-sm text-gray-500">
+          {annotation.links.length === 0
+            ? "当前节点已经到达叶子层，可以返回上一层或重新搜索。"
+            : "当前延伸入口会在 Phase 4 复用 /api/annotate 继续探索。"}
         </div>
       </div>
     </div>

@@ -1,6 +1,10 @@
 "use client";
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
+type WindowWithGtag = Window & {
+  gtag?: (...args: unknown[]) => void;
+};
+
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
@@ -36,8 +40,10 @@ export class ErrorBoundary extends Component<Props, State> {
 
   private reportError = (error: Error, errorInfo: ErrorInfo) => {
     // In production, send to error reporting service
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'exception', {
+    const gtag = typeof window !== 'undefined' ? (window as WindowWithGtag).gtag : undefined;
+
+    if (gtag) {
+      gtag('event', 'exception', {
         description: error.toString(),
         fatal: false
       });

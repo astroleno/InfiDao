@@ -1,209 +1,115 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { useDebounce } from '@/hooks/useDebounce';
+import type { FormEvent } from "react";
+
+const RITUAL_PROMPTS = [
+  "什么是君子之道",
+  "如何修身养性",
+  "如何面对困境",
+  "友谊的意义",
+  "治理国家的原则",
+  "中庸之道",
+];
 
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
-  onSearch: () => void;
-  onRandom: () => void;
+  onSearch: (queryOverride?: string) => void | Promise<void>;
   isLoading: boolean;
   placeholder?: string;
   disabled?: boolean;
+  mode?: "intro" | "inline";
 }
 
 export function SearchBar({
   value,
   onChange,
   onSearch,
-  onRandom,
   isLoading,
-  placeholder = "输入您的思考或问题...",
-  disabled = false
+  placeholder = "输入此刻的一念...",
+  disabled = false,
+  mode = "intro",
 }: SearchBarProps) {
-  const [isFocused, setIsFocused] = useState(false);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const debouncedValue = useDebounce(value, 300);
-
-  // Sample search suggestions and random words
-  const sampleSuggestions = [
-    "什么是君子之道",
-    "如何修身养性",
-    "学习和实践的关系",
-    "仁义的真正含义",
-    "中庸的智慧",
-    "知行合一的理解",
-    "礼的本质和作用",
-    "如何面对困境",
-    "友谊的真正意义",
-    "治理国家的原则"
-  ];
-
-  const randomWords = [
-    "仁", "义", "礼", "智", "信", "诚", "孝", "悌", "忠", "恕",
-    "道", "德", "善", "美", "和", "中", "正", "直", "廉", "耻",
-    "学", "思", "行", "知", "言", "听", "观", "察", "问", "辨"
-  ];
-
-  // Update suggestions based on input
-  useEffect(() => {
-    if (debouncedValue.length > 0) {
-      const filtered = sampleSuggestions.filter(suggestion =>
-        suggestion.includes(debouncedValue)
-      ).slice(0, 5);
-      setSuggestions(filtered);
-    } else {
-      setSuggestions(sampleSuggestions.slice(0, 5));
-    }
-  }, [debouncedValue]);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (value.trim() && !isLoading && !disabled) {
-      onSearch();
-      setShowSuggestions(false);
+    const nextQuery = value.trim();
+
+    if (nextQuery && !isLoading && !disabled) {
+      void onSearch(nextQuery);
     }
   };
 
-  const handleRandom = useCallback(() => {
-    if (isLoading || disabled) return;
+  const commitQuery = (nextQuery: string) => {
+    const trimmed = nextQuery.trim();
+    if (!trimmed || isLoading || disabled) {
+      return;
+    }
 
-    const randomWord = randomWords[Math.floor(Math.random() * randomWords.length)];
-    onChange(randomWord);
-    setShowSuggestions(false);
-    setTimeout(() => onRandom(), 100);
-  }, [isLoading, disabled, onChange, onRandom]);
-
-  const handleSuggestionClick = (suggestion: string) => {
-    onChange(suggestion);
-    setShowSuggestions(false);
-    setTimeout(() => onSearch(), 100);
+    onChange(trimmed);
+    void onSearch(trimmed);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      setShowSuggestions(false);
+  const handleRandom = () => {
+    const nextQuery = RITUAL_PROMPTS[Math.floor(Math.random() * RITUAL_PROMPTS.length)];
+
+    if (!nextQuery) {
+      return;
     }
+
+    commitQuery(nextQuery);
   };
 
   return (
-    <div className="search-bar relative">
-      <form onSubmit={handleSubmit} className="relative">
-        <div className={`relative flex items-center transition-all duration-200 ${
-          isFocused ? 'ring-2 ring-primary-500 ring-opacity-50' : ''
-        }`}>
-          {/* Search Icon */}
-          <div className="absolute left-4 z-10">
-            {isLoading ? (
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-600"></div>
-            ) : (
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            )}
-          </div>
-
-          {/* Input Field */}
+    <div className="w-full">
+      <form onSubmit={handleSubmit} className="w-full">
+        <label htmlFor="thought-query" className="sr-only">
+          输入此刻的一念
+        </label>
+        <div className="relative">
           <input
-            ref={inputRef}
+            id="thought-query"
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            onFocus={() => {
-              setIsFocused(true);
-              setShowSuggestions(true);
-            }}
-            onBlur={() => {
-              setIsFocused(false);
-              // Delay hiding suggestions to allow click events
-              setTimeout(() => setShowSuggestions(false), 200);
-            }}
-            onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            className="w-full pl-12 pr-40 py-4 text-lg border border-gray-300 rounded-xl focus:outline-none focus:border-primary-500 focus:ring-0 bg-white shadow-sm transition-all duration-200 font-classic"
+            className={`w-full bg-transparent text-center text-paper placeholder:text-stone-600 border-b transition-colors duration-300 focus:outline-none focus:border-zen font-classic ${
+              mode === "intro"
+                ? "border-stone-800 py-5 text-3xl md:text-5xl"
+                : "border-stone-700 py-4 text-2xl md:text-3xl"
+            }`}
             disabled={isLoading || disabled}
           />
-
-          {/* Random Button */}
-          <button
-            type="button"
-            onClick={handleRandom}
-            disabled={isLoading || disabled}
-            className="absolute right-20 px-3 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed transition-all duration-200 font-medium text-sm"
-            title="随机选择一个词汇"
-          >
-            {isLoading ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
-            ) : (
-              <span className="flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                随机
-              </span>
-            )}
-          </button>
-
-          {/* Search Button */}
+        </div>
+        <div className="mt-6 flex flex-col items-center gap-5">
           <button
             type="submit"
             disabled={!value.trim() || isLoading || disabled}
-            className="absolute right-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 font-medium"
+            className="inline-flex min-w-40 items-center justify-center rounded-full border border-stone-700 px-6 py-3 text-sm tracking-[0.28em] text-stone-300 transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink disabled:cursor-not-allowed disabled:border-stone-800 disabled:text-stone-700"
           >
-            {isLoading ? (
-              <span className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                搜索中
-              </span>
-            ) : (
-              <span className="flex items-center">
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                搜索经典
-              </span>
-            )}
+            {isLoading ? "经典回应中" : "请经典回应"}
           </button>
-        </div>
 
-        {/* Suggestions Dropdown */}
-        {showSuggestions && !isLoading && suggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
-            <div className="p-2">
-              <div className="text-xs text-gray-500 px-3 py-2 font-medium">搜索建议</div>
-              {suggestions.map((suggestion, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleSuggestionClick(suggestion)}
-                  className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-150 flex items-center group"
-                >
-                  <svg className="w-4 h-4 text-gray-400 mr-3 group-hover:text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  <span className="text-gray-900 group-hover:text-primary-600 font-classic">{suggestion}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </form>
-
-      {/* Quick Search Tips */}
-      {value.length === 0 && !isFocused && (
-        <div className="mt-4 flex flex-wrap gap-2">
-          <span className="text-sm text-gray-500">热门搜索：</span>
-          {sampleSuggestions.slice(0, 3).map((suggestion, index) => (
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+            {RITUAL_PROMPTS.map((prompt) => (
+              <button
+                key={prompt}
+                type="button"
+                onClick={() => commitQuery(prompt)}
+                disabled={isLoading || disabled}
+                className="rounded-full border border-stone-800 px-3 py-1.5 text-xs tracking-[0.2em] text-stone-400 transition hover:border-zen/70 hover:text-zen focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {prompt}
+              </button>
+            ))}
             <button
-              key={index}
-              onClick={() => handleSuggestionClick(suggestion)}
-              className="text-sm text-primary-600 hover:text-primary-800 hover:bg-primary-50 px-2 py-1 rounded transition-colors duration-150"
+              type="button"
+              onClick={handleRandom}
+              disabled={isLoading || disabled}
+              className="rounded-full border border-stone-700 px-3 py-1.5 text-xs tracking-[0.2em] text-stone-300 transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {suggestion}
+              随机入念
             </button>
-          ))}
+          </div>
         </div>
-      )}
+      </form>
     </div>
   );
 }

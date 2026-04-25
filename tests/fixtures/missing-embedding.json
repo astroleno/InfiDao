@@ -1,0 +1,12 @@
+{
+  "model": "infidao-local-concept-v1",
+  "dimension": 3,
+  "corpusVersion": "sixclassics-sample-v1",
+  "items": [
+    {
+      "id": "not-in-corpus",
+      "textHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "vector": [0, 0, 1]
+    }
+  ]
+}
