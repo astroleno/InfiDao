@@ -1,8 +1,7 @@
 import type { PassageRecord } from "@/types";
 import { loadCorpus } from "@/lib/data/corpus";
 import { loadEmbeddingArtifact, loadEmbeddingsForCorpus } from "@/lib/data/embeddings";
-import { LOCAL_EMBEDDING_DIMENSION, LOCAL_EMBEDDING_MODEL } from "@/lib/search/local-embedding";
-import { RouteError } from "@/lib/utils/errors";
+import { assertSearchQueryEncoderCompatible } from "@/lib/search/query-encoder";
 
 export interface SearchIndex {
   corpus: PassageRecord[];
@@ -19,15 +18,7 @@ export async function loadSearchIndex(): Promise<SearchIndex> {
     searchIndexPromise = (async () => {
       const corpus = await loadCorpus();
       const artifact = await loadEmbeddingArtifact();
-
-      if (artifact.model !== LOCAL_EMBEDDING_MODEL || artifact.dimension !== LOCAL_EMBEDDING_DIMENSION) {
-        throw new RouteError(500, "EMBEDDING_MODEL_MISMATCH", "Embedding artifact does not match the runtime query encoder.", {
-          artifactModel: artifact.model,
-          artifactDimension: artifact.dimension,
-          runtimeModel: LOCAL_EMBEDDING_MODEL,
-          runtimeDimension: LOCAL_EMBEDDING_DIMENSION,
-        });
-      }
+      assertSearchQueryEncoderCompatible(artifact.model, artifact.dimension);
 
       const embeddingMap = await loadEmbeddingsForCorpus(corpus);
 

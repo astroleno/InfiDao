@@ -1,5 +1,8 @@
 # Database Design & Schema
 
+> Status: superseded on 2026-04-24
+> Legacy reference only for the pre-reboot implementation. For the current reboot MVP, use `docs/SUPERPOWERS_REBOOT_PLAN.md` and `docs/plans/reboot-mvp-implementation-plan.md`. If this file conflicts with them, those docs win.
+
 ## 1. LanceDB Schema Definition
 
 ### 1.1 Primary Table: classics

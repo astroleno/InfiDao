@@ -9,6 +9,7 @@ const embeddingSpec = JSON.parse(await fs.readFile(embeddingSpecPath, "utf8"));
 const conceptPatterns = embeddingSpec.conceptPatterns.map((pattern) => new RegExp(pattern, "gu"));
 const hashBuckets = embeddingSpec.hashBuckets;
 const vectorSize = conceptPatterns.length + hashBuckets;
+const embeddingBackend = (process.env.SEARCH_EMBEDDING_BACKEND || "local").trim().toLowerCase();
 const sourceSlugs = {
   "论语": "lunyu",
   "大学": "daxue",
@@ -90,6 +91,114 @@ function buildEmbedding(text) {
   return normalizeVector(vector);
 }
 
+function resolveOutputPath(manifest) {
+  const configuredPath = process.env.SEARCH_EMBEDDING_ARTIFACT_PATH?.trim();
+  return configuredPath
+    ? path.resolve(process.cwd(), configuredPath)
+    : path.resolve(process.cwd(), manifest.embeddingArtifact.path);
+}
+
+function isRemoteUrl(value) {
+  return /^https?:\/\//u.test(value);
+}
+
+function resolveRemoteEmbeddingEndpoint(rawBaseUrl) {
+  const trimmed = rawBaseUrl.trim().replace(/\/$/u, "");
+
+  if (/\/embeddings$/u.test(trimmed)) {
+    return trimmed;
+  }
+
+  if (/\/chat\/completions$/u.test(trimmed)) {
+    return trimmed.replace(/\/chat\/completions$/u, "/embeddings");
+  }
+
+  return `${trimmed}/embeddings`;
+}
+
+function resolveRemoteEmbeddingConfig() {
+  const rawBaseUrl =
+    process.env.SEARCH_EMBEDDING_BASE_URL?.trim() ||
+    process.env.EMBEDDING_BASE_URL?.trim() ||
+    process.env.BGE_MODEL_PATH?.trim() ||
+    process.env.OPENAI_BASE_URL?.trim() ||
+    "";
+  const apiKey =
+    process.env.SEARCH_EMBEDDING_API_KEY?.trim() ||
+    process.env.EMBEDDING_API_KEY?.trim() ||
+    process.env.OPENAI_API_KEY?.trim() ||
+    "";
+  const model =
+    process.env.SEARCH_EMBEDDING_MODEL?.trim() ||
+    process.env.EMBEDDING_MODEL?.trim() ||
+    process.env.BGE_MODEL_REPO?.trim() ||
+    "";
+
+  if (!rawBaseUrl || !apiKey || !model || !isRemoteUrl(rawBaseUrl)) {
+    throw new Error("Remote embedding generation requires a remote base URL, API key, and model.");
+  }
+
+  return {
+    endpoint: resolveRemoteEmbeddingEndpoint(rawBaseUrl),
+    apiKey,
+    model,
+  };
+}
+
+async function fetchRemoteEmbeddings(texts) {
+  const config = resolveRemoteEmbeddingConfig();
+  const batchSize = Number.parseInt(process.env.SEARCH_EMBEDDING_BATCH_SIZE || "16", 10);
+  const vectors = [];
+
+  for (let index = 0; index < texts.length; index += batchSize) {
+    const batch = texts.slice(index, index + batchSize);
+    const response = await fetch(config.endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${config.apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: config.model,
+        input: batch,
+      }),
+    });
+
+    const raw = await response.text();
+    let parsed;
+
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      parsed = { raw };
+    }
+
+    if (!response.ok) {
+      throw new Error(`Remote embedding provider failed: ${JSON.stringify(parsed?.error ?? parsed)}`);
+    }
+
+    const batchVectors = Array.isArray(parsed?.data) ? parsed.data.map((item) => item.embedding) : [];
+
+    if (batchVectors.length !== batch.length) {
+      throw new Error(`Remote embedding batch size mismatch: expected ${batch.length}, received ${batchVectors.length}`);
+    }
+
+    for (const vector of batchVectors) {
+      if (!Array.isArray(vector) || vector.length === 0 || !vector.every((item) => typeof item === "number" && Number.isFinite(item))) {
+        throw new Error("Remote embedding provider returned an invalid vector.");
+      }
+    }
+
+    vectors.push(...batchVectors);
+  }
+
+  return {
+    model: config.model,
+    dimension: vectors[0]?.length ?? 0,
+    vectors,
+  };
+}
+
 function chineseNumeralToNumber(value) {
   if (/^\d+$/.test(value)) {
     return Number(value);
@@ -132,15 +241,7 @@ function passageId(source, chapter, section) {
 
 async function main() {
   const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
-  const outputPath = path.resolve(process.cwd(), manifest.embeddingArtifact.path);
-
-  if (manifest.embeddingArtifact.model !== embeddingSpec.model) {
-    throw new Error(`Manifest embedding model ${manifest.embeddingArtifact.model} does not match ${embeddingSpec.model}`);
-  }
-
-  if (manifest.embeddingArtifact.dimension !== vectorSize) {
-    throw new Error(`Manifest embedding dimension ${manifest.embeddingArtifact.dimension} does not match ${vectorSize}`);
-  }
+  const outputPath = resolveOutputPath(manifest);
 
   const passages = [];
 
@@ -155,19 +256,45 @@ async function main() {
     );
   }
 
-  const artifact = {
-    model: embeddingSpec.model,
-    dimension: vectorSize,
-    corpusVersion: manifest.version,
-    items: passages.map((passage) => ({
-      id: passageId(passage.source, passage.chapter, passage.section),
-      textHash: textHash(passage.text),
-      vector: buildEmbedding(`${passage.source} ${passage.chapter} ${passage.text}`)
-    }))
-  };
+  let artifact;
+
+  if (embeddingBackend === "remote" || embeddingBackend === "openai" || embeddingBackend === "openai-compatible") {
+    const embeddingInput = passages.map((passage) => `${passage.source} ${passage.chapter} ${passage.text}`);
+    const remoteArtifact = await fetchRemoteEmbeddings(embeddingInput);
+
+    artifact = {
+      model: remoteArtifact.model,
+      dimension: remoteArtifact.dimension,
+      corpusVersion: manifest.version,
+      items: passages.map((passage, index) => ({
+        id: passageId(passage.source, passage.chapter, passage.section),
+        textHash: textHash(passage.text),
+        vector: remoteArtifact.vectors[index],
+      })),
+    };
+  } else {
+    if (manifest.embeddingArtifact.model !== embeddingSpec.model) {
+      throw new Error(`Manifest embedding model ${manifest.embeddingArtifact.model} does not match ${embeddingSpec.model}`);
+    }
+
+    if (manifest.embeddingArtifact.dimension !== vectorSize) {
+      throw new Error(`Manifest embedding dimension ${manifest.embeddingArtifact.dimension} does not match ${vectorSize}`);
+    }
+
+    artifact = {
+      model: embeddingSpec.model,
+      dimension: vectorSize,
+      corpusVersion: manifest.version,
+      items: passages.map((passage) => ({
+        id: passageId(passage.source, passage.chapter, passage.section),
+        textHash: textHash(passage.text),
+        vector: buildEmbedding(`${passage.source} ${passage.chapter} ${passage.text}`),
+      })),
+    };
+  }
 
   await fs.writeFile(outputPath, `${JSON.stringify(artifact, null, 2)}\n`, "utf8");
-  console.log(`Wrote ${artifact.items.length} embeddings to ${outputPath}`);
+  console.log(`Wrote ${artifact.items.length} embeddings (${artifact.model}, ${artifact.dimension}d) to ${outputPath}`);
 }
 
 await main();

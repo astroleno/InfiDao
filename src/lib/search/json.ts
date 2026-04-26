@@ -26,26 +26,24 @@ export function cosineSimilarity(left: number[], right: number[]): number {
   return dotProduct / (leftMagnitude * rightMagnitude);
 }
 
-interface RankPassagesOptions {
+interface RankPassagesByVectorOptions {
   corpus: PassageRecord[];
   embeddingMap: Map<string, number[]>;
-  query: string;
+  queryVector: number[];
   topK: number;
   threshold: number;
 }
 
-export function rankPassages({
+export function rankPassagesByVector({
   corpus,
   embeddingMap,
-  query,
+  queryVector,
   topK,
   threshold,
-}: RankPassagesOptions): SearchResult[] {
+}: RankPassagesByVectorOptions): SearchResult[] {
   if (corpus.length === 0) {
     return [];
   }
-
-  const queryVector = buildQueryEmbedding(query);
 
   return corpus
     .map((passage) => {
@@ -69,4 +67,28 @@ export function rankPassages({
     .filter((passage) => passage.score >= threshold)
     .sort((left, right) => right.score - left.score)
     .slice(0, topK);
+}
+
+interface RankPassagesOptions {
+  corpus: PassageRecord[];
+  embeddingMap: Map<string, number[]>;
+  query: string;
+  topK: number;
+  threshold: number;
+}
+
+export function rankPassages({
+  corpus,
+  embeddingMap,
+  query,
+  topK,
+  threshold,
+}: RankPassagesOptions): SearchResult[] {
+  return rankPassagesByVector({
+    corpus,
+    embeddingMap,
+    queryVector: buildQueryEmbedding(query),
+    topK,
+    threshold,
+  });
 }

@@ -1,7 +1,8 @@
 import { DEFAULT_SEARCH_THRESHOLD, DEFAULT_SEARCH_TOP_K, type SearchRequest, type SearchResult } from "@/types";
 import { fuseSearchResults } from "@/lib/search/fusion";
+import { encodeSearchQuery } from "@/lib/search/query-encoder";
 import { rankLexicalCandidates } from "@/lib/search/lexical";
-import { rankPassages } from "@/lib/search/json";
+import { rankPassagesByVector } from "@/lib/search/json";
 import { loadSearchIndex } from "@/lib/search/index-store";
 
 export async function searchPassages({
@@ -11,11 +12,16 @@ export async function searchPassages({
 }: SearchRequest): Promise<SearchResult[]> {
   const index = await loadSearchIndex();
   const candidateLimit = Math.max(topK * 4, 20);
+  const queryVector = await encodeSearchQuery({
+    query,
+    model: index.model,
+    dimension: index.dimension,
+  });
 
-  const vectorResults = rankPassages({
+  const vectorResults = rankPassagesByVector({
     corpus: index.corpus,
     embeddingMap: index.embeddingMap,
-    query,
+    queryVector,
     topK: candidateLimit,
     threshold: Math.max(0, threshold * 0.7),
   });

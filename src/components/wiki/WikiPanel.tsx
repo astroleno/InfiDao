@@ -1,0 +1,53 @@
+import type { WikiStack } from "@/lib/wiki/service";
+
+interface WikiPanelProps {
+  stack: WikiStack;
+  onBack: () => void;
+}
+
+export function WikiPanel({ stack, onBack }: WikiPanelProps) {
+  if (stack.length === 0) {
+    return null;
+  }
+
+  const currentNode = stack[stack.length - 1];
+
+  return (
+    <section className="mb-4 rounded-xl border border-stone-800 bg-stone-950/80 p-4 text-stone-200 shadow-sm">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-[0.28em] text-stone-500">探索路径</p>
+          <div className="mt-2 flex items-center gap-3">
+            <span className="text-sm tracking-[0.18em] text-zen">第 {stack.length} 层</span>
+            <span className="text-xs text-stone-500">{currentNode?.id}</span>
+          </div>
+        </div>
+
+        {stack.length > 1 && (
+          <button
+            type="button"
+            onClick={onBack}
+            className="rounded-full border border-stone-700 px-3 py-1.5 text-xs tracking-[0.18em] text-stone-300 transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+          >
+            返回上一层
+          </button>
+        )}
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {stack.map((node) => (
+          <div
+            key={`${node.depth}-${node.id}`}
+            className={`rounded-full border px-3 py-1 text-xs ${
+              node.depth === stack.length - 1
+                ? "border-zen/70 bg-zen/10 text-zen"
+                : "border-stone-800 text-stone-500"
+            }`}
+          >
+            {node.id}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}

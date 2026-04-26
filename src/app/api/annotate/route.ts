@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { createCapabilityNotReadyError } from "@/lib/reboot/status";
+import { createAnnotation } from "@/lib/annotation/service";
+import { buildSuccessResponse } from "@/lib/utils/errors";
 import { buildErrorResponse } from "@/lib/utils/errors";
 import { RouteError } from "@/lib/utils/errors";
 
@@ -22,8 +23,15 @@ async function parseJson(request: Request): Promise<unknown> {
 
 export async function POST(request: Request): Promise<Response> {
   try {
-    AnnotateRequestSchema.parse(await parseJson(request));
-    return buildErrorResponse(createCapabilityNotReadyError("annotate"));
+    const payload = AnnotateRequestSchema.parse(await parseJson(request));
+    const annotation = await createAnnotation({
+      query: payload.query,
+      passageId: payload.passageId,
+      passageText: payload.passageText,
+      ...(payload.style !== undefined ? { style: payload.style } : {}),
+    });
+
+    return buildSuccessResponse(annotation);
   } catch (error) {
     return buildErrorResponse(error);
   }

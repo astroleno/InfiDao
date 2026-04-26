@@ -522,7 +522,7 @@ docs/
 {
   "query": "如何面对困境",
   "topK": 5,
-  "threshold": 0.7
+  "threshold": 0.35
 }
 ```
 

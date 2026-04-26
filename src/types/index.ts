@@ -1,5 +1,5 @@
 export const DEFAULT_SEARCH_TOP_K = 5;
-export const DEFAULT_SEARCH_THRESHOLD = 0.7;
+export const DEFAULT_SEARCH_THRESHOLD = 0.35;
 export const HEALTH_STATUS_OK = "ok" as const;
 
 export interface ApiError {

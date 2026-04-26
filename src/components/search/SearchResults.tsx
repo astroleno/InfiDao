@@ -17,12 +17,12 @@ export function SearchResults({
   selectedPassage
 }: SearchResultsProps) {
   return (
-    <div className="mx-auto mt-12 flex max-w-5xl flex-col gap-8 md:gap-10">
+    <div className="flex w-full flex-col gap-8 md:gap-10">
       <div className="text-center">
         <p className="text-xs uppercase tracking-[0.35em] text-stone-500">经典回应</p>
         <h2 className="mt-3 text-2xl text-paper font-classic md:text-3xl">关于 “{query}” 的 {results.length} 则回响</h2>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-400 md:text-base">
-          以下按灵犀高低排列。先选一句进入“六经注我”，Phase 3 再把注释层完整接上。
+          以下按灵犀高低排列。选择一句进入“六经注我”，再沿延伸入口继续探索。
         </p>
       </div>
 

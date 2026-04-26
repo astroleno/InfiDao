@@ -1,5 +1,8 @@
 # InfiDao API Reference
 
+> Status: superseded on 2026-04-24
+> Legacy reference only for the pre-reboot implementation. For the current reboot MVP, use `docs/SUPERPOWERS_REBOOT_PLAN.md` and `docs/plans/reboot-mvp-implementation-plan.md`. If this file conflicts with them, those docs win.
+
 ## Overview
 
 The InfiDao API provides semantic search, embedding generation, and annotation services for the "六经注我" project. The API is built with Next.js App Router and follows RESTful principles.

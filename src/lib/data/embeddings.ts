@@ -5,6 +5,19 @@ import { RouteError } from "@/lib/utils/errors";
 
 const DEFAULT_EMBEDDINGS_PATH = path.join(process.cwd(), "data", "embeddings.json");
 
+function resolveEmbeddingArtifactPath(filePath?: string): string {
+  if (filePath) {
+    return filePath;
+  }
+
+  const configuredPath = process.env.SEARCH_EMBEDDING_ARTIFACT_PATH?.trim();
+  if (!configuredPath) {
+    return DEFAULT_EMBEDDINGS_PATH;
+  }
+
+  return path.resolve(process.cwd(), configuredPath);
+}
+
 export interface EmbeddingRecord {
   id: string;
   textHash: string;
@@ -53,14 +66,15 @@ function isEmbeddingArtifact(value: unknown): value is EmbeddingArtifact {
   );
 }
 
-export async function loadEmbeddingArtifact(filePath = DEFAULT_EMBEDDINGS_PATH): Promise<EmbeddingArtifact> {
+export async function loadEmbeddingArtifact(filePath?: string): Promise<EmbeddingArtifact> {
+  const resolvedFilePath = resolveEmbeddingArtifactPath(filePath);
   let fileContents: string;
 
   try {
-    fileContents = await fs.readFile(filePath, "utf8");
+    fileContents = await fs.readFile(resolvedFilePath, "utf8");
   } catch (error) {
     throw new RouteError(500, "EMBEDDINGS_READ_FAILED", "Embedding data could not be read.", {
-      filePath,
+      filePath: resolvedFilePath,
       cause: error instanceof Error ? error.message : String(error),
     });
   }
@@ -71,20 +85,20 @@ export async function loadEmbeddingArtifact(filePath = DEFAULT_EMBEDDINGS_PATH):
     parsed = JSON.parse(fileContents) as unknown;
   } catch (error) {
     throw new RouteError(500, "EMBEDDINGS_MALFORMED", "Embedding data must be valid JSON.", {
-      filePath,
+      filePath: resolvedFilePath,
       cause: error instanceof Error ? error.message : String(error),
     });
   }
 
   if (!isEmbeddingArtifact(parsed)) {
     throw new RouteError(500, "EMBEDDINGS_MALFORMED", "Embedding data does not match the v2 artifact shape.", {
-      filePath,
+      filePath: resolvedFilePath,
     });
   }
 
   if (!parsed.items.every((record) => record.vector.length === parsed.dimension)) {
     throw new RouteError(500, "EMBEDDINGS_MALFORMED", "Embedding vectors must match the artifact dimension.", {
-      filePath,
+      filePath: resolvedFilePath,
       dimension: parsed.dimension,
     });
   }
@@ -92,14 +106,14 @@ export async function loadEmbeddingArtifact(filePath = DEFAULT_EMBEDDINGS_PATH):
   return parsed;
 }
 
-export async function loadEmbeddingRecords(filePath = DEFAULT_EMBEDDINGS_PATH): Promise<EmbeddingRecord[]> {
+export async function loadEmbeddingRecords(filePath?: string): Promise<EmbeddingRecord[]> {
   const artifact = await loadEmbeddingArtifact(filePath);
   return artifact.items;
 }
 
 export async function loadEmbeddingsForCorpus(
   corpus: PassageRecord[],
-  filePath = DEFAULT_EMBEDDINGS_PATH,
+  filePath?: string,
 ): Promise<Map<string, number[]>> {
   const artifact = await loadEmbeddingArtifact(filePath);
   const recordMap = new Map(artifact.items.map((record) => [record.id, record]));

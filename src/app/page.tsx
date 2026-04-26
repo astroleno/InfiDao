@@ -1,9 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { AnnotationResult, ApiResponse, SearchResult } from "@/types";
+import { AnnotationLink, AnnotationResult, ApiResponse, SearchResult } from "@/types";
+import { AnnotationPanel } from "@/components/annotation/AnnotationPanel";
 import { SearchBar } from "@/components/search/SearchBar";
 import { SearchResults } from "@/components/search/SearchResults";
+import { WikiPanel } from "@/components/wiki/WikiPanel";
+import {
+  createWikiRoot,
+  currentWikiNode,
+  popWikiStack,
+  pushWikiNode,
+  resetWikiStack,
+  type WikiStack,
+} from "@/lib/wiki/service";
 
 const HOME_SEARCH_THRESHOLD = 0.35;
 
@@ -36,7 +46,9 @@ export default function HomePage() {
   const [selectedPassage, setSelectedPassage] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
-  const [annotationMessage, setAnnotationMessage] = useState<string | null>(null);
+  const [annotation, setAnnotation] = useState<AnnotationResult | null>(null);
+  const [annotationError, setAnnotationError] = useState<Error | null>(null);
+  const [wikiStack, setWikiStack] = useState<WikiStack>([]);
 
   const handleSearch = async (queryOverride?: string) => {
     const nextQuery = (queryOverride ?? searchQuery).trim();
@@ -47,7 +59,9 @@ export default function HomePage() {
 
     setSearchQuery(nextQuery);
     setSearchError(null);
-    setAnnotationMessage(null);
+    setAnnotation(null);
+    setAnnotationError(null);
+    setWikiStack(resetWikiStack());
     setSelectedPassage(null);
     setIsSearching(true);
     setHasSearched(true);
@@ -88,7 +102,9 @@ export default function HomePage() {
     }
 
     setSelectedPassage(passageId);
-    setAnnotationMessage(null);
+    setAnnotation(null);
+    setAnnotationError(null);
+    setWikiStack(resetWikiStack());
     setIsAnnotating(true);
 
     try {
@@ -108,16 +124,80 @@ export default function HomePage() {
       const payload = (await response.json()) as ApiResponse<AnnotationResult>;
 
       if (!response.ok || !payload.success) {
-        setAnnotationMessage(payload.success ? "注释尚未就绪。" : payload.error.message);
+        setAnnotationError(new Error(payload.success ? "注释尚未就绪。" : payload.error.message));
         return;
       }
 
-      setAnnotationMessage(`已收到 ${payload.data.passageId} 的 reboot 注释响应，注释面板将在 Phase 3 接入。`);
+      setAnnotation(payload.data);
+      setWikiStack(createWikiRoot(searchQuery, payload.data));
     } catch {
-      setAnnotationMessage("注释请求失败，请稍后再试。");
+      setAnnotationError(new Error("注释请求失败，请稍后再试。"));
     } finally {
       setIsAnnotating(false);
     }
+  };
+
+  const handleWikiNavigate = (link: AnnotationLink) => {
+    const nextQuery = searchQuery.trim();
+
+    if (!nextQuery) {
+      return;
+    }
+
+    setSelectedPassage(link.passageId);
+    setAnnotation(null);
+    setAnnotationError(null);
+    setIsAnnotating(true);
+
+    void (async () => {
+      try {
+        const response = await fetch("/api/annotate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: nextQuery,
+            passageId: link.passageId,
+            passageText: link.passageText,
+            style: "modern",
+          }),
+        });
+
+        const payload = (await response.json()) as ApiResponse<AnnotationResult>;
+
+        if (!response.ok || !payload.success) {
+          setAnnotationError(new Error(payload.success ? "注释尚未就绪。" : payload.error.message));
+          return;
+        }
+
+        setAnnotation(payload.data);
+        setWikiStack((currentStack) =>
+          pushWikiNode(currentStack, {
+            query: nextQuery,
+            annotation: payload.data,
+            via: link,
+          }),
+        );
+      } catch {
+        setAnnotationError(new Error("注释请求失败，请稍后再试。"));
+      } finally {
+        setIsAnnotating(false);
+      }
+    })();
+  };
+
+  const handleWikiBack = () => {
+    setWikiStack((currentStack) => {
+      const nextStack = popWikiStack(currentStack);
+      const nextNode = currentWikiNode(nextStack);
+
+      setAnnotation(nextNode?.annotation ?? null);
+      setAnnotationError(null);
+      setSelectedPassage(nextNode?.annotation.passageId ?? null);
+
+      return nextStack;
+    });
   };
 
   const resetHome = () => {
@@ -125,7 +205,9 @@ export default function HomePage() {
     setSearchQuery("");
     setSearchResults([]);
     setSearchError(null);
-    setAnnotationMessage(null);
+    setAnnotation(null);
+    setAnnotationError(null);
+    setWikiStack(resetWikiStack());
     setSelectedPassage(null);
   };
 
@@ -168,8 +250,7 @@ export default function HomePage() {
                 输入此刻一念，经典开始回应
               </p>
               <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 tracking-[0.06em] text-stone-500 md:text-base">
-                Phase 2 只做搜索闭环，所以这一屏先回到 reference 的进入方式：
-                一念入流，一句经典先落下，后续注释层与探索轨迹再在下一阶段接上。
+                输入一念，先听见经典回应；再沿注释与延伸入口，一层一层进入自己的探索路径。
               </p>
             </div>
 
@@ -199,7 +280,7 @@ export default function HomePage() {
                 </svg>
                 回到一念
               </button>
-              <div className="text-right text-xs tracking-[0.26em] text-stone-600">PHASE 2 / SEARCH CLOSURE</div>
+              <div className="text-right text-xs tracking-[0.26em] text-stone-600">PHASE 5 / INTERACTION POLISH</div>
             </div>
 
             <div className="mx-auto mt-8 max-w-4xl text-center">
@@ -216,11 +297,6 @@ export default function HomePage() {
                 />
               </div>
 
-              {annotationMessage && (
-                <div className="mx-auto mt-8 max-w-2xl rounded-3xl border border-stone-800 bg-stone-950/55 px-5 py-4 text-sm leading-7 text-stone-300">
-                  {annotationMessage}
-                </div>
-              )}
             </div>
 
             {isSearching ? (
@@ -240,19 +316,34 @@ export default function HomePage() {
                 <p className="mt-3 text-sm leading-7 text-red-200/80">{searchError}</p>
               </div>
             ) : searchResults.length > 0 ? (
-              <SearchResults
-                results={searchResults}
-                query={searchQuery}
-                onAnnotate={handleAnnotate}
-                isAnnotating={isAnnotating}
-                selectedPassage={selectedPassage}
-              />
+              <div className="mx-auto mt-12 grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-start">
+                <SearchResults
+                  results={searchResults}
+                  query={searchQuery}
+                  onAnnotate={handleAnnotate}
+                  isAnnotating={isAnnotating}
+                  selectedPassage={selectedPassage}
+                />
+
+                {(selectedPassage || annotation || isAnnotating || annotationError) && (
+                  <aside className="lg:sticky lg:top-8">
+                    <WikiPanel stack={wikiStack} onBack={handleWikiBack} />
+                    <AnnotationPanel
+                      query={searchQuery}
+                      annotation={annotation}
+                      isLoading={isAnnotating}
+                      error={annotationError}
+                      onWikiNavigate={handleWikiNavigate}
+                    />
+                  </aside>
+                )}
+              </div>
             ) : (
               <div className="mx-auto mt-20 max-w-2xl rounded-[2rem] border border-stone-800 bg-stone-950/55 px-6 py-10 text-center">
                 <div className="text-xs uppercase tracking-[0.32em] text-stone-500">No Match Yet</div>
                 <p className="mt-4 text-2xl text-paper font-classic">这一念暂未听见回响</p>
                 <p className="mx-auto mt-4 max-w-xl text-sm leading-8 text-stone-400">
-                  换一种说法，或把问题说得更具体一些。Phase 2 先保留克制的搜索入口，不再展示额外营销模块。
+                  换一种说法，或把问题说得更具体一些。当前先保留克制的搜索入口，不再展示额外营销模块。
                 </p>
               </div>
             )}

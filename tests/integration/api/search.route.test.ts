@@ -70,6 +70,28 @@ describe("POST /api/search", () => {
     expect(payload.data[0]).not.toHaveProperty("corpusVersion");
   });
 
+  it("uses a smoke-friendly default threshold when threshold is omitted", async () => {
+    const response = await POST(
+      createRequest({
+        query: "如何面对困境",
+        topK: 5,
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    const payload = await response.json();
+
+    expect(payload.success).toBe(true);
+    expect(payload.data.length).toBeGreaterThan(0);
+    expect(payload.data[0]).toEqual(
+      expect.objectContaining({
+        id: expect.any(String),
+        text: expect.any(String),
+        score: expect.any(Number),
+      }),
+    );
+  });
+
   it("rejects an empty query", async () => {
     const response = await POST(
       createRequest({

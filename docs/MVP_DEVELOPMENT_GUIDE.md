@@ -1,5 +1,8 @@
 # InfiDao MVP开发手册（更新版）
 
+> 状态：已于 2026-04-24 被 superseded
+> 本文件仅保留 pre-reboot 历史参考价值。当前重启执行只认 `docs/SUPERPOWERS_REBOOT_PLAN.md` 与 `docs/plans/reboot-mvp-implementation-plan.md`；若与本文件冲突，以那两份为准。
+
 > 目标：用最小成本实现“输入一句 → 检索六经 → 双向短注 → 继续点开”的闭环
 > 技术栈（MVP）：Next.js (App Router) + Route Handlers + LanceDB + @xenova/transformers(bge-m3) + GLM-4.5/Qwen/OpenAI（可切换）+ Vercel
 

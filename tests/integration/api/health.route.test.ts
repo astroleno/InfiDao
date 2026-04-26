@@ -31,7 +31,7 @@ describe("GET /api/health", () => {
     const request: SearchRequest = {
       query: "如何面对困境",
       topK: 3,
-      threshold: 0.7,
+      threshold: 0.35,
     };
 
     const annotation: AnnotationResult = {
