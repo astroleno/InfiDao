@@ -24,9 +24,85 @@ export interface AnnotationLlmSlotConfig {
 }
 
 export type AnnotationLlmMode = "fast" | "quality";
+type AnnotationLlmConfigField = "model" | "baseUrl" | "apiKey";
+
+interface EnvValueCandidate {
+  key: string;
+  canonical: boolean;
+}
+
+interface ResolvedEnvValue {
+  value: string;
+  key: string;
+  canonical: boolean;
+}
+
+interface AnnotationLlmSlotResolution {
+  config: AnnotationLlmSlotConfig | null;
+  sources: Partial<Record<AnnotationLlmConfigField, ResolvedEnvValue>>;
+}
+
+export interface AnnotationLlmSlotStatus {
+  slot: AnnotationLlmSlot;
+  configured: boolean;
+  apiKeyConfigured: boolean;
+  sources: Partial<Record<AnnotationLlmConfigField, string>>;
+  usesLegacyAliases: boolean;
+  model?: string;
+  endpoint?: string;
+}
+
+export interface AnnotationLlmRuntimeStatus {
+  mode: AnnotationLlmMode;
+  timeoutMs: number;
+  slots: AnnotationLlmSlotStatus[];
+  warnings: string[];
+}
 
 export const DEFAULT_ANNOTATION_LLM_TIMEOUT_MS = 6_000;
 const MAX_ANNOTATION_LLM_TIMEOUT_MS = 60_000;
+const ANNOTATION_LLM_SLOTS = ["primary", "secondary"] as const;
+const SLOT_ENV_CANDIDATES: Record<
+  AnnotationLlmSlot,
+  Record<AnnotationLlmConfigField, EnvValueCandidate[]>
+> = {
+  primary: {
+    model: [
+      { key: "LLM_MODEL_PRIMARY", canonical: true },
+      { key: "LLM_MODEL", canonical: false },
+      { key: "LLM_PROVIDER", canonical: false },
+    ],
+    baseUrl: [
+      { key: "LLM_BASE_URL_PRIMARY", canonical: true },
+      { key: "LLM_BASE_URL", canonical: false },
+      { key: "OPENAI_BASE_URL", canonical: false },
+    ],
+    apiKey: [
+      { key: "LLM_API_KEY_PRIMARY", canonical: true },
+      { key: "LLM_API_KEY", canonical: false },
+      { key: "OPENAI_API_KEY", canonical: false },
+    ],
+  },
+  secondary: {
+    model: [
+      { key: "LLM_MODEL_SECONDARY", canonical: true },
+      { key: "LLM_MODEL_2", canonical: false },
+      { key: "LLM_PROVIDER_2", canonical: false },
+      { key: "LLM_PROVIDE_2", canonical: false },
+    ],
+    baseUrl: [
+      { key: "LLM_BASE_URL_SECONDARY", canonical: true },
+      { key: "LLM_BASE_URL_2", canonical: false },
+      { key: "OPENAI_BASE_URL_2", canonical: false },
+      { key: "OPENAI_BASE_URL", canonical: false },
+    ],
+    apiKey: [
+      { key: "LLM_API_KEY_SECONDARY", canonical: true },
+      { key: "LLM_API_KEY_2", canonical: false },
+      { key: "OPENAI_API_KEY_2", canonical: false },
+    ],
+  },
+};
 
 export class AnnotationLlmTimeoutError extends Error {
   constructor(
@@ -58,6 +134,26 @@ function firstNonEmptyValue(keys: string[]): string {
   return "";
 }
 
+function firstNonEmptyEnvValue(candidates: EnvValueCandidate[]): ResolvedEnvValue | null {
+  for (const candidate of candidates) {
+    const value = process.env[candidate.key]?.trim();
+
+    if (value) {
+      return {
+        value,
+        key: candidate.key,
+        canonical: candidate.canonical,
+      };
+    }
+  }
+
+  return null;
+}
+
+function getCanonicalEnvKey(slot: AnnotationLlmSlot, field: AnnotationLlmConfigField): string {
+  return SLOT_ENV_CANDIDATES[slot][field].find(candidate => candidate.canonical)?.key ?? "";
+}
+
 function resolveChatCompletionsEndpoint(rawBaseUrl: string): string {
   const trimmed = rawBaseUrl.trim().replace(/\/$/u, "");
 
@@ -69,45 +165,106 @@ function resolveChatCompletionsEndpoint(rawBaseUrl: string): string {
 }
 
 function resolveSlotConfig(slot: AnnotationLlmSlot): AnnotationLlmSlotConfig | null {
-  const model =
-    slot === "primary"
-      ? firstNonEmptyValue(["LLM_MODEL_PRIMARY", "LLM_MODEL", "LLM_PROVIDER"])
-      : firstNonEmptyValue([
-          "LLM_MODEL_SECONDARY",
-          "LLM_MODEL_2",
-          "LLM_PROVIDER_2",
-          "LLM_PROVIDE_2",
-        ]);
-  const rawBaseUrl =
-    slot === "primary"
-      ? firstNonEmptyValue(["LLM_BASE_URL_PRIMARY", "LLM_BASE_URL", "OPENAI_BASE_URL"])
-      : firstNonEmptyValue([
-          "LLM_BASE_URL_SECONDARY",
-          "LLM_BASE_URL_2",
-          "OPENAI_BASE_URL_2",
-          "OPENAI_BASE_URL",
-        ]);
-  const apiKey =
-    slot === "primary"
-      ? firstNonEmptyValue(["LLM_API_KEY_PRIMARY", "LLM_API_KEY", "OPENAI_API_KEY"])
-      : firstNonEmptyValue(["LLM_API_KEY_SECONDARY", "LLM_API_KEY_2", "OPENAI_API_KEY_2"]);
+  return resolveSlotConfigResolution(slot).config;
+}
 
-  if (!model || !rawBaseUrl || !apiKey) {
-    return null;
+function resolveSlotConfigResolution(slot: AnnotationLlmSlot): AnnotationLlmSlotResolution {
+  const model = firstNonEmptyEnvValue(SLOT_ENV_CANDIDATES[slot].model);
+  const rawBaseUrl = firstNonEmptyEnvValue(SLOT_ENV_CANDIDATES[slot].baseUrl);
+  const apiKey = firstNonEmptyEnvValue(SLOT_ENV_CANDIDATES[slot].apiKey);
+  const sources: Partial<Record<AnnotationLlmConfigField, ResolvedEnvValue>> = {};
+
+  if (model !== null) {
+    sources.model = model;
+  }
+
+  if (rawBaseUrl !== null) {
+    sources.baseUrl = rawBaseUrl;
+  }
+
+  if (apiKey !== null) {
+    sources.apiKey = apiKey;
+  }
+
+  if (model === null || rawBaseUrl === null || apiKey === null) {
+    return {
+      config: null,
+      sources,
+    };
   }
 
   return {
-    slot,
-    endpoint: resolveChatCompletionsEndpoint(rawBaseUrl),
-    apiKey,
-    model,
+    config: {
+      slot,
+      endpoint: resolveChatCompletionsEndpoint(rawBaseUrl.value),
+      apiKey: apiKey.value,
+      model: model.value,
+    },
+    sources,
   };
 }
 
 export function resolveAnnotationLlmConfigs(): AnnotationLlmSlotConfig[] {
-  return (["primary", "secondary"] as const)
-    .map(slot => resolveSlotConfig(slot))
-    .filter((config): config is AnnotationLlmSlotConfig => config !== null);
+  return ANNOTATION_LLM_SLOTS.map(slot => resolveSlotConfig(slot)).filter(
+    (config): config is AnnotationLlmSlotConfig => config !== null,
+  );
+}
+
+export function resolveAnnotationLlmRuntimeStatus(): AnnotationLlmRuntimeStatus {
+  const warnings: string[] = [];
+  const slots = ANNOTATION_LLM_SLOTS.map(slot => {
+    const resolution = resolveSlotConfigResolution(slot);
+    const sourceKeys: Partial<Record<AnnotationLlmConfigField, string>> = {};
+    let usesLegacyAliases = false;
+
+    for (const field of ["model", "baseUrl", "apiKey"] as const) {
+      const source = resolution.sources[field];
+
+      if (source === undefined) {
+        continue;
+      }
+
+      sourceKeys[field] = source.key;
+
+      if (!source.canonical) {
+        usesLegacyAliases = true;
+        warnings.push(
+          `${slot}.${field} uses legacy env ${source.key}; migrate to ${getCanonicalEnvKey(
+            slot,
+            field,
+          )}.`,
+        );
+      }
+    }
+
+    const status: AnnotationLlmSlotStatus = {
+      slot,
+      configured: resolution.config !== null,
+      apiKeyConfigured: resolution.sources.apiKey !== undefined,
+      sources: sourceKeys,
+      usesLegacyAliases,
+    };
+
+    const model = resolution.sources.model?.value;
+    const rawBaseUrl = resolution.sources.baseUrl?.value;
+
+    if (model !== undefined) {
+      status.model = model;
+    }
+
+    if (rawBaseUrl !== undefined) {
+      status.endpoint = resolveChatCompletionsEndpoint(rawBaseUrl);
+    }
+
+    return status;
+  });
+
+  return {
+    mode: resolveAnnotationLlmMode(),
+    timeoutMs: resolveAnnotationLlmTimeoutMs(),
+    slots,
+    warnings,
+  };
 }
 
 export function resolveAnnotationLlmMode(): AnnotationLlmMode {

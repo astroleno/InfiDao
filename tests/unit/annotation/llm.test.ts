@@ -5,6 +5,7 @@ import {
   resolveAnnotationLlmConfigs,
   resolveAnnotationLlmMode,
   resolveAnnotationLlmRequestPlan,
+  resolveAnnotationLlmRuntimeStatus,
   resolveAnnotationLlmTimeoutMs,
 } from "@/lib/annotation/llm";
 
@@ -77,6 +78,55 @@ describe("annotation llm runtime", () => {
     ]);
   });
 
+  it("reports canonical runtime config without leaking api keys", () => {
+    process.env.ANNOTATION_LLM_MODE = "quality";
+    process.env.ANNOTATION_LLM_TIMEOUT_MS = "2500";
+    process.env.LLM_MODEL_PRIMARY = "gpt-5.4-nano";
+    process.env.LLM_BASE_URL_PRIMARY = "https://yunwu.ai/v1";
+    process.env.LLM_API_KEY_PRIMARY = "sk-primary";
+    process.env.LLM_MODEL_SECONDARY = "gemini-3.1-flash-lite-preview";
+    process.env.LLM_BASE_URL_SECONDARY = "https://yunwu.ai/v1";
+    process.env.LLM_API_KEY_SECONDARY = "sk-secondary";
+
+    const status = resolveAnnotationLlmRuntimeStatus();
+
+    expect(status).toMatchObject({
+      mode: "quality",
+      timeoutMs: 2500,
+      warnings: [],
+      slots: [
+        {
+          slot: "primary",
+          configured: true,
+          apiKeyConfigured: true,
+          model: "gpt-5.4-nano",
+          endpoint: "https://yunwu.ai/v1/chat/completions",
+          sources: {
+            model: "LLM_MODEL_PRIMARY",
+            baseUrl: "LLM_BASE_URL_PRIMARY",
+            apiKey: "LLM_API_KEY_PRIMARY",
+          },
+          usesLegacyAliases: false,
+        },
+        {
+          slot: "secondary",
+          configured: true,
+          apiKeyConfigured: true,
+          model: "gemini-3.1-flash-lite-preview",
+          endpoint: "https://yunwu.ai/v1/chat/completions",
+          sources: {
+            model: "LLM_MODEL_SECONDARY",
+            baseUrl: "LLM_BASE_URL_SECONDARY",
+            apiKey: "LLM_API_KEY_SECONDARY",
+          },
+          usesLegacyAliases: false,
+        },
+      ],
+    });
+    expect(JSON.stringify(status)).not.toContain("sk-primary");
+    expect(JSON.stringify(status)).not.toContain("sk-secondary");
+  });
+
   it("keeps backward-compatible aliases, including LLM_PROVIDE_2", () => {
     process.env.LLM_PROVIDER = "gpt-5.4-nano";
     process.env.OPENAI_BASE_URL = "https://yunwu.ai/v1";
@@ -98,6 +148,45 @@ describe("annotation llm runtime", () => {
         model: "gemini-3.1-flash-lite-preview",
       },
     ]);
+  });
+
+  it("marks backward-compatible aliases as legacy runtime config", () => {
+    process.env.LLM_PROVIDER = "gpt-5.4-nano";
+    process.env.OPENAI_BASE_URL = "https://yunwu.ai/v1";
+    process.env.OPENAI_API_KEY = "sk-primary";
+    process.env.LLM_PROVIDE_2 = "gemini-3.1-flash-lite-preview";
+    process.env.OPENAI_API_KEY_2 = "sk-secondary";
+
+    const status = resolveAnnotationLlmRuntimeStatus();
+
+    expect(status.slots).toEqual([
+      expect.objectContaining({
+        slot: "primary",
+        configured: true,
+        usesLegacyAliases: true,
+        sources: {
+          model: "LLM_PROVIDER",
+          baseUrl: "OPENAI_BASE_URL",
+          apiKey: "OPENAI_API_KEY",
+        },
+      }),
+      expect.objectContaining({
+        slot: "secondary",
+        configured: true,
+        usesLegacyAliases: true,
+        sources: {
+          model: "LLM_PROVIDE_2",
+          baseUrl: "OPENAI_BASE_URL",
+          apiKey: "OPENAI_API_KEY_2",
+        },
+      }),
+    ]);
+    expect(status.warnings).toEqual(
+      expect.arrayContaining([
+        "primary.model uses legacy env LLM_PROVIDER; migrate to LLM_MODEL_PRIMARY.",
+        "secondary.model uses legacy env LLM_PROVIDE_2; migrate to LLM_MODEL_SECONDARY.",
+      ]),
+    );
   });
 
   it("defaults to fast mode and prioritizes the secondary slot", () => {

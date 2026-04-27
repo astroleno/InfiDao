@@ -20,6 +20,16 @@ export interface AnnotationTelemetryEvent {
   slot?: AnnotationLlmSlot;
 }
 
+export interface AnnotationTelemetrySummary {
+  count: number;
+  cacheHits: number;
+  fallbackHits: number;
+  averageElapsedMs: number;
+  byProvider: Record<AnnotationTelemetryProvider, number>;
+  byMode: Record<AnnotationLlmMode, number>;
+  byFallbackReason: Partial<Record<AnnotationFallbackReason, number>>;
+}
+
 const MAX_TELEMETRY_EVENTS = 100;
 const telemetryEvents: AnnotationTelemetryEvent[] = [];
 
@@ -56,6 +66,52 @@ export function recordAnnotationTelemetry(
 
 export function getAnnotationTelemetryEvents(): AnnotationTelemetryEvent[] {
   return telemetryEvents.map(event => ({ ...event }));
+}
+
+export function summarizeAnnotationTelemetryEvents(
+  events = getAnnotationTelemetryEvents(),
+): AnnotationTelemetrySummary {
+  const summary: AnnotationTelemetrySummary = {
+    count: events.length,
+    cacheHits: 0,
+    fallbackHits: 0,
+    averageElapsedMs: 0,
+    byProvider: {
+      cache: 0,
+      deterministic: 0,
+      llm: 0,
+    },
+    byMode: {
+      fast: 0,
+      quality: 0,
+    },
+    byFallbackReason: {},
+  };
+
+  let totalElapsedMs = 0;
+
+  for (const event of events) {
+    totalElapsedMs += event.elapsedMs;
+    summary.byProvider[event.provider] += 1;
+    summary.byMode[event.mode] += 1;
+
+    if (event.cacheHit) {
+      summary.cacheHits += 1;
+    }
+
+    if (event.fallbackHit) {
+      summary.fallbackHits += 1;
+    }
+
+    if (event.fallbackReason !== undefined) {
+      summary.byFallbackReason[event.fallbackReason] =
+        (summary.byFallbackReason[event.fallbackReason] ?? 0) + 1;
+    }
+  }
+
+  summary.averageElapsedMs = events.length > 0 ? Math.round(totalElapsedMs / events.length) : 0;
+
+  return summary;
 }
 
 export function resetAnnotationTelemetry(): void {
