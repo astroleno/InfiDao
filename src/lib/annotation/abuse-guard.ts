@@ -1,6 +1,6 @@
 import { RouteError } from "@/lib/utils/errors";
 
-export const ANNOTATE_BODY_LIMIT_BYTES = 4096;
+export const ANNOTATE_BODY_LIMIT_BYTES = 10_240;
 const WINDOW_MS = 60_000;
 const MAX_REQUESTS_PER_WINDOW = 20;
 

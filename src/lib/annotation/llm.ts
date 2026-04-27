@@ -243,8 +243,8 @@ function parseAnnotationPayload(raw: string): Pick<AnnotationLlmOutput, "sixToMe
 async function requestAnnotationFromSlot(
   config: AnnotationLlmSlotConfig,
   input: AnnotationLlmInput,
+  timeoutMs: number,
 ): Promise<AnnotationLlmOutput> {
-  const timeoutMs = resolveAnnotationLlmTimeoutMs();
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
   let response: Response;
@@ -329,13 +329,25 @@ export async function generateAnnotationFromLlm(
     return null;
   }
 
+  const deadlineMs = Date.now() + resolveAnnotationLlmTimeoutMs();
   let lastError: unknown = null;
 
   for (const config of configs) {
+    const remainingTimeoutMs = deadlineMs - Date.now();
+
+    if (remainingTimeoutMs <= 0) {
+      lastError = new AnnotationLlmTimeoutError(config.slot, config.model, 0);
+      break;
+    }
+
     try {
-      return await requestAnnotationFromSlot(config, input);
+      return await requestAnnotationFromSlot(config, input, remainingTimeoutMs);
     } catch (error) {
       lastError = error;
+
+      if (Date.now() >= deadlineMs) {
+        break;
+      }
     }
   }
 

@@ -142,6 +142,27 @@ describe("POST /api/annotate", () => {
     });
   });
 
+  it("accepts a 2000 character Chinese passage under the published field limit", async () => {
+    const passageText = "信".repeat(2000);
+    const response = await POST(
+      createRequest({
+        query: "如何面对困境",
+        passageId: "external-long-passage",
+        passageText,
+        style: "modern",
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      success: true,
+      data: {
+        passageId: "external-long-passage",
+        passageText,
+      },
+    });
+  });
+
   it("rate limits repeated annotate requests from one client", async () => {
     for (let index = 0; index < 20; index += 1) {
       const response = await POST(

@@ -327,4 +327,54 @@ describe("annotation llm runtime", () => {
     await jest.advanceTimersByTimeAsync(25);
     await rejection;
   });
+
+  it("shares one timeout budget across failover slots", async () => {
+    jest.useFakeTimers();
+    process.env.ANNOTATION_LLM_TIMEOUT_MS = "50";
+    process.env.LLM_MODEL_PRIMARY = "gpt-5.4-nano";
+    process.env.LLM_BASE_URL_PRIMARY = "https://yunwu.ai/v1";
+    process.env.LLM_API_KEY_PRIMARY = "sk-primary";
+    process.env.LLM_MODEL_SECONDARY = "gemini-3.1-flash-lite-preview";
+    process.env.LLM_BASE_URL_SECONDARY = "https://yunwu.ai/v1";
+    process.env.LLM_API_KEY_SECONDARY = "sk-secondary";
+
+    global.fetch = jest.fn((_url: string, init?: RequestInit) => {
+      const signal = init?.signal;
+      const callNumber = (global.fetch as jest.Mock).mock.calls.length;
+
+      return new Promise((resolve, reject) => {
+        signal?.addEventListener("abort", () => {
+          const error = new Error("aborted");
+          error.name = "AbortError";
+          reject(error);
+        });
+
+        if (callNumber === 1) {
+          setTimeout(() => {
+            resolve({
+              ok: false,
+              status: 503,
+              text: async () => JSON.stringify({ error: { message: "upstream unavailable" } }),
+            });
+          }, 20);
+        }
+      });
+    }) as jest.Mock;
+
+    const request = generateAnnotationFromLlm({
+      query: "如何面对困境",
+      passageLabel: "论语 学而 第 1 节",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern",
+    });
+    const rejection = expect(request).rejects.toEqual(
+      new AnnotationLlmTimeoutError("primary", "gpt-5.4-nano", 30),
+    );
+
+    await jest.advanceTimersByTimeAsync(20);
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+
+    await jest.advanceTimersByTimeAsync(30);
+    await rejection;
+  });
 });
