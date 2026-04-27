@@ -38,11 +38,27 @@ describe("buildErrorResponse", () => {
       success: false,
       error: {
         code: "EMBEDDINGS_READ_FAILED",
-        message: "Embedding data could not be read.",
+        message: "Internal server error.",
       },
     });
     expect(payload.error).not.toHaveProperty("details");
     expect(JSON.stringify(payload)).not.toContain("/Users/");
     expect(JSON.stringify(payload)).not.toContain("ENOENT");
+  });
+
+  it("redacts unexpected 5xx error messages", async () => {
+    const response = buildErrorResponse(new Error("token sk-secret leaked through upstream stack"));
+    const payload = await response.json();
+
+    expect(response.status).toBe(500);
+    expect(payload).toMatchObject({
+      success: false,
+      error: {
+        code: "INTERNAL_ERROR",
+        message: "Internal server error.",
+      },
+    });
+    expect(JSON.stringify(payload)).not.toContain("sk-secret");
+    expect(JSON.stringify(payload)).not.toContain("upstream stack");
   });
 });

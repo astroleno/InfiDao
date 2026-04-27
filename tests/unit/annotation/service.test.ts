@@ -1,4 +1,6 @@
 import { createAnnotation } from "@/lib/annotation/service";
+import { resetAnnotationCache } from "@/lib/annotation/cache";
+import { getAnnotationTelemetryEvents, resetAnnotationTelemetry } from "@/lib/annotation/telemetry";
 
 describe("createAnnotation", () => {
   const originalEnv = { ...process.env };
@@ -7,6 +9,12 @@ describe("createAnnotation", () => {
   beforeEach(() => {
     process.env = { ...originalEnv };
     for (const key of [
+      "ANNOTATION_LLM_MODE",
+      "ANNOTATION_MODE",
+      "ANNOTATION_LLM_TIMEOUT_MS",
+      "ANNOTATION_CACHE_TTL_MS",
+      "ANNOTATION_CACHE_MAX_ENTRIES",
+      "ANNOTATION_TELEMETRY",
       "LLM_MODEL_PRIMARY",
       "LLM_BASE_URL_PRIMARY",
       "LLM_API_KEY_PRIMARY",
@@ -30,11 +38,15 @@ describe("createAnnotation", () => {
     }
 
     global.fetch = originalFetch;
+    resetAnnotationCache();
+    resetAnnotationTelemetry();
   });
 
   afterEach(() => {
     process.env = { ...originalEnv };
     global.fetch = originalFetch;
+    resetAnnotationCache();
+    resetAnnotationTelemetry();
     jest.restoreAllMocks();
   });
 
@@ -64,7 +76,7 @@ describe("createAnnotation", () => {
         section: expect.any(Number),
       }),
     );
-    expect(annotation.links.map((link) => link.passageId)).not.toContain("lunyu-1-7");
+    expect(annotation.links.map(link => link.passageId)).not.toContain("lunyu-1-7");
   });
 
   it("keeps unknown selected passages annotatable while returning known corpus links", async () => {
@@ -77,7 +89,7 @@ describe("createAnnotation", () => {
 
     expect(annotation.passageId).toBe("external-note-1");
     expect(annotation.passageText).toBe("我想知道自己哪里做得不够。");
-    expect(annotation.links.some((link) => link.passageId === "lunyu-1-4")).toBe(true);
+    expect(annotation.links.some(link => link.passageId === "lunyu-1-4")).toBe(true);
   });
 
   it("uses the configured llm copy when a provider returns valid reboot json", async () => {
@@ -92,7 +104,8 @@ describe("createAnnotation", () => {
           choices: [
             {
               message: {
-                content: '{"sixToMe":"经典先让你稳住当下，再决定下一步。","meToSix":"你的问题让原文从训诫转成了行动中的校准。"}',
+                content:
+                  '{"sixToMe":"经典先让你稳住当下，再决定下一步。","meToSix":"你的问题让原文从训诫转成了行动中的校准。"}',
               },
             },
           ],
@@ -110,5 +123,137 @@ describe("createAnnotation", () => {
     expect(annotation.meToSix).toBe("你的问题让原文从训诫转成了行动中的校准。");
     expect(annotation.links.length).toBeGreaterThan(0);
     expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("caches successful llm annotations and records cache telemetry", async () => {
+    process.env.LLM_MODEL_PRIMARY = "gpt-5.4-nano";
+    process.env.LLM_BASE_URL_PRIMARY = "https://yunwu.ai/v1";
+    process.env.LLM_API_KEY_PRIMARY = "sk-primary";
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      text: async () =>
+        JSON.stringify({
+          choices: [
+            {
+              message: {
+                content: '{"sixToMe":"缓存中的经典回应。","meToSix":"缓存中的当代反观。"}',
+              },
+            },
+          ],
+        }),
+    }) as jest.Mock;
+
+    const request = {
+      query: "如何面对困境",
+      passageId: "lunyu-1-1",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern" as const,
+    };
+
+    const first = await createAnnotation(request);
+    const second = await createAnnotation(request);
+
+    expect(first.sixToMe).toBe("缓存中的经典回应。");
+    expect(second).toEqual(first);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(getAnnotationTelemetryEvents()).toMatchObject([
+      {
+        provider: "llm",
+        cacheHit: false,
+        fallbackHit: false,
+        model: "gpt-5.4-nano",
+        slot: "primary",
+      },
+      {
+        provider: "cache",
+        cacheHit: true,
+        fallbackHit: false,
+      },
+    ]);
+  });
+
+  it("keeps fast and quality annotation cache entries separate", async () => {
+    process.env.LLM_MODEL_PRIMARY = "gpt-5.4-nano";
+    process.env.LLM_BASE_URL_PRIMARY = "https://yunwu.ai/v1";
+    process.env.LLM_API_KEY_PRIMARY = "sk-primary";
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: async () =>
+          JSON.stringify({
+            choices: [
+              {
+                message: {
+                  content: '{"sixToMe":"fast 模式回应。","meToSix":"fast 模式反观。"}',
+                },
+              },
+            ],
+          }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: async () =>
+          JSON.stringify({
+            choices: [
+              {
+                message: {
+                  content: '{"sixToMe":"quality 模式回应。","meToSix":"quality 模式反观。"}',
+                },
+              },
+            ],
+          }),
+      }) as jest.Mock;
+
+    const request = {
+      query: "如何面对困境",
+      passageId: "lunyu-1-1",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern" as const,
+    };
+
+    const fast = await createAnnotation(request);
+    process.env.ANNOTATION_LLM_MODE = "quality";
+    const quality = await createAnnotation(request);
+
+    expect(fast.sixToMe).toBe("fast 模式回应。");
+    expect(quality.sixToMe).toBe("quality 模式回应。");
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not cache provider-error fallback annotations", async () => {
+    process.env.LLM_MODEL_PRIMARY = "gpt-5.4-nano";
+    process.env.LLM_BASE_URL_PRIMARY = "https://yunwu.ai/v1";
+    process.env.LLM_API_KEY_PRIMARY = "sk-primary";
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 503,
+      text: async () => JSON.stringify({ error: { message: "upstream unavailable" } }),
+    }) as jest.Mock;
+
+    const request = {
+      query: "如何面对困境",
+      passageId: "lunyu-1-1",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern" as const,
+    };
+
+    await createAnnotation(request);
+    await createAnnotation(request);
+
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(getAnnotationTelemetryEvents()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          provider: "deterministic",
+          cacheHit: false,
+          fallbackHit: true,
+          fallbackReason: "provider_error",
+        }),
+      ]),
+    );
   });
 });

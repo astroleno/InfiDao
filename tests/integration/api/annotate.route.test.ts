@@ -1,11 +1,39 @@
 import fs from "node:fs";
 import path from "node:path";
 import { POST } from "@/app/api/annotate/route";
+import { resetAnnotateAbuseGuard } from "@/lib/annotation/abuse-guard";
 
-function createRequest(body: unknown): Request {
+function createRequest(body: unknown, headers?: Record<string, string>): Request {
+  const requestBody = typeof body === "string" ? body : JSON.stringify(body);
+  const requestBytes = Uint8Array.from(Buffer.from(requestBody, "utf8"));
+  const requestHeaders = new Map(
+    Object.entries({
+      "content-type": "application/json",
+      ...(headers ?? {}),
+    }).map(([key, value]) => [key.toLowerCase(), value]),
+  );
+
   return {
-    json: async () => body,
-  } as Request;
+    headers: {
+      get: (name: string) => requestHeaders.get(name.toLowerCase()) ?? null,
+    },
+    body: {
+      getReader: () => {
+        let consumed = false;
+
+        return {
+          read: async () => {
+            if (consumed) {
+              return { done: true, value: undefined };
+            }
+
+            consumed = true;
+            return { done: false, value: requestBytes };
+          },
+        };
+      },
+    },
+  } as unknown as Request;
 }
 
 describe("POST /api/annotate", () => {
@@ -38,11 +66,13 @@ describe("POST /api/annotate", () => {
     }
 
     global.fetch = originalFetch;
+    resetAnnotateAbuseGuard();
   });
 
   afterEach(() => {
     process.env = { ...originalEnv };
     global.fetch = originalFetch;
+    resetAnnotateAbuseGuard();
     jest.restoreAllMocks();
   });
 
@@ -91,6 +121,61 @@ describe("POST /api/annotate", () => {
         code: "VALIDATION_ERROR",
       }),
     });
+  });
+
+  it("rejects oversized request bodies", async () => {
+    const response = await POST(
+      createRequest({
+        query: "朋友相处要诚信",
+        passageId: "lunyu-1-7",
+        passageText: "信".repeat(5000),
+        style: "modern",
+      }),
+    );
+
+    expect(response.status).toBe(413);
+    await expect(response.json()).resolves.toMatchObject({
+      success: false,
+      error: expect.objectContaining({
+        code: "REQUEST_TOO_LARGE",
+      }),
+    });
+  });
+
+  it("rate limits repeated annotate requests from one client", async () => {
+    for (let index = 0; index < 20; index += 1) {
+      const response = await POST(
+        createRequest(
+          {
+            query: "朋友相处要诚信",
+            passageId: "lunyu-1-7",
+            passageText: "贤贤易色，事父母能竭其力，事君能致其身，与朋友交言而有信。",
+            style: "modern",
+          },
+          {
+            "x-forwarded-for": "203.0.113.20",
+          },
+        ),
+      );
+
+      expect(response.status).toBe(200);
+    }
+
+    const limited = await POST(
+      createRequest(
+        {
+          query: "朋友相处要诚信",
+          passageId: "lunyu-1-7",
+          passageText: "贤贤易色，事父母能竭其力，事君能致其身，与朋友交言而有信。",
+          style: "modern",
+        },
+        {
+          "x-forwarded-for": "203.0.113.20",
+        },
+      ),
+    );
+
+    expect(limited.status).toBe(429);
   });
 
   it("does not import legacy db, embed, or llm services", () => {

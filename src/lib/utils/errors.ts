@@ -1,6 +1,8 @@
 import { ZodError } from "zod";
 import type { ApiError, ApiResponse } from "@/types";
 
+const INTERNAL_ERROR_MESSAGE = "Internal server error.";
+
 export class RouteError extends Error {
   constructor(
     public readonly status: number,
@@ -19,14 +21,19 @@ function normalizeError(error: unknown): RouteError {
   }
 
   if (error instanceof ZodError) {
-    return new RouteError(400, "VALIDATION_ERROR", "Request payload does not match the reboot contract.", error.flatten());
+    return new RouteError(
+      400,
+      "VALIDATION_ERROR",
+      "Request payload does not match the reboot contract.",
+      error.flatten(),
+    );
   }
 
   if (error instanceof Error) {
-    return new RouteError(500, "INTERNAL_ERROR", error.message);
+    return new RouteError(500, "INTERNAL_ERROR", INTERNAL_ERROR_MESSAGE);
   }
 
-  return new RouteError(500, "INTERNAL_ERROR", "Unexpected error.");
+  return new RouteError(500, "INTERNAL_ERROR", INTERNAL_ERROR_MESSAGE);
 }
 
 export function buildSuccessResponse<T>(data: T, init?: ResponseInit): Response {
@@ -44,7 +51,7 @@ export function buildErrorResponse(error: unknown): Response {
   const exposeDetails = normalized.status < 500 && normalized.details !== undefined;
   const apiError: ApiError = {
     code: normalized.code,
-    message: normalized.message,
+    message: normalized.status >= 500 ? INTERNAL_ERROR_MESSAGE : normalized.message,
     ...(exposeDetails ? { details: normalized.details } : {}),
   };
 

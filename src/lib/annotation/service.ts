@@ -1,5 +1,25 @@
-import type { AnnotateRequest, AnnotationLink, AnnotationResult, AnnotationStyle, PassageRecord } from "@/types";
-import { generateAnnotationFromLlm } from "@/lib/annotation/llm";
+import type {
+  AnnotateRequest,
+  AnnotationLink,
+  AnnotationResult,
+  AnnotationStyle,
+  PassageRecord,
+} from "@/types";
+import {
+  AnnotationLlmTimeoutError,
+  generateAnnotationFromLlm,
+  resolveAnnotationLlmMode,
+  resolveAnnotationLlmRequestPlan,
+} from "@/lib/annotation/llm";
+import {
+  buildAnnotationCacheKey,
+  getCachedAnnotation,
+  setCachedAnnotation,
+} from "@/lib/annotation/cache";
+import {
+  recordAnnotationTelemetry,
+  type AnnotationFallbackReason,
+} from "@/lib/annotation/telemetry";
 import { loadSearchIndex } from "@/lib/search/index-store";
 import { rankLexicalCandidates } from "@/lib/search/lexical";
 
@@ -33,12 +53,17 @@ function buildFallbackAnnotationCopy(
   };
 }
 
-function buildLinks(corpus: PassageRecord[], query: string, passageId: string, passageText: string): AnnotationLink[] {
+function buildLinks(
+  corpus: PassageRecord[],
+  query: string,
+  passageId: string,
+  passageText: string,
+): AnnotationLink[] {
   const candidates = rankLexicalCandidates(corpus, `${query} ${passageText}`, 8)
-    .filter((candidate) => candidate.id !== passageId)
+    .filter(candidate => candidate.id !== passageId)
     .slice(0, 3);
 
-  return candidates.map((candidate) => ({
+  return candidates.map(candidate => ({
     passageId: candidate.id,
     label: `延伸：${formatPassageLabel(candidate)}`,
     passageText: candidate.text,
@@ -54,38 +79,103 @@ export async function createAnnotation({
   passageText,
   style = "modern",
 }: AnnotateRequest): Promise<AnnotationResult> {
+  const startedAt = Date.now();
   const index = await loadSearchIndex();
-  const sourcePassage = index.corpus.find((passage) => passage.id === passageId);
+  const sourcePassage = index.corpus.find(passage => passage.id === passageId);
   const sourceLabel = sourcePassage ? formatPassageLabel(sourcePassage) : "所选段落";
   const trimmedQuery = query.trim();
   const trimmedPassageText = passageText.trim();
-  const fallbackCopy = buildFallbackAnnotationCopy(trimmedQuery, trimmedPassageText, style, sourceLabel);
+  const mode = resolveAnnotationLlmMode();
+  const cacheKey = buildAnnotationCacheKey({
+    query: trimmedQuery,
+    passageId,
+    passageText: trimmedPassageText,
+    style,
+    mode,
+  });
+  const cachedAnnotation = getCachedAnnotation(cacheKey);
+
+  if (cachedAnnotation) {
+    recordAnnotationTelemetry({
+      mode,
+      provider: "cache",
+      elapsedMs: Date.now() - startedAt,
+      cacheHit: true,
+      fallbackHit: false,
+    });
+
+    return cachedAnnotation;
+  }
+
+  const fallbackCopy = buildFallbackAnnotationCopy(
+    trimmedQuery,
+    trimmedPassageText,
+    style,
+    sourceLabel,
+  );
+  const requestPlan = resolveAnnotationLlmRequestPlan(mode);
 
   let annotationCopy = fallbackCopy;
+  let cacheable = requestPlan.length === 0;
+  let provider: "deterministic" | "llm" = "deterministic";
+  let providerModel: string | undefined;
+  let providerSlot: "primary" | "secondary" | undefined;
+  let fallbackHit = true;
+  let fallbackReason: AnnotationFallbackReason | undefined =
+    requestPlan.length === 0 ? "not_configured" : undefined;
 
   try {
-    const llmAnnotation = await generateAnnotationFromLlm({
-      query: trimmedQuery,
-      passageLabel: sourceLabel,
-      passageText: trimmedPassageText,
-      style,
-    });
+    const llmAnnotation = await generateAnnotationFromLlm(
+      {
+        query: trimmedQuery,
+        passageLabel: sourceLabel,
+        passageText: trimmedPassageText,
+        style,
+      },
+      mode,
+    );
 
     if (llmAnnotation) {
       annotationCopy = {
         sixToMe: llmAnnotation.sixToMe,
         meToSix: llmAnnotation.meToSix,
       };
+      cacheable = true;
+      provider = "llm";
+      providerModel = llmAnnotation.model;
+      providerSlot = llmAnnotation.slot;
+      fallbackHit = requestPlan[0]?.slot !== llmAnnotation.slot;
+      fallbackReason = fallbackHit ? "slot_failover" : undefined;
     }
-  } catch {
+  } catch (error) {
     annotationCopy = fallbackCopy;
+    cacheable = false;
+    fallbackHit = true;
+    fallbackReason = error instanceof AnnotationLlmTimeoutError ? "timeout" : "provider_error";
   }
 
-  return {
+  const annotation = {
     passageId,
     passageText: trimmedPassageText,
     sixToMe: annotationCopy.sixToMe,
     meToSix: annotationCopy.meToSix,
     links: buildLinks(index.corpus, trimmedQuery, passageId, trimmedPassageText),
   };
+
+  if (cacheable) {
+    setCachedAnnotation(cacheKey, annotation);
+  }
+
+  recordAnnotationTelemetry({
+    mode,
+    provider,
+    elapsedMs: Date.now() - startedAt,
+    cacheHit: false,
+    fallbackHit,
+    ...(fallbackReason !== undefined ? { fallbackReason } : {}),
+    ...(providerModel !== undefined ? { model: providerModel } : {}),
+    ...(providerSlot !== undefined ? { slot: providerSlot } : {}),
+  });
+
+  return annotation;
 }

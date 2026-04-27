@@ -11,17 +11,33 @@ export interface AnnotationLlmOutput {
   sixToMe: string;
   meToSix: string;
   model: string;
-  slot: "primary" | "secondary";
+  slot: AnnotationLlmSlot;
 }
 
-interface AnnotationLlmSlotConfig {
-  slot: "primary" | "secondary";
+export type AnnotationLlmSlot = "primary" | "secondary";
+
+export interface AnnotationLlmSlotConfig {
+  slot: AnnotationLlmSlot;
   endpoint: string;
   apiKey: string;
   model: string;
 }
 
 export type AnnotationLlmMode = "fast" | "quality";
+
+export const DEFAULT_ANNOTATION_LLM_TIMEOUT_MS = 6_000;
+const MAX_ANNOTATION_LLM_TIMEOUT_MS = 60_000;
+
+export class AnnotationLlmTimeoutError extends Error {
+  constructor(
+    public readonly slot: AnnotationLlmSlot,
+    public readonly model: string,
+    public readonly timeoutMs: number,
+  ) {
+    super(`Annotation provider timed out for ${slot} (${model}) after ${timeoutMs}ms.`);
+    this.name = "AnnotationLlmTimeoutError";
+  }
+}
 
 const STYLE_GUIDANCE: Record<AnnotationStyle, string> = {
   academic: "语气克制、结构清晰，偏义理分析。",
@@ -52,15 +68,25 @@ function resolveChatCompletionsEndpoint(rawBaseUrl: string): string {
   return `${trimmed}/chat/completions`;
 }
 
-function resolveSlotConfig(slot: "primary" | "secondary"): AnnotationLlmSlotConfig | null {
+function resolveSlotConfig(slot: AnnotationLlmSlot): AnnotationLlmSlotConfig | null {
   const model =
     slot === "primary"
       ? firstNonEmptyValue(["LLM_MODEL_PRIMARY", "LLM_MODEL", "LLM_PROVIDER"])
-      : firstNonEmptyValue(["LLM_MODEL_SECONDARY", "LLM_MODEL_2", "LLM_PROVIDER_2", "LLM_PROVIDE_2"]);
+      : firstNonEmptyValue([
+          "LLM_MODEL_SECONDARY",
+          "LLM_MODEL_2",
+          "LLM_PROVIDER_2",
+          "LLM_PROVIDE_2",
+        ]);
   const rawBaseUrl =
     slot === "primary"
       ? firstNonEmptyValue(["LLM_BASE_URL_PRIMARY", "LLM_BASE_URL", "OPENAI_BASE_URL"])
-      : firstNonEmptyValue(["LLM_BASE_URL_SECONDARY", "LLM_BASE_URL_2", "OPENAI_BASE_URL_2", "OPENAI_BASE_URL"]);
+      : firstNonEmptyValue([
+          "LLM_BASE_URL_SECONDARY",
+          "LLM_BASE_URL_2",
+          "OPENAI_BASE_URL_2",
+          "OPENAI_BASE_URL",
+        ]);
   const apiKey =
     slot === "primary"
       ? firstNonEmptyValue(["LLM_API_KEY_PRIMARY", "LLM_API_KEY", "OPENAI_API_KEY"])
@@ -80,7 +106,7 @@ function resolveSlotConfig(slot: "primary" | "secondary"): AnnotationLlmSlotConf
 
 export function resolveAnnotationLlmConfigs(): AnnotationLlmSlotConfig[] {
   return (["primary", "secondary"] as const)
-    .map((slot) => resolveSlotConfig(slot))
+    .map(slot => resolveSlotConfig(slot))
     .filter((config): config is AnnotationLlmSlotConfig => config !== null);
 }
 
@@ -94,12 +120,34 @@ export function resolveAnnotationLlmMode(): AnnotationLlmMode {
   return "fast";
 }
 
-export function resolveAnnotationLlmRequestPlan(mode = resolveAnnotationLlmMode()): AnnotationLlmSlotConfig[] {
+export function resolveAnnotationLlmTimeoutMs(): number {
+  const rawTimeout = firstNonEmptyValue([
+    "ANNOTATION_LLM_TIMEOUT_MS",
+    "LLM_TIMEOUT_MS",
+    "TIMEOUT_MS",
+  ]);
+
+  if (!rawTimeout) {
+    return DEFAULT_ANNOTATION_LLM_TIMEOUT_MS;
+  }
+
+  const parsedTimeout = Number(rawTimeout);
+
+  if (!Number.isFinite(parsedTimeout) || parsedTimeout <= 0) {
+    return DEFAULT_ANNOTATION_LLM_TIMEOUT_MS;
+  }
+
+  return Math.min(Math.trunc(parsedTimeout), MAX_ANNOTATION_LLM_TIMEOUT_MS);
+}
+
+export function resolveAnnotationLlmRequestPlan(
+  mode = resolveAnnotationLlmMode(),
+): AnnotationLlmSlotConfig[] {
   const configs = resolveAnnotationLlmConfigs();
   const order = mode === "quality" ? ["primary", "secondary"] : ["secondary", "primary"];
 
   return order
-    .map((slot) => configs.find((config) => config.slot === slot))
+    .map(slot => configs.find(config => config.slot === slot))
     .filter((config): config is AnnotationLlmSlotConfig => config !== undefined);
 }
 
@@ -131,7 +179,7 @@ function coerceMessageContent(content: unknown): string {
   }
 
   return content
-    .map((item) => {
+    .map(item => {
       if (typeof item === "string") {
         return item;
       }
@@ -196,29 +244,46 @@ async function requestAnnotationFromSlot(
   config: AnnotationLlmSlotConfig,
   input: AnnotationLlmInput,
 ): Promise<AnnotationLlmOutput> {
-  const response = await fetch(config.endpoint, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${config.apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: config.model,
-      temperature: 0.4,
-      messages: [
-        {
-          role: "system",
-          content: "Return only a JSON object with sixToMe and meToSix.",
-        },
-        {
-          role: "user",
-          content: buildPrompt(input),
-        },
-      ],
-    }),
-  });
+  const timeoutMs = resolveAnnotationLlmTimeoutMs();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  let response: Response;
+  let raw: string;
 
-  const raw = await response.text();
+  try {
+    response = await fetch(config.endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${config.apiKey}`,
+        "Content-Type": "application/json",
+      },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model: config.model,
+        temperature: 0.4,
+        messages: [
+          {
+            role: "system",
+            content: "Return only a JSON object with sixToMe and meToSix.",
+          },
+          {
+            role: "user",
+            content: buildPrompt(input),
+          },
+        ],
+      }),
+    });
+    raw = await response.text();
+  } catch (error) {
+    if (controller.signal.aborted) {
+      throw new AnnotationLlmTimeoutError(config.slot, config.model, timeoutMs);
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+
   let parsedResponse: unknown;
 
   try {
@@ -235,11 +300,16 @@ async function requestAnnotationFromSlot(
 
   const content =
     typeof parsedResponse === "object" && parsedResponse !== null && "choices" in parsedResponse
-      ? coerceMessageContent((parsedResponse as { choices?: Array<{ message?: { content?: unknown } }> }).choices?.[0]?.message?.content)
+      ? coerceMessageContent(
+          (parsedResponse as { choices?: Array<{ message?: { content?: unknown } }> }).choices?.[0]
+            ?.message?.content,
+        )
       : "";
 
   if (!content) {
-    throw new Error(`Annotation provider returned an empty message for ${config.slot} (${config.model}).`);
+    throw new Error(
+      `Annotation provider returned an empty message for ${config.slot} (${config.model}).`,
+    );
   }
 
   return {
@@ -249,8 +319,11 @@ async function requestAnnotationFromSlot(
   };
 }
 
-export async function generateAnnotationFromLlm(input: AnnotationLlmInput): Promise<AnnotationLlmOutput | null> {
-  const configs = resolveAnnotationLlmRequestPlan();
+export async function generateAnnotationFromLlm(
+  input: AnnotationLlmInput,
+  mode = resolveAnnotationLlmMode(),
+): Promise<AnnotationLlmOutput | null> {
+  const configs = resolveAnnotationLlmRequestPlan(mode);
 
   if (configs.length === 0) {
     return null;
