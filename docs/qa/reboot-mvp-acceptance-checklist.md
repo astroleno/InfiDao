@@ -35,6 +35,9 @@ Canonical path:
 - [ ] `GET /api/health` returns `200`, `success: true`, and `data.status: "ok"`.
 - [ ] `POST /api/search` returns `200`, `success: true`, and non-empty `data` for `如何面对困境`.
 - [ ] `POST /api/annotate` returns `200`, `success: true`, and `links` for `lunyu-1-8`.
+- [ ] In dev/test, `GET /api/internal/annotation-telemetry` returns `200` and redacted annotation runtime status.
+- [ ] With canonical annotation env (`LLM_MODEL_PRIMARY/SECONDARY`, `LLM_BASE_URL_*`, `LLM_API_KEY_*`), telemetry `llm.warnings` is empty.
+- [ ] With legacy annotation env aliases, telemetry reports migration warnings and never returns API keys.
 
 ## Browser Smoke
 

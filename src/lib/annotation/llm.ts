@@ -45,9 +45,12 @@ interface AnnotationLlmSlotResolution {
 export interface AnnotationLlmSlotStatus {
   slot: AnnotationLlmSlot;
   configured: boolean;
+  canonicalConfigured: boolean;
   apiKeyConfigured: boolean;
   sources: Partial<Record<AnnotationLlmConfigField, string>>;
+  legacyAliases: Partial<Record<AnnotationLlmConfigField, string>>;
   usesLegacyAliases: boolean;
+  migrationRequired: boolean;
   model?: string;
   endpoint?: string;
 }
@@ -215,6 +218,8 @@ export function resolveAnnotationLlmRuntimeStatus(): AnnotationLlmRuntimeStatus 
   const slots = ANNOTATION_LLM_SLOTS.map(slot => {
     const resolution = resolveSlotConfigResolution(slot);
     const sourceKeys: Partial<Record<AnnotationLlmConfigField, string>> = {};
+    const legacyAliases: Partial<Record<AnnotationLlmConfigField, string>> = {};
+    const configured = resolution.config !== null;
     let usesLegacyAliases = false;
 
     for (const field of ["model", "baseUrl", "apiKey"] as const) {
@@ -226,8 +231,9 @@ export function resolveAnnotationLlmRuntimeStatus(): AnnotationLlmRuntimeStatus 
 
       sourceKeys[field] = source.key;
 
-      if (!source.canonical) {
+      if (configured && !source.canonical) {
         usesLegacyAliases = true;
+        legacyAliases[field] = source.key;
         warnings.push(
           `${slot}.${field} uses legacy env ${source.key}; migrate to ${getCanonicalEnvKey(
             slot,
@@ -239,10 +245,17 @@ export function resolveAnnotationLlmRuntimeStatus(): AnnotationLlmRuntimeStatus 
 
     const status: AnnotationLlmSlotStatus = {
       slot,
-      configured: resolution.config !== null,
+      configured,
+      canonicalConfigured:
+        configured &&
+        resolution.sources.model?.canonical === true &&
+        resolution.sources.baseUrl?.canonical === true &&
+        resolution.sources.apiKey?.canonical === true,
       apiKeyConfigured: resolution.sources.apiKey !== undefined,
       sources: sourceKeys,
+      legacyAliases,
       usesLegacyAliases,
+      migrationRequired: usesLegacyAliases,
     };
 
     const model = resolution.sources.model?.value;

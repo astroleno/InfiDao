@@ -98,12 +98,15 @@ describe("GET /api/internal/annotation-telemetry", () => {
             expect.objectContaining({
               slot: "primary",
               configured: true,
+              canonicalConfigured: true,
               apiKeyConfigured: true,
               sources: {
                 model: "LLM_MODEL_PRIMARY",
                 baseUrl: "LLM_BASE_URL_PRIMARY",
                 apiKey: "LLM_API_KEY_PRIMARY",
               },
+              legacyAliases: {},
+              migrationRequired: false,
             }),
             expect.objectContaining({
               slot: "secondary",
@@ -114,6 +117,56 @@ describe("GET /api/internal/annotation-telemetry", () => {
       },
     });
     expect(JSON.stringify(payload)).not.toContain("sk-primary");
+  });
+
+  it("surfaces migration warnings when legacy aliases are still in use", async () => {
+    process.env.LLM_PROVIDER = "gpt-5.4-nano";
+    process.env.OPENAI_BASE_URL = "https://yunwu.ai/v1";
+    process.env.OPENAI_API_KEY = "sk-primary";
+    process.env.LLM_PROVIDE_2 = "gemini-3.1-flash-lite-preview";
+    process.env.OPENAI_API_KEY_2 = "sk-secondary";
+
+    const response = await GET();
+    const payload = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(payload).toMatchObject({
+      success: true,
+      data: {
+        llm: {
+          warnings: expect.arrayContaining([
+            "primary.model uses legacy env LLM_PROVIDER; migrate to LLM_MODEL_PRIMARY.",
+            "secondary.model uses legacy env LLM_PROVIDE_2; migrate to LLM_MODEL_SECONDARY.",
+          ]),
+          slots: [
+            expect.objectContaining({
+              slot: "primary",
+              configured: true,
+              canonicalConfigured: false,
+              migrationRequired: true,
+              legacyAliases: {
+                model: "LLM_PROVIDER",
+                baseUrl: "OPENAI_BASE_URL",
+                apiKey: "OPENAI_API_KEY",
+              },
+            }),
+            expect.objectContaining({
+              slot: "secondary",
+              configured: true,
+              canonicalConfigured: false,
+              migrationRequired: true,
+              legacyAliases: {
+                model: "LLM_PROVIDE_2",
+                baseUrl: "OPENAI_BASE_URL",
+                apiKey: "OPENAI_API_KEY_2",
+              },
+            }),
+          ],
+        },
+      },
+    });
+    expect(JSON.stringify(payload)).not.toContain("sk-primary");
+    expect(JSON.stringify(payload)).not.toContain("sk-secondary");
   });
 
   it("is disabled by default in production", async () => {

@@ -98,6 +98,7 @@ describe("annotation llm runtime", () => {
         {
           slot: "primary",
           configured: true,
+          canonicalConfigured: true,
           apiKeyConfigured: true,
           model: "gpt-5.4-nano",
           endpoint: "https://yunwu.ai/v1/chat/completions",
@@ -106,11 +107,14 @@ describe("annotation llm runtime", () => {
             baseUrl: "LLM_BASE_URL_PRIMARY",
             apiKey: "LLM_API_KEY_PRIMARY",
           },
+          legacyAliases: {},
           usesLegacyAliases: false,
+          migrationRequired: false,
         },
         {
           slot: "secondary",
           configured: true,
+          canonicalConfigured: true,
           apiKeyConfigured: true,
           model: "gemini-3.1-flash-lite-preview",
           endpoint: "https://yunwu.ai/v1/chat/completions",
@@ -119,7 +123,9 @@ describe("annotation llm runtime", () => {
             baseUrl: "LLM_BASE_URL_SECONDARY",
             apiKey: "LLM_API_KEY_SECONDARY",
           },
+          legacyAliases: {},
           usesLegacyAliases: false,
+          migrationRequired: false,
         },
       ],
     });
@@ -150,6 +156,32 @@ describe("annotation llm runtime", () => {
     ]);
   });
 
+  it("prefers canonical slot env over legacy aliases when both are present", () => {
+    process.env.LLM_MODEL_PRIMARY = "canonical-primary";
+    process.env.LLM_BASE_URL_PRIMARY = "https://canonical.example/v1";
+    process.env.LLM_API_KEY_PRIMARY = "sk-canonical";
+    process.env.LLM_PROVIDER = "legacy-primary";
+    process.env.OPENAI_BASE_URL = "https://legacy.example/v1";
+    process.env.OPENAI_API_KEY = "sk-legacy";
+
+    expect(resolveAnnotationLlmConfigs()[0]).toEqual({
+      slot: "primary",
+      endpoint: "https://canonical.example/v1/chat/completions",
+      apiKey: "sk-canonical",
+      model: "canonical-primary",
+    });
+    expect(resolveAnnotationLlmRuntimeStatus().slots[0]).toEqual(
+      expect.objectContaining({
+        slot: "primary",
+        canonicalConfigured: true,
+        migrationRequired: false,
+        usesLegacyAliases: false,
+        legacyAliases: {},
+      }),
+    );
+    expect(resolveAnnotationLlmRuntimeStatus().warnings).toEqual([]);
+  });
+
   it("marks backward-compatible aliases as legacy runtime config", () => {
     process.env.LLM_PROVIDER = "gpt-5.4-nano";
     process.env.OPENAI_BASE_URL = "https://yunwu.ai/v1";
@@ -163,8 +195,15 @@ describe("annotation llm runtime", () => {
       expect.objectContaining({
         slot: "primary",
         configured: true,
+        canonicalConfigured: false,
+        migrationRequired: true,
         usesLegacyAliases: true,
         sources: {
+          model: "LLM_PROVIDER",
+          baseUrl: "OPENAI_BASE_URL",
+          apiKey: "OPENAI_API_KEY",
+        },
+        legacyAliases: {
           model: "LLM_PROVIDER",
           baseUrl: "OPENAI_BASE_URL",
           apiKey: "OPENAI_API_KEY",
@@ -173,8 +212,15 @@ describe("annotation llm runtime", () => {
       expect.objectContaining({
         slot: "secondary",
         configured: true,
+        canonicalConfigured: false,
+        migrationRequired: true,
         usesLegacyAliases: true,
         sources: {
+          model: "LLM_PROVIDE_2",
+          baseUrl: "OPENAI_BASE_URL",
+          apiKey: "OPENAI_API_KEY_2",
+        },
+        legacyAliases: {
           model: "LLM_PROVIDE_2",
           baseUrl: "OPENAI_BASE_URL",
           apiKey: "OPENAI_API_KEY_2",
