@@ -54,5 +54,12 @@
     "requiredTop3Ids": ["daxue-1-1"],
     "bannedTop3Ids": ["lunyu-1-5"],
     "minResults": 1
+  },
+  {
+    "query": "面对焦虑如何安定",
+    "expectedTop1Ids": ["zhongyong-1-2", "zhongyong-1-3", "lunyu-1-1"],
+    "requiredTop3Ids": ["zhongyong-1-2", "zhongyong-1-3"],
+    "bannedTop3Ids": ["daxue-2-2"],
+    "minResults": 2
   }
 ]
