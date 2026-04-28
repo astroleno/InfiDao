@@ -38,6 +38,10 @@ function buildAtmosphere(query: string, results: SearchResult[]) {
   };
 }
 
+function buildVisitedPassageIds(stack: WikiStack, nextPassageId: string): string[] {
+  return [...new Set([...stack.map(node => node.annotation.passageId), nextPassageId])];
+}
+
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -118,6 +122,7 @@ export default function HomePage() {
           passageId,
           passageText,
           style: "modern",
+          visitedPassageIds: [passageId],
         }),
       });
 
@@ -161,6 +166,7 @@ export default function HomePage() {
             passageId: link.passageId,
             passageText: link.passageText,
             style: "modern",
+            visitedPassageIds: buildVisitedPassageIds(wikiStack, link.passageId),
           }),
         });
 

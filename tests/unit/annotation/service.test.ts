@@ -92,6 +92,21 @@ describe("createAnnotation", () => {
     expect(annotation.links.some(link => link.passageId === "lunyu-1-4")).toBe(true);
   });
 
+  it("excludes already visited passages from exploration links", async () => {
+    const annotation = await createAnnotation({
+      query: "什么是君子之道",
+      passageId: "daxue-2-1",
+      passageText: "所谓诚其意者，毋自欺也。",
+      style: "modern",
+      visitedPassageIds: ["daxue-1-1", "daxue-2-1"],
+    });
+
+    const linkedPassageIds = annotation.links.map(link => link.passageId);
+
+    expect(linkedPassageIds).not.toContain("daxue-1-1");
+    expect(linkedPassageIds).not.toContain("daxue-2-1");
+  });
+
   it("uses the configured llm copy when a provider returns valid reboot json", async () => {
     process.env.LLM_MODEL_PRIMARY = "gpt-5.4-nano";
     process.env.LLM_BASE_URL_PRIMARY = "https://yunwu.ai/v1";

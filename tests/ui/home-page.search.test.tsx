@@ -158,6 +158,7 @@ describe("HomePage search flow", () => {
             passageId: "lunyu-1-8",
             passageText: "君子不重则不威，学则不固。主忠信，无友不如己者，过则勿惮改。",
             style: "modern",
+            visitedPassageIds: ["lunyu-1-8"],
           }),
         }),
       );
@@ -246,6 +247,7 @@ describe("HomePage search flow", () => {
             passageId: "lunyu-1-4",
             passageText: "吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？",
             style: "modern",
+            visitedPassageIds: ["lunyu-1-8", "lunyu-1-4"],
           }),
         }),
       );

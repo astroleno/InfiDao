@@ -163,6 +163,51 @@ describe("POST /api/annotate", () => {
     });
   });
 
+  it("accepts visited passages and does not return them as exploration links", async () => {
+    const response = await POST(
+      createRequest({
+        query: "什么是君子之道",
+        passageId: "daxue-2-1",
+        passageText: "所谓诚其意者，毋自欺也。",
+        style: "modern",
+        visitedPassageIds: ["daxue-1-1", "daxue-2-1"],
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    const payload = await response.json();
+
+    expect(payload).toMatchObject({
+      success: true,
+      data: {
+        passageId: "daxue-2-1",
+      },
+    });
+    expect(payload.data.links.map((link: { passageId: string }) => link.passageId)).not.toEqual(
+      expect.arrayContaining(["daxue-1-1", "daxue-2-1"]),
+    );
+  });
+
+  it("rejects too many visited passages", async () => {
+    const response = await POST(
+      createRequest({
+        query: "什么是君子之道",
+        passageId: "daxue-2-1",
+        passageText: "所谓诚其意者，毋自欺也。",
+        style: "modern",
+        visitedPassageIds: Array.from({ length: 21 }, (_, index) => `passage-${index}`),
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      success: false,
+      error: expect.objectContaining({
+        code: "VALIDATION_ERROR",
+      }),
+    });
+  });
+
   it("rate limits repeated annotate requests from one client", async () => {
     for (let index = 0; index < 20; index += 1) {
       const response = await POST(

@@ -63,6 +63,36 @@ describe("annotation cache", () => {
     expect(qualityKey).not.toBe(fastKey);
   });
 
+  it("keys path-aware links by normalized visited passages", () => {
+    const noVisitedKey = buildAnnotationCacheKey({
+      query: "如何面对困境",
+      passageId: "lunyu-1-1",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern",
+      mode: "fast",
+    });
+    const visitedKey = buildAnnotationCacheKey({
+      query: "如何面对困境",
+      passageId: "lunyu-1-1",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern",
+      mode: "fast",
+      visitedPassageIds: [" lunyu-1-2 ", "lunyu-1-8", "lunyu-1-2"],
+    });
+    const reorderedVisitedKey = buildAnnotationCacheKey({
+      query: "如何面对困境",
+      passageId: "lunyu-1-1",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern",
+      mode: "fast",
+      visitedPassageIds: ["lunyu-1-8", "lunyu-1-2"],
+    });
+
+    expect(visitedKey).not.toBe(noVisitedKey);
+    expect(visitedKey).toBe(reorderedVisitedKey);
+    expect(visitedKey).toContain("lunyu-1-8");
+  });
+
   it("returns defensive copies and expires old entries", () => {
     const key = "annotation:test";
 

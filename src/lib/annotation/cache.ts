@@ -10,6 +10,7 @@ interface AnnotationCacheKeyInput {
   passageText: string;
   style: AnnotationStyle;
   mode: AnnotationLlmMode;
+  visitedPassageIds?: string[];
 }
 
 interface AnnotationCacheEntry {
@@ -21,6 +22,30 @@ const annotationCache = new Map<string, AnnotationCacheEntry>();
 
 function normalizeCacheText(value: string): string {
   return value.trim().replace(/\s+/gu, " ");
+}
+
+function normalizeCacheIds(values: string[] = []): string[] {
+  const uniqueValues = new Set<string>();
+
+  for (const value of values) {
+    const normalizedValue = normalizeCacheText(value);
+
+    if (normalizedValue) {
+      uniqueValues.add(normalizedValue);
+    }
+  }
+
+  return [...uniqueValues].sort((left, right) => {
+    if (left < right) {
+      return -1;
+    }
+
+    if (left > right) {
+      return 1;
+    }
+
+    return 0;
+  });
 }
 
 function resolvePositiveIntegerEnv(key: string, fallback: number): number {
@@ -59,12 +84,13 @@ export function resolveAnnotationCacheMaxEntries(): number {
 
 export function buildAnnotationCacheKey(input: AnnotationCacheKeyInput): string {
   return JSON.stringify({
-    version: 1,
+    version: 2,
     mode: input.mode,
     style: input.style,
     passageId: normalizeCacheText(input.passageId),
     query: normalizeCacheText(input.query),
     passageText: normalizeCacheText(input.passageText),
+    visitedPassageIds: normalizeCacheIds(input.visitedPassageIds),
   });
 }
 

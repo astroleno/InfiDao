@@ -53,6 +53,7 @@ export interface AnnotateRequest {
   passageId: string;
   passageText: string;
   style?: AnnotationStyle;
+  visitedPassageIds?: string[];
 }
 
 export interface AnnotationLink {

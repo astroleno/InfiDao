@@ -15,6 +15,7 @@ const AnnotateRequestSchema = z
     passageId: z.string().trim().min(1),
     passageText: z.string().trim().min(1).max(2000),
     style: z.enum(["academic", "classical", "modern", "poetic"]).optional(),
+    visitedPassageIds: z.array(z.string().trim().min(1).max(80)).max(20).optional(),
   })
   .strict();
 
@@ -104,6 +105,9 @@ export async function POST(request: Request): Promise<Response> {
       passageId: payload.passageId,
       passageText: payload.passageText,
       ...(payload.style !== undefined ? { style: payload.style } : {}),
+      ...(payload.visitedPassageIds !== undefined
+        ? { visitedPassageIds: payload.visitedPassageIds }
+        : {}),
     });
 
     return buildSuccessResponse(annotation);

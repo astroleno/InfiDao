@@ -58,9 +58,12 @@ function buildLinks(
   query: string,
   passageId: string,
   passageText: string,
+  visitedPassageIds: string[],
 ): AnnotationLink[] {
-  const candidates = rankLexicalCandidates(corpus, `${query} ${passageText}`, 8)
-    .filter(candidate => candidate.id !== passageId)
+  const excludedPassageIds = new Set([...visitedPassageIds, passageId]);
+  const candidateLimit = Math.min(corpus.length, Math.max(12, excludedPassageIds.size + 6));
+  const candidates = rankLexicalCandidates(corpus, `${query} ${passageText}`, candidateLimit)
+    .filter(candidate => !excludedPassageIds.has(candidate.id))
     .slice(0, 3);
 
   return candidates.map(candidate => ({
@@ -73,11 +76,36 @@ function buildLinks(
   }));
 }
 
+function normalizeVisitedPassageIds(passageId: string, visitedPassageIds: string[] = []): string[] {
+  const normalizedIds = new Set<string>();
+
+  for (const id of [...visitedPassageIds, passageId]) {
+    const normalizedId = id.trim();
+
+    if (normalizedId) {
+      normalizedIds.add(normalizedId);
+    }
+  }
+
+  return [...normalizedIds].sort((left, right) => {
+    if (left < right) {
+      return -1;
+    }
+
+    if (left > right) {
+      return 1;
+    }
+
+    return 0;
+  });
+}
+
 export async function createAnnotation({
   query,
   passageId,
   passageText,
   style = "modern",
+  visitedPassageIds = [],
 }: AnnotateRequest): Promise<AnnotationResult> {
   const startedAt = Date.now();
   const index = await loadSearchIndex();
@@ -85,6 +113,7 @@ export async function createAnnotation({
   const sourceLabel = sourcePassage ? formatPassageLabel(sourcePassage) : "所选段落";
   const trimmedQuery = query.trim();
   const trimmedPassageText = passageText.trim();
+  const normalizedVisitedPassageIds = normalizeVisitedPassageIds(passageId, visitedPassageIds);
   const mode = resolveAnnotationLlmMode();
   const cacheKey = buildAnnotationCacheKey({
     query: trimmedQuery,
@@ -92,6 +121,7 @@ export async function createAnnotation({
     passageText: trimmedPassageText,
     style,
     mode,
+    visitedPassageIds: normalizedVisitedPassageIds,
   });
   const cachedAnnotation = getCachedAnnotation(cacheKey);
 
@@ -159,7 +189,13 @@ export async function createAnnotation({
     passageText: trimmedPassageText,
     sixToMe: annotationCopy.sixToMe,
     meToSix: annotationCopy.meToSix,
-    links: buildLinks(index.corpus, trimmedQuery, passageId, trimmedPassageText),
+    links: buildLinks(
+      index.corpus,
+      trimmedQuery,
+      passageId,
+      trimmedPassageText,
+      normalizedVisitedPassageIds,
+    ),
   };
 
   if (cacheable) {
