@@ -340,6 +340,42 @@ describe("annotation llm runtime", () => {
     );
   });
 
+  it("bounds provider generation length for latency control", async () => {
+    process.env.LLM_MODEL_PRIMARY = "gpt-5.4-nano";
+    process.env.LLM_BASE_URL_PRIMARY = "https://yunwu.ai/v1";
+    process.env.LLM_API_KEY_PRIMARY = "sk-primary";
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      text: async () =>
+        JSON.stringify({
+          choices: [
+            {
+              message: {
+                content:
+                  '{"sixToMe":"限定输出长度。","meToSix":"减少慢请求拖到超时。"}',
+              },
+            },
+          ],
+        }),
+    }) as jest.Mock;
+
+    await generateAnnotationFromLlm({
+      query: "如何面对困境",
+      passageLabel: "论语 学而 第 1 节",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern",
+    });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      "https://yunwu.ai/v1/chat/completions",
+      expect.objectContaining({
+        body: expect.stringContaining('"max_tokens":320'),
+      }),
+    );
+  });
+
   it("falls back to the secondary slot in quality mode when the primary request fails", async () => {
     process.env.ANNOTATION_LLM_MODE = "quality";
     process.env.LLM_MODEL_PRIMARY = "gpt-5.4-nano";

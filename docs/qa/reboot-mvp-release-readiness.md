@@ -10,7 +10,7 @@ Use these variables for annotation LLM runtime configuration:
 
 ```bash
 ANNOTATION_LLM_MODE=fast
-ANNOTATION_LLM_TIMEOUT_MS=6000
+ANNOTATION_LLM_TIMEOUT_MS=5000
 ANNOTATION_CACHE_TTL_MS=600000
 ANNOTATION_CACHE_MAX_ENTRIES=100
 ANNOTATION_TELEMETRY=on
@@ -46,7 +46,7 @@ Migration rule: if any legacy alias is still selected by the annotation runtime,
 ## Production Defaults
 
 - `ANNOTATION_LLM_MODE=fast`: prefer the secondary fast slot, then fail over to primary.
-- `ANNOTATION_LLM_TIMEOUT_MS=6000`: one shared deadline across all provider slots for a single annotation generation.
+- `ANNOTATION_LLM_TIMEOUT_MS=5000`: one shared deadline across all provider slots for a single fast annotation generation; timeout fallback is intentionally polished for provider tail latency.
 - `ANNOTATION_CACHE_TTL_MS=600000`: cache successful deterministic or LLM annotation results for 10 minutes.
 - `ANNOTATION_CACHE_MAX_ENTRIES=100`: keep the in-process annotation cache bounded.
 - Annotate body ceiling is `10_240` bytes, aligned with `passageText.max(2000)` for CJK input.

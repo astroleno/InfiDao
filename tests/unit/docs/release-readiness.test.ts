@@ -23,7 +23,7 @@ describe("reboot MVP release readiness", () => {
     const document = readFileSync(releaseReadinessPath, "utf8");
 
     expect(document).toContain("ANNOTATION_LLM_MODE=fast");
-    expect(document).toContain("ANNOTATION_LLM_TIMEOUT_MS=6000");
+    expect(document).toContain("ANNOTATION_LLM_TIMEOUT_MS=5000");
     expect(document).toContain("ANNOTATION_CACHE_TTL_MS=600000");
     expect(document).toContain("ANNOTATION_CACHE_MAX_ENTRIES=100");
     expect(document).toContain("10_240");

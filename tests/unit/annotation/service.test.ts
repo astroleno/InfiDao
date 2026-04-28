@@ -79,6 +79,20 @@ describe("createAnnotation", () => {
     expect(annotation.links.map(link => link.passageId)).not.toContain("lunyu-1-7");
   });
 
+  it("uses intent-aware deterministic copy when no provider is configured", async () => {
+    const annotation = await createAnnotation({
+      query: "被别人误解怎么办",
+      passageId: "lunyu-1-1",
+      passageText: "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？",
+      style: "modern",
+    });
+
+    expect(annotation.sixToMe).toContain("被别人误解怎么办");
+    expect(annotation.sixToMe).toContain("不被外界评价牵走");
+    expect(annotation.meToSix).toContain("心理边界");
+    expect(annotation.sixToMe).not.toContain("这句话先把注意力拉回具体行动");
+  });
+
   it("keeps unknown selected passages annotatable while returning known corpus links", async () => {
     const annotation = await createAnnotation({
       query: "如何自省",

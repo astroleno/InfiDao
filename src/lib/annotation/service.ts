@@ -30,6 +30,66 @@ const STYLE_OPENERS: Record<AnnotationStyle, string> = {
   poetic: "若作一束回光看",
 };
 
+interface FallbackTheme {
+  signals: RegExp;
+  center: string;
+  action: string;
+  reframe: string;
+}
+
+const DEFAULT_FALLBACK_THEME: FallbackTheme = {
+  signals: /困境|挫折|逆境|艰难|压力/u,
+  center: "困境中仍能修正自己的能力",
+  action: "稳住基本原则，持续学习，发现偏差时立刻调整，不让压力把自己推向虚浮",
+  reframe: "经典从品德训诫变成了逆境中的行动框架",
+};
+
+const FALLBACK_THEMES: FallbackTheme[] = [
+  {
+    signals: /焦虑|安定|安心|不安|烦躁|心乱|情绪|喜怒哀乐|中和|不愠/u,
+    center: "情绪未发时的清明",
+    action: "先让念头停一拍，再决定如何表达与行动，不把一时的波动误认为全部的自己",
+    reframe: "经典不再只是讲中庸之理，而像一套情绪调节的方法",
+  },
+  {
+    signals: /误解|误会|不理解|不知|不愠/u,
+    center: "不被外界评价牵走的定力",
+    action: "把力气收回到持续学习、修正行为和守住本心上，不急着用辩白证明自己",
+    reframe: "经典从修身训诫变成了处理误解时的心理边界",
+  },
+  {
+    signals: /家庭|责任|父母|孝|弟|悌|家/u,
+    center: "身边关系里的具体责任",
+    action: "先把家庭中的分寸、承诺与照料做实，再谈更远处的担当",
+    reframe: "经典从家族伦理变成了现代生活里的责任排序",
+  },
+  {
+    signals: /友谊|朋友|友|交|信/u,
+    center: "言行一致的信任",
+    action: "少消耗在热闹关系里，把承诺、真诚和可托付放在友谊的中心",
+    reframe: "经典从交友原则变成了筛选高质量关系的方法",
+  },
+  {
+    signals: /学习|实践|时习|学|习/u,
+    center: "把所学放回行动",
+    action: "通过反复练习和真实反馈，让知识从理解变成可用的习惯",
+    reframe: "经典从读书劝勉变成了学习闭环",
+  },
+  {
+    signals: /自省|修身|改过|迁善|三省|过|改|善/u,
+    center: "敢于修正自己的勇气",
+    action: "把错误当成反馈，尽快回到忠信、反省和改过的行动上",
+    reframe: "经典从道德要求变成了自我迭代的方法",
+  },
+  {
+    signals: /中庸|平衡|中和|时中|过犹不及/u,
+    center: "不过度也不失守的动态平衡",
+    action: "先辨清局势的分寸，再在原则和弹性之间找到可持续的位置",
+    reframe: "经典从折中之说变成了复杂处境中的决策能力",
+  },
+  DEFAULT_FALLBACK_THEME,
+];
+
 function compactText(text: string, maxLength: number): string {
   const normalized = text.trim().replace(/\s+/gu, " ");
   return normalized.length > maxLength ? `${normalized.slice(0, maxLength)}...` : normalized;
@@ -39,6 +99,19 @@ function formatPassageLabel(passage: PassageRecord): string {
   return `${passage.source} ${passage.chapter} 第 ${passage.section} 节`;
 }
 
+function selectFallbackTheme(query: string, passageText: string): FallbackTheme {
+  const queryTheme = FALLBACK_THEMES.find(candidate => candidate.signals.test(query));
+
+  if (queryTheme) {
+    return queryTheme;
+  }
+
+  return (
+    FALLBACK_THEMES.find(candidate => candidate.signals.test(`${query} ${passageText}`)) ??
+    DEFAULT_FALLBACK_THEME
+  );
+}
+
 function buildFallbackAnnotationCopy(
   query: string,
   passageText: string,
@@ -46,10 +119,12 @@ function buildFallbackAnnotationCopy(
   sourceLabel: string,
 ): Pick<AnnotationResult, "sixToMe" | "meToSix"> {
   const opener = STYLE_OPENERS[style];
+  const theme = selectFallbackTheme(query, passageText);
+  const quotedPassage = compactText(passageText, 42);
 
   return {
-    sixToMe: `${opener}，${sourceLabel} 以「${passageText}」回应“${query}”。这句话先把注意力拉回具体行动：看见关系中的责任、分寸与可修之处，再决定下一步怎么做。`,
-    meToSix: `从“${query}”反观这段经典，你不是在寻找一句结论，而是在给「${compactText(passageText, 32)}」补上一种当代处境。你的问题让原文从训诫变成可实践的自我校准。`,
+    sixToMe: `${opener}，${sourceLabel} 把“${query}”拉回${theme.center}。原文「${quotedPassage}」提醒你：${theme.action}。`,
+    meToSix: `从“${query}”反观这段经典，${theme.reframe}。你不是在寻找一句固定结论，而是在让「${compactText(passageText, 30)}」进入当下处境，成为下一步行动的校准。`,
   };
 }
 

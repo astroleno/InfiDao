@@ -62,7 +62,7 @@ export interface AnnotationLlmRuntimeStatus {
   warnings: string[];
 }
 
-export const DEFAULT_ANNOTATION_LLM_TIMEOUT_MS = 6_000;
+export const DEFAULT_ANNOTATION_LLM_TIMEOUT_MS = 5_000;
 const MAX_ANNOTATION_LLM_TIMEOUT_MS = 60_000;
 const ANNOTATION_LLM_SLOTS = ["primary", "secondary"] as const;
 const SLOT_ENV_CANDIDATES: Record<
@@ -431,6 +431,7 @@ async function requestAnnotationFromSlot(
       body: JSON.stringify({
         model: config.model,
         temperature: 0.4,
+        max_tokens: 320,
         messages: [
           {
             role: "system",
