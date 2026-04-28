@@ -31,6 +31,15 @@ describe("reboot MVP release readiness", () => {
     expect(document).toContain("production must return `404`");
   });
 
+  it("documents the ci gate and production smoke command", () => {
+    const document = readFileSync(releaseReadinessPath, "utf8");
+
+    expect(document).toContain(".github/workflows/reboot-mvp-ci.yml");
+    expect(document).toContain("npm run smoke:release");
+    expect(document).toContain("top result `lunyu-1-8`");
+    expect(document).toContain("`GET /api/embed` -> `410 LEGACY_EMBED_DISABLED`");
+  });
+
   it("covers the release smoke matrix requested for Phase 6.5", () => {
     const document = readFileSync(releaseReadinessPath, "utf8");
 

@@ -29,6 +29,7 @@ Canonical path:
 - [ ] `npm run type-check`
 - [ ] `npm run lint`
 - [ ] `npm run test -- --runInBand`
+- [ ] `npm run smoke:release` against a production build or deployed URL.
 - [ ] Complete `docs/qa/reboot-mvp-release-readiness.md`.
 
 ## HTTP Smoke

@@ -1,0 +1,58 @@
+name: Reboot MVP CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SEARCH_EMBEDDING_BACKEND: local
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate search artifacts
+        run: npm run generate-search-artifacts
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test -- --runInBand
+
+      - name: Build
+        run: npm run build
+
+      - name: Prepare standalone data files
+        run: |
+          mkdir -p .next/standalone/data
+          cp -R data/. .next/standalone/data/
+
+      - name: Production smoke
+        env:
+          SMOKE_BASE_URL: http://127.0.0.1:3001
+        run: |
+          PORT=3001 HOSTNAME=127.0.0.1 node .next/standalone/server.js > /tmp/infidao-release-smoke.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true; wait "$server_pid" 2>/dev/null || true' EXIT
+          npm run smoke:release || {
+            cat /tmp/infidao-release-smoke.log || true
+            exit 1
+          }

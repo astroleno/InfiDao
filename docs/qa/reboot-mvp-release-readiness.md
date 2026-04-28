@@ -4,6 +4,8 @@ Scope: release prep for the active reboot MVP path after Phase 6.4.
 
 This document freezes deployment-facing defaults, canonical environment naming, and the final smoke matrix. It does not add new product behavior.
 
+CI gate: `.github/workflows/reboot-mvp-ci.yml` runs artifact generation, type-check, lint, tests, build, and production smoke on pull requests and pushes to `main`.
+
 ## Canonical Annotation Env
 
 Use these variables for annotation LLM runtime configuration:
@@ -69,6 +71,25 @@ Expected artifact generation line:
 ```text
 Wrote 20 embeddings
 ```
+
+## Production Smoke Command
+
+Use the production smoke script against a deployed release URL or a local standalone production server:
+
+```bash
+mkdir -p .next/standalone/data
+cp -R data/. .next/standalone/data/
+PORT=3001 HOSTNAME=127.0.0.1 node .next/standalone/server.js
+SMOKE_BASE_URL=http://127.0.0.1:3001 npm run smoke:release
+```
+
+The script waits for `/api/health`, then verifies:
+
+- `GET /api/health` -> `200`
+- `POST /api/search` -> `200`, non-empty results, top result `lunyu-1-8`
+- `POST /api/annotate` -> `200`, annotation payload with links
+- `GET /api/internal/annotation-telemetry` -> production `404`
+- `GET /api/embed` -> `410 LEGACY_EMBED_DISABLED`
 
 ## Release Smoke Matrix
 

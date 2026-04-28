@@ -25,6 +25,7 @@
     "cache:clear": "node scripts/clear-cache.js",
     "health-check": "node scripts/health-check.js",
     "generate-search-artifacts": "node scripts/generate-search-artifacts.mjs",
+    "smoke:release": "node scripts/release-smoke.mjs",
     "dev:iw": "npm --prefix web/iw-clone run dev",
     "mock:iw": "npm --prefix web/iw-clone run mock",
     "dev:iw:all": "npm --prefix web/iw-clone run dev:all",
