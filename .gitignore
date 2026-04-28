@@ -39,3 +39,14 @@ coverage
 test-results
 playwright-report
 playwright/.cache
+
+# TypeScript incremental build output
+*.tsbuildinfo
+
+# Local scratch artifacts
+.tmp/
+
+# Local reference material not intended for PRs
+docs/simon-rogers-adjustment-guide.md
+ref/infidao---six-classics-annotate-me/
+ref/lyric-scroll-loop/
