@@ -1,0 +1,16 @@
+{
+  "version": "empty-fixture-v1",
+  "defaultCollection": "test",
+  "files": [
+    {
+      "path": "tests/fixtures/empty-corpus.jsonl",
+      "collection": "test"
+    }
+  ],
+  "works": {},
+  "embeddingArtifact": {
+    "path": "data/embeddings.json",
+    "model": "infidao-local-concept-v1",
+    "dimension": 3
+  }
+}

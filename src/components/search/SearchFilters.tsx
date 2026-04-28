@@ -1,9 +1,13 @@
-import { useState } from 'react';
-import { SearchOptions } from '@/types';
+import { useEffect, useState } from 'react';
+
+interface SearchFilterValue {
+  book?: string[];
+  chapter?: string[];
+}
 
 interface SearchFiltersProps {
-  filters: SearchOptions['filters'];
-  onChange: (filters: SearchOptions['filters']) => void;
+  filters?: SearchFilterValue;
+  onChange: (filters: SearchFilterValue) => void;
   onClear: () => void;
 }
 
@@ -30,40 +34,49 @@ const POPULAR_CHAPTERS = [
 
 export function SearchFilters({ filters, onChange, onClear }: SearchFiltersProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [localFilters, setLocalFilters] = useState(filters);
+  const [localFilters, setLocalFilters] = useState<SearchFilterValue>(filters ?? {});
+
+  useEffect(() => {
+    setLocalFilters(filters ?? {});
+  }, [filters]);
+
+  const syncFilters = (nextFilters: SearchFilterValue) => {
+    const normalizedFilters: SearchFilterValue = {
+      ...(nextFilters.book?.length ? { book: nextFilters.book } : {}),
+      ...(nextFilters.chapter?.length ? { chapter: nextFilters.chapter } : {}),
+    };
+
+    setLocalFilters(normalizedFilters);
+    onChange(normalizedFilters);
+  };
 
   const handleBookToggle = (bookId: string) => {
-    const currentBooks = localFilters.book || [];
+    const currentBooks = localFilters.book ?? [];
     const newBooks = currentBooks.includes(bookId)
       ? currentBooks.filter(id => id !== bookId)
       : [...currentBooks, bookId];
 
-    const newFilters = {
+    syncFilters({
       ...localFilters,
-      book: newBooks.length > 0 ? newBooks : undefined
-    };
-
-    setLocalFilters(newFilters);
-    onChange(newFilters);
+      book: newBooks,
+    });
   };
 
   const handleChapterToggle = (book: string, chapter: string) => {
-    const currentChapters = localFilters.chapter || [];
+    const currentChapters = localFilters.chapter ?? [];
     const chapterKey = `${book}:${chapter}`;
     const newChapters = currentChapters.includes(chapterKey)
       ? currentChapters.filter(c => c !== chapterKey)
       : [...currentChapters, chapterKey];
 
-    const newFilters = {
+    syncFilters({
       ...localFilters,
-      chapter: newChapters.length > 0 ? newChapters : undefined
-    };
-
-    setLocalFilters(newFilters);
-    onChange(newFilters);
+      chapter: newChapters,
+    });
   };
 
-  const hasActiveFilters = !!(localFilters.book?.length || localFilters.chapter?.length);
+  const selectedFilterCount = (localFilters.book?.length ?? 0) + (localFilters.chapter?.length ?? 0);
+  const hasActiveFilters = selectedFilterCount > 0;
 
   return (
     <div className="search-filters">
@@ -79,7 +92,7 @@ export function SearchFilters({ filters, onChange, onClear }: SearchFiltersProps
           搜索筛选
           {hasActiveFilters && (
             <span className="ml-2 px-2 py-0.5 bg-primary-100 text-primary-700 text-xs rounded-full">
-              {(localFilters.book?.length || 0) + (localFilters.chapter?.length || 0)}
+              {selectedFilterCount}
             </span>
           )}
           <svg
@@ -161,25 +174,14 @@ export function SearchFilters({ filters, onChange, onClear }: SearchFiltersProps
             <div className="pt-4 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-600">
-                  已选择 {hasActiveFilters} 个筛选条件
+                  已选择 {selectedFilterCount} 个筛选条件
                 </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => {
-                      const allBooks = CLASSIC_BOOKS.map(book => book.id);
-                      handleBookToggle(allBooks[0]); // This would need to be adapted
-                    }}
-                    className="text-sm text-primary-600 hover:text-primary-800"
-                  >
-                    全选
-                  </button>
-                  <button
-                    onClick={onClear}
-                    className="text-sm text-red-600 hover:text-red-800"
-                  >
-                    清除
-                  </button>
-                </div>
+                <button
+                  onClick={onClear}
+                  className="text-sm text-red-600 hover:text-red-800"
+                >
+                  清除
+                </button>
               </div>
             </div>
           )}

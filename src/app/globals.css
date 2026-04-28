@@ -8,33 +8,33 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    --background: 24 18% 8%;
+    --foreground: 38 25% 88%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card: 24 16% 11%;
+    --card-foreground: 38 25% 88%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover: 24 16% 11%;
+    --popover-foreground: 38 25% 88%;
 
-    --primary: 0 0% 0%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 37 33% 60%;
+    --primary-foreground: 24 18% 10%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 24 13% 18%;
+    --secondary-foreground: 38 18% 78%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 24 12% 16%;
+    --muted-foreground: 28 12% 60%;
 
-    --accent: 0 0% 0%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 37 33% 60%;
+    --accent-foreground: 24 18% 10%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 0%;
+    --border: 24 12% 24%;
+    --input: 24 12% 24%;
+    --ring: 37 33% 60%;
 
     --radius: 0.5rem;
   }
@@ -76,6 +76,35 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    background-image:
+      radial-gradient(circle at top, rgba(114, 90, 50, 0.22), transparent 32%),
+      radial-gradient(circle at bottom, rgba(71, 58, 33, 0.18), transparent 35%),
+      linear-gradient(180deg, rgba(12, 10, 9, 0.98), rgba(20, 17, 15, 1));
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: rgba(199, 179, 139, 0.28);
+    color: #f6f1e7;
+  }
+}
+
+@layer utilities {
+  .ritual-shell {
+    background-image:
+      radial-gradient(circle at 50% 22%, rgba(199, 179, 139, 0.09), transparent 24%),
+      linear-gradient(180deg, rgba(20, 17, 15, 0.94), rgba(12, 10, 9, 0.99));
+  }
+
+  .page-vignette {
+    background:
+      radial-gradient(circle at center, transparent 0%, rgba(20, 17, 15, 0.2) 48%, rgba(10, 9, 8, 0.94) 100%),
+      linear-gradient(90deg, rgba(10, 9, 8, 0.74), transparent 20%, transparent 80%, rgba(10, 9, 8, 0.74));
+  }
+
+  .writing-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
   }
 }

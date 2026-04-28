@@ -1,0 +1,41 @@
+{
+  "version": "sixclassics-sample-v1",
+  "defaultCollection": "six_classics",
+  "files": [
+    {
+      "path": "data/sixclassics-sample.jsonl",
+      "collection": "six_classics"
+    }
+  ],
+  "works": {
+    "论语": {
+      "workId": "lunyu",
+      "workTitle": "论语"
+    },
+    "大学": {
+      "workId": "daxue",
+      "workTitle": "大学"
+    },
+    "中庸": {
+      "workId": "zhongyong",
+      "workTitle": "中庸"
+    },
+    "孟子": {
+      "workId": "mengzi",
+      "workTitle": "孟子"
+    },
+    "诗经": {
+      "workId": "shijing",
+      "workTitle": "诗经"
+    },
+    "尚书": {
+      "workId": "shangshu",
+      "workTitle": "尚书"
+    }
+  },
+  "embeddingArtifact": {
+    "path": "data/embeddings.json",
+    "model": "infidao-local-concept-v1",
+    "dimension": 21
+  }
+}

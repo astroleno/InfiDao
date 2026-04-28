@@ -1,5 +1,8 @@
 # InfiDao 六经注我 - Quick Start Guide
 
+> Status: superseded on 2026-04-24
+> Legacy reference only for the pre-reboot implementation. For the current reboot MVP, use `docs/SUPERPOWERS_REBOOT_PLAN.md` and `docs/plans/reboot-mvp-implementation-plan.md`. If this file conflicts with them, those docs win.
+
 ## 🎯 Project Overview
 
 InfiDao is an AI-native semantic annotation system for Chinese classics. Users can input modern text and receive semantically related passages from the Six Classics (六经) with bidirectional annotations.

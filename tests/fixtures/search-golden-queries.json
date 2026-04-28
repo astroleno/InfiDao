@@ -1,0 +1,58 @@
+[
+  {
+    "query": "治理国家",
+    "expectedTop1Ids": ["daxue-2-2"],
+    "requiredTop3Ids": ["daxue-2-2", "daxue-2-1"],
+    "bannedTop3Ids": ["zhongyong-1-2"],
+    "minResults": 2
+  },
+  {
+    "query": "朋友相处要诚信",
+    "expectedTop1Ids": ["lunyu-1-4", "lunyu-1-7"],
+    "requiredTop3Ids": ["lunyu-1-4", "lunyu-1-7"],
+    "bannedTop3Ids": ["daxue-2-2"],
+    "minResults": 2
+  },
+  {
+    "query": "面对别人不理解",
+    "expectedTop1Ids": ["lunyu-1-1"],
+    "requiredTop3Ids": ["lunyu-1-1"],
+    "bannedTop3Ids": ["daxue-2-2", "zhongyong-4-1"],
+    "minResults": 1
+  },
+  {
+    "query": "修身齐家治国平天下",
+    "expectedTop1Ids": ["daxue-2-1", "daxue-2-2"],
+    "requiredTop3Ids": ["daxue-2-1", "daxue-2-2"],
+    "bannedTop3Ids": ["zhongyong-3-1"],
+    "minResults": 2
+  },
+  {
+    "query": "中庸和谐",
+    "expectedTop1Ids": ["zhongyong-1-4"],
+    "requiredTop3Ids": ["zhongyong-1-4", "zhongyong-1-3", "zhongyong-2-1"],
+    "bannedTop3Ids": ["daxue-2-2"],
+    "minResults": 2
+  },
+  {
+    "query": "反省自己哪里做得不够",
+    "expectedTop1Ids": ["lunyu-1-4", "lunyu-1-8"],
+    "requiredTop3Ids": ["lunyu-1-4", "lunyu-1-8"],
+    "bannedTop3Ids": ["daxue-2-2", "zhongyong-4-1"],
+    "minResults": 1
+  },
+  {
+    "query": "学习之后要实践",
+    "expectedTop1Ids": ["lunyu-1-1"],
+    "requiredTop3Ids": ["lunyu-1-1", "lunyu-1-6"],
+    "bannedTop3Ids": ["daxue-2-2", "zhongyong-4-1"],
+    "minResults": 2
+  },
+  {
+    "query": "什么是至善",
+    "expectedTop1Ids": ["daxue-1-1"],
+    "requiredTop3Ids": ["daxue-1-1"],
+    "bannedTop3Ids": ["lunyu-1-5"],
+    "minResults": 1
+  }
+]

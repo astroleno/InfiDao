@@ -1,5 +1,8 @@
 # InfiDao TODO（MVP：JSON 优先）
 
+> 状态：已于 2026-04-24 被 superseded
+> 本文件仅保留 pre-reboot 历史参考价值。当前重启执行只认 `docs/SUPERPOWERS_REBOOT_PLAN.md` 与 `docs/plans/reboot-mvp-implementation-plan.md`；若与本文件冲突，以那两份为准。
+
 > 目标：3 周跑通“输入一句 → JSON 向量检索 → 三段式解释 → 可点击回溯”。
 
 ## M0 启动与基础（第 1 周）
@@ -38,4 +41,3 @@
 小贴士
 - JSON 路线适合 ≤5–10 万 token 级别数据与 demo；数据增长再切换 LanceDB/pgvector（保持检索接口不变）。
 - 先保证检索稳定和解释质量，再优化可视化与协作。 
-

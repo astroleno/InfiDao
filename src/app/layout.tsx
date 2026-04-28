@@ -1,10 +1,7 @@
 import { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: '六经注我 - AI智能经典注释系统',
@@ -53,19 +50,15 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
-        {/* Preconnect to external domains */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-
         {/* DNS prefetch for performance */}
         <link rel="dns-prefetch" href="//api.openai.com" />
         <link rel="dns-prefetch" href="//cdn.jsdelivr.net" />
       </head>
 
-      <body className={`${inter.className} antialiased`} suppressHydrationWarning>
+      <body className="antialiased" suppressHydrationWarning>
         <ErrorBoundary>
           <ThemeProvider>
-            <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50">
+            <div className="min-h-screen">
               {children}
             </div>
           </ThemeProvider>
