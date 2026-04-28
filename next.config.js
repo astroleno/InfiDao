@@ -1,3 +1,5 @@
+const crypto = require('node:crypto')
+
 const bundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
@@ -91,7 +93,6 @@ const nextConfig = {
           },
           shared: {
             name: 'shared',
-            async: 'react-18',
             chunks: 'all',
             priority: 10,
             test: /[\\/]node_modules[\\/]/,
