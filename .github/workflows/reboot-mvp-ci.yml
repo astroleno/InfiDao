@@ -40,10 +40,15 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Prepare standalone data files
+      - name: Prepare standalone runtime files
         run: |
           mkdir -p .next/standalone/data
           cp -R data/. .next/standalone/data/
+          rm -rf .next/standalone/.next/static
+          cp -R .next/static .next/standalone/.next/static
+          if [ -d public ]; then
+            cp -R public .next/standalone/public
+          fi
 
       - name: Production smoke
         env:

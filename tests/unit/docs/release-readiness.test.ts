@@ -36,7 +36,9 @@ describe("reboot MVP release readiness", () => {
 
     expect(document).toContain(".github/workflows/reboot-mvp-ci.yml");
     expect(document).toContain("npm run smoke:release");
+    expect(document).toContain("cp -R .next/static .next/standalone/.next/static");
     expect(document).toContain("top result `lunyu-1-8`");
+    expect(document).toContain("referenced `/_next/static/*.js` assets return `200`");
     expect(document).toContain("`GET /api/embed` -> `410 LEGACY_EMBED_DISABLED`");
   });
 

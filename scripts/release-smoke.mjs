@@ -40,6 +40,22 @@ function ensure(condition, message) {
 }
 
 async function requestJson(baseUrl, path, init = {}, requestTimeoutMs) {
+  const result = await requestRaw(baseUrl, path, init, requestTimeoutMs);
+  let json;
+
+  try {
+    json = JSON.parse(result.raw);
+  } catch {
+    json = result.raw;
+  }
+
+  return {
+    ...result,
+    json,
+  };
+}
+
+async function requestRaw(baseUrl, path, init = {}, requestTimeoutMs) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), requestTimeoutMs);
   const startedAt = Date.now();
@@ -54,19 +70,12 @@ async function requestJson(baseUrl, path, init = {}, requestTimeoutMs) {
       },
     });
     const raw = await response.text();
-    let json;
-
-    try {
-      json = JSON.parse(raw);
-    } catch {
-      json = raw;
-    }
 
     return {
       status: response.status,
       ok: response.ok,
       elapsedMs: Date.now() - startedAt,
-      json,
+      raw,
     };
   } catch (error) {
     if (controller.signal.aborted) {
@@ -77,6 +86,34 @@ async function requestJson(baseUrl, path, init = {}, requestTimeoutMs) {
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+function uniqueStaticAssetPaths(html, extension) {
+  return [
+    ...new Set(
+      [...html.matchAll(/\/_next\/static\/[^"'\s<>]+/gu)]
+        .map(match => match[0])
+        .map(path => path.replace(/&amp;/gu, "&"))
+        .filter(path => path.endsWith(extension)),
+    ),
+  ];
+}
+
+async function verifyFrontendAssets(baseUrl, requestTimeoutMs) {
+  const page = await requestRaw(baseUrl, "/", { method: "GET" }, requestTimeoutMs);
+  ensure(page.status === 200, `Homepage failed with ${page.status}.`);
+  ensure(page.raw.includes("六经注我"), "Homepage did not render the reboot intro.");
+
+  const scriptPaths = uniqueStaticAssetPaths(page.raw, ".js");
+  ensure(scriptPaths.length > 0, "Homepage did not reference any Next.js static JavaScript chunks.");
+
+  for (const scriptPath of scriptPaths) {
+    const asset = await requestRaw(baseUrl, scriptPath, { method: "GET" }, requestTimeoutMs);
+    ensure(asset.status === 200, `Frontend JavaScript asset failed with ${asset.status}: ${scriptPath}`);
+    ensure(asset.raw.length > 0, `Frontend JavaScript asset was empty: ${scriptPath}`);
+  }
+
+  console.log(`[smoke] frontend assets ok in ${formatMs(page.elapsedMs)} js=${scriptPaths.length}`);
 }
 
 async function waitForHealth(baseUrl, waitTimeoutMs, requestTimeoutMs) {
@@ -127,6 +164,8 @@ async function main() {
 
   const health = await waitForHealth(baseUrl, waitTimeoutMs, requestTimeoutMs);
   console.log(`[smoke] health ok in ${formatMs(health.elapsedMs)}`);
+
+  await verifyFrontendAssets(baseUrl, requestTimeoutMs);
 
   const search = await requestJson(
     baseUrl,
