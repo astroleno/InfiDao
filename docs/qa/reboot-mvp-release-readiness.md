@@ -79,6 +79,9 @@ Use the production smoke script against a deployed release URL or a local standa
 ```bash
 mkdir -p .next/standalone/data
 cp -R data/. .next/standalone/data/
+rm -rf .next/standalone/.next/static
+cp -R .next/static .next/standalone/.next/static
+if [ -d public ]; then cp -R public .next/standalone/public; fi
 PORT=3001 HOSTNAME=127.0.0.1 node .next/standalone/server.js
 SMOKE_BASE_URL=http://127.0.0.1:3001 npm run smoke:release
 ```
@@ -86,6 +89,7 @@ SMOKE_BASE_URL=http://127.0.0.1:3001 npm run smoke:release
 The script waits for `/api/health`, then verifies:
 
 - `GET /api/health` -> `200`
+- `GET /` -> `200`, reboot intro rendered, and referenced `/_next/static/*.js` assets return `200`
 - `POST /api/search` -> `200`, non-empty results, top result `lunyu-1-8`
 - `POST /api/annotate` -> `200`, annotation payload with links
 - `GET /api/internal/annotation-telemetry` -> production `404`
