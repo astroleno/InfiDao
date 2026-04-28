@@ -1,0 +1,52 @@
+import { readFileSync } from "fs";
+import { join } from "path";
+
+describe("reboot MVP release readiness", () => {
+  const releaseReadinessPath = join(process.cwd(), "docs/qa/reboot-mvp-release-readiness.md");
+
+  it("documents canonical annotation LLM env and migration-only legacy aliases", () => {
+    const document = readFileSync(releaseReadinessPath, "utf8");
+
+    expect(document).toContain("LLM_MODEL_PRIMARY=");
+    expect(document).toContain("LLM_BASE_URL_PRIMARY=");
+    expect(document).toContain("LLM_API_KEY_PRIMARY=");
+    expect(document).toContain("LLM_MODEL_SECONDARY=");
+    expect(document).toContain("LLM_BASE_URL_SECONDARY=");
+    expect(document).toContain("LLM_API_KEY_SECONDARY=");
+    expect(document).toContain("Legacy annotation aliases remain migration compatibility only");
+    expect(document).toContain("migrationRequired: true");
+    expect(document).toContain("canonicalConfigured: true");
+    expect(document).toContain("llm.warnings: []");
+  });
+
+  it("freezes production defaults for annotation runtime hardening", () => {
+    const document = readFileSync(releaseReadinessPath, "utf8");
+
+    expect(document).toContain("ANNOTATION_LLM_MODE=fast");
+    expect(document).toContain("ANNOTATION_LLM_TIMEOUT_MS=6000");
+    expect(document).toContain("ANNOTATION_CACHE_TTL_MS=600000");
+    expect(document).toContain("ANNOTATION_CACHE_MAX_ENTRIES=100");
+    expect(document).toContain("10_240");
+    expect(document).toContain("20 requests per client per 60 seconds");
+    expect(document).toContain("production must return `404`");
+  });
+
+  it("covers the release smoke matrix requested for Phase 6.5", () => {
+    const document = readFileSync(releaseReadinessPath, "utf8");
+
+    for (const requiredCase of [
+      "`fast` mode",
+      "`quality` mode",
+      "timeout fallback",
+      "provider failover",
+      "cache hit",
+      "oversized body",
+      "rate limit",
+      "telemetry canonical",
+      "telemetry legacy",
+      "production internal route",
+    ]) {
+      expect(document).toContain(requiredCase);
+    }
+  });
+});
