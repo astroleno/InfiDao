@@ -61,5 +61,12 @@
     "requiredTop3Ids": ["zhongyong-1-2", "zhongyong-1-3"],
     "bannedTop3Ids": ["daxue-2-2"],
     "minResults": 2
+  },
+  {
+    "query": "被别人误解怎么办",
+    "expectedTop1Ids": ["lunyu-1-1"],
+    "requiredTop3Ids": ["lunyu-1-1"],
+    "bannedTop3Ids": ["daxue-2-2", "zhongyong-4-1"],
+    "minResults": 1
   }
 ]
