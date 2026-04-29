@@ -53,7 +53,7 @@ export default function RootLayout({
       <body className="antialiased" suppressHydrationWarning>
         <ErrorBoundary>
           <ThemeProvider>
-            <div className="min-h-screen">
+            <div className="min-h-screen min-h-[100dvh]">
               {children}
             </div>
           </ThemeProvider>

@@ -11,6 +11,7 @@ interface AnnotationPanelProps {
   annotation: AnnotationResult | null;
   isLoading: boolean;
   error: Error | null;
+  targetLabel?: string | null;
   onWikiNavigate: (link: AnnotationLink) => void;
   onRetry?: () => void;
   idPrefix?: string;
@@ -37,12 +38,16 @@ export function AnnotationPanel({
   annotation,
   isLoading,
   error,
+  targetLabel,
   onWikiNavigate,
   onRetry,
   idPrefix = "annotation",
 }: AnnotationPanelProps) {
   const [activeTab, setActiveTab] = useState<AnnotationTab>("sixToMe");
   const activePanelId = `${idPrefix}-${activeTab}-panel`;
+  const errorMessage = targetLabel
+    ? `未能为${targetLabel}生成注语。${error?.message ?? ""}`
+    : error?.message;
 
   const focusTab = (tab: AnnotationTab) => {
     setActiveTab(tab);
@@ -91,7 +96,7 @@ export function AnnotationPanel({
     return (
       <div
         role="alert"
-        className="annotation-panel overflow-hidden rounded-xl border border-red-900/50 bg-red-950/25 text-stone-100 shadow-sm"
+        className="annotation-panel overflow-hidden bg-red-950/25 text-stone-100"
       >
         <div className="p-6 text-center">
           <div className="mb-4 text-red-300">
@@ -99,8 +104,8 @@ export function AnnotationPanel({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 className="mb-2 text-lg font-medium text-red-100">注释生成失败</h3>
-          <p className="text-sm text-red-200/80">{error.message}</p>
+          <h3 className="mb-2 text-lg font-medium text-red-100">注语未成</h3>
+          <p className="text-sm leading-7 text-red-200/80">{errorMessage}</p>
           {onRetry && (
             <button
               type="button"
@@ -117,24 +122,30 @@ export function AnnotationPanel({
 
   if (isLoading || !annotation) {
     return (
-      <div className="annotation-panel overflow-hidden rounded-xl border border-stone-800 bg-stone-950/85 text-stone-100 shadow-sm">
+      <div className="annotation-panel overflow-hidden bg-stone-950/85 text-stone-100">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-paper font-classic">六经注我</h2>
+            <h2 className="text-xl font-bold text-paper font-classic">注我卷轴</h2>
             <div
               role="status"
               aria-label="注释生成状态"
               aria-live="polite"
-              className="flex items-center text-sm text-stone-400"
+              className="flex flex-wrap justify-end gap-2 text-xs text-stone-400"
             >
-              <div className="animate-pulse mr-2">正在生成注释...</div>
-              <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-zen"></div>
+              {["取义中", "比照经文", "注语将成"].map(step => (
+                <span
+                  key={step}
+                  className="rounded-full border border-stone-800 px-2.5 py-1 motion-safe:animate-pulse"
+                >
+                  {step}
+                </span>
+              ))}
             </div>
           </div>
 
           <div className="space-y-6">
             <div className="rounded-lg border border-stone-800 bg-stone-900/70 p-4">
-              <div className="mb-2 text-sm font-medium text-zen">您的思考</div>
+              <div className="mb-2 text-sm font-medium text-zen">此刻一念</div>
               <div className="text-paper font-classic">{query}</div>
             </div>
 
@@ -150,17 +161,17 @@ export function AnnotationPanel({
   }
 
   return (
-    <div className="annotation-panel overflow-hidden rounded-xl border border-stone-800 bg-stone-950/85 text-stone-100 shadow-sm">
+    <div className="annotation-panel overflow-hidden bg-stone-950/85 text-stone-100">
       <div className="border-b border-stone-800 p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-paper font-classic">六经注我</h2>
-          <AnnotationMeta annotation={annotation} />
+          <h2 className="text-xl font-bold text-paper font-classic">注我卷轴</h2>
+          <AnnotationMeta annotation={annotation} targetLabel={targetLabel} />
         </div>
       </div>
 
       <div className="p-6 pb-0">
         <div className="rounded-lg border border-stone-800 bg-stone-900/70 p-4">
-          <div className="mb-2 text-sm font-medium text-zen">您的思考</div>
+          <div className="mb-2 text-sm font-medium text-zen">此刻一念</div>
           <div className="text-paper font-classic">{query}</div>
         </div>
       </div>
@@ -223,8 +234,8 @@ export function AnnotationPanel({
       <div className="border-t border-stone-800 bg-stone-900/60 p-6">
         <div className="text-sm text-stone-400">
           {annotation.links.length === 0
-            ? "当前节点已经到达叶子层，可以返回上一层或重新搜索。"
-            : "点击延伸入口，可以继续进入下一层经典回应。"}
+            ? "此处暂止，可回到上一层，或另择一句再问。"
+            : "沿任一句继续，进入下一层回响。"}
         </div>
       </div>
     </div>

@@ -57,7 +57,7 @@ export function ResponsiveMainLayout({
   }, [isMobile, sidebarOpen]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-to-br from-amber-50 via-white to-orange-50">
       {/* Header */}
       <Header
         onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
@@ -105,7 +105,7 @@ export function ResponsiveMainLayout({
 
             {/* Desktop Sidebar */}
             {!isMobile && (
-              <div className="hidden lg:block lg:w-80 xl:w-96 bg-white border-r border-gray-200 min-h-screen">
+              <div className="hidden min-h-screen min-h-[100dvh] lg:block lg:w-80 xl:w-96 bg-white border-r border-gray-200">
                 <Sidebar isMobile={false} />
               </div>
             )}

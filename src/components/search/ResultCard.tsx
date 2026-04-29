@@ -6,6 +6,7 @@ interface ResultCardProps {
   index: number;
   onAnnotate: (passageId: string, passageText: string) => void;
   isAnnotating: boolean;
+  pendingAnnotationPassageId: string | null;
   isSelected: boolean;
   hasCompletedAnnotation: boolean;
 }
@@ -16,10 +17,12 @@ export function ResultCard({
   index,
   onAnnotate,
   isAnnotating,
+  pendingAnnotationPassageId,
   isSelected,
   hasCompletedAnnotation,
 }: ResultCardProps) {
   const resonance = Math.round(result.score * 100);
+  const isPendingAnnotationTarget = pendingAnnotationPassageId === result.id;
 
   const matchLine =
     result.score >= 0.85
@@ -65,7 +68,7 @@ export function ResultCard({
           disabled={isAnnotating}
           className="inline-flex min-w-44 items-center justify-center rounded-full border border-stone-700 px-6 py-3 text-sm tracking-[0.25em] text-stone-200 transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink disabled:cursor-not-allowed disabled:border-stone-800 disabled:text-stone-600"
         >
-          {isAnnotating && isSelected ? "注我中" : isAnnotating ? "请稍候" : "进入注我"}
+          {isPendingAnnotationTarget ? "注我中" : isAnnotating ? "请稍候" : "进入注我"}
         </button>
       </div>
 
@@ -75,10 +78,10 @@ export function ResultCard({
 
       {isSelected && (
         <div className="mt-4 text-xs tracking-[0.2em] text-zen/80">
-          {isAnnotating
-            ? "当前正在为这一句请求注释"
+          {isPendingAnnotationTarget
+            ? "取义中，此句暂不可重复进入"
             : hasCompletedAnnotation
-              ? "当前注释已展开，可沿右侧继续探索"
+              ? "当前注语已展开，可沿此句继续进入下一层回响"
               : "当前结果已选中"}
         </div>
       )}

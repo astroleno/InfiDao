@@ -4,13 +4,14 @@ import type { AnnotationResult } from "@/types";
 
 interface Props {
   annotation: AnnotationResult;
+  targetLabel?: string | null | undefined;
 }
 
-export function AnnotationMeta({ annotation }: Props) {
+export function AnnotationMeta({ annotation, targetLabel }: Props) {
   return (
-    <div className="flex items-center space-x-3 text-xs text-stone-500">
-      <span>段落: {annotation.passageId}</span>
-      <span>延伸: {annotation.links.length}</span>
+    <div className="flex flex-col items-end gap-1 text-right text-xs text-stone-500 sm:flex-row sm:items-center sm:gap-3">
+      <span>{targetLabel ?? "当前经文"}</span>
+      <span>{annotation.links.length > 0 ? "可继续互注" : "此处暂止"}</span>
     </div>
   );
 }

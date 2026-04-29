@@ -8,7 +8,7 @@ interface MainLayoutProps {
 
 export function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 font-classic">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-to-br from-amber-50 to-orange-50 font-classic">
       {/* Header */}
       <Header />
 

@@ -7,9 +7,10 @@ interface SearchResultsProps {
   query: string;
   onAnnotate: (passageId: string, passageText: string) => void;
   isAnnotating: boolean;
+  pendingAnnotationPassageId: string | null;
   selectedPassage: string | null;
   activeAnnotationPassage: string | null;
-  renderActivePanel?: () => ReactNode;
+  renderActivePanel?: (resultId: string) => ReactNode;
 }
 
 export function SearchResults({
@@ -17,6 +18,7 @@ export function SearchResults({
   query,
   onAnnotate,
   isAnnotating,
+  pendingAnnotationPassageId,
   selectedPassage,
   activeAnnotationPassage,
   renderActivePanel,
@@ -43,12 +45,13 @@ export function SearchResults({
                 index={index}
                 onAnnotate={onAnnotate}
                 isAnnotating={isAnnotating}
+                pendingAnnotationPassageId={pendingAnnotationPassageId}
                 isSelected={isSelected}
                 hasCompletedAnnotation={activeAnnotationPassage === result.id}
               />
 
               {isSelected && renderActivePanel && (
-                <div className="space-y-4 lg:hidden">{renderActivePanel()}</div>
+                <div className="space-y-4 lg:hidden">{renderActivePanel(result.id)}</div>
               )}
             </div>
           );
