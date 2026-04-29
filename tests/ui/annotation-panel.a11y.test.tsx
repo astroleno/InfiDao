@@ -33,11 +33,22 @@ describe("AnnotationPanel accessibility polish", () => {
 
     expect(screen.getByRole("tablist", { name: "注释视角" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "六经注我" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tab", { name: "六经注我" })).toHaveAttribute("tabindex", "0");
+    expect(screen.getByRole("tab", { name: "我注六经" })).toHaveAttribute("tabindex", "-1");
 
-    fireEvent.click(screen.getByRole("tab", { name: "我注六经" }));
+    fireEvent.keyDown(screen.getByRole("tab", { name: "六经注我" }), { key: "ArrowRight" });
 
     expect(screen.getByRole("tab", { name: "我注六经" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tab", { name: "我注六经" })).toHaveAttribute("tabindex", "0");
     expect(screen.getByRole("tabpanel", { name: "我注六经" })).toBeInTheDocument();
+
+    fireEvent.keyDown(screen.getByRole("tab", { name: "我注六经" }), { key: "Home" });
+
+    expect(screen.getByRole("tab", { name: "六经注我" })).toHaveAttribute("aria-selected", "true");
+
+    fireEvent.keyDown(screen.getByRole("tab", { name: "六经注我" }), { key: "End" });
+
+    expect(screen.getByRole("tab", { name: "我注六经" })).toHaveAttribute("aria-selected", "true");
 
     fireEvent.keyDown(screen.getByRole("tab", { name: "我注六经" }), { key: "ArrowLeft" });
 
@@ -78,6 +89,10 @@ describe("AnnotationPanel accessibility polish", () => {
     );
 
     expect(screen.getByRole("status", { name: "注释生成状态" })).toBeInTheDocument();
+    expect(screen.getByText("取义中")).toBeInTheDocument();
+    expect(screen.getByText("比照经文")).toBeInTheDocument();
+    expect(screen.getByText("注语将成")).toBeInTheDocument();
+    expect(screen.queryByText("正在生成注释...")).not.toBeInTheDocument();
     expect(screen.queryByText(/JSON|SSE|\/api\/annotate/u)).not.toBeInTheDocument();
   });
 

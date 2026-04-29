@@ -9,7 +9,7 @@ export function Header() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-paper font-classic">六经注我</h1>
-              <p className="text-xs font-medium tracking-[0.18em] text-stone-500">搜索 · 注我 · 探索路径</p>
+              <p className="text-xs font-medium tracking-[0.18em] text-stone-500">搜索 · 注我 · 回响路径</p>
             </div>
           </div>
 

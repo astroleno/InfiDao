@@ -12,6 +12,7 @@ import {
   popWikiStack,
   pushWikiNode,
   resetWikiStack,
+  type WikiNode,
   type WikiStack,
 } from "@/lib/wiki/service";
 
@@ -102,6 +103,47 @@ function buildVisitedPassageIds(stack: WikiStack, nextPassageId: string): string
   return [...new Set([...stack.map(node => node.annotation.passageId), nextPassageId])];
 }
 
+function formatPassageTargetLabel(target: {
+  passageId: string;
+  source?: string | undefined;
+  chapter?: string | undefined;
+  section?: number | undefined;
+}) {
+  if (target.source && target.chapter && typeof target.section === "number") {
+    return `《${target.source}·${target.chapter}》第 ${target.section} 节`;
+  }
+
+  return "当前段落";
+}
+
+function formatSearchResultTargetLabel(results: SearchResult[], passageId: string) {
+  const result = results.find(item => item.id === passageId);
+
+  return formatPassageTargetLabel({
+    passageId,
+    source: result?.source,
+    chapter: result?.chapter,
+    section: result?.section,
+  });
+}
+
+function formatLinkTargetLabel(link: AnnotationLink) {
+  return formatPassageTargetLabel({
+    passageId: link.passageId,
+    source: link.source,
+    chapter: link.chapter,
+    section: link.section,
+  });
+}
+
+function formatWikiNodeTargetLabel(node: WikiNode, results: SearchResult[]) {
+  if (node.via) {
+    return formatLinkTargetLabel(node.via);
+  }
+
+  return formatSearchResultTargetLabel(results, node.annotation.passageId);
+}
+
 function useIsDesktopLayout() {
   const [isDesktop, setIsDesktop] = useState(false);
 
@@ -130,24 +172,54 @@ export default function HomePage() {
     controller: AbortController | null;
   }>({ id: 0, controller: null });
   const retryTargetRef = useRef<AnnotationRetryTarget | null>(null);
+  const mobileAnnotationSurfaceRef = useRef<HTMLDivElement | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [isAnnotating, setIsAnnotating] = useState(false);
+  const [pendingAnnotationPassageId, setPendingAnnotationPassageId] = useState<string | null>(null);
   const [selectedPassage, setSelectedPassage] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [annotation, setAnnotation] = useState<AnnotationResult | null>(null);
   const [annotationError, setAnnotationError] = useState<Error | null>(null);
+  const [annotationTargetLabel, setAnnotationTargetLabel] = useState<string | null>(null);
   const [selectedResultPassage, setSelectedResultPassage] = useState<string | null>(null);
   const [wikiStack, setWikiStack] = useState<WikiStack>([]);
   const isDesktopLayout = useIsDesktopLayout();
+  const hasAnnotationSurface =
+    selectedPassage !== null || annotation !== null || isAnnotating || annotationError !== null;
 
   useEffect(() => {
     return () => {
       annotationRequestRef.current.controller?.abort();
     };
   }, []);
+
+  useEffect(() => {
+    if (isDesktopLayout || !hasAnnotationSurface || selectedResultPassage === null) {
+      return undefined;
+    }
+
+    const scheduleFrame =
+      typeof window.requestAnimationFrame === "function"
+        ? window.requestAnimationFrame
+        : (callback: FrameRequestCallback) => window.setTimeout(callback, 0);
+    const cancelFrame =
+      typeof window.cancelAnimationFrame === "function"
+        ? window.cancelAnimationFrame
+        : window.clearTimeout;
+    const frame = scheduleFrame(() => {
+      mobileAnnotationSurfaceRef.current?.scrollIntoView?.({
+        block: "start",
+        behavior: "smooth",
+      });
+    });
+
+    return () => {
+      cancelFrame(frame);
+    };
+  }, [hasAnnotationSurface, isDesktopLayout, selectedResultPassage]);
 
   const cancelAnnotationRequest = () => {
     annotationRequestRef.current.controller?.abort();
@@ -156,9 +228,10 @@ export default function HomePage() {
       controller: null,
     };
     setIsAnnotating(false);
+    setPendingAnnotationPassageId(null);
   };
 
-  const beginAnnotationRequest = () => {
+  const beginAnnotationRequest = (passageId: string) => {
     annotationRequestRef.current.controller?.abort();
 
     const nextRequest = {
@@ -168,6 +241,7 @@ export default function HomePage() {
 
     annotationRequestRef.current = nextRequest;
     setIsAnnotating(true);
+    setPendingAnnotationPassageId(passageId);
 
     return nextRequest;
   };
@@ -185,6 +259,7 @@ export default function HomePage() {
       controller: null,
     };
     setIsAnnotating(false);
+    setPendingAnnotationPassageId(null);
   };
 
   const handleSearch = async (queryOverride?: string) => {
@@ -199,6 +274,7 @@ export default function HomePage() {
     setSearchError(null);
     setAnnotation(null);
     setAnnotationError(null);
+    setAnnotationTargetLabel(null);
     setWikiStack(resetWikiStack());
     setSelectedPassage(null);
     setSelectedResultPassage(null);
@@ -240,7 +316,8 @@ export default function HomePage() {
       return;
     }
 
-    const request = beginAnnotationRequest();
+    const targetLabel = formatSearchResultTargetLabel(searchResults, passageId);
+    const request = beginAnnotationRequest(passageId);
     retryTargetRef.current = {
       kind: "root",
       passageId,
@@ -248,6 +325,7 @@ export default function HomePage() {
     };
     setSelectedPassage(passageId);
     setSelectedResultPassage(passageId);
+    setAnnotationTargetLabel(targetLabel);
     setAnnotation(null);
     setAnnotationError(null);
     setWikiStack(resetWikiStack());
@@ -279,6 +357,7 @@ export default function HomePage() {
         return;
       }
 
+      setAnnotationError(null);
       setAnnotation(payload.data);
       setWikiStack(createWikiRoot(searchQuery, payload.data));
     } catch (error) {
@@ -299,12 +378,14 @@ export default function HomePage() {
       return;
     }
 
-    const request = beginAnnotationRequest();
+    const targetLabel = formatLinkTargetLabel(link);
+    const request = beginAnnotationRequest(link.passageId);
     retryTargetRef.current = {
       kind: "link",
       link,
     };
     setSelectedPassage(link.passageId);
+    setAnnotationTargetLabel(targetLabel);
     setAnnotation(null);
     setAnnotationError(null);
 
@@ -336,6 +417,7 @@ export default function HomePage() {
           return;
         }
 
+        setAnnotationError(null);
         setAnnotation(payload.data);
         setWikiStack((currentStack) =>
           pushWikiNode(currentStack, {
@@ -366,6 +448,7 @@ export default function HomePage() {
       setAnnotationError(null);
       setSelectedPassage(nextNode?.annotation.passageId ?? null);
       setSelectedResultPassage(nextNode ? selectedResultPassage : null);
+      setAnnotationTargetLabel(nextNode ? formatWikiNodeTargetLabel(nextNode, searchResults) : null);
 
       return nextStack;
     });
@@ -394,16 +477,18 @@ export default function HomePage() {
     setSearchError(null);
     setAnnotation(null);
     setAnnotationError(null);
+    setAnnotationTargetLabel(null);
     setWikiStack(resetWikiStack());
     setSelectedPassage(null);
     setSelectedResultPassage(null);
   };
 
   const atmosphere = buildAtmosphere(searchQuery, searchResults);
-  const hasAnnotationSurface =
-    selectedPassage !== null || annotation !== null || isAnnotating || annotationError !== null;
-  const renderAnnotationSurface = (idPrefix: string) => (
-    <>
+  const renderAnnotationSurface = (idPrefix: string, placement: "desktop" | "mobile") => (
+    <div
+      ref={placement === "mobile" ? mobileAnnotationSurfaceRef : undefined}
+      className="overflow-hidden rounded-xl border border-stone-800 bg-stone-950/85 text-stone-100 shadow-sm"
+    >
       <WikiPanel stack={wikiStack} onBack={handleWikiBack} />
       <AnnotationPanel
         idPrefix={idPrefix}
@@ -411,14 +496,15 @@ export default function HomePage() {
         annotation={annotation}
         isLoading={isAnnotating}
         error={annotationError}
+        targetLabel={annotationTargetLabel}
         onWikiNavigate={handleWikiNavigate}
         onRetry={handleAnnotationRetry}
       />
-    </>
+    </div>
   );
 
   return (
-    <div className="relative min-h-[100dvh] overflow-hidden ritual-shell text-paper">
+    <div className="relative min-h-screen min-h-[100dvh] overflow-hidden ritual-shell text-paper">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 page-vignette" />
         <div className="absolute left-1/2 top-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center">
@@ -444,7 +530,7 @@ export default function HomePage() {
 
       <main className="relative z-10">
         {!hasSearched && (
-          <section className="flex min-h-[100dvh] flex-col items-center justify-center px-6 py-16">
+          <section className="flex min-h-screen min-h-[100dvh] flex-col items-center justify-center px-6 py-16">
             <div className="mb-6 inline-flex items-center rounded-full border border-stone-800 px-4 py-1 text-xs tracking-[0.32em] text-stone-500">
               INFIDAO
             </div>
@@ -454,7 +540,7 @@ export default function HomePage() {
                 输入此刻一念，经典开始回应
               </p>
               <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 tracking-[0.06em] text-stone-500 md:text-base">
-                输入一念，先听见经典回应；再沿注释与延伸入口，一层一层进入自己的探索路径。
+                输入一念，先听见经典回应；再沿注语与延伸入口，一层一层进入自己的回响路径。
               </p>
             </div>
 
@@ -473,7 +559,7 @@ export default function HomePage() {
         )}
 
         {hasSearched && (
-          <section className="min-h-[100dvh] px-6 pb-16 pt-6 md:px-8 md:pt-8">
+          <section className="min-h-screen min-h-[100dvh] px-6 pb-16 pt-6 md:px-8 md:pt-8">
             <div className="mx-auto flex max-w-5xl items-start justify-between gap-4">
               <button
                 onClick={resetHome}
@@ -513,6 +599,13 @@ export default function HomePage() {
                 <div className="text-xs tracking-[0.32em] text-red-300/70">回响中断</div>
                 <p className="mt-4 text-lg text-red-100 font-classic">经典暂时未能回应</p>
                 <p className="mt-3 text-sm leading-7 text-red-200/80">{searchError}</p>
+                <button
+                  type="button"
+                  onClick={() => void handleSearch(searchQuery)}
+                  className="mt-6 rounded-full border border-red-800 px-5 py-2 text-sm text-red-100 transition hover:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 focus:ring-offset-ink"
+                >
+                  重新搜索
+                </button>
               </div>
             ) : searchResults.length > 0 ? (
               <div className="mx-auto mt-12 grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-start">
@@ -521,16 +614,17 @@ export default function HomePage() {
                   query={searchQuery}
                   onAnnotate={handleAnnotate}
                   isAnnotating={isAnnotating}
+                  pendingAnnotationPassageId={pendingAnnotationPassageId}
                   selectedPassage={selectedResultPassage}
                   activeAnnotationPassage={annotation?.passageId ?? null}
                   {...(hasAnnotationSurface && !isDesktopLayout
-                    ? { renderActivePanel: () => renderAnnotationSurface("annotation-mobile") }
+                    ? { renderActivePanel: resultId => renderAnnotationSurface(`annotation-mobile-${resultId}`, "mobile") }
                     : {})}
                 />
 
                 {hasAnnotationSurface && isDesktopLayout && (
                   <aside className="hidden lg:sticky lg:top-8 lg:block">
-                    {renderAnnotationSurface("annotation-desktop")}
+                    {renderAnnotationSurface("annotation-desktop", "desktop")}
                   </aside>
                 )}
               </div>

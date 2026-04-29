@@ -19,7 +19,7 @@ export function AnnotationLinks({ links, onNavigate }: AnnotationLinksProps) {
         <svg className="mr-2 h-5 w-5 text-zen" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
         </svg>
-        <h3 className="text-lg font-semibold text-paper font-classic">延伸探索</h3>
+        <h3 className="text-lg font-semibold text-paper font-classic">由此进入</h3>
       </div>
 
       <div className="space-y-3">
@@ -46,7 +46,7 @@ export function AnnotationLinks({ links, onNavigate }: AnnotationLinksProps) {
 
                     <div className="mb-2 text-sm text-paper font-classic">{link.passageText}</div>
                     <div className="mb-3 text-sm text-stone-500">
-                      {link.source} · {link.chapter} · 第 {link.section} 节
+                      由此进入：{link.source} {link.chapter} · 第 {link.section} 节
                     </div>
 
                     <div className="flex items-center justify-between gap-3">
@@ -58,7 +58,7 @@ export function AnnotationLinks({ links, onNavigate }: AnnotationLinksProps) {
                         <svg className="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
-                        探索此段落
+                        沿此句继续
                       </button>
 
                       <button
@@ -86,7 +86,7 @@ export function AnnotationLinks({ links, onNavigate }: AnnotationLinksProps) {
                 {isExpanded && (
                   <div id={detailId} className="mt-4 border-t border-stone-800 pt-4">
                     <div className="rounded-lg bg-stone-950/70 p-4 text-sm leading-6 text-stone-400">
-                      这个入口已经带上下一跳所需的段落信息，可以继续进入下一层经典回应。
+                      沿此句继续，进入下一层回响。
                     </div>
                   </div>
                 )}
