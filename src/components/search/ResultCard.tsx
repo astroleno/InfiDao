@@ -7,6 +7,7 @@ interface ResultCardProps {
   onAnnotate: (passageId: string, passageText: string) => void;
   isAnnotating: boolean;
   isSelected: boolean;
+  hasCompletedAnnotation: boolean;
 }
 
 export function ResultCard({
@@ -16,6 +17,7 @@ export function ResultCard({
   onAnnotate,
   isAnnotating,
   isSelected,
+  hasCompletedAnnotation,
 }: ResultCardProps) {
   const resonance = Math.round(result.score * 100);
 
@@ -60,10 +62,10 @@ export function ResultCard({
         <button
           type="button"
           onClick={() => onAnnotate(result.id, result.text)}
-          disabled={isAnnotating && isSelected}
+          disabled={isAnnotating}
           className="inline-flex min-w-44 items-center justify-center rounded-full border border-stone-700 px-6 py-3 text-sm tracking-[0.25em] text-stone-200 transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink disabled:cursor-not-allowed disabled:border-stone-800 disabled:text-stone-600"
         >
-          {isAnnotating && isSelected ? "注我中" : "进入注我"}
+          {isAnnotating && isSelected ? "注我中" : isAnnotating ? "请稍候" : "进入注我"}
         </button>
       </div>
 
@@ -72,7 +74,13 @@ export function ResultCard({
       </div>
 
       {isSelected && (
-        <div className="mt-4 text-xs tracking-[0.2em] text-zen/80">当前正在为这一句请求注释</div>
+        <div className="mt-4 text-xs tracking-[0.2em] text-zen/80">
+          {isAnnotating
+            ? "当前正在为这一句请求注释"
+            : hasCompletedAnnotation
+              ? "当前注释已展开，可沿右侧继续探索"
+              : "当前结果已选中"}
+        </div>
       )}
     </article>
   );

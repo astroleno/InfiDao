@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnnotationLink, AnnotationResult, ApiResponse, SearchResult } from "@/types";
 import { AnnotationPanel } from "@/components/annotation/AnnotationPanel";
 import { SearchBar } from "@/components/search/SearchBar";
@@ -16,6 +16,66 @@ import {
 } from "@/lib/wiki/service";
 
 const HOME_SEARCH_THRESHOLD = 0.35;
+
+type AnnotationRetryTarget =
+  | {
+      kind: "root";
+      passageId: string;
+      passageText: string;
+    }
+  | {
+      kind: "link";
+      link: AnnotationLink;
+    };
+
+function SearchLoadingState({ query }: { query: string }) {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label="搜索进行中"
+      className="mx-auto mt-12 grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-start"
+    >
+      <div className="flex w-full flex-col gap-8 md:gap-10">
+        <div className="text-center">
+          <div className="mx-auto h-3 w-24 rounded-full bg-stone-800 motion-safe:animate-pulse" />
+          <div className="mx-auto mt-4 h-8 w-72 max-w-full rounded-full bg-stone-800/90 motion-safe:animate-pulse" />
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-500">
+            “{query}” 已入流，正在比对语义与原文。
+          </p>
+        </div>
+
+        <div className="space-y-6 md:space-y-10">
+          {[0, 1, 2].map(index => (
+            <div
+              key={index}
+              className="mx-auto w-full max-w-3xl border border-stone-800/80 bg-stone-950/68 px-6 py-12 text-center md:px-10 md:py-16"
+            >
+              <div className="mx-auto mb-10 h-4 w-56 max-w-full rounded-full bg-stone-800 motion-safe:animate-pulse" />
+              <div className="mx-auto h-8 w-4/5 rounded-full bg-stone-800/90 motion-safe:animate-pulse" />
+              <div className="mx-auto mt-5 h-8 w-2/3 rounded-full bg-stone-800/80 motion-safe:animate-pulse" />
+              <div className="mx-auto mt-10 h-4 w-72 max-w-full rounded-full bg-stone-800/70 motion-safe:animate-pulse" />
+              <div className="mx-auto mt-10 h-12 w-44 rounded-full border border-stone-800 bg-stone-900/80 motion-safe:animate-pulse" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <aside className="hidden lg:block">
+        <div className="rounded-xl border border-stone-800 bg-stone-950/85 p-6">
+          <div className="h-5 w-24 rounded-full bg-stone-800 motion-safe:animate-pulse" />
+          <div className="mt-6 h-24 rounded-lg bg-stone-900/80 motion-safe:animate-pulse" />
+          <div className="mt-6 h-10 rounded-lg bg-stone-900/80 motion-safe:animate-pulse" />
+          <div className="mt-6 space-y-3">
+            <div className="h-4 rounded-full bg-stone-800 motion-safe:animate-pulse" />
+            <div className="h-4 w-5/6 rounded-full bg-stone-800 motion-safe:animate-pulse" />
+            <div className="h-4 w-2/3 rounded-full bg-stone-800 motion-safe:animate-pulse" />
+          </div>
+        </div>
+      </aside>
+    </div>
+  );
+}
 
 function buildAtmosphere(query: string, results: SearchResult[]) {
   const trimmedQuery = query.trim();
@@ -42,7 +102,34 @@ function buildVisitedPassageIds(stack: WikiStack, nextPassageId: string): string
   return [...new Set([...stack.map(node => node.annotation.passageId), nextPassageId])];
 }
 
+function useIsDesktopLayout() {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    const syncLayout = () => setIsDesktop(mediaQuery.matches);
+
+    syncLayout();
+    mediaQuery.addEventListener("change", syncLayout);
+
+    return () => {
+      mediaQuery.removeEventListener("change", syncLayout);
+    };
+  }, []);
+
+  return isDesktop;
+}
+
 export default function HomePage() {
+  const annotationRequestRef = useRef<{
+    id: number;
+    controller: AbortController | null;
+  }>({ id: 0, controller: null });
+  const retryTargetRef = useRef<AnnotationRetryTarget | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -52,7 +139,53 @@ export default function HomePage() {
   const [searchError, setSearchError] = useState<string | null>(null);
   const [annotation, setAnnotation] = useState<AnnotationResult | null>(null);
   const [annotationError, setAnnotationError] = useState<Error | null>(null);
+  const [selectedResultPassage, setSelectedResultPassage] = useState<string | null>(null);
   const [wikiStack, setWikiStack] = useState<WikiStack>([]);
+  const isDesktopLayout = useIsDesktopLayout();
+
+  useEffect(() => {
+    return () => {
+      annotationRequestRef.current.controller?.abort();
+    };
+  }, []);
+
+  const cancelAnnotationRequest = () => {
+    annotationRequestRef.current.controller?.abort();
+    annotationRequestRef.current = {
+      id: annotationRequestRef.current.id + 1,
+      controller: null,
+    };
+    setIsAnnotating(false);
+  };
+
+  const beginAnnotationRequest = () => {
+    annotationRequestRef.current.controller?.abort();
+
+    const nextRequest = {
+      id: annotationRequestRef.current.id + 1,
+      controller: new AbortController(),
+    };
+
+    annotationRequestRef.current = nextRequest;
+    setIsAnnotating(true);
+
+    return nextRequest;
+  };
+
+  const isCurrentAnnotationRequest = (requestId: number) =>
+    annotationRequestRef.current.id === requestId;
+
+  const finishAnnotationRequest = (requestId: number) => {
+    if (!isCurrentAnnotationRequest(requestId)) {
+      return;
+    }
+
+    annotationRequestRef.current = {
+      id: requestId,
+      controller: null,
+    };
+    setIsAnnotating(false);
+  };
 
   const handleSearch = async (queryOverride?: string) => {
     const nextQuery = (queryOverride ?? searchQuery).trim();
@@ -61,12 +194,14 @@ export default function HomePage() {
       return;
     }
 
+    cancelAnnotationRequest();
     setSearchQuery(nextQuery);
     setSearchError(null);
     setAnnotation(null);
     setAnnotationError(null);
     setWikiStack(resetWikiStack());
     setSelectedPassage(null);
+    setSelectedResultPassage(null);
     setIsSearching(true);
     setHasSearched(true);
 
@@ -105,11 +240,17 @@ export default function HomePage() {
       return;
     }
 
+    const request = beginAnnotationRequest();
+    retryTargetRef.current = {
+      kind: "root",
+      passageId,
+      passageText,
+    };
     setSelectedPassage(passageId);
+    setSelectedResultPassage(passageId);
     setAnnotation(null);
     setAnnotationError(null);
     setWikiStack(resetWikiStack());
-    setIsAnnotating(true);
 
     try {
       const response = await fetch("/api/annotate", {
@@ -124,9 +265,14 @@ export default function HomePage() {
           style: "modern",
           visitedPassageIds: [passageId],
         }),
+        signal: request.controller.signal,
       });
 
       const payload = (await response.json()) as ApiResponse<AnnotationResult>;
+
+      if (!isCurrentAnnotationRequest(request.id)) {
+        return;
+      }
 
       if (!response.ok || !payload.success) {
         setAnnotationError(new Error(payload.success ? "注释尚未就绪。" : payload.error.message));
@@ -135,10 +281,14 @@ export default function HomePage() {
 
       setAnnotation(payload.data);
       setWikiStack(createWikiRoot(searchQuery, payload.data));
-    } catch {
+    } catch (error) {
+      if (!isCurrentAnnotationRequest(request.id) || request.controller.signal.aborted) {
+        return;
+      }
+
       setAnnotationError(new Error("注释请求失败，请稍后再试。"));
     } finally {
-      setIsAnnotating(false);
+      finishAnnotationRequest(request.id);
     }
   };
 
@@ -149,10 +299,14 @@ export default function HomePage() {
       return;
     }
 
+    const request = beginAnnotationRequest();
+    retryTargetRef.current = {
+      kind: "link",
+      link,
+    };
     setSelectedPassage(link.passageId);
     setAnnotation(null);
     setAnnotationError(null);
-    setIsAnnotating(true);
 
     void (async () => {
       try {
@@ -168,9 +322,14 @@ export default function HomePage() {
             style: "modern",
             visitedPassageIds: buildVisitedPassageIds(wikiStack, link.passageId),
           }),
+          signal: request.controller.signal,
         });
 
         const payload = (await response.json()) as ApiResponse<AnnotationResult>;
+
+        if (!isCurrentAnnotationRequest(request.id)) {
+          return;
+        }
 
         if (!response.ok || !payload.success) {
           setAnnotationError(new Error(payload.success ? "注释尚未就绪。" : payload.error.message));
@@ -185,15 +344,20 @@ export default function HomePage() {
             via: link,
           }),
         );
-      } catch {
+      } catch (error) {
+        if (!isCurrentAnnotationRequest(request.id) || request.controller.signal.aborted) {
+          return;
+        }
+
         setAnnotationError(new Error("注释请求失败，请稍后再试。"));
       } finally {
-        setIsAnnotating(false);
+        finishAnnotationRequest(request.id);
       }
     })();
   };
 
   const handleWikiBack = () => {
+    cancelAnnotationRequest();
     setWikiStack((currentStack) => {
       const nextStack = popWikiStack(currentStack);
       const nextNode = currentWikiNode(nextStack);
@@ -201,12 +365,29 @@ export default function HomePage() {
       setAnnotation(nextNode?.annotation ?? null);
       setAnnotationError(null);
       setSelectedPassage(nextNode?.annotation.passageId ?? null);
+      setSelectedResultPassage(nextNode ? selectedResultPassage : null);
 
       return nextStack;
     });
   };
 
+  const handleAnnotationRetry = () => {
+    const retryTarget = retryTargetRef.current;
+
+    if (!retryTarget) {
+      return;
+    }
+
+    if (retryTarget.kind === "root") {
+      void handleAnnotate(retryTarget.passageId, retryTarget.passageText);
+      return;
+    }
+
+    handleWikiNavigate(retryTarget.link);
+  };
+
   const resetHome = () => {
+    cancelAnnotationRequest();
     setHasSearched(false);
     setSearchQuery("");
     setSearchResults([]);
@@ -215,12 +396,29 @@ export default function HomePage() {
     setAnnotationError(null);
     setWikiStack(resetWikiStack());
     setSelectedPassage(null);
+    setSelectedResultPassage(null);
   };
 
   const atmosphere = buildAtmosphere(searchQuery, searchResults);
+  const hasAnnotationSurface =
+    selectedPassage !== null || annotation !== null || isAnnotating || annotationError !== null;
+  const renderAnnotationSurface = (idPrefix: string) => (
+    <>
+      <WikiPanel stack={wikiStack} onBack={handleWikiBack} />
+      <AnnotationPanel
+        idPrefix={idPrefix}
+        query={searchQuery}
+        annotation={annotation}
+        isLoading={isAnnotating}
+        error={annotationError}
+        onWikiNavigate={handleWikiNavigate}
+        onRetry={handleAnnotationRetry}
+      />
+    </>
+  );
 
   return (
-    <div className="relative min-h-screen overflow-hidden ritual-shell text-paper">
+    <div className="relative min-h-[100dvh] overflow-hidden ritual-shell text-paper">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 page-vignette" />
         <div className="absolute left-1/2 top-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center">
@@ -246,7 +444,7 @@ export default function HomePage() {
 
       <main className="relative z-10">
         {!hasSearched && (
-          <section className="flex min-h-screen flex-col items-center justify-center px-6 py-16">
+          <section className="flex min-h-[100dvh] flex-col items-center justify-center px-6 py-16">
             <div className="mb-6 inline-flex items-center rounded-full border border-stone-800 px-4 py-1 text-xs tracking-[0.32em] text-stone-500">
               INFIDAO
             </div>
@@ -275,7 +473,7 @@ export default function HomePage() {
         )}
 
         {hasSearched && (
-          <section className="min-h-screen px-6 pb-16 pt-6 md:px-8 md:pt-8">
+          <section className="min-h-[100dvh] px-6 pb-16 pt-6 md:px-8 md:pt-8">
             <div className="mx-auto flex max-w-5xl items-start justify-between gap-4">
               <button
                 onClick={resetHome}
@@ -286,7 +484,7 @@ export default function HomePage() {
                 </svg>
                 回到一念
               </button>
-              <div className="text-right text-xs tracking-[0.26em] text-stone-600">PHASE 5 / INTERACTION POLISH</div>
+              <div className="text-right text-xs tracking-[0.26em] text-stone-600">连续探索</div>
             </div>
 
             <div className="mx-auto mt-8 max-w-4xl text-center">
@@ -306,18 +504,13 @@ export default function HomePage() {
             </div>
 
             {isSearching ? (
-              <div className="mx-auto mt-24 flex max-w-2xl flex-col items-center gap-6 text-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-stone-800 bg-stone-950/70 text-zen motion-safe:animate-breath">
-                  <div className="h-8 w-8 rounded-full border-2 border-stone-700 border-t-zen motion-safe:animate-spin" />
-                </div>
-                <div>
-                  <div className="text-lg text-paper font-classic">经典正在凝神回应</div>
-                  <p className="mt-2 text-sm leading-7 text-stone-500">“{searchQuery}” 已入流，正在比对语义与原文。</p>
-                </div>
-              </div>
+              <SearchLoadingState query={searchQuery} />
             ) : searchError ? (
-              <div className="mx-auto mt-20 max-w-2xl rounded-[2rem] border border-red-900/40 bg-red-950/20 px-6 py-8 text-center">
-                <div className="text-xs uppercase tracking-[0.32em] text-red-300/70">Search Error</div>
+              <div
+                role="alert"
+                className="mx-auto mt-20 max-w-2xl rounded-[2rem] border border-red-900/40 bg-red-950/20 px-6 py-8 text-center"
+              >
+                <div className="text-xs tracking-[0.32em] text-red-300/70">回响中断</div>
                 <p className="mt-4 text-lg text-red-100 font-classic">经典暂时未能回应</p>
                 <p className="mt-3 text-sm leading-7 text-red-200/80">{searchError}</p>
               </div>
@@ -328,25 +521,22 @@ export default function HomePage() {
                   query={searchQuery}
                   onAnnotate={handleAnnotate}
                   isAnnotating={isAnnotating}
-                  selectedPassage={selectedPassage}
+                  selectedPassage={selectedResultPassage}
+                  activeAnnotationPassage={annotation?.passageId ?? null}
+                  {...(hasAnnotationSurface && !isDesktopLayout
+                    ? { renderActivePanel: () => renderAnnotationSurface("annotation-mobile") }
+                    : {})}
                 />
 
-                {(selectedPassage || annotation || isAnnotating || annotationError) && (
-                  <aside className="lg:sticky lg:top-8">
-                    <WikiPanel stack={wikiStack} onBack={handleWikiBack} />
-                    <AnnotationPanel
-                      query={searchQuery}
-                      annotation={annotation}
-                      isLoading={isAnnotating}
-                      error={annotationError}
-                      onWikiNavigate={handleWikiNavigate}
-                    />
+                {hasAnnotationSurface && isDesktopLayout && (
+                  <aside className="hidden lg:sticky lg:top-8 lg:block">
+                    {renderAnnotationSurface("annotation-desktop")}
                   </aside>
                 )}
               </div>
             ) : (
               <div className="mx-auto mt-20 max-w-2xl rounded-[2rem] border border-stone-800 bg-stone-950/55 px-6 py-10 text-center">
-                <div className="text-xs uppercase tracking-[0.32em] text-stone-500">No Match Yet</div>
+                <div className="text-xs tracking-[0.32em] text-stone-500">暂未匹配</div>
                 <p className="mt-4 text-2xl text-paper font-classic">这一念暂未听见回响</p>
                 <p className="mx-auto mt-4 max-w-xl text-sm leading-8 text-stone-400">
                   换一种说法，或把问题说得更具体一些。当前先保留克制的搜索入口，不再展示额外营销模块。

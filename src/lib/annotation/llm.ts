@@ -309,7 +309,6 @@ export function resolveAnnotationLlmTimeoutMs(): number {
 
   return Math.min(Math.trunc(parsedTimeout), MAX_ANNOTATION_LLM_TIMEOUT_MS);
 }
-
 export function resolveAnnotationLlmRequestPlan(
   mode = resolveAnnotationLlmMode(),
 ): AnnotationLlmSlotConfig[] {
@@ -323,19 +322,14 @@ export function resolveAnnotationLlmRequestPlan(
 
 function buildPrompt(input: AnnotationLlmInput): string {
   return [
-    "你是“六经注我”的注释助手。",
-    "任务：围绕给定查询与经典原文，生成两个短段落。",
-    "输出必须是 JSON 对象，且只能包含 sixToMe 和 meToSix 两个字段。",
-    "要求：",
-    "1. sixToMe：从经典回应当下问题，2-4 句，避免空话。",
-    "2. meToSix：从当下问题反观经典，2-4 句，指出这次阅读如何改写文本意义。",
-    "3. 不要输出 Markdown，不要代码块，不要额外解释。",
-    "4. 语言使用简体中文。",
-    `5. 风格提示：${STYLE_GUIDANCE[input.style]}`,
-    "",
-    `查询：${input.query}`,
-    `出处：${input.passageLabel}`,
-    `原文：${input.passageText}`,
+    "生成六经注我 JSON，只含 sixToMe、meToSix。",
+    "sixToMe: 经典回应当下问题，2-3句，具体不空泛。",
+    "meToSix: 当下问题反观经典，2-3句，指出意义如何被改写。",
+    "简体中文；无 Markdown、无代码块、无解释。",
+    `风格:${STYLE_GUIDANCE[input.style]}`,
+    `问:${input.query}`,
+    `经:${input.passageLabel}`,
+    `文:${input.passageText}`,
   ].join("\n");
 }
 
@@ -430,8 +424,8 @@ async function requestAnnotationFromSlot(
       signal: controller.signal,
       body: JSON.stringify({
         model: config.model,
-        temperature: 0.4,
-        max_tokens: 320,
+        temperature: 0.35,
+        max_tokens: 240,
         messages: [
           {
             role: "system",

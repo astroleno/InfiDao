@@ -34,7 +34,8 @@ describe("HomePage search flow", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
 
-    expect(await screen.findByText("经典正在凝神回应")).toBeInTheDocument();
+    expect(await screen.findByRole("status", { name: "搜索进行中" })).toBeInTheDocument();
+    expect(screen.getByText(/正在比对语义与原文/u)).toBeInTheDocument();
     expect(screen.queryByText("智能搜索")).not.toBeInTheDocument();
 
     resolveSearch?.(
@@ -93,7 +94,8 @@ describe("HomePage search flow", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
 
-    expect(await screen.findByText("经典暂时未能回应")).toBeInTheDocument();
+    expect(await screen.findByRole("alert")).toBeInTheDocument();
+    expect(screen.getByText("经典暂时未能回应")).toBeInTheDocument();
     expect(screen.getByText("search exploded")).toBeInTheDocument();
   });
 
@@ -167,7 +169,57 @@ describe("HomePage search flow", () => {
     expect(await screen.findByText("段落: lunyu-1-8")).toBeInTheDocument();
     expect(screen.getByText("延伸: 1")).toBeInTheDocument();
     expect(screen.getByText("继续看自省")).toBeInTheDocument();
+    expect(screen.queryByText("当前正在为这一句请求注释")).not.toBeInTheDocument();
+    expect(screen.getByText("当前注释已展开，可沿右侧继续探索")).toBeInTheDocument();
     expect(screen.queryByText(/注释面板将在 Phase 3 接入/)).not.toBeInTheDocument();
+  });
+
+  it("prevents concurrent root annotation clicks while the current request is pending", async () => {
+    (global.fetch as jest.Mock)
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: [
+            {
+              id: "lunyu-1-8",
+              source: "论语",
+              chapter: "学而篇",
+              section: 8,
+              text: "君子不重则不威，学则不固。",
+              score: 0.6666,
+            },
+            {
+              id: "daxue-2-2",
+              source: "大学",
+              chapter: "传二章",
+              section: 2,
+              text: "身修而后家齐。",
+              score: 0.6,
+            },
+          ],
+        }),
+      )
+      .mockImplementationOnce(
+        () =>
+          new Promise(() => {
+            // Keep the annotation pending so the button state is observable.
+          }),
+      );
+
+    render(<HomePage />);
+
+    fireEvent.change(screen.getByLabelText("输入此刻的一念"), {
+      target: { value: "如何面对困境" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
+
+    expect(await screen.findByText("君子不重则不威，学则不固。")).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByRole("button", { name: "进入注我" })[0] as HTMLElement);
+
+    expect(await screen.findByRole("button", { name: "注我中" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "请稍候" })).toBeDisabled();
+    expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 
   it("pushes linked annotations onto an exploration stack and can return to the previous layer", async () => {

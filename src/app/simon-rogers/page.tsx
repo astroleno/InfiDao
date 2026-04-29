@@ -203,58 +203,67 @@ export default function SimonRogersPage() {
   ];
 
   useEffect(() => {
-    let rafId: number | null = null;
+    const nodeList = containerRef.current?.querySelectorAll(".text-line");
 
-    const updateRotations = () => {
-      const nodeList = containerRef.current?.querySelectorAll(".text-line");
-      if (!nodeList || nodeList.length === 0) {
-        rafId = requestAnimationFrame(updateRotations);
-        return;
-      }
+    if (!nodeList || nodeList.length === 0) {
+      return undefined;
+    }
 
+    const thresholds = Array.from({ length: 11 }, (_, index) => index / 10);
+    const updateLine = (entry: IntersectionObserverEntry) => {
+      const element = entry.target as HTMLElement;
       const viewportHeight = window.innerHeight;
       const centerY = viewportHeight / 2;
+      const rect = entry.boundingClientRect;
+      const elementCenter = rect.top + rect.height / 2;
+      const distanceFromCenter = (elementCenter - centerY) / centerY;
+      const clamped = Math.max(-1.1, Math.min(1.1, distanceFromCenter));
 
-      nodeList.forEach((node) => {
-        (node as HTMLElement).style.transform = "none";
-      });
+      const maxRotateX = 58;
+      const maxRotateY = 105;
+      const maxRotateZ = 18;
+      const maxTranslateZ = 460;
+      const translateYOffset = 125;
+
+      const rotateX = clamped * maxRotateX - 10;
+      const rotateY = clamped * -maxRotateY;
+      const rotateZ = clamped * maxRotateZ;
+      const translateZ = (1 - Math.abs(clamped)) * maxTranslateZ - maxTranslateZ * 0.45;
+      const translateY = clamped * translateYOffset;
+
+      const scale = 0.48 + (1 - Math.abs(clamped)) * 0.58;
+      const opacity = 0.2 + (1 - Math.min(1, Math.abs(clamped))) * 0.8;
+
+      element.style.transform = `translateY(${translateY}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg) scale(${scale})`;
+      element.style.opacity = opacity.toFixed(3);
+    };
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(updateLine);
+      },
+      {
+        root: null,
+        rootMargin: "25% 0px",
+        threshold: thresholds,
+      },
+    );
+
+    nodeList.forEach((node) => {
+      const element = node as HTMLElement;
+
+      element.style.willChange = "transform, opacity";
+      observer.observe(element);
+    });
+
+    return () => {
+      observer.disconnect();
 
       nodeList.forEach((node) => {
         const element = node as HTMLElement;
-        const rect = element.getBoundingClientRect();
-        const elementCenter = rect.top + rect.height / 2;
 
-        const distanceFromCenter = (elementCenter - centerY) / centerY;
-        const clamped = Math.max(-1.1, Math.min(1.1, distanceFromCenter));
-
-        const maxRotateX = 58;
-        const maxRotateY = 105;
-        const maxRotateZ = 18;
-        const maxTranslateZ = 460;
-        const translateYOffset = 125;
-
-        const rotateX = clamped * maxRotateX - 10;
-        const rotateY = clamped * -maxRotateY;
-        const rotateZ = clamped * maxRotateZ;
-        const translateZ = (1 - Math.abs(clamped)) * maxTranslateZ - maxTranslateZ * 0.45;
-        const translateY = clamped * translateYOffset;
-
-        const scale = 0.48 + (1 - Math.abs(clamped)) * 0.58;
-        const opacity = 0.2 + (1 - Math.min(1, Math.abs(clamped))) * 0.8;
-
-        element.style.transform = `translateY(${translateY}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg) scale(${scale})`;
-        element.style.opacity = opacity.toFixed(3);
+        element.style.willChange = "";
       });
-
-      rafId = requestAnimationFrame(updateRotations);
-    };
-
-    rafId = requestAnimationFrame(updateRotations);
-
-    return () => {
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
     };
   }, []);
 

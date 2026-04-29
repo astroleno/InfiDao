@@ -371,7 +371,7 @@ describe("annotation llm runtime", () => {
     expect(global.fetch).toHaveBeenCalledWith(
       "https://yunwu.ai/v1/chat/completions",
       expect.objectContaining({
-        body: expect.stringContaining('"max_tokens":320'),
+        body: expect.stringContaining('"max_tokens":240'),
       }),
     );
   });
@@ -548,4 +548,5 @@ describe("annotation llm runtime", () => {
     await jest.advanceTimersByTimeAsync(30);
     await rejection;
   });
+
 });

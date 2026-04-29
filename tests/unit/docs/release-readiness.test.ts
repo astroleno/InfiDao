@@ -26,6 +26,8 @@ describe("reboot MVP release readiness", () => {
     expect(document).toContain("ANNOTATION_LLM_TIMEOUT_MS=5000");
     expect(document).toContain("ANNOTATION_CACHE_TTL_MS=600000");
     expect(document).toContain("ANNOTATION_CACHE_MAX_ENTRIES=100");
+    expect(document).toContain("ANNOTATION_FALLBACK_ALERT_RATE=0.15");
+    expect(document).toContain("ANNOTATION_P95_ALERT_MS=5000");
     expect(document).toContain("10_240");
     expect(document).toContain("20 requests per client per 60 seconds");
     expect(document).toContain("production must return `404`");
@@ -55,6 +57,7 @@ describe("reboot MVP release readiness", () => {
       "rate limit",
       "telemetry canonical",
       "telemetry legacy",
+      "telemetry quality signals",
       "production internal route",
     ]) {
       expect(document).toContain(requiredCase);

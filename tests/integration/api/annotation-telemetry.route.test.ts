@@ -169,6 +169,83 @@ describe("GET /api/internal/annotation-telemetry", () => {
     expect(JSON.stringify(payload)).not.toContain("sk-secondary");
   });
 
+  it("breaks down fallback and latency signals by query, depth, and slot", async () => {
+    process.env.ANNOTATION_FALLBACK_ALERT_RATE = "0.15";
+    process.env.ANNOTATION_P95_ALERT_MS = "5000";
+
+    recordAnnotationTelemetry({
+      mode: "fast",
+      provider: "llm",
+      elapsedMs: 2200,
+      cacheHit: false,
+      fallbackHit: false,
+      model: "gemini-3.1-flash-lite-preview",
+      slot: "secondary",
+      query: "如何面对困境",
+      passageId: "lunyu-1-8",
+      explorationDepth: 1,
+      timestamp: "2026-04-27T00:00:00.000Z",
+    });
+    recordAnnotationTelemetry({
+      mode: "fast",
+      provider: "deterministic",
+      elapsedMs: 5010,
+      cacheHit: false,
+      fallbackHit: true,
+      fallbackReason: "timeout",
+      model: "gemini-3.1-flash-lite-preview",
+      slot: "secondary",
+      query: "如何面对困境",
+      passageId: "lunyu-1-4",
+      explorationDepth: 2,
+      timestamp: "2026-04-27T00:00:01.000Z",
+    });
+
+    const response = await GET();
+    const payload = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(payload.data.summary).toMatchObject({
+      count: 2,
+      fallbackHits: 1,
+      fallbackRate: 0.5,
+      latency: {
+        p50: 2200,
+        p95: 5010,
+        p99: 5010,
+      },
+      bySlot: {
+        primary: 0,
+        secondary: 2,
+        unknown: 0,
+      },
+      byExplorationDepth: {
+        "1": expect.objectContaining({
+          count: 1,
+          fallbackHits: 0,
+        }),
+        "2": expect.objectContaining({
+          count: 1,
+          fallbackHits: 1,
+        }),
+      },
+      byFallbackReason: {
+        timeout: 1,
+      },
+      alerts: expect.arrayContaining([
+        expect.objectContaining({
+          code: "FALLBACK_RATE_HIGH",
+          actual: 0.5,
+        }),
+        expect.objectContaining({
+          code: "P95_LATENCY_HIGH",
+          actual: 5010,
+        }),
+      ]),
+    });
+    expect(Object.keys(payload.data.summary.byQueryHash)).toHaveLength(1);
+  });
+
   it("is disabled by default in production", async () => {
     process.env = {
       ...process.env,
