@@ -1,8 +1,8 @@
 ---
 title: Reboot MVP Implementation Plan
 created: 2026-04-24
-updated: 2026-04-24
-status: active
+updated: 2026-04-29
+status: release-readiness-review
 origin: docs/SUPERPOWERS_REBOOT_PLAN.md
 branch: codex/reboot-mvp
 plan_depth: deep
@@ -12,14 +12,19 @@ source_of_truth: confirmed
 # Reboot MVP Implementation Plan
 
 Created: 2026-04-24
-Updated: 2026-04-24
-Status: active
+Updated: 2026-04-29
+Status: release-readiness-review
 Origin: `docs/SUPERPOWERS_REBOOT_PLAN.md`
 
 Source of truth for the reboot is fixed to:
 
 - `docs/SUPERPOWERS_REBOOT_PLAN.md`
 - `docs/plans/reboot-mvp-implementation-plan.md`
+- `docs/plans/reboot-mvp-continuation-plan.md`
+
+Latest checkpoint:
+
+- 2026-04-29: automated release gate passed, headed browser review found remaining telemetry and polish debt. Continue from `docs/plans/reboot-mvp-continuation-plan.md`.
 
 ## 1. Problem Frame
 
@@ -101,7 +106,35 @@ Suggested merge checkpoints:
 - Checkpoint D: phase 4 exploration path complete
 - Checkpoint E: phase 5 polish and acceptance checklist complete
 
-## 8. Implementation Units
+## 8. 2026-04-29 Progress Checkpoint
+
+The reboot MVP is no longer in the foundation-building phase. The executable path exists and is under release-readiness review.
+
+Automated verification completed on 2026-04-29:
+
+- `npm run generate-search-artifacts`: passed; wrote 20 embeddings.
+- `npm run type-check`: passed.
+- `npm run lint`: passed with no ESLint warnings or errors.
+- `npm test -- --runInBand`: passed; 29 test suites and 122 tests.
+- `npm run build`: passed.
+- `npm run smoke:release`: passed against a local standalone production server.
+
+Browser review completed on 2026-04-29:
+
+- Desktop headed smoke reached search results, root annotation, linked exploration, back navigation, and new-result reset.
+- Mobile headed smoke reached home, search results, and root annotation. Screenshots confirmed the first screen and results remain usable at 390px width.
+- Exploration stack behavior was verified by page text: linked exploration reached `第 2 层`, back returned to `第 1 层`, and selecting another result reset the stack to `第 1 层`.
+
+Known gaps from the review:
+
+- Annotation telemetry can still raise `FALLBACK_RATE_HIGH` and `P95_LATENCY_HIGH` when the configured provider hits timeout fallback.
+- The selected result card can continue showing `当前正在为这一句请求注释` after annotation content is already available.
+- Next.js build/runtime logs warn about `metadata.viewport`, `metadata.themeColor`, missing `metadataBase`, and missing production assets such as `/manifest.json`, `/sw.js`, `/favicon.ico`, and `/analytics.js`.
+- `agent-browser` sessions were unstable during long headed runs and occasionally jumped to `about:blank`; do not treat those screenshots as product white-screen evidence without reproducing in a stable browser session.
+
+Release signoff remains blocked until the continuation plan is executed or the telemetry exception is explicitly accepted in release notes.
+
+## 9. Implementation Units
 
 ### Phase 1: Clean Foundation
 
@@ -600,7 +633,7 @@ Depends on:
 
 - IU 5.1
 
-## 9. Test Strategy
+## 10. Test Strategy
 
 Automated coverage for the reboot should come from three layers:
 
@@ -614,7 +647,7 @@ Manual acceptance remains necessary for:
 - Mobile drawer or bottom-sheet behavior on a real browser
 - Final copy quality for leaf-node and error-adjacent states
 
-## 10. Risks and Mitigations
+## 11. Risks and Mitigations
 
 - Contract drift returns through "temporary" legacy aliases
   Mitigation: reject dual-field support on the MVP path and update callers immediately
@@ -627,7 +660,7 @@ Manual acceptance remains necessary for:
 - Exploration UI grows into a graph project
   Mitigation: keep phase 4 to stack navigation plus a minimal panel only
 
-## 11. Handoff Criteria
+## 12. Handoff Criteria
 
 This plan is ready for execution when:
 

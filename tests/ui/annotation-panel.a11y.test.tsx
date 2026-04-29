@@ -38,6 +38,10 @@ describe("AnnotationPanel accessibility polish", () => {
 
     expect(screen.getByRole("tab", { name: "我注六经" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("tabpanel", { name: "我注六经" })).toBeInTheDocument();
+
+    fireEvent.keyDown(screen.getByRole("tab", { name: "我注六经" }), { key: "ArrowLeft" });
+
+    expect(screen.getByRole("tab", { name: "六经注我" })).toHaveAttribute("aria-selected", "true");
   });
 
   it("gives the link detail toggle an accessible name and expanded state", () => {
@@ -75,5 +79,24 @@ describe("AnnotationPanel accessibility polish", () => {
 
     expect(screen.getByRole("status", { name: "注释生成状态" })).toBeInTheDocument();
     expect(screen.queryByText(/JSON|SSE|\/api\/annotate/u)).not.toBeInTheDocument();
+  });
+
+  it("retries the current annotation without reloading the page", () => {
+    const onRetry = jest.fn();
+
+    render(
+      <AnnotationPanel
+        query="如何面对困境"
+        annotation={null}
+        isLoading={false}
+        error={new Error("provider timeout")}
+        onWikiNavigate={jest.fn()}
+        onRetry={onRetry}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "重试当前段落" }));
+
+    expect(onRetry).toHaveBeenCalledTimes(1);
   });
 });

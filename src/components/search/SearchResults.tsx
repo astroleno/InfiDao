@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { SearchResult } from '@/types';
 import { ResultCard } from './ResultCard';
 
@@ -7,6 +8,8 @@ interface SearchResultsProps {
   onAnnotate: (passageId: string, passageText: string) => void;
   isAnnotating: boolean;
   selectedPassage: string | null;
+  activeAnnotationPassage: string | null;
+  renderActivePanel?: () => ReactNode;
 }
 
 export function SearchResults({
@@ -14,7 +17,9 @@ export function SearchResults({
   query,
   onAnnotate,
   isAnnotating,
-  selectedPassage
+  selectedPassage,
+  activeAnnotationPassage,
+  renderActivePanel,
 }: SearchResultsProps) {
   return (
     <div className="flex w-full flex-col gap-8 md:gap-10">
@@ -27,17 +32,27 @@ export function SearchResults({
       </div>
 
       <div className="space-y-6 md:space-y-10">
-        {results.map((result, index) => (
-          <ResultCard
-            key={result.id}
-            result={result}
-            query={query}
-            index={index}
-            onAnnotate={onAnnotate}
-            isAnnotating={isAnnotating}
-            isSelected={selectedPassage === result.id}
-          />
-        ))}
+        {results.map((result, index) => {
+          const isSelected = selectedPassage === result.id;
+
+          return (
+            <div key={result.id} className="space-y-6 md:space-y-10">
+              <ResultCard
+                result={result}
+                query={query}
+                index={index}
+                onAnnotate={onAnnotate}
+                isAnnotating={isAnnotating}
+                isSelected={isSelected}
+                hasCompletedAnnotation={activeAnnotationPassage === result.id}
+              />
+
+              {isSelected && renderActivePanel && (
+                <div className="space-y-4 lg:hidden">{renderActivePanel()}</div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

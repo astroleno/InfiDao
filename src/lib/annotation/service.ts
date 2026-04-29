@@ -189,6 +189,7 @@ export async function createAnnotation({
   const trimmedQuery = query.trim();
   const trimmedPassageText = passageText.trim();
   const normalizedVisitedPassageIds = normalizeVisitedPassageIds(passageId, visitedPassageIds);
+  const explorationDepth = normalizedVisitedPassageIds.length;
   const mode = resolveAnnotationLlmMode();
   const cacheKey = buildAnnotationCacheKey({
     query: trimmedQuery,
@@ -207,6 +208,9 @@ export async function createAnnotation({
       elapsedMs: Date.now() - startedAt,
       cacheHit: true,
       fallbackHit: false,
+      query: trimmedQuery,
+      passageId,
+      explorationDepth,
     });
 
     return cachedAnnotation;
@@ -257,6 +261,11 @@ export async function createAnnotation({
     cacheable = false;
     fallbackHit = true;
     fallbackReason = error instanceof AnnotationLlmTimeoutError ? "timeout" : "provider_error";
+
+    if (error instanceof AnnotationLlmTimeoutError) {
+      providerModel = error.model;
+      providerSlot = error.slot;
+    }
   }
 
   const annotation = {
@@ -283,6 +292,9 @@ export async function createAnnotation({
     elapsedMs: Date.now() - startedAt,
     cacheHit: false,
     fallbackHit,
+    query: trimmedQuery,
+    passageId,
+    explorationDepth,
     ...(fallbackReason !== undefined ? { fallbackReason } : {}),
     ...(providerModel !== undefined ? { model: providerModel } : {}),
     ...(providerSlot !== undefined ? { slot: providerSlot } : {}),

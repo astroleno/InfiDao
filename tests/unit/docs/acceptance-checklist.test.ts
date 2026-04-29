@@ -28,6 +28,8 @@ describe("reboot MVP acceptance checklist", () => {
     expect(checklist).toContain("`GET /api/internal/annotation-telemetry` returns `200`");
     expect(checklist).toContain("telemetry `llm.warnings` is empty");
     expect(checklist).toContain("telemetry reports migration warnings and never returns API keys");
+    expect(checklist).toContain("fallback breakdown by query hash, exploration depth, provider slot");
+    expect(checklist).toContain("p50/p95/p99 latency");
   });
 
   it("keeps the environment example centered on canonical annotation llm slots", () => {

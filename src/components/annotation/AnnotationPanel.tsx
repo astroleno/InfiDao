@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 import type { AnnotationLink, AnnotationResult } from "@/types";
 import { AnnotationLinks } from "./AnnotationLinks";
 import { AnnotationMeta } from "./AnnotationMeta";
@@ -12,7 +12,25 @@ interface AnnotationPanelProps {
   isLoading: boolean;
   error: Error | null;
   onWikiNavigate: (link: AnnotationLink) => void;
+  onRetry?: () => void;
+  idPrefix?: string;
 }
+
+type AnnotationTab = "sixToMe" | "meToSix";
+
+const ANNOTATION_TABS: Array<{
+  id: AnnotationTab;
+  label: string;
+}> = [
+  {
+    id: "sixToMe",
+    label: "六经注我",
+  },
+  {
+    id: "meToSix",
+    label: "我注六经",
+  },
+];
 
 export function AnnotationPanel({
   query,
@@ -20,9 +38,46 @@ export function AnnotationPanel({
   isLoading,
   error,
   onWikiNavigate,
+  onRetry,
+  idPrefix = "annotation",
 }: AnnotationPanelProps) {
-  const [activeTab, setActiveTab] = useState<"sixToMe" | "meToSix">("sixToMe");
-  const activePanelId = `annotation-${activeTab}-panel`;
+  const [activeTab, setActiveTab] = useState<AnnotationTab>("sixToMe");
+  const activePanelId = `${idPrefix}-${activeTab}-panel`;
+
+  const focusTab = (tab: AnnotationTab) => {
+    setActiveTab(tab);
+    const scheduleFocus =
+      typeof requestAnimationFrame === "function"
+        ? requestAnimationFrame
+        : (callback: FrameRequestCallback) => window.setTimeout(callback, 0);
+
+    scheduleFocus(() => {
+      document.getElementById(`${idPrefix}-${tab}-tab`)?.focus();
+    });
+  };
+
+  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    const currentIndex = ANNOTATION_TABS.findIndex(tab => tab.id === activeTab);
+    const lastIndex = ANNOTATION_TABS.length - 1;
+    let nextTab: AnnotationTab | null = null;
+
+    if (event.key === "ArrowRight") {
+      nextTab = ANNOTATION_TABS[currentIndex === lastIndex ? 0 : currentIndex + 1]?.id ?? null;
+    } else if (event.key === "ArrowLeft") {
+      nextTab = ANNOTATION_TABS[currentIndex <= 0 ? lastIndex : currentIndex - 1]?.id ?? null;
+    } else if (event.key === "Home") {
+      nextTab = ANNOTATION_TABS[0]?.id ?? null;
+    } else if (event.key === "End") {
+      nextTab = ANNOTATION_TABS[lastIndex]?.id ?? null;
+    }
+
+    if (nextTab === null) {
+      return;
+    }
+
+    event.preventDefault();
+    focusTab(nextTab);
+  };
 
   useEffect(() => {
     if (annotation?.sixToMe && !annotation?.meToSix) {
@@ -46,13 +101,15 @@ export function AnnotationPanel({
           </div>
           <h3 className="mb-2 text-lg font-medium text-red-100">注释生成失败</h3>
           <p className="text-sm text-red-200/80">{error.message}</p>
-          <button
-            type="button"
-            className="mt-4 rounded-full border border-red-800 px-4 py-2 text-sm text-red-100 transition hover:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 focus:ring-offset-ink"
-            onClick={() => window.location.reload()}
-          >
-            重试
-          </button>
+          {onRetry && (
+            <button
+              type="button"
+              className="mt-4 rounded-full border border-red-800 px-4 py-2 text-sm text-red-100 transition hover:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 focus:ring-offset-ink"
+              onClick={onRetry}
+            >
+              重试当前段落
+            </button>
+          )}
         </div>
       </div>
     );
@@ -110,34 +167,25 @@ export function AnnotationPanel({
 
       <div className="px-6 pt-6">
         <div role="tablist" aria-label="注释视角" className="flex space-x-1 rounded-lg border border-stone-800 bg-stone-900 p-1">
-          <button
-            id="annotation-sixToMe-tab"
-            role="tab"
-            aria-selected={activeTab === "sixToMe"}
-            aria-controls="annotation-sixToMe-panel"
-            onClick={() => setActiveTab("sixToMe")}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              activeTab === "sixToMe"
-                ? "bg-zen text-ink shadow-sm"
-                : "text-stone-400 hover:text-paper"
-            }`}
-          >
-            六经注我
-          </button>
-          <button
-            id="annotation-meToSix-tab"
-            role="tab"
-            aria-selected={activeTab === "meToSix"}
-            aria-controls="annotation-meToSix-panel"
-            onClick={() => setActiveTab("meToSix")}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              activeTab === "meToSix"
-                ? "bg-zen text-ink shadow-sm"
-                : "text-stone-400 hover:text-paper"
-            }`}
-          >
-            我注六经
-          </button>
+          {ANNOTATION_TABS.map(tab => (
+            <button
+              key={tab.id}
+              id={`${idPrefix}-${tab.id}-tab`}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              aria-controls={`${idPrefix}-${tab.id}-panel`}
+              tabIndex={activeTab === tab.id ? 0 : -1}
+              onClick={() => setActiveTab(tab.id)}
+              onKeyDown={handleTabKeyDown}
+              className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                activeTab === tab.id
+                  ? "bg-zen text-ink shadow-sm"
+                  : "text-stone-400 hover:text-paper"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -145,7 +193,7 @@ export function AnnotationPanel({
         <div
           id={activePanelId}
           role="tabpanel"
-          aria-labelledby={`annotation-${activeTab}-tab`}
+          aria-labelledby={`${idPrefix}-${activeTab}-tab`}
           className="space-y-6"
         >
           {activeTab === "sixToMe" ? (

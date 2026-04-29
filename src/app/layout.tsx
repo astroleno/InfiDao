@@ -1,22 +1,16 @@
-import { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
   title: '六经注我 - AI智能经典注释系统',
   description: '通过人工智能技术，实现"我注六经，六经注我"的智慧对话，探索中华经典的现代价值',
   keywords: ['六经注我', '经典注释', '人工智能', '论语', '孟子', '大学', '中庸', '国学'],
   authors: [{ name: 'InfiDao Team' }],
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0f172a' }
-  ],
-  manifest: '/manifest.json',
   icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+    icon: '/favicon.svg',
   },
   openGraph: {
     title: '六经注我 - AI智能经典注释系统',
@@ -24,22 +18,23 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'zh_CN',
     url: 'https://infidao.com',
-    siteName: '六经注我',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: '六经注我 - AI智能经典注释系统'
-      }
-    ]
+    siteName: '六经注我'
   },
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary',
     title: '六经注我 - AI智能经典注释系统',
-    description: '通过人工智能技术，实现"我注六经，六经注我"的智慧对话',
-    images: ['/og-image.png']
+    description: '通过人工智能技术，实现"我注六经，六经注我"的智慧对话'
   }
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0f172a' },
+  ],
 };
 
 export default function RootLayout({
@@ -63,47 +58,6 @@ export default function RootLayout({
             </div>
           </ThemeProvider>
         </ErrorBoundary>
-
-        {/* Performance monitoring and analytics */}
-        {process.env.NODE_ENV === 'production' && (
-          <>
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  // Performance monitoring
-                  if ('requestIdleCallback' in window) {
-                    requestIdleCallback(() => {
-                      // Load analytics scripts
-                      const script = document.createElement('script');
-                      script.src = '/analytics.js';
-                      script.async = true;
-                      document.head.appendChild(script);
-                    });
-                  }
-                `
-              }}
-            />
-          </>
-        )}
-
-        {/* Service Worker Registration */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js')
-                    .then((registration) => {
-                      console.log('SW registered: ', registration);
-                    })
-                    .catch((registrationError) => {
-                      console.log('SW registration failed: ', registrationError);
-                    });
-                });
-              }
-            `
-          }}
-        />
       </body>
     </html>
   );
