@@ -14,10 +14,18 @@ export default {
     },
     extend: {
       colors: {
-        paper: "#ede7d8",
-        ink: "#14110f",
-        zen: "#c7b38b",
-        seal: "#9e4b3f",
+        paper: "hsl(var(--paper))",
+        ink: "hsl(var(--ink))",
+        zen: "hsl(var(--zen))",
+        seal: "hsl(var(--seal))",
+        reader: {
+          surface: "hsl(var(--reader-surface))",
+          muted: "hsl(var(--reader-surface-muted))",
+          border: "hsl(var(--reader-border))",
+          text: "hsl(var(--foreground))",
+          subdued: "hsl(var(--reader-muted))",
+          danger: "hsl(var(--reader-danger))",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

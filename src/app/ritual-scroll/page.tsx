@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const TEXT_LINES = [
   "六经注我",
@@ -56,13 +56,34 @@ function updateLineStyle(element: HTMLElement, viewportHeight: number) {
   element.style.opacity = opacity.toFixed(3);
 }
 
-export default function SimonRogersPage() {
+export default function RitualScrollPage() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(null);
+  const shouldRenderStatic = prefersReducedMotion !== false;
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+
+    if (!mediaQuery) {
+      setPrefersReducedMotion(false);
+      return undefined;
+    }
+
+    const syncMotionPreference = () => setPrefersReducedMotion(mediaQuery.matches);
+
+    syncMotionPreference();
+    mediaQuery.addEventListener("change", syncMotionPreference);
+
+    return () => {
+      mediaQuery.removeEventListener("change", syncMotionPreference);
+    };
+  }, []);
 
   useEffect(() => {
     const elements = Array.from(containerRef.current?.querySelectorAll<HTMLElement>(".text-line") ?? []);
 
-    if (elements.length === 0 || typeof window.IntersectionObserver !== "function") {
+    if (elements.length === 0 || typeof window.IntersectionObserver !== "function" || shouldRenderStatic) {
       return undefined;
     }
 
@@ -136,31 +157,44 @@ export default function SimonRogersPage() {
         element.style.willChange = "";
       });
     };
-  }, []);
+  }, [shouldRenderStatic]);
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-background">
+    <div className={shouldRenderStatic ? "min-h-screen min-h-[100dvh] overflow-y-auto bg-background py-12" : "fixed inset-0 overflow-hidden bg-background"}>
+      {!shouldRenderStatic && (
+        <button
+          type="button"
+          aria-pressed={isPaused}
+          onClick={() => setIsPaused(current => !current)}
+          className="fixed right-4 top-4 z-10 border border-stone-700 bg-ink/80 px-3 py-2 text-xs tracking-[0.18em] text-zen transition hover:border-zen hover:text-paper active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+        >
+          {isPaused ? "继续滚动" : "暂停滚动"}
+        </button>
+      )}
       <div
-        className="animate-scroll-up"
+        className={shouldRenderStatic ? "" : "motion-safe:animate-scroll-up motion-reduce:animate-none"}
         ref={containerRef}
-        style={{
-          perspective: "900px",
-          transformStyle: "preserve-3d",
-          transform: "rotateX(9deg) rotateZ(-4deg)",
-        }}
+        style={shouldRenderStatic
+          ? undefined
+          : {
+              animationPlayState: isPaused ? "paused" : "running",
+              perspective: "900px",
+              transformStyle: "preserve-3d",
+              transform: "rotateX(9deg) rotateZ(-4deg)",
+            }}
       >
-        {LINE_GROUPS.map(group => (
-          <div key={group} className="py-40">
+        {(shouldRenderStatic ? ["static"] : LINE_GROUPS).map(group => (
+          <div key={group} className={shouldRenderStatic ? "py-4" : "py-40"}>
             {TEXT_LINES.map((line, index) => (
               <div
                 key={`${group}-${index}`}
                 className="text-line mb-4 flex justify-center px-8"
                 style={{
-                  transformStyle: "preserve-3d",
+                  transformStyle: shouldRenderStatic ? undefined : "preserve-3d",
                   minHeight: line ? "2.8rem" : "1.25rem",
                 }}
               >
-                <p className="max-w-3xl text-center font-serif text-[1.35rem] italic leading-relaxed text-[#5968ff] md:text-[1.55rem] lg:text-[1.75rem]">
+                <p className="max-w-3xl text-center font-classic text-[1.35rem] italic leading-relaxed text-zen md:text-[1.55rem] lg:text-[1.75rem]">
                   {line || "\u00A0"}
                 </p>
               </div>

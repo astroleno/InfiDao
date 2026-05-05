@@ -14,12 +14,12 @@ export function TypingIndicator({ isActive, color = 'primary', size = 'md' }: Ty
   };
 
   const colorClasses = {
-    primary: 'bg-primary-600',
-    amber: 'bg-amber-600',
-    gray: 'bg-gray-600'
+    primary: 'bg-zen',
+    amber: 'bg-seal',
+    gray: 'bg-stone-500'
   };
 
   return (
-    <span className={`inline-block ${sizeClasses[size]} ${colorClasses[color]} ml-1 animate-pulse`}></span>
+    <span className={`inline-block ${sizeClasses[size]} ${colorClasses[color]} ml-1 motion-safe:animate-pulse`}></span>
   );
 }

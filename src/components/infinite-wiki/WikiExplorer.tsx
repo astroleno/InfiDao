@@ -1,8 +1,6 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useCallback, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { WikiNode } from '@/lib/stores/uiStore';
-import { Button } from '@/components/ui/Button';
-import { Loading } from '@/components/ui/Loading';
 
 interface WikiExplorerProps {
   nodes: WikiNode[];
@@ -15,33 +13,45 @@ interface ExplorerNode extends WikiNode {
   level: number;
 }
 
+type ViewMode = 'graph' | 'list' | 'timeline';
+
+const VIEW_MODES: Array<{ id: ViewMode; label: string }> = [
+  { id: 'graph', label: '图谱' },
+  { id: 'list', label: '列表' },
+  { id: 'timeline', label: '时间轴' },
+];
+
 export function WikiExplorer({ nodes, onClose, onSelectPassage }: WikiExplorerProps) {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'graph' | 'list' | 'timeline'>('graph');
+  const [viewMode, setViewMode] = useState<ViewMode>('graph');
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
 
-  // Build hierarchical tree structure
   const buildTree = useCallback((flatNodes: WikiNode[]): ExplorerNode[] => {
     const nodeMap = new Map<string, ExplorerNode>();
     const rootNodes: ExplorerNode[] = [];
 
-    // Create all nodes
-    flatNodes.forEach((node, index) => {
+    flatNodes.forEach((node) => {
       nodeMap.set(node.id, {
         ...node,
         children: [],
-        level: 0
+        level: 0,
       });
     });
 
-    // Build hierarchy
-    flatNodes.forEach((node, index) => {
-      const explorerNode = nodeMap.get(node.id)!;
+    flatNodes.forEach((node) => {
+      const explorerNode = nodeMap.get(node.id);
+
+      if (!explorerNode) {
+        return;
+      }
 
       if (node.parentId && nodeMap.has(node.parentId)) {
-        const parent = nodeMap.get(node.parentId)!;
-        parent.children.push(explorerNode);
-        explorerNode.level = parent.level + 1;
+        const parent = nodeMap.get(node.parentId);
+
+        if (parent) {
+          parent.children.push(explorerNode);
+          explorerNode.level = parent.level + 1;
+        }
       } else {
         rootNodes.push(explorerNode);
       }
@@ -54,22 +64,30 @@ export function WikiExplorer({ nodes, onClose, onSelectPassage }: WikiExplorerPr
 
   const toggleExpand = useCallback((nodeId: string) => {
     setExpandedNodes(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(nodeId)) {
-        newSet.delete(nodeId);
+      const next = new Set(prev);
+
+      if (next.has(nodeId)) {
+        next.delete(nodeId);
       } else {
-        newSet.add(nodeId);
+        next.add(nodeId);
       }
-      return newSet;
+
+      return next;
     });
   }, []);
 
   const handleNodeClick = useCallback((node: WikiNode) => {
     setSelectedNode(node.id);
+
     if (node.passage) {
       onSelectPassage(node.id, node.passage);
     }
   }, [onSelectPassage]);
+
+  const renderAnnotationDot = (node: WikiNode) =>
+    node.annotation ? (
+      <span className="h-2 w-2 border border-zen bg-zen/70" title="已有注释" />
+    ) : null;
 
   const renderNode = useCallback((node: ExplorerNode) => {
     const isExpanded = expandedNodes.has(node.id);
@@ -86,73 +104,69 @@ export function WikiExplorer({ nodes, onClose, onSelectPassage }: WikiExplorerPr
         style={{ marginLeft: `${node.level * 24}px` }}
       >
         <div
-          className={`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-all duration-200 ${
+          className={`flex cursor-pointer items-center gap-3 border-y p-3 transition ${
             isSelected
-              ? 'bg-primary-100 border border-primary-300'
-              : 'bg-white hover:bg-gray-50 border border-gray-200'
+              ? 'border-zen/70 bg-stone-950/82'
+              : 'border-stone-800 bg-stone-950/52 hover:border-zen/45'
           }`}
           onClick={() => handleNodeClick(node)}
         >
-          {/* Expand/Collapse Button */}
           {hasChildren && (
             <button
-              onClick={(e) => {
-                e.stopPropagation();
+              type="button"
+              aria-label={isExpanded ? `收起：${node.query}` : `展开：${node.query}`}
+              onClick={(event) => {
+                event.stopPropagation();
                 toggleExpand(node.id);
               }}
-              className="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-200 transition-colors"
+              className="flex h-7 w-7 items-center justify-center border border-stone-800 text-stone-400 transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
             >
               <motion.svg
-                className="w-4 h-4 text-gray-600"
+                className="h-4 w-4"
                 animate={{ rotate: isExpanded ? 90 : 0 }}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </motion.svg>
             </button>
           )}
 
-          {/* Node Icon */}
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-            isSelected ? 'bg-primary-600' : 'bg-gray-400'
+          <div className={`flex h-8 w-8 items-center justify-center border ${
+            isSelected ? 'border-zen text-zen' : 'border-stone-700 text-stone-400'
           }`}>
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
 
-          {/* Node Content */}
-          <div className="flex-1 min-w-0">
-            <h3 className="font-medium text-gray-900 truncate">{node.query}</h3>
+          <div className="min-w-0 flex-1">
+            <h3 className="truncate font-medium text-paper">{node.query}</h3>
             {node.passage && (
-              <p className="text-sm text-gray-600 truncate mt-1">{node.passage}</p>
+              <p className="mt-1 truncate text-sm text-stone-400">{node.passage}</p>
             )}
-            <div className="text-xs text-gray-400 mt-1">
+            <div className="mt-1 text-xs text-stone-600">
               {new Date(node.timestamp).toLocaleString('zh-CN')}
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2">
-            {node.annotation && (
-              <div className="w-2 h-2 bg-green-500 rounded-full" title="已有注释" />
-            )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
+          <div className="flex items-center gap-3">
+            {renderAnnotationDot(node)}
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
                 handleNodeClick(node);
               }}
+              className="border-b border-stone-700 pb-1 text-sm text-zen transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
             >
               探索
-            </Button>
+            </button>
           </div>
         </div>
 
-        {/* Children */}
         <AnimatePresence>
           {hasChildren && isExpanded && (
             <motion.div
@@ -167,87 +181,82 @@ export function WikiExplorer({ nodes, onClose, onSelectPassage }: WikiExplorerPr
         </AnimatePresence>
       </motion.div>
     );
-  }, [expandedNodes, selectedNode, handleNodeClick, toggleExpand]);
+  }, [expandedNodes, handleNodeClick, selectedNode, toggleExpand]);
+
+  const renderEmptyState = () => (
+    <div className="py-12 text-center text-stone-500">
+      <svg className="mx-auto mb-4 h-16 w-16 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+      <p className="text-paper font-classic">还没有探索记录</p>
+      <p className="mt-2 text-sm">搜索和注释经文后，将在此显出回响路径。</p>
+    </div>
+  );
 
   const renderGraphView = () => (
     <div className="p-6">
       <div className="mb-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">知识图谱</h3>
-        <p className="text-sm text-gray-600">探索思想之间的关联与脉络</p>
+        <h3 className="mb-2 text-lg font-medium text-paper font-classic">回响图谱</h3>
+        <p className="text-sm text-stone-400">探索句与句之间的关联与脉络。</p>
       </div>
 
       {treeData.length > 0 ? (
         <div className="space-y-2">
           {treeData.map(renderNode)}
         </div>
-      ) : (
-        <div className="text-center py-12 text-gray-500">
-          <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-          <p>还没有探索记录</p>
-          <p className="text-sm mt-2">搜索和注释经文后将在此显示关联图谱</p>
-        </div>
-      )}
+      ) : renderEmptyState()}
     </div>
   );
 
   const renderListView = () => (
-    <div className="p-6">
+    <div className="space-y-4 p-6">
       <div className="mb-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">时间线</h3>
-        <p className="text-sm text-gray-600">按时间顺序查看您的探索历程</p>
+        <h3 className="mb-2 text-lg font-medium text-paper font-classic">探索列表</h3>
+        <p className="text-sm text-stone-400">按时间顺序查看已进入的经文。</p>
       </div>
 
-      <div className="space-y-4">
-        {nodes.map((node, index) => (
-          <motion.div
-            key={node.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className={`flex items-start gap-4 p-4 rounded-lg border cursor-pointer transition-all ${
-              selectedNode === node.id
-                ? 'border-primary-300 bg-primary-50'
-                : 'border-gray-200 hover:border-gray-300 bg-white'
-            }`}
-            onClick={() => handleNodeClick(node)}
-          >
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-              <span className="text-sm font-medium text-gray-600">{index + 1}</span>
-            </div>
+      {nodes.map((node, index) => (
+        <motion.div
+          key={node.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 }}
+          className={`flex cursor-pointer items-start gap-4 border-y p-4 transition ${
+            selectedNode === node.id
+              ? 'border-zen/70 bg-stone-950/82'
+              : 'border-stone-800 bg-stone-950/52 hover:border-zen/45'
+          }`}
+          onClick={() => handleNodeClick(node)}
+        >
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center border border-stone-800 text-sm font-medium text-zen">
+            {index + 1}
+          </div>
 
-            <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-gray-900">{node.query}</h4>
-              {node.passage && (
-                <p className="text-sm text-gray-600 mt-1 line-clamp-2">{node.passage}</p>
-              )}
-              <div className="text-xs text-gray-400 mt-2">
-                {new Date(node.timestamp).toLocaleString('zh-CN')}
-              </div>
-            </div>
-
-            {node.annotation && (
-              <div className="flex-shrink-0">
-                <div className="w-2 h-2 bg-green-500 rounded-full" title="已有注释" />
-              </div>
+          <div className="min-w-0 flex-1">
+            <h4 className="font-medium text-paper">{node.query}</h4>
+            {node.passage && (
+              <p className="mt-1 line-clamp-2 text-sm text-stone-400">{node.passage}</p>
             )}
-          </motion.div>
-        ))}
-      </div>
+            <div className="mt-2 text-xs text-stone-600">
+              {new Date(node.timestamp).toLocaleString('zh-CN')}
+            </div>
+          </div>
+
+          {renderAnnotationDot(node)}
+        </motion.div>
+      ))}
     </div>
   );
 
   const renderTimelineView = () => (
     <div className="p-6">
       <div className="mb-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">时间轴视图</h3>
-        <p className="text-sm text-gray-600">查看思想的演进路径</p>
+        <h3 className="mb-2 text-lg font-medium text-paper font-classic">时间轴视图</h3>
+        <p className="text-sm text-stone-400">查看思想进入经典后的演进路径。</p>
       </div>
 
       <div className="relative">
-        {/* Timeline Line */}
-        <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200" />
+        <div className="absolute bottom-0 left-6 top-0 w-px bg-stone-800" />
 
         <div className="space-y-6">
           {nodes.map((node, index) => (
@@ -258,38 +267,32 @@ export function WikiExplorer({ nodes, onClose, onSelectPassage }: WikiExplorerPr
               transition={{ delay: index * 0.1 }}
               className="relative flex items-start gap-6"
             >
-              {/* Timeline Node */}
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center z-10 ${
-                selectedNode === node.id
-                  ? 'bg-primary-600 border-4 border-primary-100'
-                  : 'bg-white border-4 border-gray-200'
+              <div className={`z-10 flex h-12 w-12 items-center justify-center border bg-stone-950 ${
+                selectedNode === node.id ? 'border-zen text-zen' : 'border-stone-800 text-stone-500'
               }`}>
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
 
-              {/* Content */}
               <div
-                className={`flex-1 p-4 rounded-lg border cursor-pointer transition-all ${
+                className={`flex-1 cursor-pointer border-y p-4 transition ${
                   selectedNode === node.id
-                    ? 'border-primary-300 bg-primary-50'
-                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                    ? 'border-zen/70 bg-stone-950/82'
+                    : 'border-stone-800 bg-stone-950/52 hover:border-zen/45'
                 }`}
                 onClick={() => handleNodeClick(node)}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h4 className="font-medium text-gray-900">{node.query}</h4>
+                    <h4 className="font-medium text-paper">{node.query}</h4>
                     {node.passage && (
-                      <p className="text-sm text-gray-600 mt-1">{node.passage}</p>
+                      <p className="mt-1 text-sm text-stone-400">{node.passage}</p>
                     )}
                   </div>
-                  {node.annotation && (
-                    <div className="w-2 h-2 bg-green-500 rounded-full ml-2 mt-2" />
-                  )}
+                  {renderAnnotationDot(node)}
                 </div>
-                <div className="text-xs text-gray-400 mt-3">
+                <div className="mt-3 text-xs text-stone-600">
                   {new Date(node.timestamp).toLocaleString('zh-CN')}
                 </div>
               </div>
@@ -305,88 +308,78 @@ export function WikiExplorer({ nodes, onClose, onSelectPassage }: WikiExplorerPr
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/78 p-4"
       onClick={onClose}
     >
       <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="wiki-explorer-title"
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col"
-        onClick={(e) => e.stopPropagation()}
+        className="flex max-h-[80vh] w-full max-w-4xl flex-col overflow-hidden border border-stone-800 bg-stone-950 shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between border-b border-stone-800 p-6">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">无限经典探索</h2>
-            <p className="text-sm text-gray-600 mt-1">在思想的海洋中自由航行</p>
+            <h2 id="wiki-explorer-title" className="text-xl font-semibold text-paper font-classic">无限经典探索</h2>
+            <p className="mt-1 text-sm text-stone-400">沿经文继续，查看已经形成的回响路径。</p>
           </div>
 
           <div className="flex items-center gap-4">
-            {/* View Mode Selector */}
-            <div className="flex items-center bg-gray-100 rounded-lg p-1">
-              <button
-                onClick={() => setViewMode('graph')}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  viewMode === 'graph'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                图谱
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  viewMode === 'list'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                列表
-              </button>
-              <button
-                onClick={() => setViewMode('timeline')}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  viewMode === 'timeline'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                时间轴
-              </button>
+            <div role="group" aria-label="探索视图" className="flex items-center border-y border-stone-800 p-1">
+              {VIEW_MODES.map(mode => (
+                <button
+                  key={mode.id}
+                  type="button"
+                  aria-pressed={viewMode === mode.id}
+                  onClick={() => setViewMode(mode.id)}
+                  className={`px-3 py-1.5 text-sm font-medium transition active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink ${
+                    viewMode === mode.id
+                      ? 'bg-zen text-ink'
+                      : 'text-stone-400 hover:text-paper'
+                  }`}
+                >
+                  {mode.label}
+                </button>
+              ))}
             </div>
 
-            {/* Close Button */}
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button
+              type="button"
+              aria-label="关闭无限经典探索"
+              onClick={onClose}
+              className="border border-stone-800 p-2 text-stone-400 transition hover:border-zen hover:text-paper active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-            </Button>
+            </button>
           </div>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto">
           {viewMode === 'graph' && renderGraphView()}
           {viewMode === 'list' && renderListView()}
           {viewMode === 'timeline' && renderTimelineView()}
         </div>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-200 bg-gray-50">
-          <div className="flex items-center justify-between text-sm text-gray-600">
+        <div className="border-t border-stone-800 bg-stone-900/40 p-4">
+          <div className="flex items-center justify-between text-sm text-stone-400">
             <span>共 {nodes.length} 个探索节点</span>
             <div className="flex items-center gap-4">
               <button
-                onClick={() => setExpandedNodes(new Set(nodes.map(n => n.id)))}
-                className="hover:text-gray-900"
+                type="button"
+                onClick={() => setExpandedNodes(new Set(nodes.map(node => node.id)))}
+                className="border-b border-stone-700 pb-1 transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
               >
                 展开全部
               </button>
               <button
+                type="button"
                 onClick={() => setExpandedNodes(new Set())}
-                className="hover:text-gray-900"
+                className="border-b border-stone-700 pb-1 transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
               >
                 收起全部
               </button>

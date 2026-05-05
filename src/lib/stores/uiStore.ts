@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-interface WikiNode {
+export interface WikiNode {
   id: string;
   query: string;
   passage?: string;
-  annotation?: any;
+  annotation?: unknown;
   timestamp: string;
   parentId?: string;
 }

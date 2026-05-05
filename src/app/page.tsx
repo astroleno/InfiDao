@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode, type Ref } from "react";
 import { AnnotationLink, AnnotationResult, ApiResponse, SearchResult } from "@/types";
 import { AnnotationPanel } from "@/components/annotation/AnnotationPanel";
 import { SearchBar } from "@/components/search/SearchBar";
@@ -28,6 +28,13 @@ type AnnotationRetryTarget =
       kind: "link";
       link: AnnotationLink;
     };
+
+interface ActiveReadingTarget {
+  passageId: string;
+  label: string;
+  text: string;
+  resonanceLabel: string;
+}
 
 function SearchLoadingState({ query }: { query: string }) {
   return (
@@ -78,6 +85,40 @@ function SearchLoadingState({ query }: { query: string }) {
   );
 }
 
+function ReaderStatePanel({
+  eyebrow,
+  title,
+  body,
+  tone = "neutral",
+  role,
+  action,
+}: {
+  eyebrow: string;
+  title: string;
+  body: string;
+  tone?: "neutral" | "danger";
+  role?: "alert";
+  action?: ReactNode;
+}) {
+  const toneClasses = tone === "danger"
+    ? "border-red-900/50 bg-reader-danger/35 text-red-100"
+    : "border-reader-border bg-reader-surface/70 text-paper";
+  const eyebrowClasses = tone === "danger" ? "text-red-300/75" : "text-reader-subdued";
+  const bodyClasses = tone === "danger" ? "text-red-200/80" : "text-stone-400";
+
+  return (
+    <div
+      role={role}
+      className={`mx-auto mt-16 max-w-2xl border-y px-6 py-9 text-center ${toneClasses}`}
+    >
+      <div className={`text-xs tracking-[0.32em] ${eyebrowClasses}`}>{eyebrow}</div>
+      <p className="mt-4 text-2xl text-paper font-classic">{title}</p>
+      <p className={`mx-auto mt-4 max-w-xl text-sm leading-8 ${bodyClasses}`}>{body}</p>
+      {action && <div className="mt-6">{action}</div>}
+    </div>
+  );
+}
+
 function buildAtmosphere(query: string, results: SearchResult[]) {
   const trimmedQuery = query.trim();
   const firstResult = results[0];
@@ -101,6 +142,18 @@ function buildAtmosphere(query: string, results: SearchResult[]) {
 
 function buildVisitedPassageIds(stack: WikiStack, nextPassageId: string): string[] {
   return [...new Set([...stack.map(node => node.annotation.passageId), nextPassageId])];
+}
+
+function getResonanceLabel(score: number) {
+  if (score >= 0.85) {
+    return "正中此念";
+  }
+
+  if (score >= 0.65) {
+    return "可深读";
+  }
+
+  return "旁通一义";
 }
 
 function formatPassageTargetLabel(target: {
@@ -136,12 +189,36 @@ function formatLinkTargetLabel(link: AnnotationLink) {
   });
 }
 
-function formatWikiNodeTargetLabel(node: WikiNode, results: SearchResult[]) {
+function buildRootReadingTarget(
+  results: SearchResult[],
+  passageId: string,
+  passageText: string,
+): ActiveReadingTarget {
+  const result = results.find(item => item.id === passageId);
+
+  return {
+    passageId,
+    label: formatSearchResultTargetLabel(results, passageId),
+    text: passageText,
+    resonanceLabel: result ? getResonanceLabel(result.score) : "可深读",
+  };
+}
+
+function buildLinkReadingTarget(link: AnnotationLink): ActiveReadingTarget {
+  return {
+    passageId: link.passageId,
+    label: formatLinkTargetLabel(link),
+    text: link.passageText,
+    resonanceLabel: "由此进入",
+  };
+}
+
+function buildWikiNodeReadingTarget(node: WikiNode, results: SearchResult[]): ActiveReadingTarget {
   if (node.via) {
-    return formatLinkTargetLabel(node.via);
+    return buildLinkReadingTarget(node.via);
   }
 
-  return formatSearchResultTargetLabel(results, node.annotation.passageId);
+  return buildRootReadingTarget(results, node.annotation.passageId, node.annotation.passageText);
 }
 
 function useIsDesktopLayout() {
@@ -166,13 +243,77 @@ function useIsDesktopLayout() {
   return isDesktop;
 }
 
+function MobileAnnotationReader({
+  readerRef,
+  targetLabel,
+  passageText,
+  resonanceLabel,
+  onBack,
+  children,
+}: {
+  readerRef: Ref<HTMLDivElement>;
+  targetLabel: string | null;
+  passageText: string;
+  resonanceLabel: string;
+  onBack: () => void;
+  children: ReactNode;
+}) {
+  const [isPassageExpanded, setIsPassageExpanded] = useState(false);
+
+  return (
+    <div
+      ref={readerRef}
+      role="region"
+      aria-label="注我阅读视图"
+      tabIndex={-1}
+      className="mx-auto mt-8 w-full max-w-3xl focus:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-zen/45 lg:hidden"
+    >
+      <button
+        type="button"
+        onClick={onBack}
+        className="mb-4 inline-flex min-h-11 items-center gap-2 border-b border-stone-700 px-3 py-2 text-xs tracking-[0.22em] text-stone-400 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+      >
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        回到回应列表
+      </button>
+
+      <article className="mb-4 border-y border-stone-800 bg-stone-950/62 px-3 py-3">
+        <div className="mb-2 flex items-start gap-3">
+          <span className="font-seal text-base text-seal">签</span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-xs tracking-[0.16em] text-stone-500">
+              {targetLabel ?? "当前经文"}
+            </span>
+            <span className="mt-1 block text-xs tracking-[0.16em] text-zen">{resonanceLabel}</span>
+          </span>
+        </div>
+        <blockquote className={`text-base leading-8 text-paper font-classic ${isPassageExpanded ? "" : "line-clamp-3"}`}>
+          {passageText}
+        </blockquote>
+        <button
+          type="button"
+          onClick={() => setIsPassageExpanded(current => !current)}
+          className="mt-3 inline-flex min-h-11 items-center border-b border-stone-700 px-2 text-xs tracking-[0.18em] text-stone-400 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+          aria-expanded={isPassageExpanded}
+        >
+          {isPassageExpanded ? "收起经文" : "展开经文"}
+        </button>
+      </article>
+
+      {children}
+    </div>
+  );
+}
+
 export default function HomePage() {
   const annotationRequestRef = useRef<{
     id: number;
     controller: AbortController | null;
   }>({ id: 0, controller: null });
   const retryTargetRef = useRef<AnnotationRetryTarget | null>(null);
-  const mobileAnnotationSurfaceRef = useRef<HTMLDivElement | null>(null);
+  const mobileAnnotationReaderRef = useRef<HTMLDivElement | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -185,6 +326,8 @@ export default function HomePage() {
   const [annotationError, setAnnotationError] = useState<Error | null>(null);
   const [annotationTargetLabel, setAnnotationTargetLabel] = useState<string | null>(null);
   const [selectedResultPassage, setSelectedResultPassage] = useState<string | null>(null);
+  const [isMobileAnnotationReaderOpen, setIsMobileAnnotationReaderOpen] = useState(false);
+  const [activeReadingTarget, setActiveReadingTarget] = useState<ActiveReadingTarget | null>(null);
   const [wikiStack, setWikiStack] = useState<WikiStack>([]);
   const isDesktopLayout = useIsDesktopLayout();
   const hasAnnotationSurface =
@@ -197,10 +340,12 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (isDesktopLayout || !hasAnnotationSurface || selectedResultPassage === null) {
+    if (isDesktopLayout || !isMobileAnnotationReaderOpen || activeReadingTarget === null) {
       return undefined;
     }
 
+    const prefersReducedMotion =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
     const scheduleFrame =
       typeof window.requestAnimationFrame === "function"
         ? window.requestAnimationFrame
@@ -210,16 +355,34 @@ export default function HomePage() {
         ? window.cancelAnimationFrame
         : window.clearTimeout;
     const frame = scheduleFrame(() => {
-      mobileAnnotationSurfaceRef.current?.scrollIntoView?.({
+      const reader = mobileAnnotationReaderRef.current;
+
+      reader?.focus({ preventScroll: true });
+      reader?.scrollIntoView?.({
         block: "start",
-        behavior: "smooth",
+        behavior: prefersReducedMotion ? "auto" : "smooth",
       });
     });
 
     return () => {
       cancelFrame(frame);
     };
-  }, [hasAnnotationSurface, isDesktopLayout, selectedResultPassage]);
+  }, [activeReadingTarget, isDesktopLayout, isMobileAnnotationReaderOpen]);
+
+  const focusResultAction = (passageId: string | null) => {
+    if (!passageId) {
+      return;
+    }
+
+    const scheduleFrame =
+      typeof window.requestAnimationFrame === "function"
+        ? window.requestAnimationFrame
+        : (callback: FrameRequestCallback) => window.setTimeout(callback, 0);
+
+    scheduleFrame(() => {
+      document.getElementById(`annotation-action-${passageId}`)?.focus();
+    });
+  };
 
   const cancelAnnotationRequest = () => {
     annotationRequestRef.current.controller?.abort();
@@ -278,6 +441,8 @@ export default function HomePage() {
     setWikiStack(resetWikiStack());
     setSelectedPassage(null);
     setSelectedResultPassage(null);
+    setIsMobileAnnotationReaderOpen(false);
+    setActiveReadingTarget(null);
     setIsSearching(true);
     setHasSearched(true);
 
@@ -316,7 +481,23 @@ export default function HomePage() {
       return;
     }
 
-    const targetLabel = formatSearchResultTargetLabel(searchResults, passageId);
+    const readingTarget = buildRootReadingTarget(searchResults, passageId, passageText);
+
+    if (annotation?.passageId === passageId) {
+      retryTargetRef.current = {
+        kind: "root",
+        passageId,
+        passageText,
+      };
+      setSelectedPassage(passageId);
+      setSelectedResultPassage(passageId);
+      setIsMobileAnnotationReaderOpen(true);
+      setActiveReadingTarget(readingTarget);
+      setAnnotationTargetLabel(readingTarget.label);
+      setAnnotationError(null);
+      return;
+    }
+
     const request = beginAnnotationRequest(passageId);
     retryTargetRef.current = {
       kind: "root",
@@ -325,7 +506,9 @@ export default function HomePage() {
     };
     setSelectedPassage(passageId);
     setSelectedResultPassage(passageId);
-    setAnnotationTargetLabel(targetLabel);
+    setIsMobileAnnotationReaderOpen(true);
+    setActiveReadingTarget(readingTarget);
+    setAnnotationTargetLabel(readingTarget.label);
     setAnnotation(null);
     setAnnotationError(null);
     setWikiStack(resetWikiStack());
@@ -378,14 +561,16 @@ export default function HomePage() {
       return;
     }
 
-    const targetLabel = formatLinkTargetLabel(link);
+    const readingTarget = buildLinkReadingTarget(link);
     const request = beginAnnotationRequest(link.passageId);
     retryTargetRef.current = {
       kind: "link",
       link,
     };
     setSelectedPassage(link.passageId);
-    setAnnotationTargetLabel(targetLabel);
+    setIsMobileAnnotationReaderOpen(true);
+    setActiveReadingTarget(readingTarget);
+    setAnnotationTargetLabel(readingTarget.label);
     setAnnotation(null);
     setAnnotationError(null);
 
@@ -448,7 +633,10 @@ export default function HomePage() {
       setAnnotationError(null);
       setSelectedPassage(nextNode?.annotation.passageId ?? null);
       setSelectedResultPassage(nextNode ? selectedResultPassage : null);
-      setAnnotationTargetLabel(nextNode ? formatWikiNodeTargetLabel(nextNode, searchResults) : null);
+      const nextReadingTarget = nextNode ? buildWikiNodeReadingTarget(nextNode, searchResults) : null;
+
+      setActiveReadingTarget(nextReadingTarget);
+      setAnnotationTargetLabel(nextReadingTarget?.label ?? null);
 
       return nextStack;
     });
@@ -481,13 +669,25 @@ export default function HomePage() {
     setWikiStack(resetWikiStack());
     setSelectedPassage(null);
     setSelectedResultPassage(null);
+    setIsMobileAnnotationReaderOpen(false);
+    setActiveReadingTarget(null);
+  };
+
+  const closeMobileAnnotationReader = () => {
+    const passageId = selectedResultPassage;
+
+    setIsMobileAnnotationReaderOpen(false);
+    focusResultAction(passageId);
   };
 
   const atmosphere = buildAtmosphere(searchQuery, searchResults);
   const renderAnnotationSurface = (idPrefix: string, placement: "desktop" | "mobile") => (
     <div
-      ref={placement === "mobile" ? mobileAnnotationSurfaceRef : undefined}
-      className="overflow-hidden rounded-xl border border-stone-800 bg-stone-950/85 text-stone-100 shadow-sm"
+      className={`overflow-hidden bg-stone-950/85 text-stone-100 shadow-sm ${
+        placement === "mobile"
+          ? "border-y border-stone-800"
+          : "rounded-xl border border-stone-800"
+      }`}
     >
       <WikiPanel stack={wikiStack} onBack={handleWikiBack} />
       <AnnotationPanel
@@ -499,9 +699,12 @@ export default function HomePage() {
         targetLabel={annotationTargetLabel}
         onWikiNavigate={handleWikiNavigate}
         onRetry={handleAnnotationRetry}
+        placement={placement}
       />
     </div>
   );
+  const showMobileAnnotationReader =
+    hasAnnotationSurface && !isDesktopLayout && isMobileAnnotationReaderOpen && activeReadingTarget !== null;
 
   return (
     <div className="relative min-h-screen min-h-[100dvh] overflow-hidden ritual-shell text-paper">
@@ -530,12 +733,12 @@ export default function HomePage() {
 
       <main className="relative z-10">
         {!hasSearched && (
-          <section className="flex min-h-screen min-h-[100dvh] flex-col items-center justify-center px-6 py-16">
+          <section className="flex min-h-screen min-h-[100dvh] flex-col items-center px-6 pb-8 pt-10 md:justify-center md:py-16">
             <div className="mb-6 inline-flex items-center rounded-full border border-stone-800 px-4 py-1 text-xs tracking-[0.32em] text-stone-500">
               INFIDAO
             </div>
             <div className="w-full max-w-4xl text-center">
-              <h1 className="text-6xl font-bold tracking-tight text-paper font-classic md:text-8xl">六经注我</h1>
+              <h1 className="text-5xl font-bold tracking-tight text-paper font-classic md:text-8xl">六经注我</h1>
               <p className="mt-5 text-lg italic tracking-[0.14em] text-stone-400 font-classic md:text-2xl">
                 输入此刻一念，经典开始回应
               </p>
@@ -544,7 +747,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="mt-14 w-full max-w-3xl">
+            <div className="mt-10 w-full max-w-3xl md:mt-14">
               <SearchBar
                 value={searchQuery}
                 onChange={setSearchQuery}
@@ -554,13 +757,17 @@ export default function HomePage() {
                 mode="intro"
               />
             </div>
-            <div className="mt-12 text-xs tracking-[0.26em] text-stone-600">按回车注入思想流</div>
+            <div className="mt-12 hidden text-xs tracking-[0.26em] text-stone-600 md:block">
+              写下一念，按回车回应
+            </div>
           </section>
         )}
 
         {hasSearched && (
-          <section className="min-h-screen min-h-[100dvh] px-6 pb-16 pt-6 md:px-8 md:pt-8">
-            <div className="mx-auto flex max-w-5xl items-start justify-between gap-4">
+          <section className="min-h-screen min-h-[100dvh] px-6 pb-16 pt-4 md:px-8 md:pt-8">
+            <div className={`mx-auto max-w-5xl items-start justify-between gap-4 ${
+              showMobileAnnotationReader ? "hidden md:flex" : "flex"
+            }`}>
               <button
                 onClick={resetHome}
                 className="inline-flex items-center gap-2 rounded-full border border-stone-800 px-4 py-2 text-xs tracking-[0.24em] text-stone-400 transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
@@ -573,12 +780,37 @@ export default function HomePage() {
               <div className="text-right text-xs tracking-[0.26em] text-stone-600">连续探索</div>
             </div>
 
-            <div className="mx-auto mt-8 max-w-4xl text-center">
-              <p className="text-xs uppercase tracking-[0.3em] text-stone-500">此刻一念</p>
-              <h2 className="mt-3 text-3xl leading-tight text-paper font-classic md:text-5xl">{searchQuery}</h2>
+            <div className={`mx-auto max-w-4xl text-center md:mt-8 ${
+              showMobileAnnotationReader ? "hidden md:block" : "mt-5"
+            }`}>
+              <p className="text-[0.65rem] uppercase tracking-[0.26em] text-stone-500 md:text-xs md:tracking-[0.3em]">此刻一念</p>
+              <h2 className="mx-auto mt-2 max-w-2xl text-xl leading-snug text-paper font-classic md:mt-3 md:text-5xl md:leading-tight">
+                {searchQuery}
+              </h2>
 
-              <div className="mt-10">
+              {!showMobileAnnotationReader && (
+                <details className="mx-auto mt-4 max-w-2xl border-y border-stone-800 py-2.5 text-left md:hidden">
+                  <summary className="cursor-pointer list-none text-center text-xs tracking-[0.24em] text-stone-400 transition hover:text-zen focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink">
+                    改写这一念
+                  </summary>
+                  <div className="mt-5">
+                    <SearchBar
+                      inputId="thought-query-mobile-inline"
+                      value={searchQuery}
+                      onChange={setSearchQuery}
+                      onSearch={handleSearch}
+                      isLoading={isSearching}
+                      mode="inline"
+                      compact
+                      showSuggestions={false}
+                    />
+                  </div>
+                </details>
+              )}
+
+              <div className="mt-10 hidden md:block">
                 <SearchBar
+                  inputId="thought-query-inline"
                   value={searchQuery}
                   onChange={setSearchQuery}
                   onSearch={handleSearch}
@@ -592,50 +824,58 @@ export default function HomePage() {
             {isSearching ? (
               <SearchLoadingState query={searchQuery} />
             ) : searchError ? (
-              <div
+              <ReaderStatePanel
                 role="alert"
-                className="mx-auto mt-20 max-w-2xl rounded-[2rem] border border-red-900/40 bg-red-950/20 px-6 py-8 text-center"
-              >
-                <div className="text-xs tracking-[0.32em] text-red-300/70">回响中断</div>
-                <p className="mt-4 text-lg text-red-100 font-classic">经典暂时未能回应</p>
-                <p className="mt-3 text-sm leading-7 text-red-200/80">{searchError}</p>
-                <button
-                  type="button"
-                  onClick={() => void handleSearch(searchQuery)}
-                  className="mt-6 rounded-full border border-red-800 px-5 py-2 text-sm text-red-100 transition hover:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 focus:ring-offset-ink"
-                >
-                  重新搜索
-                </button>
-              </div>
-            ) : searchResults.length > 0 ? (
-              <div className="mx-auto mt-12 grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-start">
-                <SearchResults
-                  results={searchResults}
-                  query={searchQuery}
-                  onAnnotate={handleAnnotate}
-                  isAnnotating={isAnnotating}
-                  pendingAnnotationPassageId={pendingAnnotationPassageId}
-                  selectedPassage={selectedResultPassage}
-                  activeAnnotationPassage={annotation?.passageId ?? null}
-                  {...(hasAnnotationSurface && !isDesktopLayout
-                    ? { renderActivePanel: resultId => renderAnnotationSurface(`annotation-mobile-${resultId}`, "mobile") }
-                    : {})}
-                />
-
-                {hasAnnotationSurface && isDesktopLayout && (
-                  <aside className="hidden lg:sticky lg:top-8 lg:block">
-                    {renderAnnotationSurface("annotation-desktop", "desktop")}
-                  </aside>
+                tone="danger"
+                eyebrow="回响中断"
+                title="经典暂时未能回应"
+                body={searchError}
+                action={(
+                  <button
+                    type="button"
+                    onClick={() => void handleSearch(searchQuery)}
+                    className="inline-flex min-h-11 items-center justify-center border border-red-800 px-5 py-2 text-sm text-red-100 transition hover:border-red-400 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 focus:ring-offset-ink"
+                  >
+                    重新搜索
+                  </button>
                 )}
-              </div>
+              />
+            ) : searchResults.length > 0 ? (
+              showMobileAnnotationReader ? (
+                <MobileAnnotationReader
+                  readerRef={mobileAnnotationReaderRef}
+                  targetLabel={activeReadingTarget!.label}
+                  passageText={activeReadingTarget!.text}
+                  resonanceLabel={activeReadingTarget!.resonanceLabel}
+                  onBack={closeMobileAnnotationReader}
+                >
+                  {renderAnnotationSurface("annotation-mobile-reader", "mobile")}
+                </MobileAnnotationReader>
+              ) : (
+                <div className="mx-auto mt-6 grid max-w-7xl gap-8 md:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-start">
+                  <SearchResults
+                    results={searchResults}
+                    query={searchQuery}
+                    onAnnotate={handleAnnotate}
+                    isAnnotating={isAnnotating}
+                    pendingAnnotationPassageId={pendingAnnotationPassageId}
+                    selectedPassage={selectedResultPassage}
+                    activeAnnotationPassage={annotation?.passageId ?? null}
+                  />
+
+                  {hasAnnotationSurface && isDesktopLayout && (
+                    <aside className="hidden lg:sticky lg:top-8 lg:block">
+                      {renderAnnotationSurface("annotation-desktop", "desktop")}
+                    </aside>
+                  )}
+                </div>
+              )
             ) : (
-              <div className="mx-auto mt-20 max-w-2xl rounded-[2rem] border border-stone-800 bg-stone-950/55 px-6 py-10 text-center">
-                <div className="text-xs tracking-[0.32em] text-stone-500">暂未匹配</div>
-                <p className="mt-4 text-2xl text-paper font-classic">这一念暂未听见回响</p>
-                <p className="mx-auto mt-4 max-w-xl text-sm leading-8 text-stone-400">
-                  换一种说法，或把问题说得更具体一些。当前先保留克制的搜索入口，不再展示额外营销模块。
-                </p>
-              </div>
+              <ReaderStatePanel
+                eyebrow="暂未匹配"
+                title="这一念暂未听见回响"
+                body="换一个更具体的处境，或回到一念重新发问。"
+              />
             )}
           </section>
         )}
