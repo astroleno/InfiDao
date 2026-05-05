@@ -104,6 +104,10 @@ export default function RitualScrollPage() {
       const viewportHeight = window.innerHeight || 1;
 
       nearViewport.forEach(element => updateLineStyle(element, viewportHeight));
+
+      if (!isPaused && nearViewport.size > 0) {
+        scheduleUpdate();
+      }
     };
 
     const scheduleUpdate = () => {
@@ -157,7 +161,7 @@ export default function RitualScrollPage() {
         element.style.willChange = "";
       });
     };
-  }, [shouldRenderStatic]);
+  }, [isPaused, shouldRenderStatic]);
 
   return (
     <div className={shouldRenderStatic ? "min-h-screen min-h-[100dvh] overflow-y-auto bg-background py-12" : "fixed inset-0 overflow-hidden bg-background"}>

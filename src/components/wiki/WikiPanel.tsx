@@ -3,10 +3,11 @@ import type { WikiStack } from "@/lib/wiki/service";
 interface WikiPanelProps {
   stack: WikiStack;
   onBack: () => void;
+  placement?: "desktop" | "mobile";
 }
 
-export function WikiPanel({ stack, onBack }: WikiPanelProps) {
-  if (stack.length === 0) {
+export function WikiPanel({ stack, onBack, placement = "desktop" }: WikiPanelProps) {
+  if (stack.length === 0 || (placement === "mobile" && stack.length <= 1)) {
     return null;
   }
 
@@ -29,7 +30,7 @@ export function WikiPanel({ stack, onBack }: WikiPanelProps) {
           <button
             type="button"
             onClick={onBack}
-            className="rounded-full border border-stone-700 px-3 py-1.5 text-xs tracking-[0.18em] text-stone-300 transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+            className="inline-flex min-h-11 items-center rounded-full border border-stone-700 px-4 py-2 text-xs tracking-[0.18em] text-stone-300 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink md:min-h-0 md:px-3 md:py-1.5"
           >
             返回上一层
           </button>
