@@ -20,15 +20,15 @@ const SECTIONS: Record<AnnotationTab, { title: string; description: string }> = 
 export function StreamingText({ isLoading, activeTab, onTabChange }: StreamingTextProps) {
   return (
     <div className="streaming-text-container">
-      <div className="min-h-[220px] rounded-lg border border-stone-800 bg-stone-900/70 p-6">
-        <div role="tablist" aria-label="生成中的注释视角" className="mb-4 flex space-x-2">
+      <div className="min-h-[220px] border border-stone-800 bg-stone-900/70 p-4 md:rounded-lg md:p-6">
+        <div role="group" aria-label="生成中的注释视角" className="mb-4 flex space-x-2">
           {(Object.keys(SECTIONS) as AnnotationTab[]).map((tab) => (
             <button
               key={tab}
-              role="tab"
-              aria-selected={activeTab === tab}
+              type="button"
+              aria-pressed={activeTab === tab}
               onClick={() => onTabChange(tab)}
-              className={`rounded-full px-3 py-1 text-sm transition-colors ${
+              className={`min-h-11 flex-1 rounded-sm px-4 py-3 text-sm transition-colors active:scale-[0.98] md:min-h-0 md:flex-none md:px-3 md:py-1 ${
                 activeTab === tab ? "bg-zen text-ink" : "bg-stone-950 text-stone-400 hover:text-paper"
               }`}
             >
@@ -39,10 +39,10 @@ export function StreamingText({ isLoading, activeTab, onTabChange }: StreamingTe
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <div className="h-4 w-1/3 animate-pulse rounded bg-stone-800"></div>
-            <div className="h-4 w-full animate-pulse rounded bg-stone-800"></div>
-            <div className="h-4 w-5/6 animate-pulse rounded bg-stone-800"></div>
-            <div className="h-4 w-2/3 animate-pulse rounded bg-stone-800"></div>
+            <div className="h-4 w-1/3 rounded bg-stone-800 motion-safe:animate-pulse"></div>
+            <div className="h-4 w-full rounded bg-stone-800 motion-safe:animate-pulse"></div>
+            <div className="h-4 w-5/6 rounded bg-stone-800 motion-safe:animate-pulse"></div>
+            <div className="h-4 w-2/3 rounded bg-stone-800 motion-safe:animate-pulse"></div>
           </div>
 
           <div className="rounded-xl border border-stone-800 bg-stone-950/70 p-4 text-sm text-stone-300">
@@ -51,7 +51,7 @@ export function StreamingText({ isLoading, activeTab, onTabChange }: StreamingTe
 
           {isLoading && (
             <div className="flex items-center text-sm text-stone-400">
-              <span className="mr-2 h-2 w-2 animate-pulse rounded-full bg-zen"></span>
+              <span className="mr-2 h-2 w-2 rounded-full bg-zen motion-safe:animate-pulse"></span>
               正在整理这一念与原文的对应关系。
             </div>
           )}

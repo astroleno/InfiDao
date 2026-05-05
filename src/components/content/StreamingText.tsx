@@ -17,8 +17,7 @@ export const StreamingText: React.FC<StreamingTextProps> = ({
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const textRef = useRef(text);
 
   // Update textRef when text changes
@@ -28,35 +27,33 @@ export const StreamingText: React.FC<StreamingTextProps> = ({
 
   // Start streaming when text changes
   useEffect(() => {
-    if (text && text !== displayedText) {
-      setIsStreaming(true);
-      setCurrentIndex(0);
+    if (!text) {
+      setIsStreaming(false);
       setDisplayedText('');
-
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-
-      intervalRef.current = setInterval(() => {
-        setCurrentIndex((prevIndex) => {
-          const nextIndex = prevIndex + 1;
-
-          if (nextIndex <= textRef.current.length) {
-            setDisplayedText(textRef.current.slice(0, nextIndex));
-
-            if (nextIndex >= textRef.current.length) {
-              setIsStreaming(false);
-              if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-              }
-              onComplete?.();
-            }
-          }
-
-          return nextIndex;
-        });
-      }, speed);
+      return undefined;
     }
+
+    setIsStreaming(true);
+    setDisplayedText('');
+
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    let currentIndex = 0;
+
+    intervalRef.current = setInterval(() => {
+      currentIndex += 1;
+      setDisplayedText(textRef.current.slice(0, currentIndex));
+
+      if (currentIndex >= textRef.current.length) {
+        setIsStreaming(false);
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+        }
+        onComplete?.();
+      }
+    }, speed);
 
     return () => {
       if (intervalRef.current) {
@@ -70,7 +67,7 @@ export const StreamingText: React.FC<StreamingTextProps> = ({
       <span className="relative">
         {displayedText}
         {isStreaming && (
-          <span className="blinking-cursor inline-block w-0.5 h-4 bg-primary-600 ml-0.5 align-middle animate-pulse"></span>
+          <span className="blinking-cursor inline-block w-0.5 h-4 bg-zen ml-0.5 align-middle motion-safe:animate-pulse"></span>
         )}
       </span>
     </div>

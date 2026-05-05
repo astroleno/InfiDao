@@ -30,13 +30,13 @@ export function AnnotationLinks({ links, onNavigate }: AnnotationLinksProps) {
           return (
             <div
               key={`${link.passageId}-${index}`}
-              className="overflow-hidden rounded-lg border border-stone-800 bg-stone-900/70 transition-all duration-200 hover:border-zen/50"
+              className="overflow-hidden border-y border-stone-800 bg-stone-950/35 transition-all duration-200 hover:border-zen/50"
             >
               <div className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="min-w-0 flex-1">
                     <div className="mb-2 flex items-center">
-                      <div className="mr-2 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-zen/10 text-zen">
+                      <div className="mr-2 flex h-6 w-6 flex-shrink-0 items-center justify-center border border-seal/50 text-seal">
                         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                         </svg>
@@ -53,7 +53,7 @@ export function AnnotationLinks({ links, onNavigate }: AnnotationLinksProps) {
                       <button
                         type="button"
                         onClick={() => onNavigate(link)}
-                        className="inline-flex items-center text-sm font-medium text-zen transition-colors hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+                        className="inline-flex items-center text-sm font-medium text-zen transition hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
                       >
                         <svg className="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -67,7 +67,7 @@ export function AnnotationLinks({ links, onNavigate }: AnnotationLinksProps) {
                         aria-expanded={isExpanded}
                         aria-controls={detailId}
                         onClick={() => setExpandedLink(isExpanded ? null : link.passageId)}
-                        className="rounded-full border border-stone-800 p-2 text-stone-400 transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+                        className="rounded-sm border border-stone-800 p-2 text-stone-400 transition hover:border-zen hover:text-paper active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
                       >
                         <svg
                           className={`h-4 w-4 transform transition-transform ${isExpanded ? "rotate-180" : ""}`}
@@ -85,7 +85,7 @@ export function AnnotationLinks({ links, onNavigate }: AnnotationLinksProps) {
 
                 {isExpanded && (
                   <div id={detailId} className="mt-4 border-t border-stone-800 pt-4">
-                    <div className="rounded-lg bg-stone-950/70 p-4 text-sm leading-6 text-stone-400">
+                    <div className="border-l border-seal/50 bg-stone-950/55 p-4 text-sm leading-6 text-stone-400">
                       沿此句继续，进入下一层回响。
                     </div>
                   </div>

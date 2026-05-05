@@ -10,9 +10,18 @@ All colors MUST be HSL.
   :root {
     --background: 24 18% 8%;
     --foreground: 38 25% 88%;
+    --paper: 42 39% 89%;
+    --ink: 24 15% 7%;
+    --zen: 40 34% 66%;
+    --seal: 7 43% 43%;
 
     --card: 24 16% 11%;
     --card-foreground: 38 25% 88%;
+    --reader-surface: 24 17% 11%;
+    --reader-surface-muted: 24 14% 15%;
+    --reader-border: 24 13% 24%;
+    --reader-muted: 28 12% 60%;
+    --reader-danger: 0 57% 24%;
 
     --popover: 24 16% 11%;
     --popover-foreground: 38 25% 88%;
@@ -40,33 +49,42 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 0 0% 97%;
-    --foreground: 225 73% 57%;
+    --background: 24 18% 8%;
+    --foreground: 38 25% 88%;
+    --paper: 42 39% 89%;
+    --ink: 24 15% 7%;
+    --zen: 40 34% 66%;
+    --seal: 7 43% 43%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 225 73% 57%;
+    --card: 24 16% 11%;
+    --card-foreground: 38 25% 88%;
+    --reader-surface: 24 17% 11%;
+    --reader-surface-muted: 24 14% 15%;
+    --reader-border: 24 13% 24%;
+    --reader-muted: 28 12% 60%;
+    --reader-danger: 0 57% 24%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 225 73% 57%;
+    --popover: 24 16% 11%;
+    --popover-foreground: 38 25% 88%;
 
-    --primary: 225 73% 57%;
-    --primary-foreground: 0 0% 97%;
+    --primary: 37 33% 60%;
+    --primary-foreground: 24 18% 10%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 225 73% 57%;
+    --secondary: 24 13% 18%;
+    --secondary-foreground: 38 18% 78%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 225 73% 57%;
+    --muted: 24 12% 16%;
+    --muted-foreground: 28 12% 60%;
 
-    --accent: 225 73% 57%;
-    --accent-foreground: 0 0% 97%;
+    --accent: 37 33% 60%;
+    --accent-foreground: 24 18% 10%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 225 73% 57%;
+    --border: 24 12% 24%;
+    --input: 24 12% 24%;
+    --ring: 37 33% 60%;
   }
 }
 
@@ -82,6 +100,7 @@ All colors MUST be HSL.
       radial-gradient(circle at bottom, rgba(71, 58, 33, 0.18), transparent 35%),
       linear-gradient(180deg, rgba(12, 10, 9, 0.98), rgba(20, 17, 15, 1));
     min-height: 100vh;
+    min-height: 100dvh;
   }
 
   ::selection {

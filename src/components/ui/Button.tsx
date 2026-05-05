@@ -22,14 +22,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+    const baseClasses = 'inline-flex items-center justify-center font-medium transition-all duration-200 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100';
 
     const variants = {
-      primary: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500',
-      secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500',
-      outline: 'border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:ring-primary-500',
-      ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-primary-500',
-      destructive: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500'
+      primary: 'border border-zen bg-zen text-ink hover:bg-paper focus:ring-zen',
+      secondary: 'border border-stone-700 bg-stone-900 text-stone-200 hover:border-stone-500 hover:text-paper focus:ring-zen',
+      outline: 'border border-stone-700 bg-transparent text-stone-300 hover:border-zen hover:text-paper focus:ring-zen',
+      ghost: 'text-stone-300 hover:text-paper focus:ring-zen',
+      destructive: 'border border-red-800 bg-red-950/35 text-red-100 hover:border-red-400 focus:ring-red-300'
     };
 
     const sizes = {

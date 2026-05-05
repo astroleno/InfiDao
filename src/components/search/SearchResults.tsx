@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { SearchResult } from '@/types';
 import { ResultCard } from './ResultCard';
 
@@ -10,7 +9,6 @@ interface SearchResultsProps {
   pendingAnnotationPassageId: string | null;
   selectedPassage: string | null;
   activeAnnotationPassage: string | null;
-  renderActivePanel?: (resultId: string) => ReactNode;
 }
 
 export function SearchResults({
@@ -21,11 +19,10 @@ export function SearchResults({
   pendingAnnotationPassageId,
   selectedPassage,
   activeAnnotationPassage,
-  renderActivePanel,
 }: SearchResultsProps) {
   return (
-    <div className="flex w-full flex-col gap-8 md:gap-10">
-      <div className="text-center">
+    <div className="flex w-full flex-col gap-6 md:gap-10">
+      <div className="hidden text-center md:block">
         <p className="text-xs uppercase tracking-[0.35em] text-stone-500">经典回应</p>
         <h2 className="mt-3 text-2xl text-paper font-classic md:text-3xl">关于 “{query}” 的 {results.length} 则回响</h2>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-400 md:text-base">
@@ -41,7 +38,6 @@ export function SearchResults({
             <div key={result.id} className="space-y-6 md:space-y-10">
               <ResultCard
                 result={result}
-                query={query}
                 index={index}
                 onAnnotate={onAnnotate}
                 isAnnotating={isAnnotating}
@@ -49,10 +45,6 @@ export function SearchResults({
                 isSelected={isSelected}
                 hasCompletedAnnotation={activeAnnotationPassage === result.id}
               />
-
-              {isSelected && renderActivePanel && (
-                <div className="space-y-4 lg:hidden">{renderActivePanel(result.id)}</div>
-              )}
             </div>
           );
         })}

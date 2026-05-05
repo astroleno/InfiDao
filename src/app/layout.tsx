@@ -5,16 +5,16 @@ import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
-  title: '六经注我 - AI智能经典注释系统',
-  description: '通过人工智能技术，实现"我注六经，六经注我"的智慧对话，探索中华经典的现代价值',
-  keywords: ['六经注我', '经典注释', '人工智能', '论语', '孟子', '大学', '中庸', '国学'],
+  title: '六经注我 - 以此刻一念进入经典',
+  description: '输入一念，读经典如何回应当下处境，再沿注语继续深入原文',
+  keywords: ['六经注我', '经典注释', '论语', '孟子', '大学', '中庸', '国学', '阅读'],
   authors: [{ name: 'InfiDao Team' }],
   icons: {
     icon: '/favicon.svg',
   },
   openGraph: {
-    title: '六经注我 - AI智能经典注释系统',
-    description: '通过人工智能技术，实现"我注六经，六经注我"的智慧对话',
+    title: '六经注我 - 以此刻一念进入经典',
+    description: '输入一念，读经典如何回应当下处境',
     type: 'website',
     locale: 'zh_CN',
     url: 'https://infidao.com',
@@ -22,19 +22,15 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: '六经注我 - AI智能经典注释系统',
-    description: '通过人工智能技术，实现"我注六经，六经注我"的智慧对话'
+    title: '六经注我 - 以此刻一念进入经典',
+    description: '输入一念，读经典如何回应当下处境'
   }
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0f172a' },
-  ],
+  themeColor: '#15110f',
 };
 
 export default function RootLayout({

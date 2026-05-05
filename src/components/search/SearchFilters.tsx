@@ -80,18 +80,19 @@ export function SearchFilters({ filters, onChange, onClear }: SearchFiltersProps
 
   return (
     <div className="search-filters">
-      {/* Filter Toggle */}
       <div className="flex items-center justify-between mb-4">
         <button
+          type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors"
+          aria-expanded={isExpanded}
+          className="flex items-center text-sm text-stone-400 transition-colors hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
         >
           <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
           </svg>
           搜索筛选
           {hasActiveFilters && (
-            <span className="ml-2 px-2 py-0.5 bg-primary-100 text-primary-700 text-xs rounded-full">
+            <span className="ml-2 border border-zen/40 px-2 py-0.5 text-xs text-zen">
               {selectedFilterCount}
             </span>
           )}
@@ -109,31 +110,31 @@ export function SearchFilters({ filters, onChange, onClear }: SearchFiltersProps
 
         {hasActiveFilters && (
           <button
+            type="button"
             onClick={onClear}
-            className="text-sm text-red-600 hover:text-red-800 transition-colors"
+            className="text-sm text-seal transition-colors hover:text-red-200 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 focus:ring-offset-ink"
           >
             清除筛选
           </button>
         )}
       </div>
 
-      {/* Filter Content */}
       {isExpanded && (
-        <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-6">
-          {/* Book Filters */}
+        <div className="space-y-6 border-y border-stone-800 bg-stone-950/60 p-6">
           <div>
-            <h3 className="text-sm font-medium text-gray-900 mb-3">经典书目</h3>
+            <h3 className="text-sm font-medium text-paper mb-3">经典书目</h3>
             <div className="grid grid-cols-3 gap-2">
               {CLASSIC_BOOKS.map((book) => {
                 const isSelected = localFilters.book?.includes(book.id);
                 return (
                   <button
                     key={book.id}
+                    type="button"
                     onClick={() => handleBookToggle(book.id)}
-                    className={`px-3 py-2 text-sm rounded-lg border transition-all duration-200 ${
+                    className={`border px-3 py-2 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink ${
                       isSelected
-                        ? 'bg-primary-50 border-primary-300 text-primary-700 font-medium'
-                        : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                        ? 'border-zen bg-zen text-ink font-medium'
+                        : 'border-stone-800 bg-stone-950/35 text-stone-300 hover:border-stone-600 hover:text-paper'
                     }`}
                   >
                     <div>{book.name}</div>
@@ -144,9 +145,8 @@ export function SearchFilters({ filters, onChange, onClear }: SearchFiltersProps
             </div>
           </div>
 
-          {/* Chapter Filters */}
           <div>
-            <h3 className="text-sm font-medium text-gray-900 mb-3">热门章节</h3>
+            <h3 className="text-sm font-medium text-paper mb-3">热门章节</h3>
             <div className="grid grid-cols-2 gap-2">
               {POPULAR_CHAPTERS.map((item, index) => {
                 const chapterKey = `${item.book}:${item.chapter}`;
@@ -154,11 +154,12 @@ export function SearchFilters({ filters, onChange, onClear }: SearchFiltersProps
                 return (
                   <button
                     key={index}
+                    type="button"
                     onClick={() => handleChapterToggle(item.book, item.chapter)}
-                    className={`px-3 py-2 text-sm rounded-lg border transition-all duration-200 ${
+                    className={`border px-3 py-2 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink ${
                       isSelected
-                        ? 'bg-amber-50 border-amber-300 text-amber-700 font-medium'
-                        : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                        ? 'border-seal bg-seal/20 text-red-100 font-medium'
+                        : 'border-stone-800 bg-stone-950/35 text-stone-300 hover:border-stone-600 hover:text-paper'
                     }`}
                   >
                     <div className="font-classic">{item.chapter}</div>
@@ -169,16 +170,16 @@ export function SearchFilters({ filters, onChange, onClear }: SearchFiltersProps
             </div>
           </div>
 
-          {/* Filter Summary */}
           {hasActiveFilters && (
-            <div className="pt-4 border-t border-gray-200">
+            <div className="pt-4 border-t border-stone-800">
               <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-stone-400">
                   已选择 {selectedFilterCount} 个筛选条件
                 </div>
                 <button
+                  type="button"
                   onClick={onClear}
-                  className="text-sm text-red-600 hover:text-red-800"
+                  className="text-sm text-seal hover:text-red-200 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 focus:ring-offset-ink"
                 >
                   清除
                 </button>

@@ -8,6 +8,36 @@ function createFetchResponse(body: unknown, ok = true) {
   });
 }
 
+const defaultMatchMedia = window.matchMedia;
+const defaultScrollIntoView = window.HTMLElement.prototype.scrollIntoView;
+
+function mockMatchMedia({
+  desktop = false,
+  reducedMotion = false,
+}: {
+  desktop?: boolean;
+  reducedMotion?: boolean;
+} = {}) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    writable: true,
+    value: jest.fn().mockImplementation((query: string) => ({
+      matches: query.includes("prefers-reduced-motion")
+        ? reducedMotion
+        : query.includes("min-width: 1024px")
+          ? desktop
+          : false,
+      media: query,
+      onchange: null,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  });
+}
+
 describe("HomePage search flow", () => {
   beforeEach(() => {
     global.fetch = jest.fn();
@@ -15,6 +45,16 @@ describe("HomePage search flow", () => {
 
   afterEach(() => {
     jest.resetAllMocks();
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      writable: true,
+      value: defaultMatchMedia,
+    });
+    Object.defineProperty(window.HTMLElement.prototype, "scrollIntoView", {
+      configurable: true,
+      writable: true,
+      value: defaultScrollIntoView,
+    });
   });
 
   it("shows distinct loading and success states, and removes non-MVP affordances", async () => {
@@ -28,6 +68,9 @@ describe("HomePage search flow", () => {
     );
 
     render(<HomePage />);
+
+    expect(screen.getByText("写下一念，按回车回应")).toBeInTheDocument();
+    expect(screen.queryByText("按回车注入思想流")).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText("输入此刻的一念"), {
       target: { value: "治理国家" },
@@ -55,7 +98,9 @@ describe("HomePage search flow", () => {
     );
 
     expect(await screen.findByText("身修而后家齐，家齐而后国治，国治而后天下平。")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "进入注我" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "进入注我" })).toHaveAccessibleDescription(
+      "大学 · 传二章 · 第 2 节",
+    );
     expect(screen.queryByText("排序：")).not.toBeInTheDocument();
     expect(screen.queryByText("加载更多结果")).not.toBeInTheDocument();
     expect(screen.queryByText("知识图谱")).not.toBeInTheDocument();
@@ -71,9 +116,12 @@ describe("HomePage search flow", () => {
 
     render(<HomePage />);
 
-    fireEvent.click(screen.getByRole("button", { name: "中庸之道" }));
+    fireEvent.click(screen.getByRole("button", { name: "我需要重新找回分寸" }));
 
     expect(await screen.findByText("这一念暂未听见回响")).toBeInTheDocument();
+    expect(screen.getByText("换一个更具体的处境，或回到一念重新发问。")).toBeInTheDocument();
+    expect(screen.getByText("这一念暂未听见回响").closest("div")).not.toHaveClass("rounded-[2rem]");
+    expect(screen.getByText("这一念暂未听见回响").closest("div")).toHaveClass("border-y");
   });
 
   it("shows a distinct error state when search fails and can retry the same query", async () => {
@@ -113,6 +161,8 @@ describe("HomePage search flow", () => {
     expect(await screen.findByRole("alert")).toBeInTheDocument();
     expect(screen.getByText("经典暂时未能回应")).toBeInTheDocument();
     expect(screen.getByText("search exploded")).toBeInTheDocument();
+    expect(screen.getByText("经典暂时未能回应").closest("div")).not.toHaveClass("rounded-[2rem]");
+    expect(screen.getByText("经典暂时未能回应").closest("div")).toHaveClass("border-y");
 
     fireEvent.click(screen.getByRole("button", { name: "重新搜索" }));
 
@@ -120,6 +170,8 @@ describe("HomePage search flow", () => {
   });
 
   it("opens the annotation panel from a selected search result", async () => {
+    mockMatchMedia({ desktop: true });
+
     (global.fetch as jest.Mock)
       .mockImplementationOnce(() =>
         createFetchResponse({
@@ -190,11 +242,10 @@ describe("HomePage search flow", () => {
     expect(screen.getByText("可继续互注")).toBeInTheDocument();
     expect(screen.getByText("继续看自省")).toBeInTheDocument();
     expect(screen.queryByText("取义中，此句暂不可重复进入")).not.toBeInTheDocument();
-    expect(screen.getByText("当前注语已展开，可沿此句继续进入下一层回响")).toBeInTheDocument();
     expect(screen.queryByText(/注释面板将在 Phase 3 接入/)).not.toBeInTheDocument();
   });
 
-  it("renders the mobile annotation surface directly after the selected result", async () => {
+  it("opens a mobile annotation reader and can return to the response list", async () => {
     (global.fetch as jest.Mock)
       .mockImplementationOnce(() =>
         createFetchResponse({
@@ -242,12 +293,159 @@ describe("HomePage search flow", () => {
     expect(await screen.findByText("君子不重则不威，学则不固。")).toBeInTheDocument();
     fireEvent.click(screen.getAllByRole("button", { name: "进入注我" })[0] as HTMLElement);
 
-    const annotationHeading = await screen.findByText("注我卷轴");
-    const secondResult = screen.getByText("身修而后家齐。");
+    expect(await screen.findByText("注我卷轴")).toBeInTheDocument();
+    expect(screen.getByText("签")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "回到回应列表" }).className).toContain("min-h-11");
+    expect(screen.getByRole("button", { name: "展开经文" })).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByText("君子不重则不威，学则不固。")).toHaveClass("line-clamp-3");
+    expect(screen.queryByText("经典回应")).not.toBeInTheDocument();
+    expect(screen.queryByText("改写这一念")).not.toBeInTheDocument();
 
-    expect(
-      annotationHeading.compareDocumentPosition(secondResult) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "展开经文" }));
+
+    expect(screen.getByRole("button", { name: "收起经文" })).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("君子不重则不威，学则不固。")).not.toHaveClass("line-clamp-3");
+
+    fireEvent.click(screen.getByRole("button", { name: "回到回应列表" }));
+
+    expect(screen.getByText("经典回应")).toBeInTheDocument();
+    expect(screen.getByText("身修而后家齐。")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "回到注语" })).toHaveFocus();
+    });
+
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    const reopenAnnotation = screen.getByRole("button", { name: "回到注语" });
+    expect(reopenAnnotation).toHaveAccessibleDescription("论语 · 学而篇 · 第 8 节");
+    fireEvent.click(reopenAnnotation);
+
+    expect(await screen.findByText("注我卷轴")).toBeInTheDocument();
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it("scrolls to the mobile annotation reader top and uses instant scroll for reduced motion", async () => {
+    mockMatchMedia({ reducedMotion: true });
+    const scrollIntoView = jest.fn();
+    Object.defineProperty(window.HTMLElement.prototype, "scrollIntoView", {
+      configurable: true,
+      writable: true,
+      value: scrollIntoView,
+    });
+
+    (global.fetch as jest.Mock)
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: [
+            {
+              id: "lunyu-1-8",
+              source: "论语",
+              chapter: "学而篇",
+              section: 8,
+              text: "君子不重则不威，学则不固。",
+              score: 0.6666,
+            },
+          ],
+        }),
+      )
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: {
+            passageId: "lunyu-1-8",
+            passageText: "君子不重则不威，学则不固。",
+            sixToMe: "根层注释",
+            meToSix: "根层反观",
+            links: [],
+          },
+        }),
+      );
+
+    render(<HomePage />);
+
+    fireEvent.change(screen.getByLabelText("输入此刻的一念"), {
+      target: { value: "如何面对困境" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
+
+    expect(await screen.findByText("君子不重则不威，学则不固。")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "进入注我" }));
+
+    const reader = await screen.findByRole("region", { name: "注我阅读视图" });
+
+    expect(reader.className).toContain("focus-visible:ring-1");
+    expect(reader.className).not.toContain("focus:ring-2");
+    await waitFor(() => {
+      expect(scrollIntoView).toHaveBeenCalledWith({
+        block: "start",
+        behavior: "auto",
+      });
+    });
+    expect(scrollIntoView.mock.contexts[scrollIntoView.mock.contexts.length - 1]).toBe(reader);
+    expect(reader).toHaveFocus();
+  });
+
+  it("keeps the mobile reading target in sync while a linked annotation is pending", async () => {
+    (global.fetch as jest.Mock)
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: [
+            {
+              id: "lunyu-1-8",
+              source: "论语",
+              chapter: "学而篇",
+              section: 8,
+              text: "君子不重则不威，学则不固。",
+              score: 0.6666,
+            },
+          ],
+        }),
+      )
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: {
+            passageId: "lunyu-1-8",
+            passageText: "君子不重则不威，学则不固。",
+            sixToMe: "根层注释",
+            meToSix: "根层反观",
+            links: [
+              {
+                passageId: "lunyu-1-4",
+                label: "继续看自省",
+                passageText: "吾日三省吾身。",
+                source: "论语",
+                chapter: "学而篇",
+                section: 4,
+              },
+            ],
+          },
+        }),
+      )
+      .mockImplementationOnce(
+        () =>
+          new Promise(() => {
+            // Keep the linked annotation pending so the reader target is observable.
+          }),
+      );
+
+    render(<HomePage />);
+
+    fireEvent.change(screen.getByLabelText("输入此刻的一念"), {
+      target: { value: "如何面对困境" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
+
+    expect(await screen.findByText("君子不重则不威，学则不固。")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "进入注我" }));
+    expect(await screen.findByText("继续看自省")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "沿此句继续" }));
+
+    expect(await screen.findByText("《论语·学而篇》第 4 节")).toBeInTheDocument();
+    expect(screen.getAllByText("吾日三省吾身。").length).toBeGreaterThan(0);
+    expect(screen.queryByText("君子不重则不威，学则不固。")).not.toBeInTheDocument();
   });
 
   it("retries a failed annotation without losing the current search context", async () => {
@@ -300,7 +498,7 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "进入注我" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("未能为《论语·学而篇》第 8 节生成注语。provider timeout");
-    expect(screen.getByText("君子不重则不威，学则不固。")).toBeInTheDocument();
+    expect(screen.getAllByText("君子不重则不威，学则不固。").length).toBeGreaterThan(0);
     expect(screen.getAllByText("如何面对困境").length).toBeGreaterThan(0);
 
     fireEvent.click(screen.getByRole("button", { name: "重试当前段落" }));
@@ -320,10 +518,20 @@ describe("HomePage search flow", () => {
         }),
       );
     });
-    expect(await screen.findByText("重试后的注语")).toBeInTheDocument();
+    expect(await screen.findByRole("status", { name: "重试后的注语" })).toBeInTheDocument();
   });
 
   it("prevents concurrent root annotation clicks while the current request is pending", async () => {
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      writable: true,
+      value: jest.fn().mockImplementation(() => ({
+        matches: true,
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+      })),
+    });
+
     (global.fetch as jest.Mock)
       .mockImplementationOnce(() =>
         createFetchResponse({
@@ -548,10 +756,11 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "沿此句继续" }));
     expect(await screen.findByText("由此进入：论语 学而篇")).toBeInTheDocument();
 
+    fireEvent.click(screen.getByRole("button", { name: "回到回应列表" }));
     fireEvent.click(screen.getAllByRole("button", { name: "进入注我" })[1] as HTMLElement);
 
     expect(await screen.findByText("《大学·传二章》第 2 节")).toBeInTheDocument();
-    expect(screen.getByText("从选中经文入卷")).toBeInTheDocument();
+    expect(screen.getByText("签")).toBeInTheDocument();
     expect(screen.queryByText("由此进入：论语 学而篇")).not.toBeInTheDocument();
   });
 
@@ -635,6 +844,7 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "沿此句继续" }));
     expect(await screen.findByText("由此进入：论语 学而篇")).toBeInTheDocument();
 
+    fireEvent.click(screen.getByRole("button", { name: "回到回应列表" }));
     fireEvent.click(screen.getAllByRole("button", { name: "进入注我" })[1] as HTMLElement);
 
     expect(screen.queryByText("由此进入：论语 学而篇")).not.toBeInTheDocument();
@@ -706,5 +916,35 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "沿此句继续" }));
 
     expect(await screen.findByText("此处暂无后续探索")).toBeInTheDocument();
+  });
+
+  it("shows resonance levels without visible search percentages", async () => {
+    (global.fetch as jest.Mock).mockImplementationOnce(() =>
+      createFetchResponse({
+        success: true,
+        data: [
+          {
+            id: "lunyu-1-8",
+            source: "论语",
+            chapter: "学而篇",
+            section: 8,
+            text: "君子不重则不威，学则不固。",
+            score: 0.6666,
+          },
+        ],
+      }),
+    );
+
+    render(<HomePage />);
+
+    fireEvent.change(screen.getByLabelText("输入此刻的一念"), {
+      target: { value: "如何面对困境" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
+
+    expect(await screen.findByText("可深读")).toBeInTheDocument();
+    expect(screen.getByRole("article", { name: /可深读/u })).toBeInTheDocument();
+    expect(screen.queryByText(/呼应度/u)).not.toBeInTheDocument();
+    expect(screen.queryByText(/67%/u)).not.toBeInTheDocument();
   });
 });

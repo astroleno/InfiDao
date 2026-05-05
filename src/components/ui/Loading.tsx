@@ -8,7 +8,7 @@ interface LoadingSkeletonProps {
 }
 
 export function LoadingSkeleton({ type = 'text', className, lines = 3 }: LoadingSkeletonProps) {
-  const baseClasses = 'animate-pulse bg-gray-200 rounded';
+  const baseClasses = 'animate-pulse bg-stone-800';
 
   const typeClasses = {
     search: 'h-12 w-full',
@@ -26,7 +26,7 @@ export function LoadingSkeleton({ type = 'text', className, lines = 3 }: Loading
       <div className={clsx(baseClasses, typeClasses.annotation, className)} />
     ),
     card: (
-      <div className={clsx('p-6 border border-gray-200 rounded-xl', className)}>
+      <div className={clsx('p-6 border-y border-stone-800 bg-stone-950/45', className)}>
         <div className="space-y-4">
           <div className="flex items-center space-x-4">
             <div className={clsx(baseClasses, typeClasses.avatar)} />
@@ -90,7 +90,7 @@ export function LoadingSpinner({ size = 'md', className, label }: LoadingSpinner
       <div className="relative">
         <div
           className={clsx(
-            'animate-spin rounded-full border-2 border-gray-200 border-t-primary-600',
+            'animate-spin rounded-full border-2 border-stone-800 border-t-zen',
             sizeClasses[size]
           )}
           aria-hidden="true"
@@ -124,15 +124,15 @@ export function LoadingProgress({
     <div className={clsx('w-full', className)}>
       {label && (
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">{label}</span>
+          <span className="text-sm font-medium text-stone-300">{label}</span>
           {showPercentage && (
-            <span className="text-sm text-gray-500">{percentage}%</span>
+            <span className="text-sm text-stone-500">{percentage}%</span>
           )}
         </div>
       )}
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="w-full bg-stone-800 h-2">
         <div
-          className="bg-primary-600 h-2 rounded-full transition-all duration-300 ease-out"
+          className="bg-zen h-2 transition-all duration-300 ease-out"
           style={{ width: `${percentage}%` }}
           role="progressbar"
           aria-valuenow={value}
