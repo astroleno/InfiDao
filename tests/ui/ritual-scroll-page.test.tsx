@@ -43,6 +43,9 @@ describe("RitualScrollPage", () => {
     expect(source).toContain("animationPlayState");
     expect(source).toContain("overflow-y-auto");
     expect(source).toContain("motion-safe:animate-scroll-up");
+    expect(source).toContain("nearViewport.forEach");
+    expect(source).toContain("if (!isPaused && nearViewport.size > 0)");
+    expect(source).toContain("}, [isPaused, shouldRenderStatic])");
     expect(source).toContain("useState<boolean | null>(null)");
     expect(source).toContain("shouldRenderStatic");
     expect(source).toContain("prefers-reduced-motion");

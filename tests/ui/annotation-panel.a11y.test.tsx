@@ -87,7 +87,12 @@ describe("AnnotationPanel accessibility polish", () => {
       />,
     );
 
+    const continueButton = screen.getByRole("button", { name: "沿此句继续：《论语·学而篇》第 4 节" });
+    expect(continueButton.className).toContain("min-h-11");
+
     const toggle = screen.getByRole("button", { name: "展开延伸详情：继续看自省" });
+    expect(toggle.className).toContain("min-h-11");
+    expect(toggle.className).toContain("min-w-11");
     expect(toggle).toHaveAttribute("aria-expanded", "false");
 
     fireEvent.click(toggle);
@@ -134,7 +139,7 @@ describe("AnnotationPanel accessibility polish", () => {
       />,
     );
 
-    expect(screen.getByText("注我卷轴")).toHaveClass("text-base");
+    expect(screen.getByText("注我卷轴")).toHaveClass("sr-only");
     expect(screen.queryByText("可继续互注")).not.toBeInTheDocument();
     expect(screen.getByRole("tablist", { name: "注释视角" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "六经注我" }).className).toContain("min-h-11");
@@ -155,7 +160,8 @@ describe("AnnotationPanel accessibility polish", () => {
       />,
     );
 
-    expect(screen.getByText("返回回应列表，或另择一句再入。")).toBeInTheDocument();
+    expect(screen.getByText("此处暂止，回到回应列表，或另择一句再入。")).toBeInTheDocument();
+    expect(screen.queryByText("此处暂无后续探索")).not.toBeInTheDocument();
     expect(screen.queryByText("从左侧搜索结果重新选择一段经典回应。")).not.toBeInTheDocument();
   });
 
@@ -198,7 +204,9 @@ describe("AnnotationPanel accessibility polish", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "重试当前段落" }));
+    expect(screen.getByRole("alert")).toHaveClass("border-y");
+    expect(screen.getByText("断")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "再取此义" }));
 
     expect(onRetry).toHaveBeenCalledTimes(1);
   });

@@ -279,17 +279,15 @@ function MobileAnnotationReader({
         回到回应列表
       </button>
 
-      <article className="mb-4 border-y border-stone-800 bg-stone-950/62 px-3 py-3">
-        <div className="mb-2 flex items-start gap-3">
-          <span className="font-seal text-base text-seal">签</span>
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-xs tracking-[0.16em] text-stone-500">
-              {targetLabel ?? "当前经文"}
-            </span>
-            <span className="mt-1 block text-xs tracking-[0.16em] text-zen">{resonanceLabel}</span>
+      <article className="sticky top-0 z-10 mb-3 border-y border-stone-800 bg-ink/95 px-3 py-2 backdrop-blur">
+        <div className="mb-1 flex items-center gap-3">
+          <span className="font-seal text-sm text-seal">签</span>
+          <span className="min-w-0 flex-1 truncate text-xs tracking-[0.16em] text-stone-500">
+            {targetLabel ?? "当前经文"}
           </span>
+          <span className="shrink-0 text-xs tracking-[0.16em] text-zen">{resonanceLabel}</span>
         </div>
-        <blockquote className={`text-base leading-8 text-paper font-classic ${isPassageExpanded ? "" : "line-clamp-3"}`}>
+        <blockquote className={`text-sm leading-7 text-paper font-classic ${isPassageExpanded ? "" : "line-clamp-2"}`}>
           {passageText}
         </blockquote>
         <button
@@ -298,7 +296,7 @@ function MobileAnnotationReader({
           className="mt-3 inline-flex min-h-11 items-center border-b border-stone-700 px-2 text-xs tracking-[0.18em] text-stone-400 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
           aria-expanded={isPassageExpanded}
         >
-          {isPassageExpanded ? "收起经文" : "展开经文"}
+          {isPassageExpanded ? "收起经文" : "展开全文"}
         </button>
       </article>
 
@@ -689,7 +687,7 @@ export default function HomePage() {
           : "rounded-xl border border-stone-800"
       }`}
     >
-      <WikiPanel stack={wikiStack} onBack={handleWikiBack} />
+      <WikiPanel stack={wikiStack} onBack={handleWikiBack} placement={placement} />
       <AnnotationPanel
         idPrefix={idPrefix}
         query={searchQuery}
@@ -770,14 +768,14 @@ export default function HomePage() {
             }`}>
               <button
                 onClick={resetHome}
-                className="inline-flex items-center gap-2 rounded-full border border-stone-800 px-4 py-2 text-xs tracking-[0.24em] text-stone-400 transition hover:border-zen hover:text-paper focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-stone-800 px-4 py-3 text-xs tracking-[0.24em] text-stone-400 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 回到一念
               </button>
-              <div className="text-right text-xs tracking-[0.26em] text-stone-600">连续探索</div>
+              <div className="hidden text-right text-xs tracking-[0.26em] text-stone-600 md:block">连续探索</div>
             </div>
 
             <div className={`mx-auto max-w-4xl text-center md:mt-8 ${
@@ -789,8 +787,8 @@ export default function HomePage() {
               </h2>
 
               {!showMobileAnnotationReader && (
-                <details className="mx-auto mt-4 max-w-2xl border-y border-stone-800 py-2.5 text-left md:hidden">
-                  <summary className="cursor-pointer list-none text-center text-xs tracking-[0.24em] text-stone-400 transition hover:text-zen focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink">
+                <details className="mx-auto mt-4 max-w-2xl border-y border-stone-800 text-left md:hidden">
+                  <summary className="flex min-h-11 cursor-pointer list-none items-center justify-center px-4 py-3 text-center text-xs tracking-[0.24em] text-stone-400 transition hover:text-zen active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink [&::-webkit-details-marker]:hidden">
                     改写这一念
                   </summary>
                   <div className="mt-5">

@@ -98,23 +98,21 @@ export function AnnotationPanel({
     return (
       <div
         role="alert"
-        className="annotation-panel overflow-hidden bg-red-950/25 text-stone-100"
+        className="annotation-panel overflow-hidden border-y border-seal/45 bg-reader-danger/25 text-stone-100"
       >
-        <div className="p-6 text-center">
-          <div className="mb-4 text-red-300">
-            <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+        <div className="px-6 py-8 text-center">
+          <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center border border-seal/60 text-seal font-seal">
+            断
           </div>
-          <h3 className="mb-2 text-lg font-medium text-red-100">注语未成</h3>
-          <p className="text-sm leading-7 text-red-200/80">{errorMessage}</p>
+          <h3 className="mb-2 text-xl text-paper font-classic">注语未成</h3>
+          <p className="mx-auto max-w-xl text-sm leading-7 text-red-100/75">{errorMessage}</p>
           {onRetry && (
             <button
               type="button"
-              className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full border border-red-800 px-4 py-2 text-sm text-red-100 transition hover:border-red-400 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 focus:ring-offset-ink"
+              className="mt-5 inline-flex min-h-11 items-center justify-center border border-seal/55 px-5 py-3 text-sm tracking-[0.12em] text-red-100 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
               onClick={onRetry}
             >
-              重试当前段落
+              再取此义
             </button>
           )}
         </div>
@@ -164,12 +162,16 @@ export function AnnotationPanel({
 
   return (
     <div className="annotation-panel overflow-hidden bg-stone-950/85 text-stone-100">
-      <div className={`border-b border-stone-800 ${isMobile ? "p-4" : "p-6"}`}>
-        <div className="flex items-center justify-between">
-          <h2 className={`${isMobile ? "text-base" : "text-xl"} font-bold text-paper font-classic`}>注我卷轴</h2>
-          {!isMobile && <AnnotationMeta annotation={annotation} targetLabel={targetLabel} />}
+      {isMobile ? (
+        <h2 className="sr-only">注我卷轴</h2>
+      ) : (
+        <div className="border-b border-stone-800 p-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-paper font-classic">注我卷轴</h2>
+            <AnnotationMeta annotation={annotation} targetLabel={targetLabel} />
+          </div>
         </div>
-      </div>
+      )}
 
       <div className={isMobile ? "sr-only" : "px-6 pt-6"}>
         <section className="border-l-2 border-seal/70 pl-4">
@@ -178,7 +180,7 @@ export function AnnotationPanel({
         </section>
       </div>
 
-      <div className={isMobile ? "px-4 pt-4" : "px-6 pt-6"}>
+      <div className={isMobile ? "px-4 pt-3" : "px-6 pt-6"}>
         <div role="tablist" aria-label="注释视角" className="flex border-y border-stone-800 bg-stone-950/45 p-1">
           {ANNOTATION_TABS.map(tab => (
             <button
@@ -232,16 +234,6 @@ export function AnnotationPanel({
             />
           )}
 
-          {annotation.links.length === 0 && (
-            <div className="border-y border-stone-800 bg-stone-950/45 p-4">
-              <h3 className="text-base font-semibold text-paper font-classic">此处暂无后续探索</h3>
-              <p className="mt-2 text-sm leading-6 text-stone-400">
-                {isMobile
-                  ? "返回回应列表，或另择一句再入。"
-                  : "可以返回上一层，或从回应列表重新选择一段经典回应。"}
-              </p>
-            </div>
-          )}
         </div>
       </div>
 
@@ -250,7 +242,9 @@ export function AnnotationPanel({
           <span className="font-seal text-lg leading-none text-seal">{annotation.links.length === 0 ? "止" : "入"}</span>
           <span>
           {annotation.links.length === 0
-            ? "此处暂止，可回到上一层，或另择一句再问。"
+            ? isMobile
+              ? "此处暂止，回到回应列表，或另择一句再入。"
+              : "此处暂止，可返回上一层，或另择一段经典回应。"
             : "沿任一句继续，进入下一层回响。"}
           </span>
         </div>
