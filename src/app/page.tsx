@@ -258,8 +258,6 @@ function MobileAnnotationReader({
   onBack: () => void;
   children: ReactNode;
 }) {
-  const [isPassageExpanded, setIsPassageExpanded] = useState(false);
-
   return (
     <div
       ref={readerRef}
@@ -279,26 +277,20 @@ function MobileAnnotationReader({
         回到回应列表
       </button>
 
-      <article className="sticky top-0 z-10 mb-3 border-y border-stone-800 bg-ink/95 px-3 py-2 backdrop-blur">
-        <div className="mb-1 flex items-center gap-3">
+      <details className="sticky top-0 z-10 mb-3 border-y border-stone-800 bg-ink/95 backdrop-blur">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 py-2 text-xs tracking-[0.14em] text-stone-500 focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink [&::-webkit-details-marker]:hidden">
           <span className="font-seal text-sm text-seal">签</span>
-          <span className="min-w-0 flex-1 truncate text-xs tracking-[0.16em] text-stone-500">
+          <span className="text-stone-600">·</span>
+          <span className="min-w-0 flex-1 truncate">
             {targetLabel ?? "当前经文"}
           </span>
+          <span className="text-stone-600">·</span>
           <span className="shrink-0 text-xs tracking-[0.16em] text-zen">{resonanceLabel}</span>
-        </div>
-        <blockquote className={`text-sm leading-7 text-paper font-classic ${isPassageExpanded ? "" : "line-clamp-2"}`}>
+        </summary>
+        <blockquote className="border-t border-stone-800 px-3 py-3 text-sm leading-7 text-paper font-classic">
           {passageText}
         </blockquote>
-        <button
-          type="button"
-          onClick={() => setIsPassageExpanded(current => !current)}
-          className="mt-3 inline-flex min-h-11 items-center border-b border-stone-700 px-2 text-xs tracking-[0.18em] text-stone-400 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
-          aria-expanded={isPassageExpanded}
-        >
-          {isPassageExpanded ? "收起经文" : "展开全文"}
-        </button>
-      </article>
+      </details>
 
       {children}
     </div>
