@@ -76,7 +76,7 @@ describe("AnnotationPanel accessibility polish", () => {
     expect(screen.getByRole("tab", { name: "六经注我" })).toHaveAttribute("aria-selected", "true");
   });
 
-  it("gives the link detail toggle an accessible name and expanded state", () => {
+  it("keeps follow-up links as one clear primary action", () => {
     render(
       <AnnotationPanel
         query="如何面对困境"
@@ -87,20 +87,11 @@ describe("AnnotationPanel accessibility polish", () => {
       />,
     );
 
-    const continueButton = screen.getByRole("button", { name: "沿此句继续：《论语·学而篇》第 4 节" });
+    expect(screen.getByText("下一句")).toBeInTheDocument();
+    const continueButton = screen.getByRole("button", { name: "进入下一句：《论语·学而篇》第 4 节" });
     expect(continueButton.className).toContain("min-h-11");
-
-    const toggle = screen.getByRole("button", { name: "展开延伸详情：继续看自省" });
-    expect(toggle.className).toContain("min-h-11");
-    expect(toggle.className).toContain("min-w-11");
-    expect(toggle).toHaveAttribute("aria-expanded", "false");
-
-    fireEvent.click(toggle);
-
-    expect(screen.getByRole("button", { name: "收起延伸详情：继续看自省" })).toHaveAttribute(
-      "aria-expanded",
-      "true",
-    );
+    expect(screen.queryByRole("button", { name: /延伸详情/u })).not.toBeInTheDocument();
+    expect(screen.queryByText("由此进入")).not.toBeInTheDocument();
   });
 
   it("keeps loading copy user-facing without implementation terms", () => {
@@ -141,11 +132,18 @@ describe("AnnotationPanel accessibility polish", () => {
 
     expect(screen.getByText("注我卷轴")).toHaveClass("sr-only");
     expect(screen.queryByText("可继续互注")).not.toBeInTheDocument();
-    expect(screen.getByRole("tablist", { name: "注释视角" })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "六经注我" }).className).toContain("min-h-11");
+    expect(screen.queryByRole("tablist", { name: "注释视角" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("tab", { name: "六经注我" })).not.toBeInTheDocument();
+    const viewSwitch = screen.getByRole("button", { name: "转看我注六经" });
+    expect(viewSwitch.className).toContain("min-h-11");
     const liveText = screen.getByRole("status", { name: "根层注释" });
     expect(liveText).toHaveTextContent("根层注释");
     expect(liveText).toHaveAttribute("aria-label", "根层注释");
+
+    fireEvent.click(viewSwitch);
+
+    expect(screen.getByRole("button", { name: "转看六经注我" })).toBeInTheDocument();
+    expect(screen.getByRole("status", { name: "根层反观" })).toHaveTextContent("根层反观");
   });
 
   it("uses mobile reader copy when no follow-up links remain", () => {
@@ -205,6 +203,7 @@ describe("AnnotationPanel accessibility polish", () => {
     );
 
     expect(screen.getByRole("alert")).toHaveClass("border-y");
+    expect(screen.getByRole("alert")).not.toHaveClass("bg-reader-danger/25");
     expect(screen.getByText("断")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "再取此义" }));
 

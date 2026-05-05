@@ -98,23 +98,25 @@ export function AnnotationPanel({
     return (
       <div
         role="alert"
-        className="annotation-panel overflow-hidden border-y border-seal/45 bg-reader-danger/25 text-stone-100"
+        className="annotation-panel overflow-hidden border-y border-stone-800 bg-stone-950/45 text-stone-100"
       >
-        <div className="px-6 py-8 text-center">
-          <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center border border-seal/60 text-seal font-seal">
+        <div className="flex items-start gap-4 px-5 py-5">
+          <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center border border-seal/60 text-seal font-seal">
             断
           </div>
-          <h3 className="mb-2 text-xl text-paper font-classic">注语未成</h3>
-          <p className="mx-auto max-w-xl text-sm leading-7 text-red-100/75">{errorMessage}</p>
-          {onRetry && (
-            <button
-              type="button"
-              className="mt-5 inline-flex min-h-11 items-center justify-center border border-seal/55 px-5 py-3 text-sm tracking-[0.12em] text-red-100 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
-              onClick={onRetry}
-            >
-              再取此义
-            </button>
-          )}
+          <div className="min-w-0 flex-1">
+            <h3 className="text-lg text-paper font-classic">注语未成</h3>
+            <p className="mt-2 text-sm leading-7 text-stone-400">{errorMessage}</p>
+            {onRetry && (
+              <button
+                type="button"
+                className="mt-4 inline-flex min-h-11 items-center justify-center border-b border-seal/55 px-1 text-sm tracking-[0.12em] text-stone-300 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+                onClick={onRetry}
+              >
+                再取此义
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -180,52 +182,71 @@ export function AnnotationPanel({
         </section>
       </div>
 
-      <div className={isMobile ? "px-4 pt-3" : "px-6 pt-6"}>
-        <div role="tablist" aria-label="注释视角" className="flex border-y border-stone-800 bg-stone-950/45 p-1">
-          {ANNOTATION_TABS.map(tab => (
-            <button
-              key={tab.id}
-              id={`${idPrefix}-${tab.id}-tab`}
-              role="tab"
-              aria-selected={activeTab === tab.id}
-              aria-controls={`${idPrefix}-${tab.id}-panel`}
-              tabIndex={activeTab === tab.id ? 0 : -1}
-              onClick={() => setActiveTab(tab.id)}
-              onKeyDown={handleTabKeyDown}
-              className={`min-h-11 flex-1 px-4 py-3 text-sm font-medium transition-colors active:scale-[0.98] md:min-h-0 md:py-2 ${
-                activeTab === tab.id
-                  ? "bg-zen text-ink shadow-sm"
-                  : "text-stone-400 hover:text-paper"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+      {!isMobile && (
+        <div className="px-6 pt-6">
+          <div role="tablist" aria-label="注释视角" className="flex border-y border-stone-800 bg-stone-950/45 p-1">
+            {ANNOTATION_TABS.map(tab => (
+              <button
+                key={tab.id}
+                id={`${idPrefix}-${tab.id}-tab`}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                aria-controls={`${idPrefix}-${tab.id}-panel`}
+                tabIndex={activeTab === tab.id ? 0 : -1}
+                onClick={() => setActiveTab(tab.id)}
+                onKeyDown={handleTabKeyDown}
+                className={`flex-1 px-4 py-2 text-sm font-medium transition-colors active:scale-[0.98] ${
+                  activeTab === tab.id
+                    ? "bg-zen text-ink shadow-sm"
+                    : "text-stone-400 hover:text-paper"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className={isMobile ? "p-4" : "p-6"}>
+      <div className={isMobile ? "px-4 pb-4 pt-3" : "p-6"}>
         <div className={isMobile ? "sr-only" : "mb-5 flex items-center gap-3 text-xs tracking-[0.24em] text-seal"}>
           <span className="font-seal text-lg">注</span>
           <span>正文 · 双向互注</span>
         </div>
         <div className="space-y-6">
-          {ANNOTATION_TABS.map(tab => (
-            <div
-              key={tab.id}
-              id={`${idPrefix}-${tab.id}-panel`}
-              role="tabpanel"
-              aria-labelledby={`${idPrefix}-${tab.id}-tab`}
-              hidden={activeTab !== tab.id}
-              className="space-y-6"
-            >
-              {tab.id === "sixToMe" ? (
+          {isMobile ? (
+            <section aria-label={ANNOTATION_TABS.find(tab => tab.id === activeTab)?.label ?? "注语正文"} className="space-y-6">
+              {activeTab === "sixToMe" ? (
                 <SixToMeView text={annotation.sixToMe} isLoading={isLoading} />
               ) : (
                 <MeToSixView text={annotation.meToSix} isLoading={isLoading} />
               )}
-            </div>
-          ))}
+              <button
+                type="button"
+                onClick={() => setActiveTab(activeTab === "sixToMe" ? "meToSix" : "sixToMe")}
+                className="inline-flex min-h-11 items-center border-b border-stone-700 px-1 text-xs tracking-[0.18em] text-stone-400 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+              >
+                {activeTab === "sixToMe" ? "转看我注六经" : "转看六经注我"}
+              </button>
+            </section>
+          ) : (
+            ANNOTATION_TABS.map(tab => (
+              <div
+                key={tab.id}
+                id={`${idPrefix}-${tab.id}-panel`}
+                role="tabpanel"
+                aria-labelledby={`${idPrefix}-${tab.id}-tab`}
+                hidden={activeTab !== tab.id}
+                className="space-y-6"
+              >
+                {tab.id === "sixToMe" ? (
+                  <SixToMeView text={annotation.sixToMe} isLoading={isLoading} />
+                ) : (
+                  <MeToSixView text={annotation.meToSix} isLoading={isLoading} />
+                )}
+              </div>
+            ))
+          )}
 
           {annotation.links.length > 0 && (
             <AnnotationLinks
@@ -237,18 +258,18 @@ export function AnnotationPanel({
         </div>
       </div>
 
-      <div className="border-t border-stone-800 bg-stone-900/40 p-6">
-        <div className="flex items-start gap-3 text-sm text-stone-400">
-          <span className="font-seal text-lg leading-none text-seal">{annotation.links.length === 0 ? "止" : "入"}</span>
-          <span>
-          {annotation.links.length === 0
-            ? isMobile
-              ? "此处暂止，回到回应列表，或另择一句再入。"
-              : "此处暂止，可返回上一层，或另择一段经典回应。"
-            : "沿任一句继续，进入下一层回响。"}
-          </span>
+      {annotation.links.length === 0 && (
+        <div className="border-t border-stone-800 bg-stone-900/40 p-6">
+          <div className="flex items-start gap-3 text-sm text-stone-400">
+            <span className="font-seal text-lg leading-none text-seal">止</span>
+            <span>
+              {isMobile
+                ? "此处暂止，回到回应列表，或另择一句再入。"
+                : "此处暂止，可返回上一层，或另择一段经典回应。"}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
