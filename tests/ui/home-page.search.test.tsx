@@ -297,11 +297,14 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getAllByRole("button", { name: "进入注我" })[0] as HTMLElement);
 
     expect(await screen.findByText("注我卷轴")).toBeInTheDocument();
-    expect(screen.getByText("签")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "回到回应列表" }).className).toContain("min-h-11");
-    const passageSummary = screen.getByText("签").closest("summary") as HTMLElement;
+    const passageSummary = screen.getByText("论语 学而篇").closest("summary") as HTMLElement;
     expect(passageSummary).toHaveClass("min-h-11");
-    expect(passageSummary).toHaveTextContent("《论语·学而篇》第 8 节");
+    expect(passageSummary).toHaveAttribute(
+      "aria-label",
+      "当前经文：《论语·学而篇》第 8 节，可深读。展开查看原文",
+    );
+    expect(passageSummary).not.toHaveTextContent("第 8 节");
     expect(passageSummary).toHaveTextContent("可深读");
     expect(screen.queryByRole("button", { name: "展开全文" })).not.toBeInTheDocument();
     expect(screen.queryByText("经典回应")).not.toBeInTheDocument();
@@ -448,7 +451,11 @@ describe("HomePage search flow", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /进入下一句/u }));
 
-    expect(await screen.findByText("《论语·学而篇》第 4 节")).toBeInTheDocument();
+    const linkedSummary = (await screen.findByText("论语 学而篇")).closest("summary") as HTMLElement;
+    expect(linkedSummary).toHaveAttribute(
+      "aria-label",
+      "当前经文：《论语·学而篇》第 4 节，由此进入。展开查看原文",
+    );
     expect(screen.getAllByText("吾日三省吾身。").length).toBeGreaterThan(0);
     expect(screen.queryByText("君子不重则不威，学则不固。")).not.toBeInTheDocument();
   });
@@ -766,8 +773,11 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "回到回应列表" }));
     fireEvent.click(screen.getAllByRole("button", { name: "进入注我" })[1] as HTMLElement);
 
-    expect(await screen.findByText("《大学·传二章》第 2 节")).toBeInTheDocument();
-    expect(screen.getByText("签")).toBeInTheDocument();
+    expect(await screen.findByText("大学 传二章")).toBeInTheDocument();
+    expect(screen.getByText("大学 传二章").closest("summary")).toHaveAttribute(
+      "aria-label",
+      "当前经文：《大学·传二章》第 2 节，旁通一义。展开查看原文",
+    );
     expect(screen.queryByText("由此进入：论语 学而篇")).not.toBeInTheDocument();
   });
 

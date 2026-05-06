@@ -45,16 +45,19 @@ export function MeToSixView({ text, reason, isLoading }: MeToSixViewProps) {
 
   return (
     <div className="me-to-six-view">
-      <div className="mb-4 flex items-center">
-        <div className="mr-3 flex h-8 w-8 items-center justify-center border border-seal/60 text-seal">
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-          </svg>
+      <div className="mb-4">
+        <div className="hidden items-center md:flex">
+          <div className="mr-3 flex h-8 w-8 items-center justify-center border border-seal/60 text-seal">
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-paper font-classic">我注六经</h3>
+            <p className="text-sm text-stone-400">你的提问如何重新照亮原文</p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold text-paper font-classic">我注六经</h3>
-          <p className="text-sm text-stone-400">你的提问如何重新照亮原文</p>
-        </div>
+        <h3 className="sr-only md:hidden">我注六经</h3>
       </div>
 
       <div className="border-y border-stone-800 bg-stone-950/35 py-6 pl-5 pr-3">

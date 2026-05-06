@@ -88,6 +88,7 @@ describe("AnnotationPanel accessibility polish", () => {
     );
 
     expect(screen.getByText("下一句")).toBeInTheDocument();
+    expect(screen.getByText("下一句").parentElement?.querySelector(":scope > svg")).toBeNull();
     const continueButton = screen.getByRole("button", { name: "进入下一句：《论语·学而篇》第 4 节" });
     expect(continueButton.className).toContain("min-h-11");
     expect(screen.queryByRole("button", { name: /延伸详情/u })).not.toBeInTheDocument();
@@ -134,15 +135,18 @@ describe("AnnotationPanel accessibility polish", () => {
     expect(screen.queryByText("可继续互注")).not.toBeInTheDocument();
     expect(screen.queryByRole("tablist", { name: "注释视角" })).not.toBeInTheDocument();
     expect(screen.queryByRole("tab", { name: "六经注我" })).not.toBeInTheDocument();
-    const viewSwitch = screen.getByRole("button", { name: "转看我注六经" });
+    expect(screen.getAllByText("六经注我").some(element => element.className.includes("sr-only"))).toBe(true);
+    expect(screen.getByText("此句如何校准当下处境").closest(".hidden")).toBeInTheDocument();
+    const viewSwitch = screen.getByRole("button", { name: "看我的回注" });
     expect(viewSwitch.className).toContain("min-h-11");
+    expect(viewSwitch.className).toContain("tracking-[0.12em]");
     const liveText = screen.getByRole("status", { name: "根层注释" });
     expect(liveText).toHaveTextContent("根层注释");
     expect(liveText).toHaveAttribute("aria-label", "根层注释");
 
     fireEvent.click(viewSwitch);
 
-    expect(screen.getByRole("button", { name: "转看六经注我" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "看经典回应" })).toBeInTheDocument();
     expect(screen.getByRole("status", { name: "根层反观" })).toHaveTextContent("根层反观");
   });
 

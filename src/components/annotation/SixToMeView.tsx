@@ -45,16 +45,19 @@ export function SixToMeView({ text, reason, isLoading }: SixToMeViewProps) {
 
   return (
     <div className="six-to-me-view">
-      <div className="mb-4 flex items-center">
-        <div className="mr-3 flex h-8 w-8 items-center justify-center border border-seal/60 text-seal">
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
+      <div className="mb-4">
+        <div className="hidden items-center md:flex">
+          <div className="mr-3 flex h-8 w-8 items-center justify-center border border-seal/60 text-seal">
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-paper font-classic">六经注我</h3>
+            <p className="text-sm text-stone-400">此句如何校准当下处境</p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold text-paper font-classic">六经注我</h3>
-          <p className="text-sm text-stone-400">此句如何校准当下处境</p>
-        </div>
+        <h3 className="sr-only md:hidden">六经注我</h3>
       </div>
 
       <div className="border-y border-stone-800 bg-stone-950/35 py-6 pl-5 pr-3">
