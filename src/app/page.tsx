@@ -169,6 +169,19 @@ function formatPassageTargetLabel(target: {
   return "当前段落";
 }
 
+function formatMobileReaderTargetLabel(label: string | null) {
+  if (!label) {
+    return "当前经文";
+  }
+
+  const passageMatch = label.match(/^《(.+?)·(.+?)》第\s*(\d+)\s*节$/u);
+  if (!passageMatch) {
+    return label;
+  }
+
+  return `${passageMatch[1]} ${passageMatch[2]}`;
+}
+
 function formatSearchResultTargetLabel(results: SearchResult[], passageId: string) {
   const result = results.find(item => item.id === passageId);
 
@@ -258,6 +271,9 @@ function MobileAnnotationReader({
   onBack: () => void;
   children: ReactNode;
 }) {
+  const visibleTargetLabel = formatMobileReaderTargetLabel(targetLabel);
+  const fullTargetLabel = targetLabel ?? "当前经文";
+
   return (
     <div
       ref={readerRef}
@@ -278,16 +294,18 @@ function MobileAnnotationReader({
       </button>
 
       <details className="sticky top-0 z-10 mb-3 border-y border-stone-800 bg-ink/95 backdrop-blur">
-        <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 py-2 text-xs tracking-[0.14em] text-stone-500 focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink [&::-webkit-details-marker]:hidden">
-          <span className="font-seal text-sm text-seal">签</span>
-          <span className="text-stone-600">·</span>
+        <summary
+          aria-label={`当前经文：${fullTargetLabel}，${resonanceLabel}。展开查看原文`}
+          className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 py-2 text-xs tracking-[0.12em] text-stone-500 focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink [&::-webkit-details-marker]:hidden"
+        >
           <span className="min-w-0 flex-1 truncate">
-            {targetLabel ?? "当前经文"}
+            {visibleTargetLabel}
           </span>
           <span className="text-stone-600">·</span>
           <span className="shrink-0 text-xs tracking-[0.16em] text-zen">{resonanceLabel}</span>
         </summary>
         <blockquote className="border-t border-stone-800 px-3 py-3 text-sm leading-7 text-paper font-classic">
+          <span className="sr-only">签 · {fullTargetLabel} · </span>
           {passageText}
         </blockquote>
       </details>

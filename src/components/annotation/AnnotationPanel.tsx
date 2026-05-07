@@ -224,9 +224,9 @@ export function AnnotationPanel({
               <button
                 type="button"
                 onClick={() => setActiveTab(activeTab === "sixToMe" ? "meToSix" : "sixToMe")}
-                className="inline-flex min-h-11 items-center border-b border-stone-700 px-1 text-xs tracking-[0.18em] text-stone-400 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+                className="inline-flex min-h-11 items-center border-b border-stone-800 px-0.5 text-xs tracking-[0.12em] text-stone-500 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
               >
-                {activeTab === "sixToMe" ? "转看我注六经" : "转看六经注我"}
+                {activeTab === "sixToMe" ? "看我的回注" : "看经典回应"}
               </button>
             </section>
           ) : (
