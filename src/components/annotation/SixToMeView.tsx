@@ -4,9 +4,10 @@ interface SixToMeViewProps {
   text: string;
   reason?: string;
   isLoading: boolean;
+  showGuidance?: boolean;
 }
 
-export function SixToMeView({ text, reason, isLoading }: SixToMeViewProps) {
+export function SixToMeView({ text, reason, isLoading, showGuidance = true }: SixToMeViewProps) {
   const [displayedText, setDisplayedText] = useState('');
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -92,7 +93,7 @@ export function SixToMeView({ text, reason, isLoading }: SixToMeViewProps) {
         )}
       </div>
 
-      {displayedText === text && !isLoading && (
+      {showGuidance && displayedText === text && !isLoading && (
         <div className="mt-4 border-l border-stone-800 bg-stone-950/35 p-4">
           <div className="flex items-start">
             <svg className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0 text-zen" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

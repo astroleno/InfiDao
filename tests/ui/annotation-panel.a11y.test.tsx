@@ -137,6 +137,8 @@ describe("AnnotationPanel accessibility polish", () => {
     expect(screen.queryByRole("tab", { name: "六经注我" })).not.toBeInTheDocument();
     expect(screen.getAllByText("六经注我").some(element => element.className.includes("sr-only"))).toBe(true);
     expect(screen.getByText("此句如何校准当下处境").closest(".hidden")).toBeInTheDocument();
+    expect(screen.queryByText("读法提示")).not.toBeInTheDocument();
+    expect(screen.queryByText("反观提示")).not.toBeInTheDocument();
     const viewSwitch = screen.getByRole("button", { name: "看我的回注" });
     expect(viewSwitch.className).toContain("min-h-11");
     expect(viewSwitch.className).toContain("tracking-[0.12em]");
@@ -148,6 +150,8 @@ describe("AnnotationPanel accessibility polish", () => {
 
     expect(screen.getByRole("button", { name: "看经典回应" })).toBeInTheDocument();
     expect(screen.getByRole("status", { name: "根层反观" })).toHaveTextContent("根层反观");
+    expect(screen.queryByText("读法提示")).not.toBeInTheDocument();
+    expect(screen.queryByText("反观提示")).not.toBeInTheDocument();
   });
 
   it("uses mobile reader copy when no follow-up links remain", () => {

@@ -16,6 +16,33 @@ export function WikiPanel({ stack, onBack, placement = "desktop" }: WikiPanelPro
     ? `由此进入：${currentNode.via.source} ${currentNode.via.chapter}`
     : "从选中经文入卷";
 
+  if (placement === "mobile") {
+    return (
+      <section className="border-b border-stone-800 bg-stone-950/60 px-3 py-3 text-stone-200">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] tracking-[0.24em] text-stone-500">回响路径</p>
+            <div className="mt-1 flex min-w-0 items-center gap-2 text-xs tracking-[0.12em] text-stone-300">
+              <span className="shrink-0 text-stone-500">起句</span>
+              <span className="text-stone-700">/</span>
+              <span className="truncate text-zen">{currentPathLabel}</span>
+            </div>
+          </div>
+
+          {stack.length > 1 && (
+            <button
+              type="button"
+              onClick={onBack}
+              className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-stone-700 px-4 py-2 text-xs tracking-[0.18em] text-stone-300 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
+            >
+              返回上一层
+            </button>
+          )}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="border-b border-stone-800 bg-stone-950/60 p-4 text-stone-200">
       <div className="flex items-start justify-between gap-4">

@@ -217,9 +217,9 @@ export function AnnotationPanel({
           {isMobile ? (
             <section aria-label={ANNOTATION_TABS.find(tab => tab.id === activeTab)?.label ?? "注语正文"} className="space-y-6">
               {activeTab === "sixToMe" ? (
-                <SixToMeView text={annotation.sixToMe} isLoading={isLoading} />
+                <SixToMeView text={annotation.sixToMe} isLoading={isLoading} showGuidance={!isMobile} />
               ) : (
-                <MeToSixView text={annotation.meToSix} isLoading={isLoading} />
+                <MeToSixView text={annotation.meToSix} isLoading={isLoading} showGuidance={!isMobile} />
               )}
               <button
                 type="button"

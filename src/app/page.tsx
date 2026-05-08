@@ -296,13 +296,16 @@ function MobileAnnotationReader({
       <details className="sticky top-0 z-10 mb-3 border-y border-stone-800 bg-ink/95 backdrop-blur">
         <summary
           aria-label={`当前经文：${fullTargetLabel}，${resonanceLabel}。展开查看原文`}
-          className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 py-2 text-xs tracking-[0.12em] text-stone-500 focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink [&::-webkit-details-marker]:hidden"
+          className="min-h-11 list-none cursor-pointer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink [&::-webkit-details-marker]:hidden"
         >
-          <span className="min-w-0 flex-1 truncate">
-            {visibleTargetLabel}
-          </span>
-          <span className="text-stone-600">·</span>
-          <span className="shrink-0 text-xs tracking-[0.16em] text-zen">{resonanceLabel}</span>
+          <div className="flex min-h-11 items-center gap-2 text-xs tracking-[0.12em] text-stone-500">
+            <span className="min-w-0 flex-1 truncate">{visibleTargetLabel}</span>
+            <span className="text-stone-600">·</span>
+            <span className="shrink-0 text-xs tracking-[0.16em] text-zen">{resonanceLabel}</span>
+          </div>
+          <p className="mt-1 line-clamp-1 pr-6 text-sm leading-6 text-paper font-classic">
+            {passageText}
+          </p>
         </summary>
         <blockquote className="border-t border-stone-800 px-3 py-3 text-sm leading-7 text-paper font-classic">
           <span className="sr-only">签 · {fullTargetLabel} · </span>
@@ -750,7 +753,7 @@ export default function HomePage() {
               <p className="mt-5 text-lg italic tracking-[0.14em] text-stone-400 font-classic md:text-2xl">
                 输入此刻一念，经典开始回应
               </p>
-              <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 tracking-[0.06em] text-stone-500 md:text-base">
+              <p className="mx-auto mt-6 hidden max-w-2xl text-sm leading-8 tracking-[0.06em] text-stone-500 md:block md:text-base">
                 输入一念，先听见经典回应；再沿注语与延伸入口，一层一层进入自己的回响路径。
               </p>
             </div>

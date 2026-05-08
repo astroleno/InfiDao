@@ -312,7 +312,7 @@ describe("HomePage search flow", () => {
 
     fireEvent.click(passageSummary);
 
-    expect(screen.getByText("君子不重则不威，学则不固。")).toBeInTheDocument();
+    expect(screen.getAllByText("君子不重则不威，学则不固。").length).toBeGreaterThan(0);
 
     fireEvent.click(screen.getByRole("button", { name: "回到回应列表" }));
 
@@ -675,7 +675,7 @@ describe("HomePage search flow", () => {
 
     expect(await screen.findByText("回响路径")).toBeInTheDocument();
     expect(screen.getByText("由此进入：论语 学而篇")).toBeInTheDocument();
-    expect(screen.getByText("继续看自省")).toBeInTheDocument();
+    expect(screen.queryByText("继续看自省")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "返回上一层" }));
 
