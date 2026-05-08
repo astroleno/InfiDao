@@ -38,6 +38,7 @@ describe("legacy layout polish", () => {
     const tsconfigSource = readFileSync(join(process.cwd(), "tsconfig.json"), "utf8");
     const globalsSource = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
     const tailwindSource = readFileSync(join(process.cwd(), "tailwind.config.ts"), "utf8");
+    const nextConfigSource = readFileSync(join(process.cwd(), "next.config.js"), "utf8");
     const responsiveHeaderSource = readFileSync(
       join(process.cwd(), "src/components/layout/responsive/Header.tsx"),
       "utf8",
@@ -85,6 +86,9 @@ describe("legacy layout polish", () => {
     expect(tailwindSource).not.toContain('ink: "#14110f"');
     expect(tailwindSource).not.toContain('zen: "#c7b38b"');
     expect(tailwindSource).not.toContain('seal: "#9e4b3f"');
+    expect(nextConfigSource).toContain("outputFileTracingIncludes");
+    expect(nextConfigSource).toContain("'/api/search': ['./data/**/*']");
+    expect(nextConfigSource).toContain("'/api/annotate': ['./data/**/*']");
     expect(packageSource).not.toContain("web/iw-clone");
     expect(packageSource).not.toContain("dev:iw");
     expect(packageSource).not.toContain("mock:iw");

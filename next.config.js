@@ -7,7 +7,6 @@ const bundleAnalyzer = require('@next/bundle-analyzer')({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    // Enable optimized package imports
     optimizePackageImports: [
       'lucide-react',
       'clsx',
@@ -16,12 +15,19 @@ const nextConfig = {
       'framer-motion',
       'recharts',
     ],
-    // Enable server components external packages
     serverComponentsExternalPackages: [
       '@lancedb/lancedb',
       '@xenova/transformers',
       'sharp',
     ],
+    optimizeCss: true,
+    optimizeServerReact: true,
+    scrollRestoration: true,
+    largePageDataBytes: 128 * 1000, // 128KB
+    outputFileTracingIncludes: {
+      '/api/search': ['./data/**/*'],
+      '/api/annotate': ['./data/**/*'],
+    },
   },
 
   // Images configuration
@@ -227,14 +233,6 @@ const nextConfig = {
   // Configure page extensions
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
 
-  // Experimental features
-  experimental: {
-    // ...previous experimental config
-    optimizeCss: true,
-    optimizeServerReact: true,
-    scrollRestoration: true,
-    largePageDataBytes: 128 * 1000, // 128KB
-  },
 }
 
 module.exports = bundleAnalyzer(nextConfig)
