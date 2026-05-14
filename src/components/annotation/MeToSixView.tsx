@@ -4,9 +4,10 @@ interface MeToSixViewProps {
   text: string;
   reason?: string;
   isLoading: boolean;
+  showGuidance?: boolean;
 }
 
-export function MeToSixView({ text, reason, isLoading }: MeToSixViewProps) {
+export function MeToSixView({ text, reason, isLoading, showGuidance = true }: MeToSixViewProps) {
   const [displayedText, setDisplayedText] = useState('');
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -28,7 +29,7 @@ export function MeToSixView({ text, reason, isLoading }: MeToSixViewProps) {
     setDisplayedText('');
 
     let currentIndex = 0;
-    const typingSpeed = 30; // ms per character
+    const typingSpeed = 34;
 
     const typeInterval = setInterval(() => {
       if (currentIndex < text.length) {
@@ -60,7 +61,7 @@ export function MeToSixView({ text, reason, isLoading }: MeToSixViewProps) {
         <h3 className="sr-only md:hidden">我注六经</h3>
       </div>
 
-      <div className="border-y border-stone-800 bg-stone-950/35 py-6 pl-5 pr-3">
+      <div className="border-l border-stone-800/70 bg-transparent py-3 pl-4 pr-2 md:py-4 md:pl-5">
         {isLoading ? (
           <div className="space-y-2">
             <div className="h-4 rounded bg-stone-800 motion-safe:animate-pulse"></div>
@@ -72,10 +73,10 @@ export function MeToSixView({ text, reason, isLoading }: MeToSixViewProps) {
             <div className="sr-only" role="status" aria-live="polite" aria-label={text}>
               {text}
             </div>
-            <div className="whitespace-pre-wrap text-lg leading-relaxed text-paper font-classic" aria-hidden="true">
+            <div className="max-w-[32rem] whitespace-pre-wrap text-left text-[1.05rem] leading-9 text-paper font-classic md:text-lg md:leading-10" aria-hidden="true">
               {displayedText}
               {isAnimating && (
-                <span className="ml-1 inline-block h-5 w-1 bg-zen motion-safe:animate-pulse"></span>
+                <span className="ml-1 hidden h-4 w-px bg-zen/85 align-middle motion-safe:animate-pulse md:inline-block"></span>
               )}
             </div>
 
@@ -92,8 +93,8 @@ export function MeToSixView({ text, reason, isLoading }: MeToSixViewProps) {
         )}
       </div>
 
-      {displayedText === text && !isLoading && (
-        <div className="mt-4 border-l border-stone-800 bg-stone-950/35 p-4">
+      {showGuidance && displayedText === text && !isLoading && (
+        <div className="mt-4 border-l border-stone-800/70 bg-transparent p-4">
           <div className="flex items-start">
             <svg className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0 text-zen" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />

@@ -13,6 +13,7 @@ const annotation: AnnotationResult = {
     {
       passageId: "lunyu-1-4",
       label: "继续看自省",
+      relationHint: "从困境转向自省",
       passageText: "吾日三省吾身。",
       source: "论语",
       chapter: "学而篇",
@@ -24,6 +25,14 @@ const annotation: AnnotationResult = {
 const annotationWithoutLinks: AnnotationResult = {
   ...annotation,
   links: [],
+};
+
+const annotationWithoutRelationHint: AnnotationResult = {
+  ...annotation,
+  links: annotation.links.map(link => {
+    const { relationHint: _relationHint, ...linkWithoutRelationHint } = link;
+    return linkWithoutRelationHint;
+  }),
 };
 
 describe("AnnotationPanel accessibility polish", () => {
@@ -53,8 +62,12 @@ describe("AnnotationPanel accessibility polish", () => {
     expect(sixToMeTab).toHaveAttribute("aria-selected", "true");
     expect(sixToMeTab).toHaveAttribute("tabindex", "0");
     expect(meToSixTab).toHaveAttribute("tabindex", "-1");
-    expect(document.getElementById(sixToMeTab.getAttribute("aria-controls") as string)).toBeInTheDocument();
-    expect(document.getElementById(meToSixTab.getAttribute("aria-controls") as string)).toBeInTheDocument();
+    expect(
+      document.getElementById(sixToMeTab.getAttribute("aria-controls") as string),
+    ).toBeInTheDocument();
+    expect(
+      document.getElementById(meToSixTab.getAttribute("aria-controls") as string),
+    ).toBeInTheDocument();
 
     fireEvent.keyDown(sixToMeTab, { key: "ArrowRight" });
 
@@ -87,12 +100,32 @@ describe("AnnotationPanel accessibility polish", () => {
       />,
     );
 
-    expect(screen.getByText("下一句")).toBeInTheDocument();
-    expect(screen.getByText("下一句").parentElement?.querySelector(":scope > svg")).toBeNull();
-    const continueButton = screen.getByRole("button", { name: "进入下一句：《论语·学而篇》第 4 节" });
+    const nextHeading = screen.getAllByText("下一句").find(element => element.tagName === "H3");
+    expect(nextHeading).toBeInTheDocument();
+    expect(nextHeading?.parentElement?.querySelector(":scope > svg")).toBeNull();
+    const continueButton = screen.getByRole("button", {
+      name: "进入下一句：《论语·学而篇》第 4 节",
+    });
     expect(continueButton.className).toContain("min-h-11");
+    expect(screen.getByText("从困境转向自省")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /延伸详情/u })).not.toBeInTheDocument();
     expect(screen.queryByText("由此进入")).not.toBeInTheDocument();
+  });
+
+  it("only renders relation hint copy when graph relationHint exists", () => {
+    render(
+      <AnnotationPanel
+        query="如何面对困境"
+        annotation={annotationWithoutRelationHint}
+        isLoading={false}
+        error={null}
+        onWikiNavigate={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByText("吾日三省吾身。")).toBeInTheDocument();
+    expect(screen.queryByText("从困境转向自省")).not.toBeInTheDocument();
+    expect(screen.queryByText("顺着此意再看一层")).not.toBeInTheDocument();
   });
 
   it("keeps loading copy user-facing without implementation terms", () => {
@@ -112,8 +145,14 @@ describe("AnnotationPanel accessibility polish", () => {
     expect(screen.getByText("注语将成")).toBeInTheDocument();
     expect(screen.queryByRole("tablist", { name: "生成中的注释视角" })).not.toBeInTheDocument();
     expect(screen.getByRole("group", { name: "生成中的注释视角" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "六经注我" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("button", { name: "我注六经" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: "六经注我" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(screen.getByRole("button", { name: "我注六经" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
     expect(screen.getByRole("button", { name: "六经注我" }).className).toContain("min-h-11");
     expect(screen.queryByText("正在生成注释...")).not.toBeInTheDocument();
     expect(screen.queryByText(/JSON|SSE|\/api\/annotate/u)).not.toBeInTheDocument();
@@ -135,11 +174,20 @@ describe("AnnotationPanel accessibility polish", () => {
     expect(screen.queryByText("可继续互注")).not.toBeInTheDocument();
     expect(screen.queryByRole("tablist", { name: "注释视角" })).not.toBeInTheDocument();
     expect(screen.queryByRole("tab", { name: "六经注我" })).not.toBeInTheDocument();
-    expect(screen.getAllByText("六经注我").some(element => element.className.includes("sr-only"))).toBe(true);
+    expect(
+      screen.getAllByText("六经注我").some(element => element.className.includes("sr-only")),
+    ).toBe(true);
     expect(screen.getByText("此句如何校准当下处境").closest(".hidden")).toBeInTheDocument();
+    expect(screen.queryByText("读法提示")).not.toBeInTheDocument();
+    expect(screen.queryByText("反观提示")).not.toBeInTheDocument();
+    const nextButton = screen.getByRole("button", { name: "下一句" });
+    expect(nextButton.className).toContain("bg-zen");
+    expect(nextButton.className).toContain("flex-[1.35]");
     const viewSwitch = screen.getByRole("button", { name: "看我的回注" });
-    expect(viewSwitch.className).toContain("min-h-11");
+    expect(viewSwitch.className).toContain("min-h-10");
     expect(viewSwitch.className).toContain("tracking-[0.12em]");
+    expect(viewSwitch.className).not.toContain("bg-zen");
+    expect(screen.queryByRole("button", { name: "回到列表" })).not.toBeInTheDocument();
     const liveText = screen.getByRole("status", { name: "根层注释" });
     expect(liveText).toHaveTextContent("根层注释");
     expect(liveText).toHaveAttribute("aria-label", "根层注释");
@@ -148,6 +196,8 @@ describe("AnnotationPanel accessibility polish", () => {
 
     expect(screen.getByRole("button", { name: "看经典回应" })).toBeInTheDocument();
     expect(screen.getByRole("status", { name: "根层反观" })).toHaveTextContent("根层反观");
+    expect(screen.queryByText("读法提示")).not.toBeInTheDocument();
+    expect(screen.queryByText("反观提示")).not.toBeInTheDocument();
   });
 
   it("uses mobile reader copy when no follow-up links remain", () => {

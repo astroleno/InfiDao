@@ -1,0 +1,1398 @@
+{
+  "schemaVersion": 1,
+  "corpusVersion": "sixclassics-sample-v1",
+  "conceptSeedVersion": "search-concepts-v1",
+  "artifactSignature": "sha256:886e19842a4b4018609230562fccd184a0b16d9b86d468466e92f4d69eb03957",
+  "generatedAt": "2026-05-14T05:52:33.957Z",
+  "sourceManifestPath": "data/corpus-manifest.json",
+  "nodes": [
+    {
+      "id": "chapter:daxue:0fe2bd48e89a",
+      "label": "经一章",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      },
+      "type": "chapter",
+      "workId": "daxue",
+      "chapter": "经一章"
+    },
+    {
+      "id": "chapter:daxue:629d39b0673b",
+      "label": "传二章",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      },
+      "type": "chapter",
+      "workId": "daxue",
+      "chapter": "传二章"
+    },
+    {
+      "id": "chapter:lunyu:af9bc266c858",
+      "label": "学而篇",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      },
+      "type": "chapter",
+      "workId": "lunyu",
+      "chapter": "学而篇"
+    },
+    {
+      "id": "chapter:zhongyong:13589da3d52d",
+      "label": "第三章",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      },
+      "type": "chapter",
+      "workId": "zhongyong",
+      "chapter": "第三章"
+    },
+    {
+      "id": "chapter:zhongyong:4b9b0e439307",
+      "label": "第四章",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      },
+      "type": "chapter",
+      "workId": "zhongyong",
+      "chapter": "第四章"
+    },
+    {
+      "id": "chapter:zhongyong:bbd8d0e5575a",
+      "label": "第一章",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      },
+      "type": "chapter",
+      "workId": "zhongyong",
+      "chapter": "第一章"
+    },
+    {
+      "id": "chapter:zhongyong:c4589d81d7f9",
+      "label": "第二章",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      },
+      "type": "chapter",
+      "workId": "zhongyong",
+      "chapter": "第二章"
+    },
+    {
+      "id": "concept:family-and-duty",
+      "label": "家庭与责任",
+      "provenance": {
+        "source": "concept-seed",
+        "sourceFile": "data/search-concepts.json"
+      },
+      "type": "concept",
+      "conceptGroup": "relationship-ethics"
+    },
+    {
+      "id": "concept:friendship-and-trust",
+      "label": "朋友与信义",
+      "provenance": {
+        "source": "concept-seed",
+        "sourceFile": "data/search-concepts.json"
+      },
+      "type": "concept",
+      "conceptGroup": "relationship-ethics"
+    },
+    {
+      "id": "concept:governance-and-people",
+      "label": "治理与民",
+      "provenance": {
+        "source": "concept-seed",
+        "sourceFile": "data/search-concepts.json"
+      },
+      "type": "concept",
+      "conceptGroup": "governance-and-people"
+    },
+    {
+      "id": "concept:learning-and-practice",
+      "label": "学与实践",
+      "provenance": {
+        "source": "concept-seed",
+        "sourceFile": "data/search-concepts.json"
+      },
+      "type": "concept",
+      "conceptGroup": "learning-and-practice"
+    },
+    {
+      "id": "concept:moderation-and-harmony",
+      "label": "中和分寸",
+      "provenance": {
+        "source": "concept-seed",
+        "sourceFile": "data/search-concepts.json"
+      },
+      "type": "concept",
+      "conceptGroup": "moderation-and-harmony"
+    },
+    {
+      "id": "concept:self-cultivation",
+      "label": "修身自省",
+      "provenance": {
+        "source": "concept-seed",
+        "sourceFile": "data/search-concepts.json"
+      },
+      "type": "concept",
+      "conceptGroup": "self-cultivation"
+    },
+    {
+      "id": "passage:daxue-1-1",
+      "label": "大学 经一章 第 1 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "daxue-1-1",
+      "workId": "daxue",
+      "chapter": "经一章",
+      "textHash": "e1342c3b402ca689f06142a3c643230c2a4707ccdd803ae2086d64bfdac92c97"
+    },
+    {
+      "id": "passage:daxue-2-1",
+      "label": "大学 传二章 第 1 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "daxue-2-1",
+      "workId": "daxue",
+      "chapter": "传二章",
+      "textHash": "2772943f8e13468cf7b5a6864e67c290c5ce0a9ac614731c56934046bef72ad9"
+    },
+    {
+      "id": "passage:daxue-2-2",
+      "label": "大学 传二章 第 2 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "daxue-2-2",
+      "workId": "daxue",
+      "chapter": "传二章",
+      "textHash": "b15a67d98383841921da48342b93726b46527bd1d53076103af68b5561c5c8af"
+    },
+    {
+      "id": "passage:lunyu-1-1",
+      "label": "论语 学而篇 第 1 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "lunyu-1-1",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "1a5eb80288b08db40d73ca005f567150962d220f4381294f903a5104bf7b6a69"
+    },
+    {
+      "id": "passage:lunyu-1-10",
+      "label": "论语 学而篇 第 10 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "lunyu-1-10",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "0dad831e46a8f9cea6c85ce835c95a2b9e10f84780d71debdb0ec188bada8e53"
+    },
+    {
+      "id": "passage:lunyu-1-2",
+      "label": "论语 学而篇 第 2 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "lunyu-1-2",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "21c0e39bb6346f73f8f58b490f0a9d7e4bdfea9d467d0955ced611200cc91a3c"
+    },
+    {
+      "id": "passage:lunyu-1-3",
+      "label": "论语 学而篇 第 3 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "lunyu-1-3",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "d63e1adc342b8a93eb62cd7bffd5a5edc11a97ce71c02e84f036a4f1f9827d1d"
+    },
+    {
+      "id": "passage:lunyu-1-4",
+      "label": "论语 学而篇 第 4 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "lunyu-1-4",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "156dc5d3985e63318b423ae2f5b2dc6ac09aa344cbbe00f4ac4412507cb30450"
+    },
+    {
+      "id": "passage:lunyu-1-5",
+      "label": "论语 学而篇 第 5 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "lunyu-1-5",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "f715bfce6bb87a3ab0e5f428d7ff36e2249b61250e5488662fd13b1869b824fc"
+    },
+    {
+      "id": "passage:lunyu-1-6",
+      "label": "论语 学而篇 第 6 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "lunyu-1-6",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "c4e356ee288b5605d8fba92ad53e8e71d05197dca6792897c84fa99cc0a2af12"
+    },
+    {
+      "id": "passage:lunyu-1-7",
+      "label": "论语 学而篇 第 7 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "lunyu-1-7",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "d0b853a9a7af51a03045a0007fb3b203657bffc93d0461773f74c9b83995b946"
+    },
+    {
+      "id": "passage:lunyu-1-8",
+      "label": "论语 学而篇 第 8 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "lunyu-1-8",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "a83b5e292ad81e3936591320d6a0cd868504bfb75ee2b808d7f39e1d54c73e81"
+    },
+    {
+      "id": "passage:lunyu-1-9",
+      "label": "论语 学而篇 第 9 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "lunyu-1-9",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "0cd0ecd280a4c554dc527d6dfb367d3b6526d80e621d8be5f1f4679f01b486c2"
+    },
+    {
+      "id": "passage:zhongyong-1-1",
+      "label": "中庸 第一章 第 1 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "zhongyong-1-1",
+      "workId": "zhongyong",
+      "chapter": "第一章",
+      "textHash": "df9494e4efceb79dcf94251469c34bd70e8bb6441f7ed42a9a593aae30772cc7"
+    },
+    {
+      "id": "passage:zhongyong-1-2",
+      "label": "中庸 第一章 第 2 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "zhongyong-1-2",
+      "workId": "zhongyong",
+      "chapter": "第一章",
+      "textHash": "6d00e322bbed9fb03e55e8c0672eb15ac33b31baed78e36761b79ec86e1cc66d"
+    },
+    {
+      "id": "passage:zhongyong-1-3",
+      "label": "中庸 第一章 第 3 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "zhongyong-1-3",
+      "workId": "zhongyong",
+      "chapter": "第一章",
+      "textHash": "f3129af66afe43c22e46bc99f1a86ed4d4cc95541a43ed145df38dcb66a91e70"
+    },
+    {
+      "id": "passage:zhongyong-1-4",
+      "label": "中庸 第一章 第 4 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "zhongyong-1-4",
+      "workId": "zhongyong",
+      "chapter": "第一章",
+      "textHash": "5d9fa67199b0fae54a8d69748741356b76024af6eec01ced3d490645edf2f4c7"
+    },
+    {
+      "id": "passage:zhongyong-2-1",
+      "label": "中庸 第二章 第 1 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "zhongyong-2-1",
+      "workId": "zhongyong",
+      "chapter": "第二章",
+      "textHash": "330403cf41957025cbeaf44ae8cbbfb434a5c66bbd231aa3838d21aabdeb6daf"
+    },
+    {
+      "id": "passage:zhongyong-3-1",
+      "label": "中庸 第三章 第 1 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "zhongyong-3-1",
+      "workId": "zhongyong",
+      "chapter": "第三章",
+      "textHash": "c99aa944ff28b73d2231c99418cd22daa2bf351f2538ffc018e1a9eba7e50306"
+    },
+    {
+      "id": "passage:zhongyong-4-1",
+      "label": "中庸 第四章 第 1 节",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      },
+      "type": "passage",
+      "passageId": "zhongyong-4-1",
+      "workId": "zhongyong",
+      "chapter": "第四章",
+      "textHash": "87f4dc7fd26056ce686af552a90545c1b8b501bbc7b76a899ff252faa921046b"
+    },
+    {
+      "id": "work:daxue",
+      "label": "大学",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      },
+      "type": "work",
+      "workId": "daxue"
+    },
+    {
+      "id": "work:lunyu",
+      "label": "论语",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      },
+      "type": "work",
+      "workId": "lunyu"
+    },
+    {
+      "id": "work:zhongyong",
+      "label": "中庸",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      },
+      "type": "work",
+      "workId": "zhongyong"
+    }
+  ],
+  "edges": [
+    {
+      "id": "adjacent_to:passage:daxue-2-1->passage:daxue-2-2",
+      "source": "passage:daxue-2-1",
+      "target": "passage:daxue-2-2",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "daxue-2-1",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "adjacent_to:passage:lunyu-1-1->passage:lunyu-1-2",
+      "source": "passage:lunyu-1-1",
+      "target": "passage:lunyu-1-2",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "lunyu-1-1",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "adjacent_to:passage:lunyu-1-2->passage:lunyu-1-3",
+      "source": "passage:lunyu-1-2",
+      "target": "passage:lunyu-1-3",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "lunyu-1-2",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "adjacent_to:passage:lunyu-1-3->passage:lunyu-1-4",
+      "source": "passage:lunyu-1-3",
+      "target": "passage:lunyu-1-4",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "lunyu-1-3",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "adjacent_to:passage:lunyu-1-4->passage:lunyu-1-5",
+      "source": "passage:lunyu-1-4",
+      "target": "passage:lunyu-1-5",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "lunyu-1-4",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "adjacent_to:passage:lunyu-1-5->passage:lunyu-1-6",
+      "source": "passage:lunyu-1-5",
+      "target": "passage:lunyu-1-6",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "lunyu-1-5",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "adjacent_to:passage:lunyu-1-6->passage:lunyu-1-7",
+      "source": "passage:lunyu-1-6",
+      "target": "passage:lunyu-1-7",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "lunyu-1-6",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "adjacent_to:passage:lunyu-1-7->passage:lunyu-1-8",
+      "source": "passage:lunyu-1-7",
+      "target": "passage:lunyu-1-8",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "lunyu-1-7",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "adjacent_to:passage:lunyu-1-8->passage:lunyu-1-9",
+      "source": "passage:lunyu-1-8",
+      "target": "passage:lunyu-1-9",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "lunyu-1-8",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "adjacent_to:passage:lunyu-1-9->passage:lunyu-1-10",
+      "source": "passage:lunyu-1-9",
+      "target": "passage:lunyu-1-10",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "lunyu-1-9",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "adjacent_to:passage:zhongyong-1-1->passage:zhongyong-1-2",
+      "source": "passage:zhongyong-1-1",
+      "target": "passage:zhongyong-1-2",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "zhongyong-1-1",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "adjacent_to:passage:zhongyong-1-2->passage:zhongyong-1-3",
+      "source": "passage:zhongyong-1-2",
+      "target": "passage:zhongyong-1-3",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "zhongyong-1-2",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "adjacent_to:passage:zhongyong-1-3->passage:zhongyong-1-4",
+      "source": "passage:zhongyong-1-3",
+      "target": "passage:zhongyong-1-4",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "zhongyong-1-3",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:daxue:0fe2bd48e89a->passage:daxue-1-1",
+      "source": "chapter:daxue:0fe2bd48e89a",
+      "target": "passage:daxue-1-1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "daxue-1-1",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:daxue:629d39b0673b->passage:daxue-2-1",
+      "source": "chapter:daxue:629d39b0673b",
+      "target": "passage:daxue-2-1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "daxue-2-1",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:daxue:629d39b0673b->passage:daxue-2-2",
+      "source": "chapter:daxue:629d39b0673b",
+      "target": "passage:daxue-2-2",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "daxue-2-2",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:lunyu:af9bc266c858->passage:lunyu-1-1",
+      "source": "chapter:lunyu:af9bc266c858",
+      "target": "passage:lunyu-1-1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-1",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:lunyu:af9bc266c858->passage:lunyu-1-10",
+      "source": "chapter:lunyu:af9bc266c858",
+      "target": "passage:lunyu-1-10",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-10",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:lunyu:af9bc266c858->passage:lunyu-1-2",
+      "source": "chapter:lunyu:af9bc266c858",
+      "target": "passage:lunyu-1-2",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-2",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:lunyu:af9bc266c858->passage:lunyu-1-3",
+      "source": "chapter:lunyu:af9bc266c858",
+      "target": "passage:lunyu-1-3",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-3",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:lunyu:af9bc266c858->passage:lunyu-1-4",
+      "source": "chapter:lunyu:af9bc266c858",
+      "target": "passage:lunyu-1-4",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-4",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:lunyu:af9bc266c858->passage:lunyu-1-5",
+      "source": "chapter:lunyu:af9bc266c858",
+      "target": "passage:lunyu-1-5",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-5",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:lunyu:af9bc266c858->passage:lunyu-1-6",
+      "source": "chapter:lunyu:af9bc266c858",
+      "target": "passage:lunyu-1-6",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-6",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:lunyu:af9bc266c858->passage:lunyu-1-7",
+      "source": "chapter:lunyu:af9bc266c858",
+      "target": "passage:lunyu-1-7",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-7",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:lunyu:af9bc266c858->passage:lunyu-1-8",
+      "source": "chapter:lunyu:af9bc266c858",
+      "target": "passage:lunyu-1-8",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-8",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:lunyu:af9bc266c858->passage:lunyu-1-9",
+      "source": "chapter:lunyu:af9bc266c858",
+      "target": "passage:lunyu-1-9",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-9",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:zhongyong:13589da3d52d->passage:zhongyong-3-1",
+      "source": "chapter:zhongyong:13589da3d52d",
+      "target": "passage:zhongyong-3-1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-3-1",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:zhongyong:4b9b0e439307->passage:zhongyong-4-1",
+      "source": "chapter:zhongyong:4b9b0e439307",
+      "target": "passage:zhongyong-4-1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-4-1",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:zhongyong:bbd8d0e5575a->passage:zhongyong-1-1",
+      "source": "chapter:zhongyong:bbd8d0e5575a",
+      "target": "passage:zhongyong-1-1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-1-1",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:zhongyong:bbd8d0e5575a->passage:zhongyong-1-2",
+      "source": "chapter:zhongyong:bbd8d0e5575a",
+      "target": "passage:zhongyong-1-2",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-1-2",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:zhongyong:bbd8d0e5575a->passage:zhongyong-1-3",
+      "source": "chapter:zhongyong:bbd8d0e5575a",
+      "target": "passage:zhongyong-1-3",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-1-3",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:zhongyong:bbd8d0e5575a->passage:zhongyong-1-4",
+      "source": "chapter:zhongyong:bbd8d0e5575a",
+      "target": "passage:zhongyong-1-4",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-1-4",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:zhongyong:c4589d81d7f9->passage:zhongyong-2-1",
+      "source": "chapter:zhongyong:c4589d81d7f9",
+      "target": "passage:zhongyong-2-1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-2-1",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:work:daxue->chapter:daxue:0fe2bd48e89a",
+      "source": "work:daxue",
+      "target": "chapter:daxue:0fe2bd48e89a",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      }
+    },
+    {
+      "id": "contains:work:daxue->chapter:daxue:629d39b0673b",
+      "source": "work:daxue",
+      "target": "chapter:daxue:629d39b0673b",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      }
+    },
+    {
+      "id": "contains:work:lunyu->chapter:lunyu:af9bc266c858",
+      "source": "work:lunyu",
+      "target": "chapter:lunyu:af9bc266c858",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      }
+    },
+    {
+      "id": "contains:work:zhongyong->chapter:zhongyong:13589da3d52d",
+      "source": "work:zhongyong",
+      "target": "chapter:zhongyong:13589da3d52d",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      }
+    },
+    {
+      "id": "contains:work:zhongyong->chapter:zhongyong:4b9b0e439307",
+      "source": "work:zhongyong",
+      "target": "chapter:zhongyong:4b9b0e439307",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      }
+    },
+    {
+      "id": "contains:work:zhongyong->chapter:zhongyong:bbd8d0e5575a",
+      "source": "work:zhongyong",
+      "target": "chapter:zhongyong:bbd8d0e5575a",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      }
+    },
+    {
+      "id": "contains:work:zhongyong->chapter:zhongyong:c4589d81d7f9",
+      "source": "work:zhongyong",
+      "target": "chapter:zhongyong:c4589d81d7f9",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      }
+    },
+    {
+      "id": "mentions:passage:daxue-2-1->concept:family-and-duty",
+      "source": "passage:daxue-2-1",
+      "target": "concept:family-and-duty",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "daxue-2-1",
+      "rationale": "原文直接触及「家庭与责任」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:daxue-2-1->concept:governance-and-people",
+      "source": "passage:daxue-2-1",
+      "target": "concept:governance-and-people",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "daxue-2-1",
+      "rationale": "原文直接触及「治理与民」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:daxue-2-1->concept:self-cultivation",
+      "source": "passage:daxue-2-1",
+      "target": "concept:self-cultivation",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "daxue-2-1",
+      "rationale": "原文直接触及「修身自省」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:daxue-2-2->concept:family-and-duty",
+      "source": "passage:daxue-2-2",
+      "target": "concept:family-and-duty",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "daxue-2-2",
+      "rationale": "原文直接触及「家庭与责任」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:daxue-2-2->concept:governance-and-people",
+      "source": "passage:daxue-2-2",
+      "target": "concept:governance-and-people",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "daxue-2-2",
+      "rationale": "原文直接触及「治理与民」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:daxue-2-2->concept:self-cultivation",
+      "source": "passage:daxue-2-2",
+      "target": "concept:self-cultivation",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "daxue-2-2",
+      "rationale": "原文直接触及「修身自省」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-1->concept:friendship-and-trust",
+      "source": "passage:lunyu-1-1",
+      "target": "concept:friendship-and-trust",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-1",
+      "rationale": "原文直接触及「朋友与信义」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-1->concept:learning-and-practice",
+      "source": "passage:lunyu-1-1",
+      "target": "concept:learning-and-practice",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-1",
+      "rationale": "原文直接触及「学与实践」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-2->concept:family-and-duty",
+      "source": "passage:lunyu-1-2",
+      "target": "concept:family-and-duty",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-2",
+      "rationale": "原文直接触及「家庭与责任」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-4->concept:friendship-and-trust",
+      "source": "passage:lunyu-1-4",
+      "target": "concept:friendship-and-trust",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-4",
+      "rationale": "原文直接触及「朋友与信义」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-4->concept:learning-and-practice",
+      "source": "passage:lunyu-1-4",
+      "target": "concept:learning-and-practice",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-4",
+      "rationale": "原文直接触及「学与实践」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-4->concept:self-cultivation",
+      "source": "passage:lunyu-1-4",
+      "target": "concept:self-cultivation",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-4",
+      "rationale": "原文直接触及「修身自省」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-5->concept:governance-and-people",
+      "source": "passage:lunyu-1-5",
+      "target": "concept:governance-and-people",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-5",
+      "rationale": "原文直接触及「治理与民」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-6->concept:family-and-duty",
+      "source": "passage:lunyu-1-6",
+      "target": "concept:family-and-duty",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-6",
+      "rationale": "原文直接触及「家庭与责任」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-6->concept:friendship-and-trust",
+      "source": "passage:lunyu-1-6",
+      "target": "concept:friendship-and-trust",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-6",
+      "rationale": "原文直接触及「朋友与信义」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-6->concept:learning-and-practice",
+      "source": "passage:lunyu-1-6",
+      "target": "concept:learning-and-practice",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-6",
+      "rationale": "原文直接触及「学与实践」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-7->concept:family-and-duty",
+      "source": "passage:lunyu-1-7",
+      "target": "concept:family-and-duty",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-7",
+      "rationale": "原文直接触及「家庭与责任」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-7->concept:friendship-and-trust",
+      "source": "passage:lunyu-1-7",
+      "target": "concept:friendship-and-trust",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-7",
+      "rationale": "原文直接触及「朋友与信义」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-8->concept:friendship-and-trust",
+      "source": "passage:lunyu-1-8",
+      "target": "concept:friendship-and-trust",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-8",
+      "rationale": "原文直接触及「朋友与信义」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-8->concept:learning-and-practice",
+      "source": "passage:lunyu-1-8",
+      "target": "concept:learning-and-practice",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-8",
+      "rationale": "原文直接触及「学与实践」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-8->concept:self-cultivation",
+      "source": "passage:lunyu-1-8",
+      "target": "concept:self-cultivation",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-8",
+      "rationale": "原文直接触及「修身自省」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-9->concept:governance-and-people",
+      "source": "passage:lunyu-1-9",
+      "target": "concept:governance-and-people",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-9",
+      "rationale": "原文直接触及「治理与民」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:zhongyong-1-1->concept:moderation-and-harmony",
+      "source": "passage:zhongyong-1-1",
+      "target": "concept:moderation-and-harmony",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-1-1",
+      "rationale": "原文直接触及「中和分寸」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:zhongyong-1-2->concept:moderation-and-harmony",
+      "source": "passage:zhongyong-1-2",
+      "target": "concept:moderation-and-harmony",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-1-2",
+      "rationale": "原文直接触及「中和分寸」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:zhongyong-1-3->concept:moderation-and-harmony",
+      "source": "passage:zhongyong-1-3",
+      "target": "concept:moderation-and-harmony",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-1-3",
+      "rationale": "原文直接触及「中和分寸」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:zhongyong-1-4->concept:moderation-and-harmony",
+      "source": "passage:zhongyong-1-4",
+      "target": "concept:moderation-and-harmony",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-1-4",
+      "rationale": "原文直接触及「中和分寸」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:zhongyong-2-1->concept:moderation-and-harmony",
+      "source": "passage:zhongyong-2-1",
+      "target": "concept:moderation-and-harmony",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-2-1",
+      "rationale": "原文直接触及「中和分寸」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:zhongyong-3-1->concept:moderation-and-harmony",
+      "source": "passage:zhongyong-3-1",
+      "target": "concept:moderation-and-harmony",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-3-1",
+      "rationale": "原文直接触及「中和分寸」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "mentions:passage:zhongyong-4-1->concept:moderation-and-harmony",
+      "source": "passage:zhongyong-4-1",
+      "target": "concept:moderation-and-harmony",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "zhongyong-4-1",
+      "rationale": "原文直接触及「中和分寸」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    }
+  ]
+}

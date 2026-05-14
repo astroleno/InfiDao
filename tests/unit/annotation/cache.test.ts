@@ -5,26 +5,16 @@ import {
   resetAnnotationCache,
   setCachedAnnotation,
 } from "@/lib/annotation/cache";
-import type { AnnotationResult } from "@/types";
+import type { CachedAnnotationCopy } from "@/lib/annotation/cache";
 
 describe("annotation cache", () => {
   const originalEnv = { ...process.env };
 
-  const annotation: AnnotationResult = {
+  const annotation: CachedAnnotationCopy = {
     passageId: "lunyu-1-1",
     passageText: "学而时习之，不亦说乎？",
     sixToMe: "经典回应",
     meToSix: "当代反观",
-    links: [
-      {
-        passageId: "lunyu-1-2",
-        label: "延伸：论语 学而篇 第 2 节",
-        passageText: "有子曰",
-        source: "论语",
-        chapter: "学而篇",
-        section: 2,
-      },
-    ],
   };
 
   beforeEach(() => {
@@ -63,7 +53,7 @@ describe("annotation cache", () => {
     expect(qualityKey).not.toBe(fastKey);
   });
 
-  it("keys path-aware links by normalized visited passages", () => {
+  it("keys cached copy independently from visited link paths", () => {
     const noVisitedKey = buildAnnotationCacheKey({
       query: "如何面对困境",
       passageId: "lunyu-1-1",
@@ -88,9 +78,9 @@ describe("annotation cache", () => {
       visitedPassageIds: ["lunyu-1-8", "lunyu-1-2"],
     });
 
-    expect(visitedKey).not.toBe(noVisitedKey);
+    expect(visitedKey).toBe(noVisitedKey);
     expect(visitedKey).toBe(reorderedVisitedKey);
-    expect(visitedKey).toContain("lunyu-1-8");
+    expect(visitedKey).not.toContain("lunyu-1-8");
   });
 
   it("returns defensive copies and expires old entries", () => {
@@ -106,14 +96,8 @@ describe("annotation cache", () => {
       throw new Error("Expected cached annotation.");
     }
 
-    const firstLink = cached.links[0];
-
-    if (!firstLink) {
-      throw new Error("Expected cached annotation link.");
-    }
-
-    firstLink.label = "mutated";
-    expect(getCachedAnnotation(key, 1060)?.links[0]?.label).toBe("延伸：论语 学而篇 第 2 节");
+    cached.sixToMe = "mutated";
+    expect(getCachedAnnotation(key, 1060)?.sixToMe).toBe("经典回应");
     expect(getCachedAnnotation(key, 1200)).toBeNull();
   });
 

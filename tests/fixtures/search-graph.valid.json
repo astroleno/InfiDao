@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "corpusVersion": "sixclassics-sample-v1",
+  "conceptSeedVersion": "search-concepts-v1",
+  "generatedAt": "2026-05-13T00:00:00.000Z",
+  "sourceManifestPath": "data/corpus-manifest.json",
+  "nodes": [
+    {
+      "id": "chapter:lunyu:test",
+      "type": "chapter",
+      "label": "学而篇",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      }
+    },
+    {
+      "id": "concept:learning-and-practice",
+      "type": "concept",
+      "label": "学与实践",
+      "conceptGroup": "learning-and-practice",
+      "provenance": {
+        "source": "concept-seed",
+        "sourceFile": "data/search-concepts.json"
+      }
+    },
+    {
+      "id": "passage:lunyu-1-1",
+      "type": "passage",
+      "label": "论语 学而篇 第 1 节",
+      "passageId": "lunyu-1-1",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "1a5eb80288b08db40d73ca005f567150962d220f4381294f903a5104bf7b6a69",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "passage:lunyu-1-2",
+      "type": "passage",
+      "label": "论语 学而篇 第 2 节",
+      "passageId": "lunyu-1-2",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "21c0e39bb6346f73f8f58b490f0a9d7e4bdfea9d467d0955ced611200cc91a3c",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "work:lunyu",
+      "type": "work",
+      "label": "论语",
+      "workId": "lunyu",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "adjacent_to:passage:lunyu-1-1->passage:lunyu-1-2",
+      "source": "passage:lunyu-1-1",
+      "target": "passage:lunyu-1-2",
+      "relation": "adjacent_to",
+      "confidence": "EXTRACTED",
+      "weight": 0.9,
+      "sourcePassageId": "lunyu-1-1",
+      "rationale": "Corpus order places these passages next to each other in the same chapter.",
+      "provenance": {
+        "source": "corpus-sequence",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:chapter:lunyu:test->passage:lunyu-1-1",
+      "source": "chapter:lunyu:test",
+      "target": "passage:lunyu-1-1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-1",
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    },
+    {
+      "id": "contains:work:lunyu->chapter:lunyu:test",
+      "source": "work:lunyu",
+      "target": "chapter:lunyu:test",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "rationale": "Corpus manifest establishes this containment relation.",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/corpus-manifest.json"
+      }
+    },
+    {
+      "id": "mentions:passage:lunyu-1-1->concept:learning-and-practice",
+      "source": "passage:lunyu-1-1",
+      "target": "concept:learning-and-practice",
+      "relation": "mentions",
+      "confidence": "EXTRACTED",
+      "weight": 1,
+      "sourcePassageId": "lunyu-1-1",
+      "rationale": "原文直接触及「学与实践」。",
+      "provenance": {
+        "source": "concept-seed-pattern",
+        "sourceFile": "data/search-concepts.json"
+      }
+    }
+  ],
+  "artifactSignature": "sha256:39bc4a44ff02db2c1307100be2b0345c4d32bdb0eb00eb8aaab6c0b071e039a3"
+}

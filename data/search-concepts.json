@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "conceptSeedVersion": "search-concepts-v1",
+  "concepts": [
+    {
+      "id": "learning-and-practice",
+      "label": "学与实践",
+      "conceptGroup": "learning-and-practice",
+      "keywords": ["学习", "实践", "温故", "传习"],
+      "mentionPatterns": ["学而时习|时习之|传不习|行有余力.*学文|学则不固"]
+    },
+    {
+      "id": "friendship-and-trust",
+      "label": "朋友与信义",
+      "conceptGroup": "relationship-ethics",
+      "keywords": ["朋友", "信义", "交往"],
+      "mentionPatterns": ["朋友交|与朋友|有朋自远方来|主忠信|谨而信|交言而有信"]
+    },
+    {
+      "id": "family-and-duty",
+      "label": "家庭与责任",
+      "conceptGroup": "relationship-ethics",
+      "keywords": ["孝悌", "父母", "齐家"],
+      "mentionPatterns": ["孝弟|父母|齐其家|家齐|亲仁"]
+    },
+    {
+      "id": "self-cultivation",
+      "label": "修身自省",
+      "conceptGroup": "self-cultivation",
+      "keywords": ["修身", "自省", "改过"],
+      "mentionPatterns": ["三省吾身|修其身|身修|过则勿惮改|诚其意|毋自欺"]
+    },
+    {
+      "id": "moderation-and-harmony",
+      "label": "中和分寸",
+      "conceptGroup": "moderation-and-harmony",
+      "keywords": ["中庸", "中和", "分寸"],
+      "mentionPatterns": ["中庸|中和|皆中节|时中|过之.*不及"]
+    },
+    {
+      "id": "governance-and-people",
+      "label": "治理与民",
+      "conceptGroup": "governance-and-people",
+      "keywords": ["治理", "天下", "民"],
+      "mentionPatterns": ["治其国|国治|天下平|使民以时|民德|明明德于天下"]
+    }
+  ]
+}

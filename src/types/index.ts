@@ -59,6 +59,7 @@ export interface AnnotateRequest {
 export interface AnnotationLink {
   passageId: string;
   label: string;
+  relationHint?: string;
   passageText: string;
   source: string;
   chapter: string;

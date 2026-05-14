@@ -31,6 +31,7 @@ describe("SearchBar", () => {
       />,
     );
 
+    fireEvent.click(screen.getByText("借一句开头"));
     fireEvent.click(screen.getByRole("button", { name: "我不确定该不该退一步" }));
 
     expect(onChange).toHaveBeenCalledWith("我不确定该不该退一步");
@@ -51,7 +52,7 @@ describe("SearchBar", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("更多一念"));
+    fireEvent.click(screen.getByText("借一句开头"));
     fireEvent.click(screen.getByRole("button", { name: "另起一念" }));
 
     expect(onChange).toHaveBeenCalledWith("我最近总是急于证明自己");
@@ -70,9 +71,10 @@ describe("SearchBar", () => {
       />,
     );
 
+    expect(screen.getByText("借一句开头")).toHaveClass("min-h-11");
+    expect(screen.queryByText("更多一念")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText("借一句开头"));
     expect(screen.getByRole("button", { name: "我最近总是急于证明自己" }).className).toContain("min-h-11");
-    expect(screen.getByText("更多一念")).toHaveClass("min-h-11");
-    fireEvent.click(screen.getByText("更多一念"));
     expect(screen.getByRole("button", { name: "另起一念" }).className).toContain("min-h-11");
   });
 });

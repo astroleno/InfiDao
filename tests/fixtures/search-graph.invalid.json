@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "corpusVersion": "sixclassics-sample-v1",
+  "conceptSeedVersion": "search-concepts-v1",
+  "artifactSignature": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "generatedAt": "2026-05-13T00:00:00.000Z",
+  "sourceManifestPath": "data/corpus-manifest.json",
+  "nodes": [
+    {
+      "id": "passage:missing",
+      "type": "passage",
+      "label": "Missing passage",
+      "passageId": "missing",
+      "workId": "lunyu",
+      "chapter": "学而篇",
+      "textHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "provenance": {
+        "source": "corpus-manifest",
+        "sourceFile": "data/sixclassics-sample.jsonl"
+      }
+    }
+  ],
+  "edges": []
+}

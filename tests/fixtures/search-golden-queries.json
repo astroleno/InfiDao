@@ -63,6 +63,13 @@
     "minResults": 2
   },
   {
+    "query": "我怎样安住眼前这件事",
+    "expectedTop1Ids": ["zhongyong-4-1", "zhongyong-1-2"],
+    "requiredTop3Ids": ["zhongyong-4-1", "zhongyong-1-2", "zhongyong-2-1"],
+    "bannedTop3Ids": ["daxue-2-2"],
+    "minResults": 3
+  },
+  {
     "query": "被别人误解怎么办",
     "expectedTop1Ids": ["lunyu-1-1"],
     "requiredTop3Ids": ["lunyu-1-1"],
