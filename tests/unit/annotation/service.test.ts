@@ -1,6 +1,49 @@
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { createAnnotation } from "@/lib/annotation/service";
 import { resetAnnotationCache } from "@/lib/annotation/cache";
 import { getAnnotationTelemetryEvents, resetAnnotationTelemetry } from "@/lib/annotation/telemetry";
+import { clearSearchGraphCache } from "@/lib/search/graph/store";
+import { attachSearchGraphArtifactSignature } from "@/lib/search/graph/signature";
+import type { SearchGraphArtifact } from "@/lib/search/graph/types";
+
+const validGraphFixturePath = path.join(
+  process.cwd(),
+  "tests",
+  "fixtures",
+  "search-graph.valid.json",
+);
+const adjacentFixtureEdgeId = "adjacent_to:passage:lunyu-1-1->passage:lunyu-1-2";
+
+async function readValidGraphFixture(): Promise<SearchGraphArtifact> {
+  return JSON.parse(await fs.readFile(validGraphFixturePath, "utf8")) as SearchGraphArtifact;
+}
+
+async function writeGraphFixture(artifact: SearchGraphArtifact): Promise<string> {
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "infidao-annotation-graph-"));
+  const graphPath = path.join(directory, "search-graph.json");
+
+  await fs.writeFile(graphPath, `${JSON.stringify(artifact, null, 2)}\n`, "utf8");
+  return graphPath;
+}
+
+function resignGraphArtifact(artifact: SearchGraphArtifact): SearchGraphArtifact {
+  const { artifactSignature: _artifactSignature, ...unsignedArtifact } = artifact;
+  return attachSearchGraphArtifactSignature(unsignedArtifact);
+}
+
+function withAdjacentRationale(
+  artifact: SearchGraphArtifact,
+  rationale: string,
+): SearchGraphArtifact {
+  return resignGraphArtifact({
+    ...artifact,
+    edges: artifact.edges.map(edge =>
+      edge.id === adjacentFixtureEdgeId ? { ...edge, rationale } : edge,
+    ),
+  });
+}
 
 describe("createAnnotation", () => {
   const originalEnv = { ...process.env };
@@ -15,6 +58,7 @@ describe("createAnnotation", () => {
       "ANNOTATION_CACHE_TTL_MS",
       "ANNOTATION_CACHE_MAX_ENTRIES",
       "ANNOTATION_TELEMETRY",
+      "SEARCH_GRAPH_PATH",
       "LLM_MODEL_PRIMARY",
       "LLM_BASE_URL_PRIMARY",
       "LLM_API_KEY_PRIMARY",
@@ -39,6 +83,7 @@ describe("createAnnotation", () => {
 
     global.fetch = originalFetch;
     resetAnnotationCache();
+    clearSearchGraphCache();
     resetAnnotationTelemetry();
   });
 
@@ -46,6 +91,7 @@ describe("createAnnotation", () => {
     process.env = { ...originalEnv };
     global.fetch = originalFetch;
     resetAnnotationCache();
+    clearSearchGraphCache();
     resetAnnotationTelemetry();
     jest.restoreAllMocks();
   });
@@ -119,6 +165,74 @@ describe("createAnnotation", () => {
 
     expect(linkedPassageIds).not.toContain("daxue-1-1");
     expect(linkedPassageIds).not.toContain("daxue-2-1");
+  });
+
+  it("prefers extracted graph links while keeping the annotation response shape", async () => {
+    process.env.SEARCH_GRAPH_PATH = validGraphFixturePath;
+    clearSearchGraphCache();
+
+    const annotation = await createAnnotation({
+      query: "学习如何落到行动",
+      passageId: "lunyu-1-1",
+      passageText: "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？",
+      style: "modern",
+    });
+
+    expect(annotation.links[0]).toEqual(
+      expect.objectContaining({
+        passageId: "lunyu-1-2",
+        relationHint: expect.stringContaining("前后相邻"),
+      }),
+    );
+    expect(annotation.links[0]).not.toHaveProperty("relationMeta");
+  });
+
+  it("falls back to lexical links when the graph sidecar is disabled", async () => {
+    process.env.SEARCH_GRAPH_PATH = path.join(os.tmpdir(), "missing-annotation-search-graph.json");
+    clearSearchGraphCache();
+
+    const annotation = await createAnnotation({
+      query: "学习如何落到行动",
+      passageId: "lunyu-1-1",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern",
+    });
+
+    expect(annotation.links.length).toBeGreaterThan(0);
+    expect(annotation.links.map(link => link.passageId)).not.toContain("lunyu-1-1");
+    expect(annotation.links.every(link => link.relationHint === undefined)).toBe(true);
+  });
+
+  it("rebuilds graph links after cache hits so artifact updates do not stick", async () => {
+    const baseGraph = await readValidGraphFixture();
+    const graphPath = await writeGraphFixture(
+      withAdjacentRationale(baseGraph, "first graph link rationale"),
+    );
+    process.env.SEARCH_GRAPH_PATH = graphPath;
+    clearSearchGraphCache();
+
+    const request = {
+      query: "学习如何落到行动",
+      passageId: "lunyu-1-1",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern" as const,
+    };
+
+    const first = await createAnnotation(request);
+    await fs.writeFile(
+      graphPath,
+      `${JSON.stringify(withAdjacentRationale(baseGraph, "second graph link rationale"), null, 2)}\n`,
+      "utf8",
+    );
+    clearSearchGraphCache();
+    const second = await createAnnotation(request);
+
+    expect(first.links[0]?.relationHint).toContain("first graph link rationale");
+    expect(second.sixToMe).toBe(first.sixToMe);
+    expect(second.links[0]?.relationHint).toContain("second graph link rationale");
+    expect(getAnnotationTelemetryEvents()).toEqual(
+      expect.arrayContaining([expect.objectContaining({ provider: "cache", cacheHit: true })]),
+    );
   });
 
   it("uses the configured llm copy when a provider returns valid reboot json", async () => {

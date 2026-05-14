@@ -22,6 +22,11 @@ import {
 } from "@/lib/annotation/telemetry";
 import { loadSearchIndex } from "@/lib/search/index-store";
 import { rankLexicalCandidates } from "@/lib/search/lexical";
+import {
+  buildAnnotationLinkFromGraphHint,
+  loadSearchGraphServiceForIndex,
+  MAX_GRAPH_LINKS_PER_ANNOTATION,
+} from "@/lib/search/graph/service";
 
 const STYLE_OPENERS: Record<AnnotationStyle, string> = {
   academic: "从义理结构看",
@@ -128,18 +133,17 @@ function buildFallbackAnnotationCopy(
   };
 }
 
-function buildLinks(
+function buildLexicalLinks(
   corpus: PassageRecord[],
   query: string,
-  passageId: string,
   passageText: string,
-  visitedPassageIds: string[],
+  excludedPassageIds: Set<string>,
+  limit = 3,
 ): AnnotationLink[] {
-  const excludedPassageIds = new Set([...visitedPassageIds, passageId]);
-  const candidateLimit = Math.min(corpus.length, Math.max(12, excludedPassageIds.size + 6));
+  const candidateLimit = Math.min(corpus.length, Math.max(12, excludedPassageIds.size + limit * 2));
   const candidates = rankLexicalCandidates(corpus, `${query} ${passageText}`, candidateLimit)
     .filter(candidate => !excludedPassageIds.has(candidate.id))
-    .slice(0, 3);
+    .slice(0, limit);
 
   return candidates.map(candidate => ({
     passageId: candidate.id,
@@ -149,6 +153,52 @@ function buildLinks(
     chapter: candidate.chapter,
     section: candidate.section,
   }));
+}
+
+async function buildGraphLinks(
+  index: Awaited<ReturnType<typeof loadSearchIndex>>,
+  passageId: string,
+  excludedPassageIds: Set<string>,
+): Promise<AnnotationLink[]> {
+  try {
+    const graphService = await loadSearchGraphServiceForIndex(index, { required: false });
+
+    return graphService
+      .buildRelationHints(passageId, {
+        confidences: ["EXTRACTED"],
+        maxLinks: MAX_GRAPH_LINKS_PER_ANNOTATION,
+      })
+      .filter(hint => !excludedPassageIds.has(hint.passage.id))
+      .map(buildAnnotationLinkFromGraphHint)
+      .slice(0, MAX_GRAPH_LINKS_PER_ANNOTATION);
+  } catch {
+    return [];
+  }
+}
+
+async function buildLinks(
+  index: Awaited<ReturnType<typeof loadSearchIndex>>,
+  query: string,
+  passageId: string,
+  passageText: string,
+  visitedPassageIds: string[],
+): Promise<AnnotationLink[]> {
+  const excludedPassageIds = new Set([...visitedPassageIds, passageId]);
+  const graphLinks = await buildGraphLinks(index, passageId, excludedPassageIds);
+
+  for (const link of graphLinks) {
+    excludedPassageIds.add(link.passageId);
+  }
+
+  const lexicalLinks = buildLexicalLinks(
+    index.corpus,
+    query,
+    passageText,
+    excludedPassageIds,
+    MAX_GRAPH_LINKS_PER_ANNOTATION - graphLinks.length,
+  );
+
+  return [...graphLinks, ...lexicalLinks].slice(0, MAX_GRAPH_LINKS_PER_ANNOTATION);
 }
 
 function normalizeVisitedPassageIds(passageId: string, visitedPassageIds: string[] = []): string[] {
@@ -202,6 +252,14 @@ export async function createAnnotation({
   const cachedAnnotation = getCachedAnnotation(cacheKey);
 
   if (cachedAnnotation) {
+    const links = await buildLinks(
+      index,
+      trimmedQuery,
+      passageId,
+      trimmedPassageText,
+      normalizedVisitedPassageIds,
+    );
+
     recordAnnotationTelemetry({
       mode,
       provider: "cache",
@@ -213,7 +271,10 @@ export async function createAnnotation({
       explorationDepth,
     });
 
-    return cachedAnnotation;
+    return {
+      ...cachedAnnotation,
+      links,
+    };
   }
 
   const fallbackCopy = buildFallbackAnnotationCopy(
@@ -273,8 +334,8 @@ export async function createAnnotation({
     passageText: trimmedPassageText,
     sixToMe: annotationCopy.sixToMe,
     meToSix: annotationCopy.meToSix,
-    links: buildLinks(
-      index.corpus,
+    links: await buildLinks(
+      index,
       trimmedQuery,
       passageId,
       trimmedPassageText,

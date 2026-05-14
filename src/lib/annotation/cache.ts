@@ -13,8 +13,13 @@ interface AnnotationCacheKeyInput {
   visitedPassageIds?: string[];
 }
 
+export type CachedAnnotationCopy = Pick<
+  AnnotationResult,
+  "passageId" | "passageText" | "sixToMe" | "meToSix"
+>;
+
 interface AnnotationCacheEntry {
-  result: AnnotationResult;
+  result: CachedAnnotationCopy;
   expiresAt: number;
 }
 
@@ -22,30 +27,6 @@ const annotationCache = new Map<string, AnnotationCacheEntry>();
 
 function normalizeCacheText(value: string): string {
   return value.trim().replace(/\s+/gu, " ");
-}
-
-function normalizeCacheIds(values: string[] = []): string[] {
-  const uniqueValues = new Set<string>();
-
-  for (const value of values) {
-    const normalizedValue = normalizeCacheText(value);
-
-    if (normalizedValue) {
-      uniqueValues.add(normalizedValue);
-    }
-  }
-
-  return [...uniqueValues].sort((left, right) => {
-    if (left < right) {
-      return -1;
-    }
-
-    if (left > right) {
-      return 1;
-    }
-
-    return 0;
-  });
 }
 
 function resolvePositiveIntegerEnv(key: string, fallback: number): number {
@@ -64,11 +45,8 @@ function resolvePositiveIntegerEnv(key: string, fallback: number): number {
   return Math.trunc(parsedValue);
 }
 
-function cloneAnnotationResult(result: AnnotationResult): AnnotationResult {
-  return {
-    ...result,
-    links: result.links.map(link => ({ ...link })),
-  };
+function cloneAnnotationCopy(result: CachedAnnotationCopy): CachedAnnotationCopy {
+  return { ...result };
 }
 
 export function resolveAnnotationCacheTtlMs(): number {
@@ -84,17 +62,19 @@ export function resolveAnnotationCacheMaxEntries(): number {
 
 export function buildAnnotationCacheKey(input: AnnotationCacheKeyInput): string {
   return JSON.stringify({
-    version: 2,
+    version: 3,
     mode: input.mode,
     style: input.style,
     passageId: normalizeCacheText(input.passageId),
     query: normalizeCacheText(input.query),
     passageText: normalizeCacheText(input.passageText),
-    visitedPassageIds: normalizeCacheIds(input.visitedPassageIds),
   });
 }
 
-export function getCachedAnnotation(cacheKey: string, now = Date.now()): AnnotationResult | null {
+export function getCachedAnnotation(
+  cacheKey: string,
+  now = Date.now(),
+): CachedAnnotationCopy | null {
   const entry = annotationCache.get(cacheKey);
 
   if (!entry) {
@@ -109,12 +89,12 @@ export function getCachedAnnotation(cacheKey: string, now = Date.now()): Annotat
   annotationCache.delete(cacheKey);
   annotationCache.set(cacheKey, entry);
 
-  return cloneAnnotationResult(entry.result);
+  return cloneAnnotationCopy(entry.result);
 }
 
 export function setCachedAnnotation(
   cacheKey: string,
-  result: AnnotationResult,
+  result: CachedAnnotationCopy,
   now = Date.now(),
 ): void {
   const maxEntries = resolveAnnotationCacheMaxEntries();
@@ -132,7 +112,7 @@ export function setCachedAnnotation(
   }
 
   annotationCache.set(cacheKey, {
-    result: cloneAnnotationResult(result),
+    result: cloneAnnotationCopy(result),
     expiresAt: now + resolveAnnotationCacheTtlMs(),
   });
 }

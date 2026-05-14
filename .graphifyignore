@@ -1,0 +1,13 @@
+# Developer code-navigation graph hygiene only.
+# Product search graph generation does not read this file; it reads only
+# data/corpus-manifest.json, declared corpus files, and data/search-concepts.json.
+
+graphify-out/
+ref/
+web/
+node_modules/
+.next/
+coverage/
+dist/
+build/
+data/search-graph.json
