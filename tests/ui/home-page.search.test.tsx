@@ -100,8 +100,8 @@ describe("HomePage search flow", () => {
     expect(await screen.findByText("身修而后家齐，家齐而后国治，国治而后天下平。")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "回到一念" }).className).toContain("min-h-11");
     expect(screen.getByText("改写这一念")).toHaveClass("min-h-11");
-    expect(screen.getByText("连续探索")).toHaveClass("hidden");
-    expect(screen.getByRole("button", { name: "进入注我" })).toHaveAccessibleDescription(
+    expect(screen.getByText("沿下一句探索")).toHaveClass("hidden");
+    expect(screen.getByRole("button", { name: "用这一句回应我" })).toHaveAccessibleDescription(
       "大学 · 传二章 · 第 2 节",
     );
     expect(screen.queryByText("排序：")).not.toBeInTheDocument();
@@ -109,22 +109,99 @@ describe("HomePage search flow", () => {
     expect(screen.queryByText("知识图谱")).not.toBeInTheDocument();
   });
 
-  it("shows a distinct empty state when search succeeds with no matches", async () => {
-    (global.fetch as jest.Mock).mockImplementationOnce(() =>
-      createFetchResponse({
-        success: true,
-        data: [],
-      }),
-    );
+  it("shows rewritten entry suggestions when every search path is empty", async () => {
+    (global.fetch as jest.Mock)
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: [],
+        }),
+      )
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: [],
+        }),
+      )
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: [],
+        }),
+      )
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: [],
+        }),
+      );
 
     render(<HomePage />);
 
-    fireEvent.click(screen.getByRole("button", { name: "我需要重新找回分寸" }));
+    fireEvent.change(screen.getByLabelText("输入此刻的一念"), {
+      target: { value: "我怎样安住眼前这件事" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
 
-    expect(await screen.findByText("这一念暂未听见回响")).toBeInTheDocument();
-    expect(screen.getByText("换一个更具体的处境，或回到一念重新发问。")).toBeInTheDocument();
-    expect(screen.getByText("这一念暂未听见回响").closest("div")).not.toHaveClass("rounded-[2rem]");
-    expect(screen.getByText("这一念暂未听见回响").closest("div")).toHaveClass("border-y");
+    expect(await screen.findByText("这一念还没找到贴近的回响")).toBeInTheDocument();
+    expect(screen.getByText("我先替你把它转成几条更容易入经的路。择一句进入，不必重新组织语言。")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /如何把心收回来/u })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /如何面对眼前事/u })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /此刻不安如何安顿/u })).toBeInTheDocument();
+    expect(screen.getByText("这一念还没找到贴近的回响").closest("div")).not.toHaveClass("rounded-[2rem]");
+    expect(screen.getByText("这一念还没找到贴近的回响").closest("div")).toHaveClass("border-y");
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenNthCalledWith(
+        2,
+        "/api/search",
+        expect.objectContaining({
+          body: JSON.stringify({
+            query: "我怎样安住眼前这件事 知止 止于至善 定静安虑得 中庸 中和 喜怒哀乐未发 诚意 慎独 主敬 分寸",
+            topK: 5,
+            threshold: 0.35,
+          }),
+        }),
+      );
+    });
+  });
+
+  it("uses concept bridge results before softer threshold fallback", async () => {
+    (global.fetch as jest.Mock)
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: [],
+        }),
+      )
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: [
+            {
+              id: "zhongyong-1-3",
+              source: "中庸",
+              chapter: "第一章",
+              section: 3,
+              text: "致中和，天地位焉，万物育焉。",
+              score: 0.214,
+            },
+          ],
+        }),
+      );
+
+    render(<HomePage />);
+
+    fireEvent.change(screen.getByLabelText("输入此刻的一念"), {
+      target: { value: "我怎样安住眼前这件事" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
+
+    expect(await screen.findByText("致中和，天地位焉，万物育焉。")).toBeInTheDocument();
+    expect(screen.getByText("经典词路")).toBeInTheDocument();
+    expect(screen.getAllByText(/知止 \/ 止于至善/u).length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText("这一问先落到「知止 / 止于至善 / 定静安虑得 / 中庸 / 中和」之间，先从最贴近的一句开始。")).toBeInTheDocument();
+    expect(screen.getByText("适合：当你在过与不及之间摇摆时。")).toBeInTheDocument();
+    expect(screen.queryByText("这一念还没找到贴近的回响")).not.toBeInTheDocument();
   });
 
   it("shows a distinct error state when search fails and can retry the same query", async () => {
@@ -222,7 +299,7 @@ describe("HomePage search flow", () => {
 
     expect(await screen.findByText("君子不重则不威，学则不固。主忠信，无友不如己者，过则勿惮改。")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "进入注我" }));
+    fireEvent.click(screen.getByRole("button", { name: "用这一句回应我" }));
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenNthCalledWith(
@@ -242,7 +319,7 @@ describe("HomePage search flow", () => {
     });
 
     expect(await screen.findByText("《论语·学而篇》第 8 节")).toBeInTheDocument();
-    expect(screen.getByText("可继续互注")).toBeInTheDocument();
+    expect(screen.getByText("下一句已备")).toBeInTheDocument();
     expect(screen.getByText("继续看自省")).toBeInTheDocument();
     expect(screen.queryByText("取义中，此句暂不可重复进入")).not.toBeInTheDocument();
     expect(screen.queryByText(/注释面板将在 Phase 3 接入/)).not.toBeInTheDocument();
@@ -294,7 +371,7 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
 
     expect(await screen.findByText("君子不重则不威，学则不固。")).toBeInTheDocument();
-    fireEvent.click(screen.getAllByRole("button", { name: "进入注我" })[0] as HTMLElement);
+    fireEvent.click(screen.getAllByRole("button", { name: "用这一句回应我" })[0] as HTMLElement);
 
     expect(await screen.findByText("注我卷轴")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "回到回应列表" }).className).toContain("min-h-11");
@@ -319,11 +396,11 @@ describe("HomePage search flow", () => {
     expect(screen.getByText("经典回应")).toBeInTheDocument();
     expect(screen.getByText("身修而后家齐。")).toBeInTheDocument();
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: "回到注语" })).toHaveFocus();
+      expect(screen.getByRole("button", { name: "沿这句继续" })).toHaveFocus();
     });
 
     expect(global.fetch).toHaveBeenCalledTimes(2);
-    const reopenAnnotation = screen.getByRole("button", { name: "回到注语" });
+    const reopenAnnotation = screen.getByRole("button", { name: "沿这句继续" });
     expect(reopenAnnotation).toHaveAccessibleDescription("论语 · 学而篇 · 第 8 节");
     fireEvent.click(reopenAnnotation);
 
@@ -377,7 +454,7 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
 
     expect(await screen.findByText("君子不重则不威，学则不固。")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "进入注我" }));
+    fireEvent.click(screen.getByRole("button", { name: "用这一句回应我" }));
 
     const reader = await screen.findByRole("region", { name: "注我阅读视图" });
 
@@ -446,7 +523,7 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
 
     expect(await screen.findByText("君子不重则不威，学则不固。")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "进入注我" }));
+    fireEvent.click(screen.getByRole("button", { name: "用这一句回应我" }));
     expect(await screen.findByText("继续看自省")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /进入下一句/u }));
@@ -507,7 +584,7 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
 
     expect(await screen.findByText("君子不重则不威，学则不固。")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "进入注我" }));
+    fireEvent.click(screen.getByRole("button", { name: "用这一句回应我" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("未能为《论语·学而篇》第 8 节生成注语。provider timeout");
     expect(screen.getAllByText("君子不重则不威，学则不固。").length).toBeGreaterThan(0);
@@ -584,7 +661,7 @@ describe("HomePage search flow", () => {
 
     expect(await screen.findByText("君子不重则不威，学则不固。")).toBeInTheDocument();
 
-    fireEvent.click(screen.getAllByRole("button", { name: "进入注我" })[0] as HTMLElement);
+    fireEvent.click(screen.getAllByRole("button", { name: "用这一句回应我" })[0] as HTMLElement);
 
     expect(await screen.findByRole("button", { name: "注我中" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "请稍候" })).toBeDisabled();
@@ -650,7 +727,7 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
 
     expect(await screen.findByText("君子不重则不威，学则不固。主忠信，无友不如己者，过则勿惮改。")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "进入注我" }));
+    fireEvent.click(screen.getByRole("button", { name: "用这一句回应我" }));
 
     expect(screen.queryByText("回响路径")).not.toBeInTheDocument();
     expect(await screen.findByText("继续看自省")).toBeInTheDocument();
@@ -673,14 +750,23 @@ describe("HomePage search flow", () => {
       );
     });
 
-    expect(await screen.findByText("回响路径")).toBeInTheDocument();
-    expect(screen.getByText("由此进入：论语 学而篇")).toBeInTheDocument();
+    expect(await screen.findByText("起句 / 论语 学而篇")).toBeInTheDocument();
+    expect(screen.queryByText("回响路径")).not.toBeInTheDocument();
     expect(screen.queryByText("继续看自省")).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "返回上一层" }));
+    fireEvent.click(screen.getByRole("button", { name: "回到回应列表" }));
+    const continueReading = screen.getByRole("button", { name: "沿这句继续" });
+    expect(continueReading).toHaveAccessibleDescription("论语 · 学而篇 · 第 8 节");
+    fireEvent.click(continueReading);
+
+    expect(await screen.findByRole("status", { name: "第二层注释" })).toBeInTheDocument();
+    expect(screen.getByText("起句 / 论语 学而篇")).toBeInTheDocument();
+    expect(global.fetch).toHaveBeenCalledTimes(3);
+
+    fireEvent.click(screen.getByRole("button", { name: "上一层" }));
 
     await waitFor(() => {
-      expect(screen.queryByText("回响路径")).not.toBeInTheDocument();
+      expect(screen.queryByText("起句 / 论语 学而篇")).not.toBeInTheDocument();
     });
     expect(screen.getByText("继续看自省")).toBeInTheDocument();
   });
@@ -764,21 +850,21 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
 
     expect(await screen.findByText("君子不重则不威，学则不固。主忠信，无友不如己者，过则勿惮改。")).toBeInTheDocument();
-    fireEvent.click(screen.getAllByRole("button", { name: "进入注我" })[0] as HTMLElement);
+    fireEvent.click(screen.getAllByRole("button", { name: "用这一句回应我" })[0] as HTMLElement);
     expect(await screen.findByText("继续看自省")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /进入下一句/u }));
-    expect(await screen.findByText("由此进入：论语 学而篇")).toBeInTheDocument();
+    expect(await screen.findByText("起句 / 论语 学而篇")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "回到回应列表" }));
-    fireEvent.click(screen.getAllByRole("button", { name: "进入注我" })[1] as HTMLElement);
+    fireEvent.click(screen.getByRole("button", { name: "用这一句回应我" }));
 
     expect(await screen.findByText("大学 传二章")).toBeInTheDocument();
     expect(screen.getByText("大学 传二章").closest("summary")).toHaveAttribute(
       "aria-label",
       "当前经文：《大学·传二章》第 2 节，旁通一义。展开查看原文",
     );
-    expect(screen.queryByText("由此进入：论语 学而篇")).not.toBeInTheDocument();
+    expect(screen.queryByText("起句 / 论语 学而篇")).not.toBeInTheDocument();
   });
 
   it("clears the prior exploration stack immediately when a different result is selected", async () => {
@@ -855,17 +941,17 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
 
     expect(await screen.findByText("君子不重则不威，学则不固。主忠信，无友不如己者，过则勿惮改。")).toBeInTheDocument();
-    fireEvent.click(screen.getAllByRole("button", { name: "进入注我" })[0] as HTMLElement);
+    fireEvent.click(screen.getAllByRole("button", { name: "用这一句回应我" })[0] as HTMLElement);
     expect(await screen.findByText("继续看自省")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /进入下一句/u }));
-    expect(await screen.findByText("由此进入：论语 学而篇")).toBeInTheDocument();
+    expect(await screen.findByText("起句 / 论语 学而篇")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "回到回应列表" }));
-    fireEvent.click(screen.getAllByRole("button", { name: "进入注我" })[1] as HTMLElement);
+    fireEvent.click(screen.getByRole("button", { name: "用这一句回应我" }));
 
-    expect(screen.queryByText("由此进入：论语 学而篇")).not.toBeInTheDocument();
-    expect(screen.queryByText("返回上一层")).not.toBeInTheDocument();
+    expect(screen.queryByText("起句 / 论语 学而篇")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "上一层" })).not.toBeInTheDocument();
   });
 
   it("shows an explicit empty exploration state for a leaf annotation", async () => {
@@ -927,7 +1013,7 @@ describe("HomePage search flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
 
     expect(await screen.findByText("君子不重则不威，学则不固。主忠信，无友不如己者，过则勿惮改。")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "进入注我" }));
+    fireEvent.click(screen.getByRole("button", { name: "用这一句回应我" }));
     expect(await screen.findByText("继续看自省")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /进入下一句/u }));

@@ -29,7 +29,7 @@ export function SixToMeView({ text, reason, isLoading, showGuidance = true }: Si
     setDisplayedText('');
 
     let currentIndex = 0;
-    const typingSpeed = 30; // ms per character
+    const typingSpeed = 34;
 
     const typeInterval = setInterval(() => {
       if (currentIndex < text.length) {
@@ -61,7 +61,7 @@ export function SixToMeView({ text, reason, isLoading, showGuidance = true }: Si
         <h3 className="sr-only md:hidden">六经注我</h3>
       </div>
 
-      <div className="border-y border-stone-800 bg-stone-950/35 py-6 pl-5 pr-3">
+      <div className="border-l border-stone-800/70 bg-transparent py-3 pl-4 pr-2 md:py-4 md:pl-5">
         {isLoading ? (
           <div className="space-y-2">
             <div className="h-4 rounded bg-stone-800 motion-safe:animate-pulse"></div>
@@ -73,10 +73,10 @@ export function SixToMeView({ text, reason, isLoading, showGuidance = true }: Si
             <div className="sr-only" role="status" aria-live="polite" aria-label={text}>
               {text}
             </div>
-            <div className="whitespace-pre-wrap text-lg leading-relaxed text-paper font-classic" aria-hidden="true">
+            <div className="max-w-[32rem] whitespace-pre-wrap text-left text-[1.05rem] leading-9 text-paper font-classic md:text-lg md:leading-10" aria-hidden="true">
               {displayedText}
               {isAnimating && (
-                <span className="ml-1 inline-block h-5 w-1 bg-zen motion-safe:animate-pulse"></span>
+                <span className="ml-1 hidden h-4 w-px bg-zen/85 align-middle motion-safe:animate-pulse md:inline-block"></span>
               )}
             </div>
 
@@ -94,7 +94,7 @@ export function SixToMeView({ text, reason, isLoading, showGuidance = true }: Si
       </div>
 
       {showGuidance && displayedText === text && !isLoading && (
-        <div className="mt-4 border-l border-stone-800 bg-stone-950/35 p-4">
+        <div className="mt-4 border-l border-stone-800/70 bg-transparent p-4">
           <div className="flex items-start">
             <svg className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0 text-zen" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

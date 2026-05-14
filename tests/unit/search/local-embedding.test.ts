@@ -17,5 +17,7 @@ describe("local embedding spec", () => {
     expect(expandLocalQueryAliases("面对别人不理解")).toContain("人不知");
     expect(expandLocalQueryAliases("反省自己哪里做得不够")).toContain("三省");
     expect(expandLocalQueryAliases("学习之后要实践")).toContain("学而时习");
+    expect(expandLocalQueryAliases("我怎样安住眼前这件事")).toContain("止于至善");
+    expect(expandLocalQueryAliases("我怎样安住眼前这件事")).toContain("中和");
   });
 });
