@@ -1,13 +1,18 @@
 import type { SearchResult } from "@/types";
 import type { LexicalCandidate } from "@/lib/search/lexical";
 
-export function fuseSearchResults(
+export interface FusedSearchCandidate extends SearchResult {
+  vectorScore: number;
+  lexicalScore: number;
+}
+
+export function fuseSearchCandidates(
   vectorResults: SearchResult[],
   lexicalResults: LexicalCandidate[],
   topK: number,
   threshold: number,
-): SearchResult[] {
-  const merged = new Map<string, SearchResult & { vectorScore?: number; lexicalScore?: number }>();
+): FusedSearchCandidate[] {
+  const merged = new Map<string, FusedSearchCandidate>();
 
   for (const result of vectorResults) {
     merged.set(result.id, {
@@ -21,7 +26,7 @@ export function fuseSearchResults(
     const existing = merged.get(result.id);
 
     if (existing) {
-      existing.lexicalScore = Math.max(existing.lexicalScore ?? 0, result.lexicalScore);
+      existing.lexicalScore = Math.max(existing.lexicalScore, result.lexicalScore);
       existing.score = Number(Math.min(1, existing.score + result.lexicalScore * 0.18).toFixed(4));
       continue;
     }
@@ -39,8 +44,18 @@ export function fuseSearchResults(
   }
 
   return Array.from(merged.values())
-    .filter((result) => result.score >= threshold)
+    .filter(result => result.score >= threshold)
     .sort((left, right) => right.score - left.score)
-    .slice(0, topK)
-    .map(({ vectorScore: _vectorScore, lexicalScore: _lexicalScore, ...result }) => result);
+    .slice(0, topK);
+}
+
+export function fuseSearchResults(
+  vectorResults: SearchResult[],
+  lexicalResults: LexicalCandidate[],
+  topK: number,
+  threshold: number,
+): SearchResult[] {
+  return fuseSearchCandidates(vectorResults, lexicalResults, topK, threshold).map(
+    ({ vectorScore: _vectorScore, lexicalScore: _lexicalScore, ...result }) => result,
+  );
 }

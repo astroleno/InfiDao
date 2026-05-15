@@ -45,6 +45,10 @@ playwright/.cache
 
 # Local scratch artifacts
 .tmp/
+.codex-review-screenshots/
+.planning/
+CLAUDE.md
+graphify-out/
 
 # Local reference material not intended for PRs
 docs/simon-rogers-adjustment-guide.md
