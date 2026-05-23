@@ -1,5 +1,5 @@
 import { HomeEntryExperience } from "@/components/home/HomeEntryExperience";
 
-export default function HomePage() {
+export default function SimonRogersPreviewPage() {
   return <HomeEntryExperience />;
 }

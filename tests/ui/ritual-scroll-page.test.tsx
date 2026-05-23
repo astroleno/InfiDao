@@ -38,7 +38,10 @@ describe("RitualScrollPage", () => {
     const source = readFileSync(join(process.cwd(), "src/app/ritual-scroll/page.tsx"), "utf8");
 
     expect(existsSync(join(process.cwd(), "src/app/simon-rogers"))).toBe(false);
+    expect(existsSync(join(process.cwd(), "src/app/simon-rogers-preview/page.tsx"))).toBe(true);
     expect(source).not.toContain("#5968ff");
+    expect(source).not.toContain("HomeEntryExperience");
+    expect(source).not.toContain("KineticTextField");
     expect(source).toContain("text-zen");
     expect(source).toContain("animationPlayState");
     expect(source).toContain("overflow-y-auto");

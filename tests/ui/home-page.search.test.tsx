@@ -73,7 +73,7 @@ describe("HomePage search flow", () => {
     expect(screen.queryByText("按回车注入思想流")).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText("输入此刻的一念"), {
-      target: { value: "治理国家" },
+      target: { value: "如何治理国家" },
     });
     fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
 

@@ -20,6 +20,7 @@ interface SearchBarProps {
   showSuggestions?: boolean;
   compact?: boolean;
   inputId?: string;
+  onFocusChange?: (isFocused: boolean) => void;
 }
 
 export function SearchBar({
@@ -33,6 +34,7 @@ export function SearchBar({
   showSuggestions = true,
   compact = false,
   inputId = "thought-query",
+  onFocusChange,
 }: SearchBarProps) {
   const hasQuery = value.trim().length > 0;
   const canSubmit = hasQuery && !isLoading && !disabled;
@@ -78,6 +80,8 @@ export function SearchBar({
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
+            onFocus={() => onFocusChange?.(true)}
+            onBlur={() => onFocusChange?.(false)}
             placeholder={placeholder}
             className={`w-full border-b bg-transparent text-center text-paper placeholder:text-stone-400/80 transition-[border-color,box-shadow,color] duration-500 focus:border-zen focus:outline-none focus:shadow-[0_16px_38px_-32px_rgba(199,179,139,0.9)] font-classic ${
               compact

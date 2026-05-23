@@ -126,4 +126,168 @@ All colors MUST be HSL.
     writing-mode: vertical-rl;
     text-orientation: mixed;
   }
+
+  .kinetic-text-stage {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.92;
+    filter: saturate(0.92);
+    transition:
+      opacity 380ms ease,
+      filter 380ms ease,
+      transform 420ms ease;
+    -webkit-mask-image: radial-gradient(ellipse 34% 24% at 50% 52%, transparent 0%, transparent 46%, rgba(0, 0, 0, 0.35) 64%, #000 100%);
+    mask-image: radial-gradient(ellipse 34% 24% at 50% 52%, transparent 0%, transparent 46%, rgba(0, 0, 0, 0.35) 64%, #000 100%);
+  }
+
+  .kinetic-text-stage.kinetic-text-stage--typing {
+    opacity: 0.42;
+    filter: blur(0.2px) saturate(0.78);
+  }
+
+  .kinetic-text-stage.kinetic-text-stage--friction {
+    opacity: 0.55;
+    filter: blur(0.4px) saturate(0.8);
+  }
+
+  .kinetic-text-stage.kinetic-text-stage--submitting,
+  .kinetic-text-stage.kinetic-text-stage--results {
+    opacity: 0.14;
+    transform: scale(0.985);
+  }
+
+  .kinetic-text-stage.kinetic-text-stage--annotation,
+  .kinetic-text-stage.kinetic-text-stage--explore {
+    opacity: 0.025;
+    filter: blur(1.8px) saturate(0.65);
+    transform: scale(0.975);
+  }
+
+  .kinetic-text-stage.kinetic-text-stage--error {
+    opacity: 0.26;
+  }
+
+  .kinetic-text-stage.kinetic-text-stage--back {
+    opacity: 0.62;
+  }
+
+  .kinetic-text-perspective {
+    position: absolute;
+    inset: -8% -4%;
+    perspective: 940px;
+    transform: rotateX(6deg) rotateZ(-2deg);
+    transform-style: preserve-3d;
+  }
+
+  .kinetic-text-line {
+    position: absolute;
+    left: var(--kinetic-x);
+    top: var(--kinetic-y);
+    max-width: min(34vw, 34rem);
+    transform: translate3d(0, 0, var(--kinetic-z)) rotate(var(--kinetic-rotate)) scale(var(--kinetic-scale));
+    transform-style: preserve-3d;
+    transform-origin: center;
+    animation: kinetic-text-drift var(--kinetic-duration) ease-in-out infinite alternate;
+    animation-delay: var(--kinetic-delay);
+    color: hsl(var(--paper) / 0.62);
+    font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+    font-size: clamp(0.95rem, 1.5vw, 1.7rem);
+    letter-spacing: 0;
+    line-height: 1.55;
+    text-shadow: 0 12px 44px rgba(199, 179, 139, 0.16);
+    white-space: nowrap;
+    will-change: transform, opacity;
+  }
+
+  .kinetic-text-line--far {
+    opacity: 0.22;
+    filter: blur(2px);
+  }
+
+  .kinetic-text-line--mid {
+    opacity: 0.38;
+    filter: blur(0.8px);
+  }
+
+  .kinetic-text-line--near {
+    opacity: 0.58;
+    filter: blur(0);
+  }
+
+  .kinetic-text-line--classic {
+    color: hsl(var(--zen) / 0.72);
+  }
+
+  .kinetic-text-line--thought {
+    color: hsl(var(--paper) / 0.56);
+  }
+
+  .kinetic-text-line--response {
+    color: rgba(161, 86, 66, 0.56);
+  }
+
+  .kinetic-text-stage--paused .kinetic-text-line,
+  .kinetic-text-stage--static .kinetic-text-line {
+    animation-play-state: paused;
+  }
+
+  .kinetic-text-stage--static .kinetic-text-line {
+    animation: none;
+  }
+
+  @keyframes kinetic-text-drift {
+    0% {
+      transform: translate3d(-0.6rem, -0.9rem, var(--kinetic-z)) rotate(var(--kinetic-rotate)) scale(var(--kinetic-scale));
+    }
+
+    100% {
+      transform: translate3d(0.7rem, 0.85rem, var(--kinetic-z)) rotate(var(--kinetic-rotate)) scale(var(--kinetic-scale));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .kinetic-text-perspective {
+      inset: -4% -10%;
+      perspective: 760px;
+      transform: rotateX(4deg) rotateZ(-1deg);
+    }
+
+    .kinetic-text-line {
+      max-width: 78vw;
+      font-size: clamp(0.88rem, 4.4vw, 1.25rem);
+    }
+
+    .kinetic-text-stage {
+      -webkit-mask-image: radial-gradient(ellipse 48% 27% at 50% 40%, transparent 0%, transparent 48%, rgba(0, 0, 0, 0.38) 68%, #000 100%);
+      mask-image: radial-gradient(ellipse 48% 27% at 50% 40%, transparent 0%, transparent 48%, rgba(0, 0, 0, 0.38) 68%, #000 100%);
+    }
+
+    .kinetic-text-line:nth-child(n + 15) {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .kinetic-text-stage {
+      opacity: 0.58;
+      transform: none;
+    }
+
+    .kinetic-text-stage.kinetic-text-stage--submitting,
+    .kinetic-text-stage.kinetic-text-stage--results {
+      opacity: 0.2;
+    }
+
+    .kinetic-text-stage.kinetic-text-stage--annotation,
+    .kinetic-text-stage.kinetic-text-stage--explore {
+      opacity: 0.04;
+    }
+
+    .kinetic-text-line {
+      animation: none !important;
+      will-change: auto;
+    }
+  }
 }
