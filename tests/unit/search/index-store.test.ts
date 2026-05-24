@@ -1,4 +1,5 @@
 import { clearSearchIndexCache, loadSearchIndex } from "@/lib/search/index-store";
+import { LOCAL_EMBEDDING_DIMENSION, LOCAL_EMBEDDING_MODEL } from "@/lib/search/local-embedding";
 
 describe("search index store", () => {
   afterEach(() => {
@@ -12,7 +13,7 @@ describe("search index store", () => {
     expect(first).toBe(second);
     expect(first.corpus.length).toBeGreaterThan(0);
     expect(first.embeddingMap.size).toBe(first.corpus.length);
-    expect(first.dimension).toBe(21);
-    expect(first.model).toBe("infidao-local-concept-v1");
+    expect(first.dimension).toBe(LOCAL_EMBEDDING_DIMENSION);
+    expect(first.model).toBe(LOCAL_EMBEDDING_MODEL);
   });
 });

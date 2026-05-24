@@ -13,9 +13,19 @@ const SOURCE_SLUGS: Record<string, string> = {
   孟子: "mengzi",
   诗经: "shijing",
   尚书: "shangshu",
+  周易: "zhouyi",
   礼记: "liji",
+  仪礼: "yili",
+  周礼: "zhouli",
   易经: "yijing",
   春秋: "chunqiu",
+  春秋左传: "chunqiu-zuozhuan",
+  老子: "laozi",
+  道德经: "daodejing",
+  庄子: "zhuangzi",
+  墨子: "mozi",
+  荀子: "xunzi",
+  韩非子: "hanfeizi",
 };
 
 const CHINESE_NUMERAL_VALUES: Record<string, number> = {
@@ -34,6 +44,7 @@ const CHINESE_NUMERAL_VALUES: Record<string, number> = {
 };
 
 interface RawPassageRecord {
+  id?: string;
   text: string;
   source: string;
   chapter: string;
@@ -81,7 +92,8 @@ function isRawPassageRecord(value: unknown): value is RawPassageRecord {
     typeof candidate.text === "string" &&
     typeof candidate.source === "string" &&
     typeof candidate.chapter === "string" &&
-    typeof candidate.section === "number"
+    typeof candidate.section === "number" &&
+    (candidate.id === undefined || typeof candidate.id === "string")
   );
 }
 
@@ -125,7 +137,12 @@ function getChapterNumber(chapter: string): number {
   return parsed > 0 ? parsed : 1;
 }
 
-function buildPassageId(source: string, chapter: string, section: number): string {
+function buildPassageId(record: RawPassageRecord): string {
+  if (record.id) {
+    return record.id;
+  }
+
+  const { source, chapter, section } = record;
   const sourceSlug = SOURCE_SLUGS[source] ?? "classic";
   return `${sourceSlug}-${getChapterNumber(chapter)}-${section}`;
 }
@@ -215,7 +232,7 @@ async function loadCorpusFile(
     };
 
     return {
-      id: buildPassageId(parsed.source, parsed.chapter, parsed.section),
+      id: buildPassageId(parsed),
       source: parsed.source,
       collection,
       workId: work.workId,

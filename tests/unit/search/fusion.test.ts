@@ -18,6 +18,11 @@ const passageBase = {
   corpusVersion: "sixclassics-sample-v1",
 };
 
+const lexicalBase = {
+  evidenceScore: 1.2,
+  hasDomainEvidence: true,
+};
+
 describe("fuseSearchResults", () => {
   it("merges duplicate vector and lexical candidates", () => {
     const vectorResults: SearchResult[] = [
@@ -33,6 +38,7 @@ describe("fuseSearchResults", () => {
         id: "lunyu-1-1",
         lexicalScore: 0.8,
         matchedTerms: ["学"],
+        ...lexicalBase,
       },
     ];
 
@@ -52,6 +58,7 @@ describe("fuseSearchResults", () => {
           id: "lunyu-1-1",
           lexicalScore: 0.9,
           matchedTerms: ["论语"],
+          ...lexicalBase,
         },
       ],
       5,
@@ -75,6 +82,7 @@ describe("fuseSearchResults", () => {
         id: "lunyu-1-1",
         lexicalScore: 0.8,
         matchedTerms: ["学"],
+        ...lexicalBase,
       },
     ];
 
@@ -85,6 +93,7 @@ describe("fuseSearchResults", () => {
       id: "lunyu-1-1",
       vectorScore: 0.72,
       lexicalScore: 0.8,
+      hasDomainEvidence: true,
     });
     expect(publicResults[0]).not.toHaveProperty("vectorScore");
     expect(publicResults[0]).not.toHaveProperty("lexicalScore");

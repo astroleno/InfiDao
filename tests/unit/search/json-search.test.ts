@@ -1,5 +1,10 @@
 import type { PassageRecord } from "@/types";
-import { buildQueryEmbedding, cosineSimilarity, rankPassages } from "@/lib/search/json";
+import {
+  buildQueryEmbedding,
+  cosineSimilarity,
+  rankPassages,
+  rankPassagesByVector,
+} from "@/lib/search/json";
 
 const basePassage = {
   collection: "six_classics",
@@ -60,10 +65,14 @@ describe("json search ranking", () => {
   });
 
   it("filters weak matches with threshold", () => {
-    const results = rankPassages({
+    const results = rankPassagesByVector({
       corpus,
-      embeddingMap,
-      query: "中庸之道",
+      embeddingMap: new Map([
+        ["lunyu-1-1", [0.2, 0.8]],
+        ["daxue-2-1", [0.4, 0.6]],
+        ["zhongyong-1-4", [1, 0]],
+      ]),
+      queryVector: [1, 0],
       topK: 5,
       threshold: 0.7,
     });
@@ -83,10 +92,14 @@ describe("json search ranking", () => {
     ).toEqual([]);
 
     expect(
-      rankPassages({
+      rankPassagesByVector({
         corpus,
-        embeddingMap,
-        query: "星际跃迁",
+        embeddingMap: new Map([
+          ["lunyu-1-1", [0, 1]],
+          ["daxue-2-1", [0.2, 0.8]],
+          ["zhongyong-1-4", [0.1, 0.9]],
+        ]),
+        queryVector: [1, 0],
         topK: 5,
         threshold: 0.95,
       }),

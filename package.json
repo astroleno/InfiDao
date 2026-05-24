@@ -13,6 +13,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "jest",
+    "test:search-quality": "tsx scripts/compare-search-embeddings.ts --gate --check-artifact",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "download-model": "node scripts/download-model.js",
@@ -25,6 +26,7 @@
     "cache:clear": "node scripts/clear-cache.js",
     "health-check": "node scripts/health-check.js",
     "generate-search-artifacts": "node scripts/generate-search-artifacts.mjs",
+    "compare-search-embeddings": "tsx scripts/compare-search-embeddings.ts",
     "generate-search-graph": "tsx scripts/generate-search-graph.ts",
     "smoke:release": "node scripts/release-smoke.mjs",
     "smoke:telemetry": "node scripts/annotation-telemetry-smoke.mjs"
