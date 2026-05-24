@@ -9,7 +9,13 @@ import {
 describe("local embedding spec", () => {
   it("uses the shared spec model and dimension", () => {
     expect(LOCAL_EMBEDDING_MODEL).toBe(embeddingSpec.model);
-    expect(LOCAL_EMBEDDING_DIMENSION).toBe(embeddingSpec.conceptPatterns.length + embeddingSpec.hashBuckets);
+    expect(LOCAL_EMBEDDING_DIMENSION).toBe(
+      embeddingSpec.phraseAnchors.length +
+        embeddingSpec.aliasAnchors.length +
+        embeddingSpec.sourceAnchors.length +
+        embeddingSpec.chapterBuckets +
+        embeddingSpec.ngramBuckets,
+    );
     expect(buildLocalEmbedding("治理国家")).toHaveLength(LOCAL_EMBEDDING_DIMENSION);
   });
 

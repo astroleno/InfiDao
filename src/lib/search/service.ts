@@ -1,5 +1,6 @@
 import { DEFAULT_SEARCH_THRESHOLD, DEFAULT_SEARCH_TOP_K, type SearchRequest, type SearchResult } from "@/types";
-import { fuseSearchResults } from "@/lib/search/fusion";
+import { applySearchEvidenceGuard } from "@/lib/search/evidence";
+import { fuseSearchCandidates } from "@/lib/search/fusion";
 import { encodeSearchQuery } from "@/lib/search/query-encoder";
 import { rankLexicalCandidates } from "@/lib/search/lexical";
 import { rankPassagesByVector } from "@/lib/search/json";
@@ -27,5 +28,18 @@ export async function searchPassages({
   });
   const lexicalResults = rankLexicalCandidates(index.corpus, query, candidateLimit);
 
-  return fuseSearchResults(vectorResults, lexicalResults, topK, threshold);
+  return applySearchEvidenceGuard(
+    query,
+    lexicalResults,
+    fuseSearchCandidates(vectorResults, lexicalResults, topK, threshold),
+  ).map(
+    ({
+      vectorScore: _vectorScore,
+      lexicalScore: _lexicalScore,
+      evidenceScore: _evidenceScore,
+      hasDomainEvidence: _hasDomainEvidence,
+      matchedTerms: _matchedTerms,
+      ...result
+    }) => result,
+  );
 }

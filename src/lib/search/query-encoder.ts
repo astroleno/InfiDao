@@ -1,5 +1,9 @@
 import { RouteError } from "@/lib/utils/errors";
-import { buildLocalEmbedding, LOCAL_EMBEDDING_DIMENSION, LOCAL_EMBEDDING_MODEL } from "@/lib/search/local-embedding";
+import {
+  buildLocalEmbedding,
+  LOCAL_EMBEDDING_DIMENSION,
+  LOCAL_EMBEDDING_MODEL,
+} from "@/lib/search/local-embedding";
 
 interface QueryEncoderOptions {
   query: string;
@@ -11,6 +15,21 @@ interface RemoteSearchEmbeddingConfig {
   endpoint: string;
   apiKey: string;
   model: string;
+}
+
+export const DEFAULT_SEARCH_EMBEDDING_TIMEOUT_MS = 5_000;
+const MAX_SEARCH_EMBEDDING_TIMEOUT_MS = 60_000;
+
+function firstNonEmptyValue(keys: string[]): string {
+  for (const key of keys) {
+    const value = process.env[key]?.trim();
+
+    if (value) {
+      return value;
+    }
+  }
+
+  return "";
 }
 
 function isRemoteUrl(value: string): boolean {
@@ -60,8 +79,36 @@ export function resolveRemoteSearchEmbeddingConfig(): RemoteSearchEmbeddingConfi
   };
 }
 
-export function assertSearchQueryEncoderCompatible(model: string, dimension: number): void {
-  if (model === LOCAL_EMBEDDING_MODEL && dimension === LOCAL_EMBEDDING_DIMENSION) {
+export function resolveSearchEmbeddingTimeoutMs(): number {
+  const rawTimeout = firstNonEmptyValue([
+    "SEARCH_EMBEDDING_TIMEOUT_MS",
+    "EMBEDDING_TIMEOUT_MS",
+    "EMBED_TIMEOUT",
+    "SEARCH_TIMEOUT",
+    "TIMEOUT_MS",
+  ]);
+
+  if (!rawTimeout) {
+    return DEFAULT_SEARCH_EMBEDDING_TIMEOUT_MS;
+  }
+
+  const parsedTimeout = Number(rawTimeout);
+
+  if (!Number.isFinite(parsedTimeout) || parsedTimeout <= 0) {
+    return DEFAULT_SEARCH_EMBEDDING_TIMEOUT_MS;
+  }
+
+  return Math.min(Math.trunc(parsedTimeout), MAX_SEARCH_EMBEDDING_TIMEOUT_MS);
+}
+
+export function assertSearchQueryEncoderCompatible(
+  model: string,
+  dimension: number,
+): void {
+  if (
+    model === LOCAL_EMBEDDING_MODEL &&
+    dimension === LOCAL_EMBEDDING_DIMENSION
+  ) {
     return;
   }
 
@@ -94,11 +141,22 @@ export function assertSearchQueryEncoderCompatible(model: string, dimension: num
 }
 
 function isNumericVector(value: unknown): value is number[] {
-  return Array.isArray(value) && value.length > 0 && value.every((item) => typeof item === "number" && Number.isFinite(item));
+  return (
+    Array.isArray(value) &&
+    value.length > 0 &&
+    value.every((item) => typeof item === "number" && Number.isFinite(item))
+  );
 }
 
-export async function encodeSearchQuery({ query, model, dimension }: QueryEncoderOptions): Promise<number[]> {
-  if (model === LOCAL_EMBEDDING_MODEL && dimension === LOCAL_EMBEDDING_DIMENSION) {
+export async function encodeSearchQuery({
+  query,
+  model,
+  dimension,
+}: QueryEncoderOptions): Promise<number[]> {
+  if (
+    model === LOCAL_EMBEDDING_MODEL &&
+    dimension === LOCAL_EMBEDDING_DIMENSION
+  ) {
     return buildLocalEmbedding(query);
   }
 
@@ -129,19 +187,45 @@ export async function encodeSearchQuery({ query, model, dimension }: QueryEncode
     );
   }
 
-  const response = await fetch(remoteConfig.endpoint, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${remoteConfig.apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: remoteConfig.model,
-      input: query,
-    }),
-  });
+  const timeoutMs = resolveSearchEmbeddingTimeoutMs();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  let response: Response;
+  let raw: string;
 
-  const raw = await response.text();
+  try {
+    response = await fetch(remoteConfig.endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${remoteConfig.apiKey}`,
+        "Content-Type": "application/json",
+      },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model: remoteConfig.model,
+        input: query,
+      }),
+    });
+    raw = await response.text();
+  } catch (error) {
+    if (controller.signal.aborted) {
+      throw new RouteError(
+        504,
+        "EMBEDDING_PROVIDER_TIMEOUT",
+        "Remote embedding provider timed out while encoding the search query.",
+        {
+          endpoint: remoteConfig.endpoint,
+          model: remoteConfig.model,
+          timeoutMs,
+        },
+      );
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+
   let parsed: unknown;
 
   try {
@@ -170,23 +254,34 @@ export async function encodeSearchQuery({ query, model, dimension }: QueryEncode
 
   const vector =
     typeof parsed === "object" && parsed !== null && "data" in parsed
-      ? ((parsed as { data?: Array<{ embedding?: unknown }> }).data?.[0]?.embedding ?? null)
+      ? ((parsed as { data?: Array<{ embedding?: unknown }> }).data?.[0]
+          ?.embedding ?? null)
       : null;
 
   if (!isNumericVector(vector)) {
-    throw new RouteError(502, "EMBEDDING_PROVIDER_ERROR", "Remote embedding provider returned an invalid vector payload.", {
-      endpoint: remoteConfig.endpoint,
-      model: remoteConfig.model,
-    });
+    throw new RouteError(
+      502,
+      "EMBEDDING_PROVIDER_ERROR",
+      "Remote embedding provider returned an invalid vector payload.",
+      {
+        endpoint: remoteConfig.endpoint,
+        model: remoteConfig.model,
+      },
+    );
   }
 
   if (vector.length !== dimension) {
-    throw new RouteError(500, "EMBEDDING_DIMENSION_MISMATCH", "Remote query embedding does not match the loaded artifact dimension.", {
-      endpoint: remoteConfig.endpoint,
-      model: remoteConfig.model,
-      expectedDimension: dimension,
-      actualDimension: vector.length,
-    });
+    throw new RouteError(
+      500,
+      "EMBEDDING_DIMENSION_MISMATCH",
+      "Remote query embedding does not match the loaded artifact dimension.",
+      {
+        endpoint: remoteConfig.endpoint,
+        model: remoteConfig.model,
+        expectedDimension: dimension,
+        actualDimension: vector.length,
+      },
+    );
   }
 
   return vector;
