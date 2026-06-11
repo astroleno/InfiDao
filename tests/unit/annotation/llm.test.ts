@@ -376,6 +376,49 @@ describe("annotation llm runtime", () => {
     );
   });
 
+  it("passes growth context as tentative product context", async () => {
+    process.env.LLM_MODEL_PRIMARY = "gpt-5.4-nano";
+    process.env.LLM_BASE_URL_PRIMARY = "https://yunwu.ai/v1";
+    process.env.LLM_API_KEY_PRIMARY = "sk-primary";
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      text: async () =>
+        JSON.stringify({
+          choices: [
+            {
+              message: {
+                content: '{"sixToMe":"关系上下文进入回应。","meToSix":"但不被写成诊断。"}',
+              },
+            },
+          ],
+        }),
+    }) as jest.Mock;
+
+    await generateAnnotationFromLlm({
+      query: "如何面对困境",
+      passageLabel: "论语 学而 第 1 节",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern",
+      growthContext: {
+        relationTheme: "寻求指引",
+        branchLabel: "求取分寸",
+        growthSummary: "系统读到的倾向形成一次关系枝条。",
+      },
+    });
+
+    const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body as string) as {
+      messages: Array<{ content: string }>;
+    };
+    const userPrompt = body.messages[1]?.content ?? "";
+
+    expect(userPrompt).toContain("关系倾向:寻求指引");
+    expect(userPrompt).toContain("关系枝条:求取分寸");
+    expect(userPrompt).toContain("关系倾向只是产品上下文，不是关于用户的事实诊断。");
+    expect(userPrompt).not.toContain("memoryAnchors");
+  });
+
   it("falls back to the secondary slot in quality mode when the primary request fails", async () => {
     process.env.ANNOTATION_LLM_MODE = "quality";
     process.env.LLM_MODEL_PRIMARY = "gpt-5.4-nano";

@@ -94,6 +94,10 @@ describe("POST /api/annotate", () => {
         passageText: "贤贤易色，事父母能竭其力，事君能致其身，与朋友交言而有信。",
         sixToMe: expect.stringContaining("朋友相处要诚信"),
         meToSix: expect.stringContaining("朋友相处要诚信"),
+        agentTrace: expect.objectContaining({
+          workAgentId: expect.stringContaining("work:classic:lunyu-1-7"),
+          growthSummary: expect.stringContaining("系统读到的倾向"),
+        }),
         links: expect.arrayContaining([
           expect.objectContaining({
             passageId: expect.any(String),

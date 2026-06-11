@@ -6,6 +6,7 @@ import {
   setCachedAnnotation,
 } from "@/lib/annotation/cache";
 import type { CachedAnnotationCopy } from "@/lib/annotation/cache";
+import type { AnnotationResult } from "@/types";
 
 describe("annotation cache", () => {
   const originalEnv = { ...process.env };
@@ -83,6 +84,29 @@ describe("annotation cache", () => {
     expect(visitedKey).not.toContain("lunyu-1-8");
   });
 
+  it("keys entries by stable growth context hash without raw user state", () => {
+    const baseKey = buildAnnotationCacheKey({
+      query: "如何面对困境",
+      passageId: "lunyu-1-1",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern",
+      mode: "fast",
+    });
+    const growthKey = buildAnnotationCacheKey({
+      query: "如何面对困境",
+      passageId: "lunyu-1-1",
+      passageText: "学而时习之，不亦说乎？",
+      style: "modern",
+      mode: "fast",
+      growthContextHash: "growth-hash-1",
+    });
+
+    expect(growthKey).not.toBe(baseKey);
+    expect(growthKey).toContain("growth-hash-1");
+    expect(growthKey).not.toContain("memoryAnchors");
+    expect(growthKey).not.toContain("personaHints");
+  });
+
   it("returns defensive copies and expires old entries", () => {
     const key = "annotation:test";
 
@@ -99,6 +123,23 @@ describe("annotation cache", () => {
     cached.sixToMe = "mutated";
     expect(getCachedAnnotation(key, 1060)?.sixToMe).toBe("经典回应");
     expect(getCachedAnnotation(key, 1200)).toBeNull();
+  });
+
+  it("stores only annotation copy fields, not optional agent traces", () => {
+    const result: AnnotationResult = {
+      ...annotation,
+      links: [],
+      agentTrace: {
+        workAgentId: "work:classic:lunyu-1-1",
+        relationTheme: "寻求指引",
+        branchLabel: "求取分寸",
+        growthSummary: "系统读到的倾向形成一次关系枝条。",
+      },
+    };
+
+    setCachedAnnotation("annotation:with-trace", result, 1000);
+
+    expect(getCachedAnnotation("annotation:with-trace", 1000)).toEqual(annotation);
   });
 
   it("evicts the least recently used entry when full", () => {

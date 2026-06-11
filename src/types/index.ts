@@ -66,12 +66,20 @@ export interface AnnotationLink {
   section: number;
 }
 
+export interface AnnotationAgentTrace {
+  workAgentId: string;
+  relationTheme: string;
+  branchLabel: string;
+  growthSummary: string;
+}
+
 export interface AnnotationResult {
   passageId: string;
   passageText: string;
   sixToMe: string;
   meToSix: string;
   links: AnnotationLink[];
+  agentTrace?: AnnotationAgentTrace;
 }
 
 export interface HealthResponse {

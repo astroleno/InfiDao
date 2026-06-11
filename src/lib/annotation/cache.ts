@@ -11,6 +11,7 @@ interface AnnotationCacheKeyInput {
   style: AnnotationStyle;
   mode: AnnotationLlmMode;
   visitedPassageIds?: string[];
+  growthContextHash?: string;
 }
 
 export type CachedAnnotationCopy = Pick<
@@ -46,7 +47,12 @@ function resolvePositiveIntegerEnv(key: string, fallback: number): number {
 }
 
 function cloneAnnotationCopy(result: CachedAnnotationCopy): CachedAnnotationCopy {
-  return { ...result };
+  return {
+    passageId: result.passageId,
+    passageText: result.passageText,
+    sixToMe: result.sixToMe,
+    meToSix: result.meToSix,
+  };
 }
 
 export function resolveAnnotationCacheTtlMs(): number {
@@ -62,12 +68,13 @@ export function resolveAnnotationCacheMaxEntries(): number {
 
 export function buildAnnotationCacheKey(input: AnnotationCacheKeyInput): string {
   return JSON.stringify({
-    version: 3,
+    version: 4,
     mode: input.mode,
     style: input.style,
     passageId: normalizeCacheText(input.passageId),
     query: normalizeCacheText(input.query),
     passageText: normalizeCacheText(input.passageText),
+    growthContextHash: input.growthContextHash ?? "none",
   });
 }
 
