@@ -1,10 +1,14 @@
 {
-  "version": "sixclassics-sample-v1",
+  "version": "guji-core-v1",
   "defaultCollection": "six_classics",
   "files": [
     {
       "path": "data/sixclassics-sample.jsonl",
       "collection": "six_classics"
+    },
+    {
+      "path": "data/rysxguji/guji-core-v1.jsonl",
+      "collection": "rysxguji_core"
     }
   ],
   "works": {
@@ -31,11 +35,43 @@
     "尚书": {
       "workId": "shangshu",
       "workTitle": "尚书"
+    },
+    "周易": {
+      "workId": "zhouyi",
+      "workTitle": "周易"
+    },
+    "礼记": {
+      "workId": "liji",
+      "workTitle": "礼记"
+    },
+    "仪礼": {
+      "workId": "yili",
+      "workTitle": "仪礼"
+    },
+    "周礼": {
+      "workId": "zhouli",
+      "workTitle": "周礼"
+    },
+    "春秋左传": {
+      "workId": "chunqiu-zuozhuan",
+      "workTitle": "春秋左传"
+    },
+    "墨子": {
+      "workId": "mozi",
+      "workTitle": "墨子"
+    },
+    "荀子": {
+      "workId": "xunzi",
+      "workTitle": "荀子"
+    },
+    "韩非子": {
+      "workId": "hanfeizi",
+      "workTitle": "韩非子"
     }
   },
   "embeddingArtifact": {
     "path": "data/embeddings.json",
-    "model": "infidao-local-concept-v1",
-    "dimension": 21
+    "model": "infidao-local-concept-v2",
+    "dimension": 151
   }
 }
