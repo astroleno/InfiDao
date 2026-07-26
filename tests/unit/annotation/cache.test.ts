@@ -46,10 +46,13 @@ describe("annotation cache", () => {
       mode: "quality",
     });
 
-    expect(fastKey).toContain("如何面对困境");
     expect(fastKey).toContain("lunyu-1-1");
     expect(fastKey).toContain("modern");
     expect(fastKey).toContain("fast");
+    expect(fastKey).toContain("queryHash");
+    expect(fastKey).toContain("passageTextHash");
+    expect(fastKey).not.toContain("如何面对困境");
+    expect(fastKey).not.toContain("学而时习之");
     expect(qualityKey).toContain("quality");
     expect(qualityKey).not.toBe(fastKey);
   });

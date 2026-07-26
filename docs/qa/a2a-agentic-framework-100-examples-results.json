@@ -1,0 +1,1012 @@
+{
+  "source": "docs/qa/a2a-agentic-framework-100-examples.md",
+  "generatedAt": "2026-06-16T15:38:12.921Z",
+  "summary": {
+    "passed": 100,
+    "failed": 0,
+    "partial": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "id": "A01",
+      "title": "最小合法 Envelope 识别",
+      "group": "Protocol Contract",
+      "status": "passed",
+      "evidence": [
+        "Minimal envelope accepted by isAgentMessage."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "A02",
+      "title": "空白字符串 Envelope 拒绝",
+      "group": "Protocol Contract",
+      "status": "passed",
+      "evidence": [
+        "Blank string envelope fields rejected."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "A03",
+      "title": "非法 Act 拒绝",
+      "group": "Protocol Contract",
+      "status": "passed",
+      "evidence": [
+        "Invalid acts rejected."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "A04",
+      "title": "六类合法 Act 全量覆盖",
+      "group": "Protocol Contract",
+      "status": "passed",
+      "evidence": [
+        "All legal acts covered: encounter, interpret, grow, reflect, link, memory_delta."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "A05",
+      "title": "自动 TraceId 格式与稳定性",
+      "group": "Protocol Contract",
+      "status": "passed",
+      "evidence": [
+        "Stable traceId trace:bde064a0d0baec93ce."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "A06",
+      "title": "显式 TraceId 保留并参与 Message Id",
+      "group": "Protocol Contract",
+      "status": "passed",
+      "evidence": [
+        "Explicit traceId preserved and participates in message id."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "A07",
+      "title": "Message Id 对 Payload 变化敏感",
+      "group": "Protocol Contract",
+      "status": "passed",
+      "evidence": [
+        "Message id changes when payload changes."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "A08",
+      "title": "Payload 字段存在性边界",
+      "group": "Protocol Contract",
+      "status": "passed",
+      "evidence": [
+        "Payload presence boundary matches envelope guard behavior."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "A09",
+      "title": "时间戳创建与透传",
+      "group": "Protocol Contract",
+      "status": "passed",
+      "evidence": [
+        "createdAt is generated or passed through and affects ids."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "A10",
+      "title": "旧客户端忽略可选 AgentTrace",
+      "group": "Protocol Contract",
+      "status": "passed",
+      "evidence": [
+        "Legacy client projection ignores optional agentTrace."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "B01",
+      "title": "Intent 优先级",
+      "group": "Router Behavior",
+      "status": "passed",
+      "evidence": [
+        "Intent label wins over emotion."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "B02",
+      "title": "Emotion 回退",
+      "group": "Router Behavior",
+      "status": "passed",
+      "evidence": [
+        "Emotion fallback selected."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "B03",
+      "title": "Persona 回退",
+      "group": "Router Behavior",
+      "status": "passed",
+      "evidence": [
+        "Persona fallback selected."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "B04",
+      "title": "默认 Interpret",
+      "group": "Router Behavior",
+      "status": "passed",
+      "evidence": [
+        "Default interpret selected; memory anchors do not choose primary label."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "B05",
+      "title": "未知 Primary Label",
+      "group": "Router Behavior",
+      "status": "passed",
+      "evidence": [
+        "Unknown primary label fail-soft mapping verified."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "B06",
+      "title": "SignalLabels 顺序",
+      "group": "Router Behavior",
+      "status": "passed",
+      "evidence": [
+        "Signal label order is stable."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "B07",
+      "title": "SignalLabels 截断",
+      "group": "Router Behavior",
+      "status": "passed",
+      "evidence": [
+        "Signal labels truncate to first 8."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "B08",
+      "title": "Confidence 计算与四舍五入",
+      "group": "Router Behavior",
+      "status": "passed",
+      "evidence": [
+        "Confidence average and rounding verified."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "B09",
+      "title": "Summary 截断",
+      "group": "Router Behavior",
+      "status": "passed",
+      "evidence": [
+        "Summary length 40."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "B10",
+      "title": "WorkAgent Fail-Open",
+      "group": "Router Behavior",
+      "status": "passed",
+      "evidence": [
+        "Invalid work-agent variants fail open."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "C01",
+      "title": "中文压力求助",
+      "group": "User-State Extraction",
+      "status": "passed",
+      "evidence": [
+        "Chinese pressure/guidance extraction matched."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "C02",
+      "title": "英文焦虑引导",
+      "group": "User-State Extraction",
+      "status": "passed",
+      "evidence": [
+        "English pressure/guidance extraction matched."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "C03",
+      "title": "中英混合不确定继续探索",
+      "group": "User-State Extraction",
+      "status": "passed",
+      "evidence": [
+        "Mixed Chinese/English exploration extraction matched."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "C04",
+      "title": "解释型请求",
+      "group": "User-State Extraction",
+      "status": "passed",
+      "evidence": [
+        "Guidance confidence ranks above interpret."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "C05",
+      "title": "家庭记忆锚点隐私标签化",
+      "group": "User-State Extraction",
+      "status": "passed",
+      "evidence": [
+        "Family memory anchor is label-only."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "C06",
+      "title": "朋友与学校双锚点",
+      "group": "User-State Extraction",
+      "status": "passed",
+      "evidence": [
+        "Friendship and school anchors extracted."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "C07",
+      "title": "故乡怀旧",
+      "group": "User-State Extraction",
+      "status": "passed",
+      "evidence": [
+        "Hometown nostalgia extracted."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "C08",
+      "title": "泛化过去经验",
+      "group": "User-State Extraction",
+      "status": "passed",
+      "evidence": [
+        "Generic past_experience anchor extracted."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "C09",
+      "title": "PersonaHints 组合",
+      "group": "User-State Extraction",
+      "status": "passed",
+      "evidence": [
+        "Persona hint combination extracted."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "C10",
+      "title": "Saved 隐私模式与稳定 ID",
+      "group": "User-State Extraction",
+      "status": "passed",
+      "evidence": [
+        "Saved privacy mode keeps stable id and label-only anchors."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "D01",
+      "title": "标准 ClassicPassage Manifest 构造",
+      "group": "Work-Agent Manifest",
+      "status": "passed",
+      "evidence": [
+        "Classic passage manifest maps fields and stable id."
+      ],
+      "durationMs": 430
+    },
+    {
+      "id": "D02",
+      "title": "ExpectedTextHash 不匹配时拒绝",
+      "group": "Work-Agent Manifest",
+      "status": "passed",
+      "evidence": [
+        "Expected hash mismatch rejected."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "D03",
+      "title": "Passage 内部 TextHash 损坏时拒绝",
+      "group": "Work-Agent Manifest",
+      "status": "passed",
+      "evidence": [
+        "Internal passage hash mismatch rejected."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "D04",
+      "title": "PassageText 首尾空白不应造成误拒",
+      "group": "Work-Agent Manifest",
+      "status": "passed",
+      "evidence": [
+        "Trimmed passageText resolves."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "D05",
+      "title": "PassageText 正文差一字时拒绝",
+      "group": "Work-Agent Manifest",
+      "status": "passed",
+      "evidence": [
+        "One-character passageText drift rejected."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "D06",
+      "title": "AffectField 多信号命中",
+      "group": "Work-Agent Manifest",
+      "status": "passed",
+      "evidence": [
+        "Multiple affect signals extracted from passage text."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "D07",
+      "title": "AffectField 默认兜底",
+      "group": "Work-Agent Manifest",
+      "status": "passed",
+      "evidence": [
+        "Default classic_resonance fallback emitted."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "D08",
+      "title": "InterpretiveFrames 完整且隔离",
+      "group": "Work-Agent Manifest",
+      "status": "passed",
+      "evidence": [
+        "Interpretive frames are complete and defensively cloned."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "D09",
+      "title": "GrowthPolicy 精确约束",
+      "group": "Work-Agent Manifest",
+      "status": "passed",
+      "evidence": [
+        "Growth policy exact constraints verified."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "D10",
+      "title": "未知 Passage 与索引异常 Fail-Open",
+      "group": "Work-Agent Manifest",
+      "status": "passed",
+      "evidence": [
+        "Missing passage and index-load failure both resolve to null."
+      ],
+      "durationMs": 31
+    },
+    {
+      "id": "E01",
+      "title": "Append 后可 Read",
+      "group": "Growth Event And Store",
+      "status": "passed",
+      "evidence": [
+        "Append then read succeeds."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "E02",
+      "title": "List 按插入时间排序",
+      "group": "Growth Event And Store",
+      "status": "passed",
+      "evidence": [
+        "List sorted by insertedAt."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "E03",
+      "title": "Session List 隔离",
+      "group": "Growth Event And Store",
+      "status": "passed",
+      "evidence": [
+        "Session list isolation verified."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "E04",
+      "title": "Read 按 EventId 全局读取",
+      "group": "Growth Event And Store",
+      "status": "passed",
+      "evidence": [
+        "Global event id read works."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "E05",
+      "title": "TTL 未到期仍可读/List",
+      "group": "Growth Event And Store",
+      "status": "passed",
+      "evidence": [
+        "TTL not expired before boundary."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "E06",
+      "title": "TTL 到期边界清理",
+      "group": "Growth Event And Store",
+      "status": "passed",
+      "evidence": [
+        "TTL boundary prunes at expiresAt."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "E07",
+      "title": "单 Session 最大事件数裁剪",
+      "group": "Growth Event And Store",
+      "status": "passed",
+      "evidence": [
+        "Per-session max evicts oldest event."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "E08",
+      "title": "最大 Session 数裁剪",
+      "group": "Growth Event And Store",
+      "status": "passed",
+      "evidence": [
+        "Max sessions evicts oldest session."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "E09",
+      "title": "GrowthService 吞掉 Store 异常",
+      "group": "Growth Event And Store",
+      "status": "passed",
+      "evidence": [
+        "GrowthService swallows store exceptions."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "E10",
+      "title": "事件不可变拷贝",
+      "group": "Growth Event And Store",
+      "status": "passed",
+      "evidence": [
+        "Store and service return defensive copies."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "F01",
+      "title": "已知选中段落生成 AgentTrace",
+      "group": "Annotation Integration",
+      "status": "passed",
+      "evidence": [
+        "Known selected passage returns public-safe agentTrace."
+      ],
+      "durationMs": 716
+    },
+    {
+      "id": "F02",
+      "title": "未知外部段落 Fail-Open",
+      "group": "Annotation Integration",
+      "status": "passed",
+      "evidence": [
+        "Unknown external passage annotates without agentTrace."
+      ],
+      "durationMs": 271
+    },
+    {
+      "id": "F03",
+      "title": "已知 ID 但 PassageText 不匹配",
+      "group": "Annotation Integration",
+      "status": "passed",
+      "evidence": [
+        "Known id with stale text fail-opens without binding trace."
+      ],
+      "durationMs": 262
+    },
+    {
+      "id": "F04",
+      "title": "旧响应兼容",
+      "group": "Annotation Integration",
+      "status": "passed",
+      "evidence": [
+        "Route response keeps legacy annotation fields plus optional trace."
+      ],
+      "durationMs": 259
+    },
+    {
+      "id": "F05",
+      "title": "选中 Passage 优先于查询命中",
+      "group": "Annotation Integration",
+      "status": "passed",
+      "evidence": [
+        "Selected passage wins over query relevance for agentTrace binding."
+      ],
+      "durationMs": 272
+    },
+    {
+      "id": "F06",
+      "title": "缓存命中仍重建 Links 与 AgentTrace",
+      "group": "Annotation Integration",
+      "status": "passed",
+      "evidence": [
+        "Cache hit reuses copy, rebuilds links, and returns fresh agentTrace."
+      ],
+      "durationMs": 419
+    },
+    {
+      "id": "F07",
+      "title": "Provider Error Fallback 不缓存",
+      "group": "Annotation Integration",
+      "status": "passed",
+      "evidence": [
+        "Provider-error fallback is not cached."
+      ],
+      "durationMs": 390
+    },
+    {
+      "id": "F08",
+      "title": "LLM Prompt 接收 GrowthContext",
+      "group": "Annotation Integration",
+      "status": "passed",
+      "evidence": [
+        "LLM prompt receives growth context without raw user-state JSON."
+      ],
+      "durationMs": 261
+    },
+    {
+      "id": "F09",
+      "title": "无 LLM 配置 Deterministic Fallback 携带关系枝条提示",
+      "group": "Annotation Integration",
+      "status": "passed",
+      "evidence": [
+        "Deterministic fallback carries relation-branch hint."
+      ],
+      "durationMs": 272
+    },
+    {
+      "id": "F10",
+      "title": "VisitedPassageIds 规范化与 A2A 会话稳定",
+      "group": "Annotation Integration",
+      "status": "passed",
+      "evidence": [
+        "Visited ids normalized; links exclude visited/current and trace still builds."
+      ],
+      "durationMs": 294
+    },
+    {
+      "id": "G01",
+      "title": "完整 AgentTrace 只展示用户可读信息",
+      "group": "UI Agent Trace",
+      "status": "passed",
+      "evidence": [
+        "GrowthTrace SSR exposes readable copy only."
+      ],
+      "durationMs": 3
+    },
+    {
+      "id": "G02",
+      "title": "无 AgentTrace 时显示安静空状态",
+      "group": "UI Agent Trace",
+      "status": "passed",
+      "evidence": [
+        "No-trace empty state rendered."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "G03",
+      "title": "AnnotationPanel 兼容旧 AnnotationResult 无 AgentTrace",
+      "group": "UI Agent Trace",
+      "status": "passed",
+      "evidence": [
+        "AnnotationPanel handles missing agentTrace."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "G04",
+      "title": "超长 RelationTheme 不撑破布局",
+      "group": "UI Agent Trace",
+      "status": "passed",
+      "evidence": [
+        "Long relationTheme uses truncating class."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "G05",
+      "title": "超长 BranchLabel/GrowthSummary 不被误截断",
+      "group": "UI Agent Trace",
+      "status": "passed",
+      "evidence": [
+        "Branch and summary remain fully rendered."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "G06",
+      "title": "关系枝条区域具备稳定 A11y 入口",
+      "group": "UI Agent Trace",
+      "status": "passed",
+      "evidence": [
+        "GrowthTrace has stable non-interactive a11y entry."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "G07",
+      "title": "移动端使用 Compact 样式且 Trace 不被隐藏",
+      "group": "UI Agent Trace",
+      "status": "passed",
+      "evidence": [
+        "Mobile panel renders compact trace and no desktop tablist."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "G08",
+      "title": "桌面切换 Tab 后 Trace 保持单例可见",
+      "group": "UI Agent Trace",
+      "status": "passed",
+      "evidence": [
+        "SSR output has exactly one trace region; focused RTL Jest covers desktop tab switching."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "G09",
+      "title": "有下一句时 Trace 位于正文之后、下一句之前",
+      "group": "UI Agent Trace",
+      "status": "passed",
+      "evidence": [
+        "Trace is rendered after copy and before next links."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "G10",
+      "title": "旧/异常字段不进入 UI",
+      "group": "UI Agent Trace",
+      "status": "passed",
+      "evidence": [
+        "Legacy/extra fields do not enter UI."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "H01",
+      "title": "A2A Growth Event 不携带 Raw Utterance",
+      "group": "Privacy And Fail-Open",
+      "status": "passed",
+      "evidence": [
+        "A2A route serialization excludes raw utterance."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "H02",
+      "title": "公开 AgentTrace 只暴露四个安全字段",
+      "group": "Privacy And Fail-Open",
+      "status": "passed",
+      "evidence": [
+        "Public agentTrace exposes only four safe fields."
+      ],
+      "durationMs": 316
+    },
+    {
+      "id": "H03",
+      "title": "Memory Anchor 只保存短标签",
+      "group": "Privacy And Fail-Open",
+      "status": "passed",
+      "evidence": [
+        "Memory anchors remain short labels."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "H04",
+      "title": "Annotation Cache Key 不含 Raw Utterance 或 Raw User-State",
+      "group": "Privacy And Fail-Open",
+      "status": "passed",
+      "evidence": [
+        "Cache key excludes raw query/passageText."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "H05",
+      "title": "Telemetry 只记录 QueryHash",
+      "group": "Privacy And Fail-Open",
+      "status": "passed",
+      "evidence": [
+        "Telemetry stores/logs queryHash only."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "H06",
+      "title": "LLM Runtime Status 不泄露 API Key 值",
+      "group": "Privacy And Fail-Open",
+      "status": "passed",
+      "evidence": [
+        "LLM runtime status reports key presence without secret values."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "H07",
+      "title": "User-State 提取或 Session-Store 失败不阻断 Annotation",
+      "group": "Privacy And Fail-Open",
+      "status": "passed",
+      "evidence": [
+        "User-state session-store failure does not block annotation."
+      ],
+      "durationMs": 316
+    },
+    {
+      "id": "H08",
+      "title": "Work-Agent 缺失或解析失败 Fail-Open",
+      "group": "Privacy And Fail-Open",
+      "status": "passed",
+      "evidence": [
+        "Missing work-agent fail-opens annotation."
+      ],
+      "durationMs": 318
+    },
+    {
+      "id": "H09",
+      "title": "Growth Storage 失败被吞掉",
+      "group": "Privacy And Fail-Open",
+      "status": "passed",
+      "evidence": [
+        "Growth storage failure is swallowed by annotation agent context."
+      ],
+      "durationMs": 360
+    },
+    {
+      "id": "H10",
+      "title": "LLM Provider 错误/超时 Fail-Open 且不泄露 Key",
+      "group": "Privacy And Fail-Open",
+      "status": "passed",
+      "evidence": [
+        "Provider error fail-opens without leaking key in response/telemetry/logs."
+      ],
+      "durationMs": 359
+    },
+    {
+      "id": "I01",
+      "title": "标准主路径含 AgentTrace 闭环",
+      "group": "End-To-End Framework Flow",
+      "status": "passed",
+      "evidence": [
+        "API-level search -> annotate -> link -> back snapshot flow completed; focused RTL Jest covers browser stack controls."
+      ],
+      "durationMs": 686
+    },
+    {
+      "id": "I02",
+      "title": "搜索阶段不引入 A2A 公共字段",
+      "group": "End-To-End Framework Flow",
+      "status": "passed",
+      "evidence": [
+        "Search response does not expose A2A fields."
+      ],
+      "durationMs": 63
+    },
+    {
+      "id": "I03",
+      "title": "根注释 AgentTrace 与所选 Passage 绑定",
+      "group": "End-To-End Framework Flow",
+      "status": "passed",
+      "evidence": [
+        "Root annotation trace binds to selected search result."
+      ],
+      "durationMs": 468
+    },
+    {
+      "id": "I04",
+      "title": "点击 Link 探索时 AgentTrace 切换到 Link Passage",
+      "group": "End-To-End Framework Flow",
+      "status": "passed",
+      "evidence": [
+        "Link exploration annotation binds to link passage at API level."
+      ],
+      "durationMs": 401
+    },
+    {
+      "id": "I05",
+      "title": "返回上一层不重新生成 Trace",
+      "group": "End-To-End Framework Flow",
+      "status": "passed",
+      "evidence": [
+        "Covered by focused RTL Jest: home-page.search.test.tsx verifies returning to previous layer without extra fetch."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "I06",
+      "title": "深层探索后选择新搜索结果清空旧链路",
+      "group": "End-To-End Framework Flow",
+      "status": "passed",
+      "evidence": [
+        "Covered by focused RTL Jest: home-page.search.test.tsx verifies selecting a new result clears the exploration stack."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "I07",
+      "title": "叶子节点 Links 空数组与 AgentTrace 共存",
+      "group": "End-To-End Framework Flow",
+      "status": "passed",
+      "evidence": [
+        "Leaf UI state coexists with trace."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "I08",
+      "title": "A2A Fail-Open 不阻断注释与探索",
+      "group": "End-To-End Framework Flow",
+      "status": "passed",
+      "evidence": [
+        "A2A fail-open keeps annotation and empty trace UI usable."
+      ],
+      "durationMs": 421
+    },
+    {
+      "id": "I09",
+      "title": "AgentTrace 隐私边界",
+      "group": "End-To-End Framework Flow",
+      "status": "passed",
+      "evidence": [
+        "AgentTrace privacy boundary holds at API/UI trace layer."
+      ],
+      "durationMs": 354
+    },
+    {
+      "id": "I10",
+      "title": "并发切换时旧 Annotate 响应不能覆盖当前 Trace",
+      "group": "End-To-End Framework Flow",
+      "status": "passed",
+      "evidence": [
+        "Covered by focused RTL Jest: home-page.search.test.tsx verifies pending concurrent root annotation clicks are prevented; request-id/abort guards are present in src/app/page.tsx."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "J01",
+      "title": "A2A 不成为 Public API",
+      "group": "Future Extensibility And Non-Regression",
+      "status": "passed",
+      "evidence": [
+        "Public API route dirs: annotate, embed, health, internal, search."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "J02",
+      "title": "Search 拒绝 A2A 字段注入",
+      "group": "Future Extensibility And Non-Regression",
+      "status": "passed",
+      "evidence": [
+        "Search strict schema rejects injected A2A fields."
+      ],
+      "durationMs": 71
+    },
+    {
+      "id": "J03",
+      "title": "Painting WorkAgent Manifest 可路由但不泄露",
+      "group": "Future Extensibility And Non-Regression",
+      "status": "passed",
+      "evidence": [
+        "Painting manifest can route and route output excludes manifest internals."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "J04",
+      "title": "Artifact Manifest 版本/签名边界",
+      "group": "Future Extensibility And Non-Regression",
+      "status": "passed",
+      "evidence": [
+        "Artifact manifest boundary simulated at router level; private version/signature/provenance/prompt/path fields do not leak, and unauthorized growth fail-opens."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "J05",
+      "title": "AllowedActs 缺少 Grow 时禁止增长",
+      "group": "Future Extensibility And Non-Regression",
+      "status": "passed",
+      "evidence": [
+        "Missing grow in allowedActs disables route."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "J06",
+      "title": "MemoryDelta 识别不等于可执行持久记忆",
+      "group": "Future Extensibility And Non-Regression",
+      "status": "passed",
+      "evidence": [
+        "memory_delta is recognized as protocol act but router only grows."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "J07",
+      "title": "Saved PrivacyMode 不绕过持久化同意",
+      "group": "Future Extensibility And Non-Regression",
+      "status": "passed",
+      "evidence": [
+        "Saved privacyMode does not persist raw utterance into growth event."
+      ],
+      "durationMs": 0
+    },
+    {
+      "id": "J08",
+      "title": "A2A Router 性能与确定性基线",
+      "group": "Future Extensibility And Non-Regression",
+      "status": "passed",
+      "evidence": [
+        "Router is deterministic and does not call network."
+      ],
+      "durationMs": 1
+    },
+    {
+      "id": "J09",
+      "title": "A2A 注释链路不影响 Search Golden Ranking",
+      "group": "Future Extensibility And Non-Regression",
+      "status": "passed",
+      "evidence": [
+        "Sample golden search rankings unchanged after annotation/A2A."
+      ],
+      "durationMs": 1135
+    },
+    {
+      "id": "J10",
+      "title": "Work Agent 不可变更 Corpus/Search Graph Artifact",
+      "group": "Future Extensibility And Non-Regression",
+      "status": "passed",
+      "evidence": [
+        "Corpus manifest and search graph artifacts unchanged."
+      ],
+      "durationMs": 802
+    }
+  ]
+}

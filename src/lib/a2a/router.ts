@@ -99,7 +99,15 @@ function resolveConfidence(userState: UserStateSnapshot, workAgent: WorkAgentMan
 
 function compactSummary(value: string, maxLength: number): string {
   const normalized = value.trim().replace(/\s+/gu, " ");
-  return normalized.length > maxLength ? `${normalized.slice(0, maxLength - 1)}...` : normalized;
+  if (normalized.length <= maxLength) {
+    return normalized;
+  }
+
+  if (maxLength <= 3) {
+    return ".".repeat(Math.max(0, maxLength));
+  }
+
+  return `${normalized.slice(0, maxLength - 3)}...`;
 }
 
 export function routeA2AEncounter(input: A2AEncounterInput): A2AEncounterResult {
