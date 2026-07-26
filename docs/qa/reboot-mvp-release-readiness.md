@@ -15,9 +15,6 @@ holdout protocol and evidence reclassification are frozen at
 Before current release signoff, the project still needs:
 
 - an independently authored and one-shot executed frozen holdout v1;
-- integration of the current `origin/main` UI commit (`906cde4`) into the
-  release candidate, followed by clean-worktree verification on that integrated
-  commit;
 - two no-cache full Jest runs, two stability runs, artifact reproduction,
   build, standalone smoke, and current desktop/mobile manual acceptance;
 - a current telemetry result, or the explicitly documented no-credential
@@ -27,6 +24,15 @@ Visible golden and tuned-paraphrase regression fixtures protect known behavior;
 they do not substitute for the independent holdout. See
 `docs/qa/search-quality-methodology.md` for the frozen protocol and artifact
 identities.
+
+### Integration preflight complete
+
+`f261607bf83560e746507e38d7dd93dffc5b8edb` integrates the upstream Simon
+Rogers UI commit `906cde4` with the quality-convergence branch `de369e3`.
+Its preflight passed type-check, lint, 12 UI suites / 48 tests, documentation
+contracts, and the Next.js 15.5.18 production build. The search freeze diff is
+empty. This is integration evidence only, not Task 7 or a Release Candidate
+signoff.
 
 CI gate: `.github/workflows/reboot-mvp-ci.yml` runs on pull requests and pushes
 to `main` with `SEARCH_EMBEDDING_BACKEND=local`. Its fixed verify order is:

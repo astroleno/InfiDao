@@ -56,7 +56,8 @@ docs/simon-rogers-adjustment-guide.md
 ref/infidao---six-classics-annotate-me/
 ref/lyric-scroll-loop/
 
-# Explicit local QA and acquisition material, never part of a release commit
+# Explicit local QA and acquisition material, never part of a release commit.
+# Tracked upstream Simon Rogers plan files remain part of the integrated candidate.
 .codex-screens/
 docs/simon-rogers-main-screen-plan/
 ref/rysxguji/

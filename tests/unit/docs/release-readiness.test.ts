@@ -54,6 +54,8 @@ describe("reboot MVP release readiness", () => {
     expect(document).toContain("independently authored and one-shot executed frozen holdout v1");
     expect(document).toContain("Historical Release Evidence (2026-04-29)");
     expect(document).toContain("two no-cache full Jest runs");
+    expect(document).toContain("f261607bf83560e746507e38d7dd93dffc5b8edb");
+    expect(document).toContain("Integration preflight complete");
   });
 
   it("covers the release smoke matrix requested for Phase 6.5", () => {

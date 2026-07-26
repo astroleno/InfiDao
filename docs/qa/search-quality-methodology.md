@@ -43,6 +43,8 @@ search-tuning cycle creates a new v2 holdout instead of changing v1.
 | Embeddings file SHA-256 | `e6518fa9a221473a72ba4fda17dc838ed98443190788778ef396c0b4199ad3ee` |
 | Protocol content commit | `71fa97e7da563abc1d3365292132d36a75e6682b` |
 | Frozen protocol rules SHA-256 | `bf0ec2ae2353cadba91488eb6359a77c78acf3d0ca1122154871c930ee2098d0` |
+| Fixture validator commit | `e2e7121a1b4084d60e8c22f6dd48bd21ddf8f203` |
+| Evaluation harness seal | `ba3353e267a4990fc74978bdd8ead1b67475b4e5` |
 | Holdout v1 status | Awaiting an independent reviewer; no v1 cases or results have been created |
 
 ## Sealed evaluation harness
@@ -51,3 +53,24 @@ Before the evaluator loads the search index, the fixture must pass
 `npm run validate:search-holdout -- --cases <fixture>`. The validator checks
 only the fixture, corpus identities, and visible-query inventory; it does not
 load or query the frozen search system.
+
+## Independent reviewer handoff
+
+The reviewer receives only the frozen identities above, the integrated
+preflight commit `f261607bf83560e746507e38d7dd93dffc5b8edb`, and corpus/source
+materials needed for semantic labels. They must create a fixture-only commit
+that changes `tests/fixtures/search-holdout-v1.json` and must not inspect
+system search output while authoring queries or labels. After that commit, run:
+
+```bash
+npm run validate:search-holdout -- --cases tests/fixtures/search-holdout-v1.json
+npm run evaluate:search-holdout -- \
+  --cases tests/fixtures/search-holdout-v1.json \
+  --json docs/qa/search-holdout-v1-results.json \
+  --markdown docs/qa/search-holdout-v1-report.md \
+  --fixture-commit <fixture-commit-sha> \
+  --harness-commit ba3353e267a4990fc74978bdd8ead1b67475b4e5
+```
+
+The evaluator writes a complete pass or blocked record before it exits. A
+blocked v1 remains immutable and begins a future v2 cycle.
