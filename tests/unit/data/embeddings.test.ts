@@ -1,7 +1,7 @@
 import path from "node:path";
 import { loadCorpus } from "@/lib/data/corpus";
 import { loadEmbeddingArtifact, loadEmbeddingsForCorpus } from "@/lib/data/embeddings";
-import { buildLocalEmbedding } from "@/lib/search/local-embedding";
+import { buildLocalEmbedding, LOCAL_EMBEDDING_DIMENSION } from "@/lib/search/local-embedding";
 
 describe("embedding loaders", () => {
   it("loads the artifact envelope", async () => {
@@ -42,7 +42,7 @@ describe("embedding loaders", () => {
       throw new Error("Expected lunyu-1-1 in the production corpus.");
     }
 
-    expect(embeddingMap.get("lunyu-1-1")).toHaveLength(21);
+    expect(embeddingMap.get("lunyu-1-1")).toHaveLength(LOCAL_EMBEDDING_DIMENSION);
     expect(embeddingMap.get("lunyu-1-1")).toEqual(
       buildLocalEmbedding(`${firstPassage.source} ${firstPassage.chapter} ${firstPassage.text}`, {
         expandAliases: false,

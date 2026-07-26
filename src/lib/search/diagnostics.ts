@@ -1,4 +1,9 @@
 import { DEFAULT_SEARCH_THRESHOLD, DEFAULT_SEARCH_TOP_K } from "@/types";
+import {
+  applySearchEvidenceGuard,
+  summarizeSearchEvidence,
+  type SearchEvidenceSummary,
+} from "@/lib/search/evidence";
 import type { SearchGraphDisabledReason } from "@/lib/search/graph/store";
 import type {
   SearchGraphConfidence,
@@ -36,6 +41,9 @@ export interface SearchDiagnosticCandidate {
   score: number;
   vectorScore: number;
   lexicalScore: number;
+  evidenceScore: number;
+  hasDomainEvidence: boolean;
+  matchedTerms: string[];
   rank: number;
   graph: {
     neighborCount: number;
@@ -47,11 +55,24 @@ export interface SearchDiagnosticCandidate {
   };
 }
 
+export interface SearchDiagnosticLaneSummary {
+  resultCount: number;
+  top1Id?: string;
+  top3Ids: string[];
+}
+
 export interface SearchDiagnosticsReport {
   query: string;
   topK: number;
   threshold: number;
   results: SearchDiagnosticCandidate[];
+  lanes: {
+    full: SearchDiagnosticLaneSummary;
+    vector: SearchDiagnosticLaneSummary;
+    lexical: SearchDiagnosticLaneSummary;
+    fusion: SearchDiagnosticLaneSummary;
+  };
+  evidence: SearchEvidenceSummary;
   graph: {
     enabled: boolean;
     reason?: SearchGraphDisabledReason;
@@ -140,6 +161,16 @@ function buildDiversitySummary(
   };
 }
 
+function summarizeLane(candidates: Array<{ id: string }>): SearchDiagnosticLaneSummary {
+  const top3Ids = candidates.slice(0, 3).map((candidate) => candidate.id);
+
+  return {
+    resultCount: candidates.length,
+    ...(top3Ids[0] ? { top1Id: top3Ids[0] } : {}),
+    top3Ids,
+  };
+}
+
 export async function diagnoseSearchPassages({
   query,
   topK = DEFAULT_SEARCH_TOP_K,
@@ -162,15 +193,20 @@ export async function diagnoseSearchPassages({
   });
   const lexicalResults = rankLexicalCandidates(index.corpus, query, candidateLimit);
   const fusedCandidates = fuseSearchCandidates(vectorResults, lexicalResults, topK, threshold);
+  const guardedCandidates = applySearchEvidenceGuard(query, lexicalResults, fusedCandidates);
+  const evidence = summarizeSearchEvidence(query, lexicalResults);
   const graphService = await loadSearchGraphServiceForIndex(index, {
     required: false,
     ...(graphPath ? { graphPath } : {}),
   });
-  const results = fusedCandidates.map((candidate, index) => ({
+  const results = guardedCandidates.map((candidate, index) => ({
     id: candidate.id,
     score: candidate.score,
     vectorScore: candidate.vectorScore,
     lexicalScore: candidate.lexicalScore,
+    evidenceScore: candidate.evidenceScore,
+    hasDomainEvidence: candidate.hasDomainEvidence,
+    matchedTerms: candidate.matchedTerms,
     rank: index + 1,
     graph: summarizeCandidateGraph(candidate, graphService),
   }));
@@ -180,6 +216,13 @@ export async function diagnoseSearchPassages({
     topK,
     threshold,
     results,
+    lanes: {
+      full: summarizeLane(guardedCandidates),
+      vector: summarizeLane(vectorResults),
+      lexical: summarizeLane(lexicalResults),
+      fusion: summarizeLane(fusedCandidates),
+    },
+    evidence,
     graph: {
       enabled: graphService.enabled,
       ...(graphService.reason ? { reason: graphService.reason } : {}),

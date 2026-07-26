@@ -1,0 +1,302 @@
+[
+  {
+    "category": "batch2",
+    "query": "人不能只是一个工具",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-2-9"] },
+    "note": "现代转述应映射到君子不器。"
+  },
+  {
+    "category": "batch2",
+    "query": "先做再说",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-2-10"] },
+    "note": "先行动再说话应回到先行其言。"
+  },
+  {
+    "category": "batch2",
+    "query": "君子合群不结党",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-2-11"] },
+    "note": "合群不结党应回到周而不比。"
+  },
+  {
+    "category": "batch2",
+    "query": "知道就说知道不知道就承认",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-2-14"] },
+    "note": "诚实认知应回到知之为知之。"
+  },
+  {
+    "category": "batch2",
+    "query": "人没有信用怎么行",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-2-17"] },
+    "note": "无信不可行应回到人而无信。"
+  },
+  {
+    "category": "batch2",
+    "query": "见到义却不去做",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-2-18"] },
+    "note": "见义不为应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "文质彬彬",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-6-16"] },
+    "note": "文质彬彬应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "简朴生活也能快乐",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-6-11", "rysxguji-mengzi-7-26", "lunyu-1-10"] },
+    "note": "安贫乐道场景应回到颜回或贫而乐。"
+  },
+  {
+    "category": "batch2",
+    "query": "智者乐水仁者乐山",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-6-22"] },
+    "note": "智水仁山应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "学而不厌诲人不倦",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-7-2"] },
+    "note": "学而不厌、诲人不倦应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "举一反三",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-7-7"] },
+    "note": "举一隅三隅反应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "士不可以不弘毅任重道远",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-8-5"] },
+    "note": "弘毅任重道远应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "时间像流水一样不停",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-9-13"] },
+    "note": "逝者如斯应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "年轻人将来可敬畏",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-9-16"] },
+    "note": "后生可畏应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "一个人的志向不能被夺走",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-9-20"] },
+    "note": "匹夫不可夺志应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "困境中才看出松柏",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-9-21"] },
+    "note": "岁寒松柏应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "仁者不忧知者不惑勇者不惧",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-9-21", "rysxguji-lunyu-14-30"] },
+    "note": "三达德式表达应回到不忧不惑不惧。"
+  },
+  {
+    "category": "batch2",
+    "query": "克制自己回到礼",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-12-1"] },
+    "note": "克己复礼应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "自己不想要的不要施加给别人",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-12-3", "rysxguji-lunyu-15-21"] },
+    "note": "己所不欲勿施于人应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "四海之内皆兄弟",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-12-8"] },
+    "note": "四海兄弟应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "成全别人的好事",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-12-17"] },
+    "note": "成人之美应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "名不正言不顺",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-13-4"] },
+    "note": "正名应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "不要急功近利",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-13-15"] },
+    "note": "无欲速、无见小利应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "和而不同",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-13-23"] },
+    "note": "和而不同应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "想做好事先磨利工具",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-15-10"] },
+    "note": "工欲善其事必先利其器应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "没有长远考虑就会有近忧",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-15-12"] },
+    "note": "人无远虑必有近忧应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "要求自己多一点责备别人少一点",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-15-15"] },
+    "note": "躬自厚薄责于人应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "君子向内要求自己",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-15-18"] },
+    "note": "君子求诸己应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "小事忍不住会坏大事",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-15-23"] },
+    "note": "小不忍则乱大谋应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "过错不改才叫过错",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-15-26"] },
+    "note": "过而不改是谓过矣应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "面对仁义不要谦让老师",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-15-31"] },
+    "note": "当仁不让于师应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "教育不分贵贱类别",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-15-34"] },
+    "note": "有教无类应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "有益的朋友和有害的朋友",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-16-7"] },
+    "note": "益者三友损者三友应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "得到利益时想到义",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-16-14", "rysxguji-lunyu-19-1"] },
+    "note": "见得思义应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "人的本性相近习惯让人变远",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-17-4"] },
+    "note": "性相近习相远应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "博学笃志切问近思",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-19-4"] },
+    "note": "博学笃志切问近思应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "把尊敬老人推广到别人老人",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-mengzi-1-8"] },
+    "note": "老吾老以及人之老应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "天时不如地利地利不如人和",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-mengzi-3-1"] },
+    "note": "天时地利人和应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "得道者多助失道者寡助",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-mengzi-3-2"] },
+    "note": "得道多助应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "富贵不能淫贫贱不能移威武不能屈",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-mengzi-5-5"] },
+    "note": "大丈夫三不能应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "恻隐之心是仁的开端",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-mengzi-2-32", "rysxguji-mengzi-9-5"] },
+    "note": "恻隐仁端应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "学习下棋要专心致志",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-mengzi-9-10"] },
+    "note": "专心致志弈秋应在 Top 3。"
+  },
+  {
+    "category": "batch2",
+    "query": "民为贵社稷次之君为轻",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-mengzi-12-13"] },
+    "note": "民贵君轻应在 Top 3。"
+  },
+  {
+    "category": "ood",
+    "query": "火星殖民预算",
+    "expectation": { "type": "empty" },
+    "note": "太空预算查询应返回 0。"
+  },
+  {
+    "category": "ood",
+    "query": "Python虚拟环境报错",
+    "expectation": { "type": "empty" },
+    "note": "编程排错查询应返回 0。"
+  },
+  {
+    "category": "ood",
+    "query": "今晚吃什么外卖",
+    "expectation": { "type": "empty" },
+    "note": "外卖推荐查询应返回 0。"
+  },
+  {
+    "category": "ood",
+    "query": "特斯拉股票财报",
+    "expectation": { "type": "empty" },
+    "note": "股票财报查询应返回 0。"
+  },
+  {
+    "category": "ood",
+    "query": "世界杯赛程",
+    "expectation": { "type": "empty" },
+    "note": "体育赛程查询应返回 0。"
+  },
+  {
+    "category": "ood",
+    "query": "洗衣机怎么清洗",
+    "expectation": { "type": "empty" },
+    "note": "家电清洁查询应返回 0。"
+  },
+  {
+    "category": "ood",
+    "query": "AI绘画提示词",
+    "expectation": { "type": "empty" },
+    "note": "AI 绘画提示查询应返回 0。"
+  }
+]

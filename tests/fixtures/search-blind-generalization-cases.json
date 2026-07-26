@@ -1,0 +1,182 @@
+[
+  {
+    "category": "blind",
+    "query": "不要把人当成机器零件",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-2-9"] },
+    "note": "现代转述应泛化到君子不器。"
+  },
+  {
+    "category": "blind",
+    "query": "话先别急着讲，行动跟上",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-2-10"] },
+    "note": "行动先于言语应泛化到先行其言。"
+  },
+  {
+    "category": "blind",
+    "query": "明明知道该做却躲开",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-2-18"] },
+    "note": "知道该做却不做应泛化到见义不为。"
+  },
+  {
+    "category": "blind",
+    "query": "外表和内容要配得上",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-6-16"] },
+    "note": "形式内容兼备应泛化到文质彬彬。"
+  },
+  {
+    "category": "blind",
+    "query": "清苦日子里还能安然自得",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-6-11", "rysxguji-mengzi-7-26", "lunyu-1-10"] },
+    "note": "清苦自得应泛化到颜回或贫而乐。"
+  },
+  {
+    "category": "blind",
+    "query": "聪明人爱流动，仁厚者爱安定",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-6-22"] },
+    "note": "流动与安定应泛化到知者乐水仁者乐山。"
+  },
+  {
+    "category": "blind",
+    "query": "教别人也不会厌烦",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-7-2"] },
+    "note": "教学不厌烦应泛化到诲人不倦。"
+  },
+  {
+    "category": "blind",
+    "query": "能从一个例子推出其它情况",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-7-7"] },
+    "note": "从例子外推应泛化到举一反三。"
+  },
+  {
+    "category": "blind",
+    "query": "肩上的责任很重，所以要刚强",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-8-5"] },
+    "note": "重任与刚强应泛化到弘毅任重道远。"
+  },
+  {
+    "category": "blind",
+    "query": "光阴一去不停歇",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-9-13"] },
+    "note": "光阴不停应泛化到逝者如斯。"
+  },
+  {
+    "category": "blind",
+    "query": "后来的人不一定比我们差",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-9-16"] },
+    "note": "后辈可能超过前人应泛化到后生可畏。"
+  },
+  {
+    "category": "blind",
+    "query": "贫穷威胁都不能改变原则",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-mengzi-5-5"] },
+    "note": "贫贱威武不改原则应泛化到大丈夫。"
+  },
+  {
+    "category": "blind",
+    "query": "看到别人受苦会心疼",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-mengzi-2-32", "rysxguji-mengzi-9-5"] },
+    "note": "见人受苦心疼应泛化到恻隐之心。"
+  },
+  {
+    "category": "blind",
+    "query": "制度名分不清，话就讲不通",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-13-4"] },
+    "note": "名分语言秩序应泛化到名不正言不顺。"
+  },
+  {
+    "category": "blind",
+    "query": "想快点成功反而坏事",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-13-15"] },
+    "note": "急于求成反坏事应泛化到欲速则不达。"
+  },
+  {
+    "category": "blind",
+    "query": "能跟别人协调但不盲从",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-13-23"] },
+    "note": "协调而不盲从应泛化到和而不同。"
+  },
+  {
+    "category": "blind",
+    "query": "做事前先把条件准备好",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-15-10"] },
+    "note": "准备条件应泛化到工欲善其事必先利其器。"
+  },
+  {
+    "category": "blind",
+    "query": "眼前的小忍耐关系大局",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-15-23"] },
+    "note": "小忍耐关系大局应泛化到小不忍乱大谋。"
+  },
+  {
+    "category": "blind",
+    "query": "老师面前也不能退让仁义",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-15-31"] },
+    "note": "仁义面前不退让应泛化到当仁不让。"
+  },
+  {
+    "category": "blind",
+    "query": "朋友有帮你变好的也有拖累你的",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-16-7"] },
+    "note": "朋友有益有损应泛化到益者三友损者三友。"
+  },
+  {
+    "category": "blind",
+    "query": "拿好处前先想合不合义",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-16-14", "rysxguji-lunyu-19-1"] },
+    "note": "取利先想义应泛化到见得思义。"
+  },
+  {
+    "category": "blind",
+    "query": "人的天性差不多，后天习惯拉开距离",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-17-4"] },
+    "note": "天性相近习惯拉开距离应泛化到性相近习相远。"
+  },
+  {
+    "category": "blind",
+    "query": "提问题要贴近眼前事情",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-lunyu-19-4"] },
+    "note": "近处思考与提问应泛化到切问近思。"
+  },
+  {
+    "category": "blind",
+    "query": "爱自己的老人也爱别人家的老人",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-mengzi-1-8"] },
+    "note": "由己及人关爱老人应泛化到老吾老以及人之老。"
+  },
+  {
+    "category": "blind",
+    "query": "条件再好不如人心齐",
+    "expectation": { "type": "anyTop3Id", "ids": ["rysxguji-mengzi-3-1"] },
+    "note": "条件不如人心齐应泛化到天时地利人和。"
+  },
+  {
+    "category": "ood",
+    "query": "如何安装docker",
+    "expectation": { "type": "empty" },
+    "note": "开发工具问题应返回 0。"
+  },
+  {
+    "category": "ood",
+    "query": "明天上海天气",
+    "expectation": { "type": "empty" },
+    "note": "天气问题应返回 0。"
+  },
+  {
+    "category": "ood",
+    "query": "iPhone电池健康",
+    "expectation": { "type": "empty" },
+    "note": "消费电子问题应返回 0。"
+  },
+  {
+    "category": "ood",
+    "query": "高铁票退改签",
+    "expectation": { "type": "empty" },
+    "note": "出行服务问题应返回 0。"
+  },
+  {
+    "category": "ood",
+    "query": "咖啡豆研磨度",
+    "expectation": { "type": "empty" },
+    "note": "咖啡冲煮问题应返回 0。"
+  }
+]
