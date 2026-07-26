@@ -25,6 +25,9 @@ The independent reviewer creates 30 cases after the ledger below is frozen:
 - acceptable passage IDs are established by human semantic annotation or an
   independent source mapping, without inspecting the frozen system's Top 3
   results;
+- the fixture must pass `npm run validate:search-holdout -- --cases <fixture>`
+  before the evaluator loads the search index; the validator checks only the
+  fixture, corpus identities, and visible-query inventory;
 - no changes to `src/lib/search/**`, `data/embeddings.json`, or
   `data/search-graph.json` are allowed before the one-shot v1 evaluation.
 

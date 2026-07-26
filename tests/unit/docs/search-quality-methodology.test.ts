@@ -18,6 +18,7 @@ describe("search quality methodology", () => {
       "e6518fa9a221473a72ba4fda17dc838ed98443190788778ef396c0b4199ad3ee",
     );
     expect(methodology).toContain("without inspecting the frozen system's Top 3");
+    expect(methodology).toContain("npm run validate:search-holdout");
     expect(methodology).toContain("Awaiting an independent reviewer");
   });
 });

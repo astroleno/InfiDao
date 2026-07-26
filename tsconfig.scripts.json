@@ -9,7 +9,9 @@
     "scripts/generate-search-graph.ts",
     "scripts/run-a2a-agentic-framework-100-examples.ts",
     "scripts/run-search-50-iteration.ts",
-    "scripts/run-search-50-iteration-suite.ts"
+    "scripts/run-search-50-iteration-suite.ts",
+    "scripts/search-holdout/contract.ts",
+    "scripts/validate-search-holdout.ts"
   ],
   "exclude": []
 }
