@@ -72,7 +72,7 @@ describe("search holdout fixture contract", () => {
   it("rejects duplicate and visible queries after deterministic normalization", () => {
     const duplicateCases = buildValidCases();
     duplicateCases[1] = {
-      ...duplicateCases[1],
+      ...duplicateCases[1]!,
       query: "独立 问题，1！",
     };
 
@@ -80,7 +80,7 @@ describe("search holdout fixture contract", () => {
 
     const visibleCases = buildValidCases();
     visibleCases[0] = {
-      ...visibleCases[0],
+      ...visibleCases[0]!,
       query: "可见 查询！",
     };
 
@@ -90,14 +90,14 @@ describe("search holdout fixture contract", () => {
   it("rejects invalid expectations and unknown corpus references", () => {
     const unknownPassageCases = buildValidCases();
     unknownPassageCases[0] = {
-      ...unknownPassageCases[0],
+      ...unknownPassageCases[0]!,
       expectation: { type: "anyTop3Id", ids: ["missing-passage"] },
     };
     expectContractError(() => validate(unknownPassageCases), "unknown passage id");
 
     const incompatibleOodCases = buildValidCases();
     incompatibleOodCases[24] = {
-      ...incompatibleOodCases[24],
+      ...incompatibleOodCases[24]!,
       expectation: { type: "sourceTop3", sources: ["论语"] },
     };
     expectContractError(() => validate(incompatibleOodCases), "must use an empty expectation");

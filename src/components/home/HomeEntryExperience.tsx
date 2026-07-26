@@ -1376,6 +1376,7 @@ export function HomeEntryExperience() {
       {pendingReadingGate && (
         <DesirableFrictionGate
           mode="reading"
+          gateId={pendingReadingGate.passageId}
           targetLabel={pendingReadingGate.target.label}
           passageText={pendingReadingGate.target.text}
           resonanceLabel={pendingReadingGate.target.resonanceLabel}

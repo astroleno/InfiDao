@@ -177,4 +177,36 @@ describe("HomeEntryExperience friction gates", () => {
     expect(screen.queryByRole("region", { name: "入经前停顿" })).not.toBeInTheDocument();
     expect(global.fetch).toHaveBeenCalledTimes(2);
   });
+
+  it("uses the same single completion path when Escape skips the reading gate", async () => {
+    (global.fetch as jest.Mock)
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: [searchResult],
+        }),
+      )
+      .mockImplementationOnce(() =>
+        createFetchResponse({
+          success: true,
+          data: annotationResult,
+        }),
+      );
+
+    render(<SimonRogersPreviewPage />);
+
+    fireEvent.change(screen.getByLabelText("输入此刻的一念"), {
+      target: { value: "如何面对困境" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "请经典回应" }));
+    expect(await screen.findByText("君子不重则不威，学则不固。")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "用这一句回应我" }));
+    fireEvent.keyDown(screen.getByRole("region", { name: "入经前停顿" }), {
+      key: "Escape",
+    });
+
+    expect(await screen.findByText("根层注释")).toBeInTheDocument();
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+  });
 });
