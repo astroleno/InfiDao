@@ -2,11 +2,11 @@
   "generatedAt": "2026-06-11T01:32:50.611Z",
   "total": 30,
   "passed": 5,
-  "casesPath": "tests/fixtures/search-blind-generalization-cases.json",
+  "casesPath": "tests/fixtures/search-tuned-paraphrase-regression-cases.json",
   "outputs": [
     {
       "index": 1,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "不要把人当成机器零件",
       "passed": false,
       "note": "现代转述应泛化到君子不器。",
@@ -43,7 +43,7 @@
     },
     {
       "index": 2,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "话先别急着讲，行动跟上",
       "passed": false,
       "note": "行动先于言语应泛化到先行其言。",
@@ -76,7 +76,7 @@
     },
     {
       "index": 3,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "明明知道该做却躲开",
       "passed": false,
       "note": "知道该做却不做应泛化到见义不为。",
@@ -113,7 +113,7 @@
     },
     {
       "index": 4,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "外表和内容要配得上",
       "passed": false,
       "note": "形式内容兼备应泛化到文质彬彬。",
@@ -150,7 +150,7 @@
     },
     {
       "index": 5,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "清苦日子里还能安然自得",
       "passed": false,
       "note": "清苦自得应泛化到颜回或贫而乐。",
@@ -189,7 +189,7 @@
     },
     {
       "index": 6,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "聪明人爱流动，仁厚者爱安定",
       "passed": false,
       "note": "流动与安定应泛化到知者乐水仁者乐山。",
@@ -355,7 +355,7 @@
     },
     {
       "index": 7,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "教别人也不会厌烦",
       "passed": false,
       "note": "教学不厌烦应泛化到诲人不倦。",
@@ -392,7 +392,7 @@
     },
     {
       "index": 8,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "能从一个例子推出其它情况",
       "passed": false,
       "note": "从例子外推应泛化到举一反三。",
@@ -429,7 +429,7 @@
     },
     {
       "index": 9,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "肩上的责任很重，所以要刚强",
       "passed": false,
       "note": "重任与刚强应泛化到弘毅任重道远。",
@@ -466,7 +466,7 @@
     },
     {
       "index": 10,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "光阴一去不停歇",
       "passed": false,
       "note": "光阴不停应泛化到逝者如斯。",
@@ -501,7 +501,7 @@
     },
     {
       "index": 11,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "后来的人不一定比我们差",
       "passed": false,
       "note": "后辈可能超过前人应泛化到后生可畏。",
@@ -538,7 +538,7 @@
     },
     {
       "index": 12,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "贫穷威胁都不能改变原则",
       "passed": false,
       "note": "贫贱威武不改原则应泛化到大丈夫。",
@@ -575,7 +575,7 @@
     },
     {
       "index": 13,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "看到别人受苦会心疼",
       "passed": false,
       "note": "见人受苦心疼应泛化到恻隐之心。",
@@ -613,7 +613,7 @@
     },
     {
       "index": 14,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "制度名分不清，话就讲不通",
       "passed": false,
       "note": "名分语言秩序应泛化到名不正言不顺。",
@@ -650,7 +650,7 @@
     },
     {
       "index": 15,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "想快点成功反而坏事",
       "passed": false,
       "note": "急于求成反坏事应泛化到欲速则不达。",
@@ -687,7 +687,7 @@
     },
     {
       "index": 16,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "能跟别人协调但不盲从",
       "passed": false,
       "note": "协调而不盲从应泛化到和而不同。",
@@ -722,7 +722,7 @@
     },
     {
       "index": 17,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "做事前先把条件准备好",
       "passed": false,
       "note": "准备条件应泛化到工欲善其事必先利其器。",
@@ -758,7 +758,7 @@
     },
     {
       "index": 18,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "眼前的小忍耐关系大局",
       "passed": false,
       "note": "小忍耐关系大局应泛化到小不忍乱大谋。",
@@ -791,7 +791,7 @@
     },
     {
       "index": 19,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "老师面前也不能退让仁义",
       "passed": false,
       "note": "仁义面前不退让应泛化到当仁不让。",
@@ -828,7 +828,7 @@
     },
     {
       "index": 20,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "朋友有帮你变好的也有拖累你的",
       "passed": false,
       "note": "朋友有益有损应泛化到益者三友损者三友。",
@@ -954,7 +954,7 @@
     },
     {
       "index": 21,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "拿好处前先想合不合义",
       "passed": false,
       "note": "取利先想义应泛化到见得思义。",
@@ -992,7 +992,7 @@
     },
     {
       "index": 22,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "人的天性差不多，后天习惯拉开距离",
       "passed": false,
       "note": "天性相近习惯拉开距离应泛化到性相近习相远。",
@@ -1029,7 +1029,7 @@
     },
     {
       "index": 23,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "提问题要贴近眼前事情",
       "passed": false,
       "note": "近处思考与提问应泛化到切问近思。",
@@ -1198,7 +1198,7 @@
     },
     {
       "index": 24,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "爱自己的老人也爱别人家的老人",
       "passed": false,
       "note": "由己及人关爱老人应泛化到老吾老以及人之老。",
@@ -1235,7 +1235,7 @@
     },
     {
       "index": 25,
-      "category": "blind",
+      "category": "tuned-regression",
       "query": "条件再好不如人心齐",
       "passed": false,
       "note": "条件不如人心齐应泛化到天时地利人和。",

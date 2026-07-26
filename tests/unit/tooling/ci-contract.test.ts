@@ -20,13 +20,26 @@ describe("reboot MVP CI release contract", () => {
     );
   });
 
-  it("keeps quality, no-cache tests, build, and smoke as required CI gates", () => {
-    expect(workflow).toContain("npm run type-check");
-    expect(workflow).toContain("npm run lint");
-    expect(workflow).toContain("npm test -- --runInBand --no-cache");
-    expect(workflow).toContain("npm run test:stability");
-    expect(workflow).toContain("npm run test:search-quality");
-    expect(workflow).toContain("npm run build");
-    expect(workflow).toContain("npm run smoke:release");
+  it("keeps release gates in their required order", () => {
+    const orderedGates = [
+      "npm ci",
+      "npm run generate:release-artifacts",
+      "git diff --exit-code -- data/embeddings.json data/search-graph.json",
+      "npm run type-check",
+      "npm run lint",
+      "npm test -- --runInBand --no-cache",
+      "npm run test:stability",
+      "npm run test:search-quality",
+      "npm run build",
+      "Prepare standalone runtime files",
+      "npm run smoke:release",
+    ];
+
+    let previousIndex = -1;
+    for (const gate of orderedGates) {
+      const currentIndex = workflow.indexOf(gate);
+      expect(currentIndex).toBeGreaterThan(previousIndex);
+      previousIndex = currentIndex;
+    }
   });
 });

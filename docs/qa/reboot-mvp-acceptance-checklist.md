@@ -2,6 +2,16 @@
 
 Scope: MVP 主路径闭环 / Phase 5 interaction polish.
 
+## 2026-07-26 发布收敛状态
+
+**尚未最终签署。** 下列已勾选项目是 2026-04-29 的历史 MVP 验收证据，
+不代表本轮质量收敛已经满足发布条件。当前仍须完成：
+
+- [ ] 由未参与本轮调参的独立评审者创建并一次性执行冻结 holdout v1。
+- [ ] 在明确提交且干净的工作树中完成两轮全量无缓存测试、两轮稳定性测试、
+  构建和生产 smoke。
+- [ ] 完成集成后的桌面 `1440px` 与移动端 `390px` 人工验收，并更新本轮发布记录。
+
 Canonical path:
 
 `query -> search -> result -> annotate -> links -> explore -> back -> select new result reset -> leaf state`
