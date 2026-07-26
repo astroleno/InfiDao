@@ -45,6 +45,7 @@ playwright/.cache
 
 # Local scratch artifacts
 .tmp/
+.worktrees/
 .codex-review-screenshots/
 .planning/
 CLAUDE.md
