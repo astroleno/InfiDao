@@ -89,12 +89,13 @@ PATH=/opt/homebrew/bin:$PATH npm run generate-search-artifacts
 PATH=/opt/homebrew/bin:$PATH npm run type-check
 PATH=/opt/homebrew/bin:$PATH npm run lint
 PATH=/opt/homebrew/bin:$PATH npm test -- --runInBand
+PATH=/opt/homebrew/bin:$PATH npm run test:search-quality
 ```
 
 Expected artifact generation line:
 
 ```text
-Wrote 20 embeddings
+Wrote 11829 embeddings
 ```
 
 ## Telemetry Smoke Command
@@ -128,10 +129,18 @@ The script waits for `/api/health`, then verifies:
 
 - `GET /api/health` -> `200`
 - `GET /` -> `200`, reboot intro rendered, and referenced `/_next/static/*.js` assets return `200`
-- `POST /api/search` -> `200`, non-empty results, top result `lunyu-1-8`
-- `POST /api/annotate` -> `200`, annotation payload with links
+- `POST /api/search` -> `200`, `success: true`, non-empty results, and a valid search response shape (`id`, `source`, `chapter`, `text`, finite `section` and `score`) with no duplicate Top 5 IDs
+- `POST /api/annotate` -> `200`, annotation payload with links for the actual Top 1 result returned by search
 - `GET /api/internal/annotation-telemetry` -> production `404`
 - `GET /api/embed` -> `410 LEGACY_EMBED_DISABLED`
+
+Production smoke verifies that the user path works; it does not freeze ranking to
+one passage ID. The `lunyu-1-8` result was a 2026-04-29 historical baseline
+before the corpus expansion, not the current release contract. The Golden
+search-quality gate (`tests/fixtures/search-golden-queries.json` via
+`npm run test:search-quality`) blocks the ranking contract for `如何面对困境`:
+`rysxguji-lunyu-15-2` and `rysxguji-mengzi-10-20` must both be in the Top 3,
+and the generalized 中庸 passages are banned there.
 
 ## Release Smoke Matrix
 

@@ -29,14 +29,16 @@ Canonical path:
 - [x] `npm run type-check`
 - [x] `npm run lint`
 - [x] `npm run test -- --runInBand`
+- [x] `npm run test:search-quality`
 - [x] `npm run smoke:release` against a production build or deployed URL.
 - [x] Complete `docs/qa/reboot-mvp-release-readiness.md`.
 
 ## HTTP Smoke
 
 - [x] `GET /api/health` returns `200`, `success: true`, and `data.status: "ok"`.
-- [x] `POST /api/search` returns `200`, `success: true`, and non-empty `data` for `如何面对困境`.
-- [x] `POST /api/annotate` returns `200`, `success: true`, and `links` for `lunyu-1-8`.
+- [x] `POST /api/search` returns `200`, `success: true`, non-empty `data`, and a valid search response shape (`id`, `source`, `chapter`, `text`, finite `section` and `score`) for `如何面对困境`.
+- [x] `POST /api/annotate` returns `200`, `success: true`, and `links` for the actual Top 1 search result.
+- [x] Golden search-quality gate verifies `如何面对困境`: both adversity passages are in the Top 3 and generalized 中庸 passages are excluded. Production smoke does not use a fixed passage ID.
 - [x] Production smoke confirms homepage static JavaScript assets under `/_next/static/` return `200`.
 - [x] In dev/test, `GET /api/internal/annotation-telemetry` returns `200` and redacted annotation runtime status.
 - [x] With canonical annotation env (`LLM_MODEL_PRIMARY/SECONDARY`, `LLM_BASE_URL_*`, `LLM_API_KEY_*`), telemetry `llm.warnings` is empty.

@@ -75,5 +75,12 @@
     "requiredTop3Ids": ["rysxguji-lunyu-1-12", "lunyu-1-1"],
     "bannedTop3Ids": ["daxue-2-2", "zhongyong-4-1"],
     "minResults": 1
+  },
+  {
+    "query": "如何面对困境",
+    "expectedTop1Ids": ["rysxguji-lunyu-15-2", "rysxguji-mengzi-10-20"],
+    "requiredTop3Ids": ["rysxguji-lunyu-15-2", "rysxguji-mengzi-10-20"],
+    "bannedTop3Ids": ["rysxguji-zhongyong-1-2", "zhongyong-2-1"],
+    "minResults": 3
   }
 ]

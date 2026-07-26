@@ -4,6 +4,7 @@ import {
   expandLocalQueryAliases,
   LOCAL_EMBEDDING_DIMENSION,
   LOCAL_EMBEDDING_MODEL,
+  matchLocalQueryAliasLabels,
 } from "@/lib/search/local-embedding";
 
 describe("local embedding spec", () => {
@@ -44,10 +45,15 @@ describe("local embedding spec", () => {
     expect(expandLocalQueryAliases("面对仁义不要谦让老师")).not.toContain("于师");
     expect(expandLocalQueryAliases("把尊敬老人推广到别人老人")).toContain("老吾老");
     expect(expandLocalQueryAliases("民为贵社稷次之君为轻")).toContain("社稷次之");
-    expect(expandLocalQueryAliases("如何面对困境")).toContain("中庸");
+    expect(matchLocalQueryAliasLabels("如何面对困境")).toContain("hardship");
+    expect(expandLocalQueryAliases("如何面对困境")).toContain("君子固穷");
+    expect(expandLocalQueryAliases("如何面对困境")).toContain("天将降大任");
+    expect(expandLocalQueryAliases("如何面对困境")).not.toContain("中庸");
+    expect(expandLocalQueryAliases("如何面对困境")).not.toContain("时中");
     expect(expandLocalQueryAliases("困境中才看出松柏")).toContain("岁寒");
     expect(expandLocalQueryAliases("困境中才看出松柏")).not.toContain("中庸");
     expect(expandLocalQueryAliases("名不正言不顺")).not.toContain("中庸");
+    expect(matchLocalQueryAliasLabels("星际跃迁")).not.toContain("hardship");
   });
 
   it("normalizes broader modern intent phrases", () => {
