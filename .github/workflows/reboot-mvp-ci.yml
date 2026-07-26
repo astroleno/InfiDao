@@ -25,8 +25,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate search artifacts
-        run: npm run generate-search-artifacts
+      - name: Generate release artifacts
+        run: npm run generate:release-artifacts
+
+      - name: Verify committed release artifacts
+        run: git diff --exit-code -- data/embeddings.json data/search-graph.json
 
       - name: Type check
         run: npm run type-check
@@ -35,7 +38,13 @@ jobs:
         run: npm run lint
 
       - name: Test
-        run: npm test -- --runInBand
+        run: npm test -- --runInBand --no-cache
+
+      - name: Verify test stability
+        run: npm run test:stability
+
+      - name: Verify search quality
+        run: npm run test:search-quality
 
       - name: Build
         run: npm run build

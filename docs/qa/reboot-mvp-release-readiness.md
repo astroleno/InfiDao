@@ -4,7 +4,24 @@ Scope: release prep for the active reboot MVP path after Phase 6.4.
 
 This document freezes deployment-facing defaults, canonical environment naming, and the final smoke matrix. It does not add new product behavior.
 
-CI gate: `.github/workflows/reboot-mvp-ci.yml` runs artifact generation, type-check, lint, tests, build, and production smoke on pull requests and pushes to `main`.
+CI gate: `.github/workflows/reboot-mvp-ci.yml` runs on pull requests and pushes
+to `main` with `SEARCH_EMBEDDING_BACKEND=local`. Its fixed verify order is:
+
+1. `npm ci`
+2. `npm run generate:release-artifacts`
+3. `git diff --exit-code -- data/embeddings.json data/search-graph.json`
+4. `npm run type-check`
+5. `npm run lint`
+6. `npm test -- --runInBand --no-cache`
+7. `npm run test:stability`
+8. `npm run test:search-quality`
+9. `npm run build`
+10. prepare standalone runtime files
+11. `npm run smoke:release`
+
+Both embeddings and graph artifacts must reproduce byte-for-byte before the
+static gates run. Search quality is a blocking gate; production smoke validates
+the deployed user path and does not replace ranking-quality evidence.
 
 ## Canonical Annotation Env
 
@@ -85,11 +102,14 @@ product decision to make users wait longer before fallback.
 Run these before release signoff:
 
 ```bash
-PATH=/opt/homebrew/bin:$PATH npm run generate-search-artifacts
+PATH=/opt/homebrew/bin:$PATH npm run generate:release-artifacts
+git diff --exit-code -- data/embeddings.json data/search-graph.json
 PATH=/opt/homebrew/bin:$PATH npm run type-check
 PATH=/opt/homebrew/bin:$PATH npm run lint
-PATH=/opt/homebrew/bin:$PATH npm test -- --runInBand
+PATH=/opt/homebrew/bin:$PATH npm test -- --runInBand --no-cache
+PATH=/opt/homebrew/bin:$PATH npm run test:stability
 PATH=/opt/homebrew/bin:$PATH npm run test:search-quality
+PATH=/opt/homebrew/bin:$PATH npm run build
 ```
 
 Expected artifact generation line:

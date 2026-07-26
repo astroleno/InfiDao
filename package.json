@@ -24,6 +24,7 @@
     "generate-search-artifacts": "node scripts/generate-search-artifacts.mjs",
     "compare-search-embeddings": "tsx scripts/compare-search-embeddings.ts",
     "generate-search-graph": "tsx scripts/generate-search-graph.ts",
+    "generate:release-artifacts": "npm run generate-search-artifacts && npm run generate-search-graph",
     "smoke:release": "node scripts/release-smoke.mjs",
     "smoke:telemetry": "node scripts/annotation-telemetry-smoke.mjs"
   },
