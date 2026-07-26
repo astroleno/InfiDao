@@ -11,6 +11,9 @@
     "scripts/run-search-50-iteration.ts",
     "scripts/run-search-50-iteration-suite.ts",
     "scripts/search-holdout/contract.ts",
+    "scripts/search-holdout/evaluator.ts",
+    "scripts/search-holdout/runtime.ts",
+    "scripts/run-search-holdout.ts",
     "scripts/validate-search-holdout.ts"
   ],
   "exclude": []

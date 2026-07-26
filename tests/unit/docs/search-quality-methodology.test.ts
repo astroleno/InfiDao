@@ -10,7 +10,9 @@ describe("search quality methodology", () => {
 
     expect(methodology).toContain("Frozen search commit");
     expect(methodology).toContain("81c6365766a7cf8c578cef6b060c5e43345f0d35");
+    expect(methodology).toContain("71fa97e7da563abc1d3365292132d36a75e6682b");
     expect(methodology).toContain("Graph artifact signature");
+    expect(methodology).toContain("bf0ec2ae2353cadba91488eb6359a77c78acf3d0ca1122154871c930ee2098d0");
     expect(methodology).toContain(
       "f9f213d19019b75e36fcc653176ab297ebedbb3336eb198a2aab7f5ed22531b3",
     );

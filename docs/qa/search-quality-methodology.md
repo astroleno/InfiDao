@@ -25,9 +25,6 @@ The independent reviewer creates 30 cases after the ledger below is frozen:
 - acceptable passage IDs are established by human semantic annotation or an
   independent source mapping, without inspecting the frozen system's Top 3
   results;
-- the fixture must pass `npm run validate:search-holdout -- --cases <fixture>`
-  before the evaluator loads the search index; the validator checks only the
-  fixture, corpus identities, and visible-query inventory;
 - no changes to `src/lib/search/**`, `data/embeddings.json`, or
   `data/search-graph.json` are allowed before the one-shot v1 evaluation.
 
@@ -44,5 +41,13 @@ search-tuning cycle creates a new v2 holdout instead of changing v1.
 | Graph artifact signature | `sha256:475107bebaad8544cde442d6908ec6ea847e63f22571dab2f844ba703d8452b3` |
 | Graph file SHA-256 | `f9f213d19019b75e36fcc653176ab297ebedbb3336eb198a2aab7f5ed22531b3` |
 | Embeddings file SHA-256 | `e6518fa9a221473a72ba4fda17dc838ed98443190788778ef396c0b4199ad3ee` |
-| Protocol commit | This methodology and the tuned-paraphrase evidence reclassification are committed before holdout creation; its SHA is supplied with the frozen search commit to the independent reviewer |
+| Protocol content commit | `71fa97e7da563abc1d3365292132d36a75e6682b` |
+| Frozen protocol rules SHA-256 | `bf0ec2ae2353cadba91488eb6359a77c78acf3d0ca1122154871c930ee2098d0` |
 | Holdout v1 status | Awaiting an independent reviewer; no v1 cases or results have been created |
+
+## Sealed evaluation harness
+
+Before the evaluator loads the search index, the fixture must pass
+`npm run validate:search-holdout -- --cases <fixture>`. The validator checks
+only the fixture, corpus identities, and visible-query inventory; it does not
+load or query the frozen search system.

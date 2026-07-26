@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { loadCorpus } from "@/lib/data/corpus";
 import {
   HoldoutFixtureContractError,
@@ -25,7 +26,7 @@ function optionValue(name: string): string | null {
   return index >= 0 ? process.argv[index + 1] ?? null : null;
 }
 
-function readVisibleQueries(filePath: string): string[] {
+export function readVisibleQueries(filePath: string): string[] {
   const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as unknown;
   const entries = Array.isArray(parsed)
     ? parsed
@@ -46,6 +47,19 @@ function readVisibleQueries(filePath: string): string[] {
   });
 }
 
+export async function validateSearchHoldoutFixtureFile(casesPath: string) {
+  const fixtureContents = fs.readFileSync(casesPath, "utf8");
+  const visibleQueries = VISIBLE_QUERY_PATHS.flatMap((relativePath) =>
+    readVisibleQueries(path.join(process.cwd(), relativePath)),
+  );
+  const corpus = await loadCorpus();
+  return validateSearchHoldoutFixture(fixtureContents, {
+    validPassageIds: new Set(corpus.map((passage) => passage.id)),
+    validSources: new Set(corpus.map((passage) => passage.source)),
+    visibleQueries,
+  });
+}
+
 async function main(): Promise<void> {
   const casesArgument = optionValue("cases");
   if (!casesArgument) {
@@ -53,17 +67,7 @@ async function main(): Promise<void> {
   }
 
   const casesPath = path.resolve(process.cwd(), casesArgument);
-  const fixtureContents = fs.readFileSync(casesPath, "utf8");
-  const visibleQueries = VISIBLE_QUERY_PATHS.flatMap((relativePath) =>
-    readVisibleQueries(path.join(process.cwd(), relativePath)),
-  );
-  const corpus = await loadCorpus();
-  const validation = validateSearchHoldoutFixture(fixtureContents, {
-    validPassageIds: new Set(corpus.map((passage) => passage.id)),
-    validSources: new Set(corpus.map((passage) => passage.source)),
-    visibleQueries,
-  });
-
+  const validation = await validateSearchHoldoutFixtureFile(casesPath);
   console.log(
     JSON.stringify(
       {
@@ -77,11 +81,13 @@ async function main(): Promise<void> {
   );
 }
 
-main().catch((error) => {
-  if (error instanceof HoldoutFixtureContractError) {
-    console.error(error.message);
-  } else {
-    console.error(error);
-  }
-  process.exitCode = 1;
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    if (error instanceof HoldoutFixtureContractError) {
+      console.error(error.message);
+    } else {
+      console.error(error);
+    }
+    process.exitCode = 1;
+  });
+}
