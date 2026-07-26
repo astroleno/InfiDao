@@ -16,6 +16,8 @@
     "format:check": "prettier --check .",
     "test": "jest",
     "test:search-quality": "tsx scripts/compare-search-embeddings.ts --gate --check-artifact",
+    "validate:search-holdout": "tsx scripts/validate-search-holdout.ts",
+    "evaluate:search-holdout": "tsx scripts/run-search-holdout.ts",
     "test:stability": "jest --runInBand --no-cache tests/unit/annotation/service.test.ts tests/integration/api/annotate.route.test.ts tests/unit/search/graph-store.test.ts tests/unit/search/graph-service.test.ts tests/unit/search/diagnostics.test.ts tests/unit/search/search-graph-generator.test.ts",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",

@@ -82,12 +82,26 @@ now committed without changing its historical measurements:
   an untainted reviewer authors and evaluates that holdout, and Task 7 is run
   from a clean worktree on the integrated release commit.
 
+## Integration preflight
+
+`f261607bf83560e746507e38d7dd93dffc5b8edb` is the dedicated integration
+checkpoint with parents `906cde4` and `de369e3`. The search freeze comparison
+against `81c6365` is empty. Type-check, lint, 12 UI suites / 48 tests,
+documentation contracts, and the Next.js 15.5.18 production build passed.
+
+This is not Task 7 and does not sign a Release Candidate. The independent
+fixture and its one-shot evidence remain absent. The two files under
+`docs/simon-rogers-main-screen-plan/` are tracked upstream content inherited
+through `906cde4`; the ignore rule applies only to additional untracked local
+material in that path.
+
 ## Protected files outside the release commit
 
 The following current paths must remain untracked or otherwise excluded from release commits unless separately approved:
 
 - `.codex-screens/`
-- `docs/simon-rogers-main-screen-plan/`
+- additional untracked material under `docs/simon-rogers-main-screen-plan/`
+  (the two tracked upstream content files remain in the integrated candidate)
 - `ref/rysxguji/`
 - `docs/qa/a2a-agentic-framework-100-review-package.zip`
 - `docs/qa/a2a-agentic-framework-100-review-package/`

@@ -1,4 +1,4 @@
-import { useEffect, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, type KeyboardEvent } from "react";
 import {
   FRICTION_DIRECTIONS,
   type FrictionDirection,
@@ -15,6 +15,7 @@ interface QueryGateProps {
 
 interface ReadingGateProps {
   mode: "reading";
+  gateId: string;
   targetLabel: string;
   passageText: string;
   resonanceLabel: string;
@@ -27,20 +28,49 @@ interface ReadingGateProps {
 type DesirableFrictionGateProps = QueryGateProps | ReadingGateProps;
 
 export function DesirableFrictionGate(props: DesirableFrictionGateProps) {
+  const onContinueRef = useRef(props.onContinue);
+  const onSkipRef = useRef(props.onSkip);
+  const completedRef = useRef(false);
+  const gateKey = props.mode === "reading" ? `reading:${props.gateId}` : `query:${props.query}`;
+  const readingGateId = props.mode === "reading" ? props.gateId : null;
+  const readingDwellMs = props.mode === "reading" ? props.dwellMs : undefined;
+  const readingReducedMotion = props.mode === "reading" ? props.reducedMotion : false;
+
+  onContinueRef.current = props.onContinue;
+  onSkipRef.current = props.onSkip;
+
   useEffect(() => {
-    if (props.mode !== "reading" || props.reducedMotion) {
+    completedRef.current = false;
+  }, [gateKey]);
+
+  const complete = useCallback((action: "continue" | "skip") => {
+    if (completedRef.current) {
+      return;
+    }
+
+    completedRef.current = true;
+    if (action === "continue") {
+      onContinueRef.current();
+      return;
+    }
+
+    onSkipRef.current();
+  }, []);
+
+  useEffect(() => {
+    if (!readingGateId || readingReducedMotion) {
       return undefined;
     }
 
-    const dwell = Math.min(1200, Math.max(600, props.dwellMs ?? 800));
+    const dwell = Math.min(1200, Math.max(600, readingDwellMs ?? 800));
     const timeout = window.setTimeout(() => {
-      props.onContinue();
+      complete("continue");
     }, dwell);
 
     return () => {
       window.clearTimeout(timeout);
     };
-  }, [props]);
+  }, [complete, readingDwellMs, readingGateId, readingReducedMotion]);
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== "Escape") {
@@ -48,7 +78,7 @@ export function DesirableFrictionGate(props: DesirableFrictionGateProps) {
     }
 
     event.preventDefault();
-    props.onSkip();
+    complete("skip");
   };
 
   if (props.mode === "query") {
@@ -90,7 +120,7 @@ export function DesirableFrictionGate(props: DesirableFrictionGateProps) {
 
           <button
             type="button"
-            onClick={props.onContinue}
+            onClick={() => complete("continue")}
             className="mt-5 inline-flex min-h-11 items-center justify-center border-b border-stone-700 px-2 py-2 text-sm tracking-[0.16em] text-stone-300 transition hover:border-zen hover:text-paper active:-translate-y-px focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
           >
             不选方向，直接入经
@@ -121,14 +151,14 @@ export function DesirableFrictionGate(props: DesirableFrictionGateProps) {
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <button
             type="button"
-            onClick={props.onSkip}
+            onClick={() => complete("skip")}
             className="inline-flex min-h-11 items-center justify-center border border-stone-700 px-5 py-2 text-sm tracking-[0.16em] text-stone-300 transition hover:border-zen hover:text-paper active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
           >
             略过停顿
           </button>
           <button
             type="button"
-            onClick={props.onContinue}
+            onClick={() => complete("continue")}
             className="inline-flex min-h-11 items-center justify-center border border-zen bg-zen px-5 py-2 text-sm tracking-[0.16em] text-ink transition hover:border-paper hover:bg-paper active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-zen focus:ring-offset-2 focus:ring-offset-ink"
           >
             继续入经
