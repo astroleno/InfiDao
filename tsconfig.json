@@ -47,6 +47,8 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/types/**/*.ts",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
     ".next/types/**/*.ts",
     "tailwind.config.ts",
     "postcss.config.js"

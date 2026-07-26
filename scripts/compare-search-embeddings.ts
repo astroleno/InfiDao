@@ -16,13 +16,13 @@ interface ArtifactReport {
   golden: Array<{
     query: string;
     passed: boolean;
-    fullTop1Id?: string;
+    fullTop1Id?: string | undefined;
     fullTop3Ids: string[];
-    vectorTop1Id?: string;
+    vectorTop1Id?: string | undefined;
     vectorTop3Ids: string[];
-    lexicalTop1Id?: string;
+    lexicalTop1Id?: string | undefined;
     lexicalTop3Ids: string[];
-    fusionTop1Id?: string;
+    fusionTop1Id?: string | undefined;
     fusionTop3Ids: string[];
   }>;
   goldenPassCount: number;
@@ -240,7 +240,7 @@ async function main(): Promise<void> {
   const reports: ArtifactReport[] = [await evaluateArtifact("local-v2", localArtifactPath)];
   const artifactReproducibility = checkLocalArtifactReproducibility();
   const skipped: string[] = [];
-  const gateFailures = qualityGateFailures(reports[0], artifactReproducibility);
+  const gateFailures = qualityGateFailures(reports[0]!, artifactReproducibility);
 
   if (shouldGenerateRemote) {
     if (generateRemoteArtifact()) {
