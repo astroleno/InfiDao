@@ -57,8 +57,8 @@ describe("POST /api/search", () => {
       success: true,
       data: expect.arrayContaining([
         expect.objectContaining({
-          id: "daxue-2-2",
-          source: "大学",
+          id: "rysxguji-mengzi-2-12",
+          source: "孟子",
           chapter: expect.any(String),
           section: expect.any(Number),
           text: expect.any(String),

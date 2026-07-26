@@ -1,4 +1,6 @@
+import crypto from "node:crypto";
 import type {
+  AnnotationAgentTrace,
   AnnotateRequest,
   AnnotationLink,
   AnnotationResult,
@@ -27,6 +29,12 @@ import {
   loadSearchGraphServiceForIndex,
   MAX_GRAPH_LINKS_PER_ANNOTATION,
 } from "@/lib/search/graph/service";
+import { routeA2AEncounter } from "@/lib/a2a/router";
+import { growthService } from "@/lib/growth/service";
+import type { GrowthEvent } from "@/lib/growth/types";
+import { extractUserStateSnapshot } from "@/lib/user-state/extractor";
+import { userStateSessionStore } from "@/lib/user-state/session-store";
+import { resolveWorkAgentByPassageId } from "@/lib/work-agents/registry";
 
 const STYLE_OPENERS: Record<AnnotationStyle, string> = {
   academic: "从义理结构看",
@@ -100,6 +108,10 @@ function compactText(text: string, maxLength: number): string {
   return normalized.length > maxLength ? `${normalized.slice(0, maxLength)}...` : normalized;
 }
 
+function stableHash(value: unknown): string {
+  return crypto.createHash("sha256").update(JSON.stringify(value), "utf8").digest("hex");
+}
+
 function formatPassageLabel(passage: PassageRecord): string {
   return `${passage.source} ${passage.chapter} 第 ${passage.section} 节`;
 }
@@ -122,14 +134,18 @@ function buildFallbackAnnotationCopy(
   passageText: string,
   style: AnnotationStyle,
   sourceLabel: string,
+  agentTrace?: AnnotationAgentTrace,
 ): Pick<AnnotationResult, "sixToMe" | "meToSix"> {
   const opener = STYLE_OPENERS[style];
   const theme = selectFallbackTheme(query, passageText);
   const quotedPassage = compactText(passageText, 42);
+  const growthSuffix = agentTrace
+    ? ` 这次关系枝条偏向“${agentTrace.branchLabel}”，可把它当作系统读到的倾向，而不是定论。`
+    : "";
 
   return {
-    sixToMe: `${opener}，${sourceLabel} 把“${query}”拉回${theme.center}。原文「${quotedPassage}」提醒你：${theme.action}。`,
-    meToSix: `从“${query}”反观这段经典，${theme.reframe}。你不是在寻找一句固定结论，而是在让「${compactText(passageText, 30)}」进入当下处境，成为下一步行动的校准。`,
+    sixToMe: `${opener}，${sourceLabel} 把“${query}”拉回${theme.center}。原文「${quotedPassage}」提醒你：${theme.action}。${growthSuffix}`,
+    meToSix: `从“${query}”反观这段经典，${theme.reframe}。你不是在寻找一句固定结论，而是在让「${compactText(passageText, 30)}」进入当下处境，成为下一步行动的校准。${growthSuffix}`,
   };
 }
 
@@ -225,6 +241,84 @@ function normalizeVisitedPassageIds(passageId: string, visitedPassageIds: string
   });
 }
 
+interface AnnotationAgentContext {
+  agentTrace?: AnnotationAgentTrace;
+  growthContextHash?: string;
+}
+
+function buildAnnotationSessionId(query: string, visitedPassageIds: string[]): string {
+  const rootPassageId = visitedPassageIds[0] ?? "root";
+  return `annotation-session:${stableHash({
+    query: query.trim().replace(/\s+/gu, " "),
+    rootPassageId,
+  }).slice(0, 18)}`;
+}
+
+function buildAgentTrace(event: GrowthEvent): AnnotationAgentTrace {
+  return {
+    workAgentId: event.workAgentId,
+    relationTheme: event.relationTheme,
+    branchLabel: event.branchLabel,
+    growthSummary: event.summary,
+  };
+}
+
+function buildGrowthContextHash(event: GrowthEvent): string {
+  return stableHash({
+    workAgentId: event.workAgentId,
+    relationTheme: event.relationTheme,
+    branchLabel: event.branchLabel,
+    summary: event.summary,
+  }).slice(0, 18);
+}
+
+async function buildAnnotationAgentContext(input: {
+  query: string;
+  passageId: string;
+  passageText: string;
+  visitedPassageIds: string[];
+}): Promise<AnnotationAgentContext> {
+  try {
+    const createdAt = new Date().toISOString();
+    const sessionId = buildAnnotationSessionId(input.query, input.visitedPassageIds);
+    const userState = extractUserStateSnapshot({
+      utterance: input.query,
+      sessionId,
+      contextText: input.passageText,
+      createdAt,
+    });
+
+    userStateSessionStore.put(userState);
+
+    const workAgent = await resolveWorkAgentByPassageId(input.passageId, {
+      passageText: input.passageText,
+    });
+
+    if (!workAgent) {
+      return {};
+    }
+
+    const encounter = routeA2AEncounter({
+      userState,
+      workAgent,
+      createdAt,
+    });
+
+    if (!encounter.enabled) {
+      return {};
+    }
+
+    growthService.append(userState.sessionId, encounter.growthEvent);
+
+    return {
+      agentTrace: buildAgentTrace(encounter.growthEvent),
+      growthContextHash: buildGrowthContextHash(encounter.growthEvent),
+    };
+  } catch {
+    return {};
+  }
+}
+
 export async function createAnnotation({
   query,
   passageId,
@@ -241,6 +335,12 @@ export async function createAnnotation({
   const normalizedVisitedPassageIds = normalizeVisitedPassageIds(passageId, visitedPassageIds);
   const explorationDepth = normalizedVisitedPassageIds.length;
   const mode = resolveAnnotationLlmMode();
+  const agentContext = await buildAnnotationAgentContext({
+    query: trimmedQuery,
+    passageId,
+    passageText: trimmedPassageText,
+    visitedPassageIds: normalizedVisitedPassageIds,
+  });
   const cacheKey = buildAnnotationCacheKey({
     query: trimmedQuery,
     passageId,
@@ -248,6 +348,9 @@ export async function createAnnotation({
     style,
     mode,
     visitedPassageIds: normalizedVisitedPassageIds,
+    ...(agentContext.growthContextHash !== undefined
+      ? { growthContextHash: agentContext.growthContextHash }
+      : {}),
   });
   const cachedAnnotation = getCachedAnnotation(cacheKey);
 
@@ -274,6 +377,7 @@ export async function createAnnotation({
     return {
       ...cachedAnnotation,
       links,
+      ...(agentContext.agentTrace !== undefined ? { agentTrace: agentContext.agentTrace } : {}),
     };
   }
 
@@ -282,6 +386,7 @@ export async function createAnnotation({
     trimmedPassageText,
     style,
     sourceLabel,
+    agentContext.agentTrace,
   );
   const requestPlan = resolveAnnotationLlmRequestPlan(mode);
 
@@ -301,6 +406,15 @@ export async function createAnnotation({
         passageLabel: sourceLabel,
         passageText: trimmedPassageText,
         style,
+        ...(agentContext.agentTrace !== undefined
+          ? {
+              growthContext: {
+                relationTheme: agentContext.agentTrace.relationTheme,
+                branchLabel: agentContext.agentTrace.branchLabel,
+                growthSummary: agentContext.agentTrace.growthSummary,
+              },
+            }
+          : {}),
       },
       mode,
     );
@@ -341,6 +455,7 @@ export async function createAnnotation({
       trimmedPassageText,
       normalizedVisitedPassageIds,
     ),
+    ...(agentContext.agentTrace !== undefined ? { agentTrace: agentContext.agentTrace } : {}),
   };
 
   if (cacheable) {

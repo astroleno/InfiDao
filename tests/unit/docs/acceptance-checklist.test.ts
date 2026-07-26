@@ -15,7 +15,13 @@ describe("reboot MVP acceptance checklist", () => {
     expect(checklist).toContain("验收命令");
     expect(checklist).toContain("docs/qa/reboot-mvp-release-readiness.md");
     expect(checklist).toContain("npm run smoke:release");
+    expect(checklist).toContain("npm run test:search-quality");
     expect(checklist).toContain("homepage static JavaScript assets");
+    expect(checklist).toContain("Golden search-quality gate");
+    expect(checklist).toContain("search response shape");
+    expect(checklist).toContain("尚未最终签署");
+    expect(checklist).toContain("冻结 holdout v1");
+    expect(checklist).toContain("干净的工作树");
   });
 
   it("spells out the exact reboot health smoke contract", () => {

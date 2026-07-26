@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "corpusVersion": "sixclassics-sample-v1",
+  "corpusVersion": "guji-core-v1",
   "conceptSeedVersion": "search-concepts-v1",
   "generatedAt": "2026-05-13T00:00:00.000Z",
   "sourceManifestPath": "data/corpus-manifest.json",
@@ -120,5 +120,5 @@
       }
     }
   ],
-  "artifactSignature": "sha256:39bc4a44ff02db2c1307100be2b0345c4d32bdb0eb00eb8aaab6c0b071e039a3"
+  "artifactSignature": "sha256:3f002e0f97516aaf3bd5450200862545235d72123a9017e2af450f3ac66fabec"
 }

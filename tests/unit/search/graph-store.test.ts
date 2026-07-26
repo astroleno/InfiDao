@@ -1,10 +1,10 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { clearSearchIndexCache, loadSearchIndex } from "@/lib/search/index-store";
 import { clearSearchGraphCache, loadSearchGraphForIndex } from "@/lib/search/graph/store";
 import type { SearchGraphArtifact } from "@/lib/search/graph/types";
 import { attachSearchGraphArtifactSignature } from "@/lib/search/graph/signature";
+import { createSearchIndexFixture } from "../../helpers/search-index.fixture";
 
 const validFixturePath = path.join(process.cwd(), "tests", "fixtures", "search-graph.valid.json");
 
@@ -32,11 +32,10 @@ function resignArtifact(artifact: SearchGraphArtifact): SearchGraphArtifact {
 describe("search graph store", () => {
   afterEach(() => {
     clearSearchGraphCache();
-    clearSearchIndexCache();
   });
 
   it("loads a valid fixture in required mode", async () => {
-    const index = await loadSearchIndex();
+    const index = createSearchIndexFixture();
     const state = await loadSearchGraphForIndex(index, {
       required: true,
       graphPath: validFixturePath,
@@ -51,7 +50,7 @@ describe("search graph store", () => {
   });
 
   it("fails open when the graph file is missing by default", async () => {
-    const index = await loadSearchIndex();
+    const index = createSearchIndexFixture();
     const state = await loadSearchGraphForIndex(index, {
       graphPath: path.join(os.tmpdir(), "missing-search-graph.json"),
     });
@@ -63,7 +62,7 @@ describe("search graph store", () => {
   });
 
   it("throws typed errors in required mode", async () => {
-    const index = await loadSearchIndex();
+    const index = createSearchIndexFixture();
 
     await expect(
       loadSearchGraphForIndex(index, {
@@ -76,7 +75,7 @@ describe("search graph store", () => {
   });
 
   it("fails open on invalid JSON in runtime mode", async () => {
-    const index = await loadSearchIndex();
+    const index = createSearchIndexFixture();
     const graphPath = await writeGraphFixture("{ not json");
     const state = await loadSearchGraphForIndex(index, { graphPath });
 
@@ -87,7 +86,7 @@ describe("search graph store", () => {
   });
 
   it("rejects malformed graph artifacts", async () => {
-    const index = await loadSearchIndex();
+    const index = createSearchIndexFixture();
     const base = await readValidFixture();
 
     const cases: Array<[string, SearchGraphArtifact, string]> = [
@@ -177,7 +176,7 @@ describe("search graph store", () => {
   });
 
   it("rejects invalid confidence before semantic validation", async () => {
-    const index = await loadSearchIndex();
+    const index = createSearchIndexFixture();
     const base = await readValidFixture();
     const graphPath = await writeGraphFixture({
       ...base,
@@ -192,7 +191,7 @@ describe("search graph store", () => {
   });
 
   it("rejects invalid artifact signatures", async () => {
-    const index = await loadSearchIndex();
+    const index = createSearchIndexFixture();
     const base = await readValidFixture();
     const graphPath = await writeGraphFixture({
       ...base,
@@ -207,7 +206,7 @@ describe("search graph store", () => {
   });
 
   it("exposes clearSearchGraphCache for test and dev reload isolation", async () => {
-    const index = await loadSearchIndex();
+    const index = createSearchIndexFixture();
     const base = await readValidFixture();
     const graphPath = await writeGraphFixture(base);
     const first = await loadSearchGraphForIndex(index, { required: true, graphPath });

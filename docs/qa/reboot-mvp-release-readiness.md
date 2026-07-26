@@ -1,10 +1,51 @@
 # Reboot MVP Release Readiness
 
-Scope: release prep for the active reboot MVP path after Phase 6.4.
+Scope: quality/release convergence for the active reboot MVP path.
 
 This document freezes deployment-facing defaults, canonical environment naming, and the final smoke matrix. It does not add new product behavior.
 
-CI gate: `.github/workflows/reboot-mvp-ci.yml` runs artifact generation, type-check, lint, tests, build, and production smoke on pull requests and pushes to `main`.
+## 2026-07-26 Convergence Status
+
+**Decision: blocked; not a current Release Candidate signoff.** The
+2026-04-29 evidence below is historical MVP evidence only. The current search
+implementation is frozen at `81c6365766a7cf8c578cef6b060c5e43345f0d35`; the
+holdout protocol and evidence reclassification are frozen at
+`71fa97e7da563abc1d3365292132d36a75e6682b`.
+
+Before current release signoff, the project still needs:
+
+- an independently authored and one-shot executed frozen holdout v1;
+- integration of the current `origin/main` UI commit (`906cde4`) into the
+  release candidate, followed by clean-worktree verification on that integrated
+  commit;
+- two no-cache full Jest runs, two stability runs, artifact reproduction,
+  build, standalone smoke, and current desktop/mobile manual acceptance;
+- a current telemetry result, or the explicitly documented no-credential
+  deterministic-fallback exception.
+
+Visible golden and tuned-paraphrase regression fixtures protect known behavior;
+they do not substitute for the independent holdout. See
+`docs/qa/search-quality-methodology.md` for the frozen protocol and artifact
+identities.
+
+CI gate: `.github/workflows/reboot-mvp-ci.yml` runs on pull requests and pushes
+to `main` with `SEARCH_EMBEDDING_BACKEND=local`. Its fixed verify order is:
+
+1. `npm ci`
+2. `npm run generate:release-artifacts`
+3. `git diff --exit-code -- data/embeddings.json data/search-graph.json`
+4. `npm run type-check`
+5. `npm run lint`
+6. `npm test -- --runInBand --no-cache`
+7. `npm run test:stability`
+8. `npm run test:search-quality`
+9. `npm run build`
+10. prepare standalone runtime files
+11. `npm run smoke:release`
+
+Both embeddings and graph artifacts must reproduce byte-for-byte before the
+static gates run. Search quality is a blocking gate; production smoke validates
+the deployed user path and does not replace ranking-quality evidence.
 
 ## Canonical Annotation Env
 
@@ -85,16 +126,22 @@ product decision to make users wait longer before fallback.
 Run these before release signoff:
 
 ```bash
-PATH=/opt/homebrew/bin:$PATH npm run generate-search-artifacts
-PATH=/opt/homebrew/bin:$PATH npm run type-check
-PATH=/opt/homebrew/bin:$PATH npm run lint
-PATH=/opt/homebrew/bin:$PATH npm test -- --runInBand
+npm run generate:release-artifacts
+git diff --exit-code -- data/embeddings.json data/search-graph.json
+npm run type-check
+npm run lint
+npm test -- --runInBand --no-cache
+npm test -- --runInBand --no-cache
+npm run test:stability
+npm run test:stability
+npm run test:search-quality
+npm run build
 ```
 
 Expected artifact generation line:
 
 ```text
-Wrote 20 embeddings
+Wrote 11829 embeddings
 ```
 
 ## Telemetry Smoke Command
@@ -128,10 +175,18 @@ The script waits for `/api/health`, then verifies:
 
 - `GET /api/health` -> `200`
 - `GET /` -> `200`, reboot intro rendered, and referenced `/_next/static/*.js` assets return `200`
-- `POST /api/search` -> `200`, non-empty results, top result `lunyu-1-8`
-- `POST /api/annotate` -> `200`, annotation payload with links
+- `POST /api/search` -> `200`, `success: true`, non-empty results, and a valid search response shape (`id`, `source`, `chapter`, `text`, finite `section` and `score`) with no duplicate Top 5 IDs
+- `POST /api/annotate` -> `200`, annotation payload with links for the actual Top 1 result returned by search
 - `GET /api/internal/annotation-telemetry` -> production `404`
 - `GET /api/embed` -> `410 LEGACY_EMBED_DISABLED`
+
+Production smoke verifies that the user path works; it does not freeze ranking to
+one passage ID. The `lunyu-1-8` result was a 2026-04-29 historical baseline
+before the corpus expansion, not the current release contract. The Golden
+search-quality gate (`tests/fixtures/search-golden-queries.json` via
+`npm run test:search-quality`) blocks the ranking contract for `如何面对困境`:
+`rysxguji-lunyu-15-2` and `rysxguji-mengzi-10-20` must both be in the Top 3,
+and the generalized 中庸 passages are banned there.
 
 ## Release Smoke Matrix
 
@@ -151,7 +206,7 @@ Run the matrix against a dev server configured with canonical env first.
 | telemetry quality signals | Run multiple annotation requests across root and linked passages         | Summary includes p50/p95/p99 latency plus fallback breakdown by query hash, exploration depth, and slot.  |
 | production internal route | `NODE_ENV=production`                                                    | `/api/internal/annotation-telemetry` returns `404`.                                                        |
 
-## Browser Smoke Evidence
+## Historical Browser Smoke Evidence (2026-04-29)
 
 2026-04-29 headed browser smoke was rerun against a standalone production server
 at `http://127.0.0.1:3001`.
@@ -169,7 +224,7 @@ at `http://127.0.0.1:3001`.
 - Screenshots were regenerated under ignored `.tmp/browser-smoke/` with
   `desktop-task3-*` and `mobile-task3-*` filenames.
 
-## Release Signoff 2026-04-29
+## Historical Release Evidence (2026-04-29)
 
 Decision: release candidate with one accepted telemetry exception.
 
@@ -219,12 +274,14 @@ curl -sS http://localhost:3001/api/internal/annotation-telemetry
 
 ## Release Decision
 
-Sign off only when:
+Sign off the current convergence candidate only when:
 
-- Full command suite passes.
-- Canonical telemetry smoke has `llm.warnings: []`.
-- `npm run smoke:telemetry` passes against a fresh dev/test server.
-- Legacy telemetry smoke produces migration warnings without secrets.
-- Dev/test telemetry summary stays below alert thresholds: fallback rate <= 15% and p95 annotate latency <= 5000ms, or the release notes explicitly call out the exception.
-- Production internal telemetry route returns `404`.
-- MVP browser path still completes: `search -> annotate -> explore -> back -> reset -> leaf state`.
+- The independently authored frozen holdout meets its recorded threshold, or its
+  failing result remains recorded and the decision is `blocked`.
+- The full clean-worktree command suite passes twice where required.
+- Production internal telemetry route returns `404` and telemetry is either
+  freshly validated with canonical credentials or retains the documented
+  no-credential deterministic-fallback exception without claiming a canonical
+  pass.
+- Desktop and `390px` mobile MVP paths complete:
+  `search -> annotate -> explore -> back -> reset -> leaf state`.

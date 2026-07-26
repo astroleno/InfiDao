@@ -5,6 +5,11 @@ export interface AnnotationLlmInput {
   passageLabel: string;
   passageText: string;
   style: AnnotationStyle;
+  growthContext?: {
+    relationTheme: string;
+    branchLabel: string;
+    growthSummary: string;
+  };
 }
 
 export interface AnnotationLlmOutput {
@@ -321,7 +326,7 @@ export function resolveAnnotationLlmRequestPlan(
 }
 
 function buildPrompt(input: AnnotationLlmInput): string {
-  return [
+  const promptLines = [
     "生成六经注我 JSON，只含 sixToMe、meToSix。",
     "sixToMe: 经典回应当下问题，2-3句，具体不空泛。",
     "meToSix: 当下问题反观经典，2-3句，指出意义如何被改写。",
@@ -330,7 +335,18 @@ function buildPrompt(input: AnnotationLlmInput): string {
     `问:${input.query}`,
     `经:${input.passageLabel}`,
     `文:${input.passageText}`,
-  ].join("\n");
+  ];
+
+  if (input.growthContext) {
+    promptLines.push(
+      `关系倾向:${input.growthContext.relationTheme}`,
+      `关系枝条:${input.growthContext.branchLabel}`,
+      `关系摘要:${input.growthContext.growthSummary}`,
+      "关系倾向只是产品上下文，不是关于用户的事实诊断。",
+    );
+  }
+
+  return promptLines.join("\n");
 }
 
 function coerceMessageContent(content: unknown): string {

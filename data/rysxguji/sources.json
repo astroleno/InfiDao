@@ -1,0 +1,132 @@
+{
+  "version": "rysxguji-sources-v1",
+  "provider": "daizhige",
+  "sources": [
+    {
+      "source": "论语",
+      "slug": "lunyu",
+      "collection": "four_books",
+      "group": "sishu",
+      "url": "https://daizhige.org/儒藏/四书/论语.html",
+      "editionNote": "Daizhige plain text page",
+      "enabled": true
+    },
+    {
+      "source": "孟子",
+      "slug": "mengzi",
+      "collection": "four_books",
+      "group": "sishu",
+      "url": "https://daizhige.org/儒藏/四书/孟子.html",
+      "editionNote": "Daizhige plain text page",
+      "enabled": true
+    },
+    {
+      "source": "大学",
+      "slug": "daxue",
+      "collection": "four_books",
+      "group": "sishu",
+      "url": "https://daizhige.org/儒藏/四书/大学.html",
+      "editionNote": "Daizhige plain text page",
+      "enabled": true
+    },
+    {
+      "source": "中庸",
+      "slug": "zhongyong",
+      "collection": "four_books",
+      "group": "sishu",
+      "url": "https://daizhige.org/儒藏/四书/中庸.html",
+      "editionNote": "Daizhige plain text page",
+      "enabled": true
+    },
+    {
+      "source": "诗经",
+      "slug": "shijing",
+      "collection": "confucian_classics_core",
+      "group": "jing",
+      "url": "https://daizhige.org/儒藏/诗经/诗经.html",
+      "editionNote": "Daizhige core Shijing text",
+      "enabled": true
+    },
+    {
+      "source": "尚书",
+      "slug": "shangshu",
+      "collection": "confucian_classics_core",
+      "group": "jing",
+      "url": "https://daizhige.org/儒藏/尚书/尚书.html",
+      "editionNote": "Daizhige core Shangshu text",
+      "enabled": true
+    },
+    {
+      "source": "周易",
+      "slug": "zhouyi",
+      "collection": "confucian_classics_core",
+      "group": "jing",
+      "url": "https://daizhige.org/易藏/易经/周易.html",
+      "editionNote": "Daizhige Zhouyi text",
+      "enabled": true
+    },
+    {
+      "source": "礼记",
+      "slug": "liji",
+      "collection": "confucian_classics_core",
+      "group": "jing",
+      "url": "https://daizhige.org/儒藏/礼经/礼记.html",
+      "editionNote": "Daizhige Liji text; includes Yueji as the music-related surviving chapter tradition",
+      "enabled": true
+    },
+    {
+      "source": "仪礼",
+      "slug": "yili",
+      "collection": "confucian_classics_core",
+      "group": "jing",
+      "url": "https://daizhige.org/儒藏/礼经/仪礼.html",
+      "editionNote": "Daizhige Yili text",
+      "enabled": true
+    },
+    {
+      "source": "周礼",
+      "slug": "zhouli",
+      "collection": "confucian_classics_core",
+      "group": "jing",
+      "url": "https://daizhige.org/儒藏/礼经/周礼.html",
+      "editionNote": "Daizhige Zhouli text",
+      "enabled": true
+    },
+    {
+      "source": "春秋左传",
+      "slug": "chunqiu-zuozhuan",
+      "collection": "confucian_classics_core",
+      "group": "jing",
+      "url": "https://daizhige.org/儒藏/春秋/春秋左传.html",
+      "editionNote": "Daizhige Chunqiu Zuozhuan text; used as the practical Spring and Autumn corpus source",
+      "enabled": true
+    },
+    {
+      "source": "墨子",
+      "slug": "mozi",
+      "collection": "masters_core",
+      "group": "zhuzi",
+      "url": "https://daizhige.org/子藏/诸子/墨子.html",
+      "editionNote": "Daizhige plain text page",
+      "enabled": true
+    },
+    {
+      "source": "荀子",
+      "slug": "xunzi",
+      "collection": "masters_core",
+      "group": "zhuzi",
+      "url": "https://daizhige.org/子藏/诸子/荀子.html",
+      "editionNote": "Daizhige plain text page",
+      "enabled": true
+    },
+    {
+      "source": "韩非子",
+      "slug": "hanfeizi",
+      "collection": "masters_core",
+      "group": "zhuzi",
+      "url": "https://daizhige.org/子藏/法家/韩非子.html",
+      "editionNote": "Daizhige Legalist category page",
+      "enabled": true
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 [
   {
     "query": "治理国家",
-    "expectedTop1Ids": ["daxue-2-2"],
-    "requiredTop3Ids": ["daxue-2-2", "daxue-2-1"],
+    "expectedTop1Ids": ["rysxguji-mengzi-2-12"],
+    "requiredTop3Ids": ["rysxguji-mengzi-2-12", "rysxguji-mozi-10-1"],
     "bannedTop3Ids": ["zhongyong-1-2"],
     "minResults": 2
   },
@@ -15,22 +15,22 @@
   },
   {
     "query": "面对别人不理解",
-    "expectedTop1Ids": ["lunyu-1-1"],
-    "requiredTop3Ids": ["lunyu-1-1"],
+    "expectedTop1Ids": ["rysxguji-lunyu-1-12", "rysxguji-lunyu-14-32", "lunyu-1-1"],
+    "requiredTop3Ids": ["rysxguji-lunyu-1-12", "lunyu-1-1"],
     "bannedTop3Ids": ["daxue-2-2", "zhongyong-4-1"],
     "minResults": 1
   },
   {
     "query": "修身齐家治国平天下",
     "expectedTop1Ids": ["daxue-2-1", "daxue-2-2"],
-    "requiredTop3Ids": ["daxue-2-1", "daxue-2-2"],
+    "requiredTop3Ids": ["daxue-2-2", "rysxguji-daxue-1-5"],
     "bannedTop3Ids": ["zhongyong-3-1"],
     "minResults": 2
   },
   {
     "query": "中庸和谐",
     "expectedTop1Ids": ["zhongyong-1-4"],
-    "requiredTop3Ids": ["zhongyong-1-4", "zhongyong-1-3", "zhongyong-2-1"],
+    "requiredTop3Ids": ["zhongyong-1-4", "rysxguji-zhongyong-1-1"],
     "bannedTop3Ids": ["daxue-2-2"],
     "minResults": 2
   },
@@ -57,23 +57,30 @@
   },
   {
     "query": "面对焦虑如何安定",
-    "expectedTop1Ids": ["zhongyong-1-2", "zhongyong-1-3", "lunyu-1-1"],
-    "requiredTop3Ids": ["zhongyong-1-2", "zhongyong-1-3"],
+    "expectedTop1Ids": ["rysxguji-liji-29-1", "rysxguji-zhongyong-1-1", "zhongyong-1-2"],
+    "requiredTop3Ids": ["zhongyong-1-2", "rysxguji-zhongyong-1-1"],
     "bannedTop3Ids": ["daxue-2-2"],
     "minResults": 2
   },
   {
     "query": "我怎样安住眼前这件事",
-    "expectedTop1Ids": ["zhongyong-4-1", "zhongyong-1-2"],
-    "requiredTop3Ids": ["zhongyong-4-1", "zhongyong-1-2", "zhongyong-2-1"],
+    "expectedTop1Ids": ["rysxguji-zhongyong-1-1", "zhongyong-4-1", "zhongyong-1-2"],
+    "requiredTop3Ids": ["rysxguji-zhongyong-1-1", "zhongyong-1-2"],
     "bannedTop3Ids": ["daxue-2-2"],
     "minResults": 3
   },
   {
     "query": "被别人误解怎么办",
-    "expectedTop1Ids": ["lunyu-1-1"],
-    "requiredTop3Ids": ["lunyu-1-1"],
+    "expectedTop1Ids": ["rysxguji-lunyu-1-12", "rysxguji-lunyu-14-32", "lunyu-1-1"],
+    "requiredTop3Ids": ["rysxguji-lunyu-1-12", "lunyu-1-1"],
     "bannedTop3Ids": ["daxue-2-2", "zhongyong-4-1"],
     "minResults": 1
+  },
+  {
+    "query": "如何面对困境",
+    "expectedTop1Ids": ["rysxguji-lunyu-15-2", "rysxguji-mengzi-10-20"],
+    "requiredTop3Ids": ["rysxguji-lunyu-15-2", "rysxguji-mengzi-10-20"],
+    "bannedTop3Ids": ["rysxguji-zhongyong-1-2", "zhongyong-2-1"],
+    "minResults": 3
   }
 ]

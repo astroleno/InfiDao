@@ -1,0 +1,1431 @@
+{
+  "generatedAt": "2026-06-11T01:32:50.611Z",
+  "total": 30,
+  "passed": 5,
+  "casesPath": "tests/fixtures/search-tuned-paraphrase-regression-cases.json",
+  "outputs": [
+    {
+      "index": 1,
+      "category": "tuned-regression",
+      "query": "不要把人当成机器零件",
+      "passed": false,
+      "note": "现代转述应泛化到君子不器。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-2-9"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-6-1",
+          "rysxguji-lunyu-6-2",
+          "rysxguji-lunyu-6-18"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-223-7",
+          "rysxguji-chunqiu-zuozhuan-245-9",
+          "rysxguji-liji-30-39"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 2,
+      "category": "tuned-regression",
+      "query": "话先别急着讲，行动跟上",
+      "passed": false,
+      "note": "行动先于言语应泛化到先行其言。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-2-10"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-51-8",
+          "rysxguji-zhouyi-51-10",
+          "rysxguji-lunyu-3-16"
+        ],
+        "lexicalTop3Ids": [],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 3,
+      "category": "tuned-regression",
+      "query": "明明知道该做却躲开",
+      "passed": false,
+      "note": "知道该做却不做应泛化到见义不为。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-2-18"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-49-9",
+          "lunyu-1-9",
+          "rysxguji-lunyu-3-8"
+        ],
+        "lexicalTop3Ids": [
+          "daxue-1-1",
+          "daxue-2-1",
+          "rysxguji-chunqiu-zuozhuan-117-9"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 4,
+      "category": "tuned-regression",
+      "query": "外表和内容要配得上",
+      "passed": false,
+      "note": "形式内容兼备应泛化到文质彬彬。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-6-16"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-18-10",
+          "rysxguji-zhouyi-18-11",
+          "rysxguji-zhouyi-19-11"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-199-8",
+          "rysxguji-hanfeizi-35-1",
+          "rysxguji-mozi-12-10"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 5,
+      "category": "tuned-regression",
+      "query": "清苦日子里还能安然自得",
+      "passed": false,
+      "note": "清苦自得应泛化到颜回或贫而乐。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-6-11",
+          "rysxguji-mengzi-7-26",
+          "lunyu-1-10"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-12-2",
+          "rysxguji-zhouyi-2-9",
+          "rysxguji-zhouyi-15-13"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-178-22",
+          "rysxguji-chunqiu-zuozhuan-185-3",
+          "rysxguji-daxue-1-2"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 6,
+      "category": "tuned-regression",
+      "query": "聪明人爱流动，仁厚者爱安定",
+      "passed": false,
+      "note": "流动与安定应泛化到知者乐水仁者乐山。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-6-22"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-liji-29-1",
+        "rysxguji-zhongyong-1-1",
+        "zhongyong-1-2"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-liji-29-1",
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "section": 1,
+          "score": 0.6405,
+          "vectorScore": 0,
+          "lexicalScore": 0.7117,
+          "evidenceScore": 5.425,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "中和",
+            "中也",
+            "和也",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发谓之中，发而皆中节谓之和。中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-zhongyong-1-1",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 1,
+          "score": 0.6405,
+          "vectorScore": 0,
+          "lexicalScore": 0.7117,
+          "evidenceScore": 5.425,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "中和",
+            "中也",
+            "和也",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发，谓之中；发而皆中节，谓之和；中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 3,
+          "id": "zhongyong-1-2",
+          "source": "中庸",
+          "chapter": "第一章",
+          "section": 2,
+          "score": 0.5413,
+          "vectorScore": 0,
+          "lexicalScore": 0.6015,
+          "evidenceScore": 2.25,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "喜怒哀乐之未发，谓之中；发而皆中节，谓之和。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-xunzi-18-4",
+          "source": "荀子",
+          "chapter": "第18章 天论篇第十七",
+          "section": 4,
+          "score": 0.4539,
+          "vectorScore": 0,
+          "lexicalScore": 0.5043,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天职既立，天功既成，形具而神生，好恶喜怒哀乐臧焉，夫是之谓天情。耳目鼻口形能各有接而不相能也，夫是之谓天官。心居中虚，以治五官，夫是之谓天君。财非其类以养其类，夫是之谓天养。顺其类者谓之福，逆其类者谓之祸，夫是之谓天政。暗其天君，乱其天官，弃其天养，逆其天政，背其天情，以丧天功，夫是之谓大凶。圣人清其天君，正其天官，备其天养，顺其天政，养其天情，以全其天功。如是，则知其所为，知其所不为矣；则天地官而万物役矣。其行曲治，其养曲适，其生不伤，夫是之谓知天。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-xunzi-1-7",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "section": 7,
+          "score": 0.437,
+          "vectorScore": 0,
+          "lexicalScore": 0.4841,
+          "evidenceScore": 2.15,
+          "matchedTerms": [
+            "中和",
+            "和也"
+          ],
+          "text": "学恶乎始？恶乎终？曰：其数则始乎诵经，终乎读礼；其义则始乎为士，终乎为圣人。真积力久则入。学至乎没而后止也。故学数有终，若其义则不可须臾舍也。为之人也，舍之禽兽也。故书者、政事之纪也；诗者、中声之所止也；礼者、法之大兮，类之纲纪也。故学至乎礼而止矣。夫是之谓道德之极。礼之敬文也，乐之中和也，诗书之博也，春秋之微也，在天地之间者毕矣。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-liji-33-1",
+          "rysxguji-chunqiu-zuozhuan-3-3",
+          "rysxguji-xunzi-4-1"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "anxiety-stability"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "知止",
+          "定静安虑得",
+          "喜怒哀乐",
+          "未发",
+          "中和",
+          "不愠",
+          "中也",
+          "和也"
+        ],
+        "trustedMatchedTerms": [
+          "喜怒哀乐",
+          "未发",
+          "中和",
+          "中也",
+          "和也",
+          "喜怒",
+          "怒哀",
+          "哀乐",
+          "厚者",
+          "不愠",
+          "知止"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 7,
+      "category": "tuned-regression",
+      "query": "教别人也不会厌烦",
+      "passed": false,
+      "note": "教学不厌烦应泛化到诲人不倦。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-7-2"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-3-20",
+          "rysxguji-lunyu-5-4",
+          "rysxguji-lunyu-5-12"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-hanfeizi-16-2",
+          "rysxguji-hanfeizi-18-6",
+          "rysxguji-hanfeizi-27-3"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 8,
+      "category": "tuned-regression",
+      "query": "能从一个例子推出其它情况",
+      "passed": false,
+      "note": "从例子外推应泛化到举一反三。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-7-7"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-9-17",
+          "rysxguji-zhouyi-3-10",
+          "rysxguji-zhouyi-13-13"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-109-12",
+          "rysxguji-chunqiu-zuozhuan-130-6",
+          "rysxguji-chunqiu-zuozhuan-165-20"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 9,
+      "category": "tuned-regression",
+      "query": "肩上的责任很重，所以要刚强",
+      "passed": false,
+      "note": "重任与刚强应泛化到弘毅任重道远。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-8-5"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-3-14",
+          "rysxguji-lunyu-6-2",
+          "rysxguji-lunyu-14-1"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-241-4",
+          "rysxguji-mengzi-2-32",
+          "rysxguji-xunzi-16-11"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 10,
+      "category": "tuned-regression",
+      "query": "光阴一去不停歇",
+      "passed": false,
+      "note": "光阴不停应泛化到逝者如斯。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-9-13"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-17-1",
+          "rysxguji-zhouyi-17-6",
+          "rysxguji-zhouyi-17-12"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-zhouyi-65-6"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 11,
+      "category": "tuned-regression",
+      "query": "后来的人不一定比我们差",
+      "passed": false,
+      "note": "后辈可能超过前人应泛化到后生可畏。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-9-16"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-9-15",
+          "rysxguji-lunyu-10-14",
+          "rysxguji-shangshu-18-6"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-hanfeizi-12-3",
+          "rysxguji-hanfeizi-38-2",
+          "rysxguji-hanfeizi-45-2"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 12,
+      "category": "tuned-regression",
+      "query": "贫穷威胁都不能改变原则",
+      "passed": false,
+      "note": "贫贱威武不改原则应泛化到大丈夫。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-mengzi-5-5"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-7-28",
+          "rysxguji-lunyu-10-10",
+          "rysxguji-lunyu-10-17"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-7-3",
+          "rysxguji-mengzi-10-20",
+          "rysxguji-mengzi-6-4"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 13,
+      "category": "tuned-regression",
+      "query": "看到别人受苦会心疼",
+      "passed": false,
+      "note": "见人受苦心疼应泛化到恻隐之心。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-mengzi-2-32",
+          "rysxguji-mengzi-9-5"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-3-16",
+          "rysxguji-lunyu-3-20",
+          "rysxguji-lunyu-5-28"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-64-9",
+          "rysxguji-hanfeizi-16-11",
+          "rysxguji-liji-10-40"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 14,
+      "category": "tuned-regression",
+      "query": "制度名分不清，话就讲不通",
+      "passed": false,
+      "note": "名分语言秩序应泛化到名不正言不顺。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-13-4"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-6-2",
+          "rysxguji-shangshu-10-1",
+          "rysxguji-zhouyi-7-12"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-146-5",
+          "rysxguji-chunqiu-zuozhuan-165-5",
+          "rysxguji-chunqiu-zuozhuan-179-20"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 15,
+      "category": "tuned-regression",
+      "query": "想快点成功反而坏事",
+      "passed": false,
+      "note": "急于求成反坏事应泛化到欲速则不达。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-13-15"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-3-8",
+          "rysxguji-lunyu-3-12",
+          "rysxguji-lunyu-3-16"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-xunzi-8-19",
+          "rysxguji-chunqiu-zuozhuan-101-4",
+          "rysxguji-chunqiu-zuozhuan-149-32"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 16,
+      "category": "tuned-regression",
+      "query": "能跟别人协调但不盲从",
+      "passed": false,
+      "note": "协调而不盲从应泛化到和而不同。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-13-23"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-3-12",
+          "rysxguji-lunyu-3-16",
+          "rysxguji-lunyu-3-20"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-hanfeizi-45-23"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 17,
+      "category": "tuned-regression",
+      "query": "做事前先把条件准备好",
+      "passed": false,
+      "note": "准备条件应泛化到工欲善其事必先利其器。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-15-10"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-5-26",
+          "rysxguji-lunyu-8-9",
+          "rysxguji-lunyu-9-15"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-liji-29-21",
+          "rysxguji-zhongyong-1-30"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 18,
+      "category": "tuned-regression",
+      "query": "眼前的小忍耐关系大局",
+      "passed": false,
+      "note": "小忍耐关系大局应泛化到小不忍乱大谋。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-15-23"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "lunyu-1-9",
+          "rysxguji-lunyu-3-10",
+          "rysxguji-lunyu-3-12"
+        ],
+        "lexicalTop3Ids": [],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 19,
+      "category": "tuned-regression",
+      "query": "老师面前也不能退让仁义",
+      "passed": false,
+      "note": "仁义面前不退让应泛化到当仁不让。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-15-31"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "lunyu-1-9",
+          "rysxguji-lunyu-3-16",
+          "rysxguji-lunyu-6-1"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-hanfeizi-56-16",
+          "rysxguji-hanfeizi-90-6",
+          "rysxguji-hanfeizi-91-5"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 20,
+      "category": "tuned-regression",
+      "query": "朋友有帮你变好的也有拖累你的",
+      "passed": false,
+      "note": "朋友有益有损应泛化到益者三友损者三友。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-16-7"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-liji-13-40",
+        "rysxguji-liji-18-92",
+        "rysxguji-liji-13-20"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-liji-13-40",
+          "source": "礼记",
+          "chapter": "第13章 丧服小记",
+          "section": 40,
+          "score": 0.4678,
+          "vectorScore": 0.9993,
+          "lexicalScore": 0.4486,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "朋友"
+          ],
+          "text": "哭朋友者，于门外之右，南面。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-liji-18-92",
+          "source": "礼记",
+          "chapter": "第18章 杂记",
+          "section": 92,
+          "score": 0.4678,
+          "vectorScore": 0.9992,
+          "lexicalScore": 0.4486,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "朋友"
+          ],
+          "text": "相趋也，出宫而退；相揖也，哀次而退；相问也，既封而退；相见也，反哭而退；朋友，虞附而退。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-liji-13-20",
+          "source": "礼记",
+          "chapter": "第13章 丧服小记",
+          "section": 20,
+          "score": 0.4678,
+          "vectorScore": 0.9991,
+          "lexicalScore": 0.4486,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "朋友"
+          ],
+          "text": "大功者，主人之丧。有三年者，则必为之再祭。朋友虞祔而已。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-liji-2-10",
+          "source": "礼记",
+          "chapter": "第2章 檀弓",
+          "section": 10,
+          "score": 0.4677,
+          "vectorScore": 0.9982,
+          "lexicalScore": 0.4486,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "朋友"
+          ],
+          "text": "曾子曰：“朋友之墓，有宿草而不哭焉。”"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-liji-2-128",
+          "source": "礼记",
+          "chapter": "第2章 檀弓",
+          "section": 128,
+          "score": 0.4677,
+          "vectorScore": 0.9977,
+          "lexicalScore": 0.4486,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "朋友"
+          ],
+          "text": "丧公吊之，必有拜者，虽朋友州里舍人可也。吊曰：寡君承事。主人曰临。君遇柩于路，必使人吊之。大夫之丧，庶子不受吊。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-10-22",
+          "rysxguji-lunyu-10-23",
+          "rysxguji-liji-13-40"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-liji-29-22",
+          "rysxguji-liji-31-20",
+          "rysxguji-mengzi-4-10"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-liji-13-40",
+          "rysxguji-liji-18-92",
+          "rysxguji-liji-13-20"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [
+          "朋友"
+        ],
+        "trustedMatchedTerms": [
+          "朋友",
+          "友有"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 21,
+      "category": "tuned-regression",
+      "query": "拿好处前先想合不合义",
+      "passed": false,
+      "note": "取利先想义应泛化到见得思义。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-16-14",
+          "rysxguji-lunyu-19-1"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-3-20",
+          "rysxguji-lunyu-5-28",
+          "rysxguji-lunyu-7-12"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-hanfeizi-13-3",
+          "rysxguji-hanfeizi-18-5",
+          "rysxguji-hanfeizi-35-4"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 22,
+      "category": "tuned-regression",
+      "query": "人的天性差不多，后天习惯拉开距离",
+      "passed": false,
+      "note": "天性相近习惯拉开距离应泛化到性相近习相远。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-17-4"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-3-8",
+          "rysxguji-lunyu-3-11",
+          "rysxguji-lunyu-3-12"
+        ],
+        "lexicalTop3Ids": [
+          "daxue-2-2",
+          "rysxguji-chunqiu-zuozhuan-204-2",
+          "rysxguji-daxue-1-5"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 23,
+      "category": "tuned-regression",
+      "query": "提问题要贴近眼前事情",
+      "passed": false,
+      "note": "近处思考与提问应泛化到切问近思。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-19-4"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-zhongyong-1-1",
+        "zhongyong-1-2",
+        "zhongyong-1-3"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-zhongyong-1-1",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 1,
+          "score": 0.7834,
+          "vectorScore": 0,
+          "lexicalScore": 0.8704,
+          "evidenceScore": 4.7,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "中和",
+            "中庸",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发，谓之中；发而皆中节，谓之和；中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 2,
+          "id": "zhongyong-1-2",
+          "source": "中庸",
+          "chapter": "第一章",
+          "section": 2,
+          "score": 0.7512,
+          "vectorScore": 0,
+          "lexicalScore": 0.8347,
+          "evidenceScore": 3.575,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "中庸",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "喜怒哀乐之未发，谓之中；发而皆中节，谓之和。"
+        },
+        {
+          "rank": 3,
+          "id": "zhongyong-1-3",
+          "source": "中庸",
+          "chapter": "第一章",
+          "section": 3,
+          "score": 0.6138,
+          "vectorScore": 0,
+          "lexicalScore": 0.682,
+          "evidenceScore": 2.45,
+          "matchedTerms": [
+            "中和",
+            "中庸"
+          ],
+          "text": "致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-liji-29-1",
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "section": 1,
+          "score": 0.6034,
+          "vectorScore": 0,
+          "lexicalScore": 0.6704,
+          "evidenceScore": 4.5,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "中和",
+            "中庸",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发谓之中，发而皆中节谓之和。中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-liji-40-1",
+          "source": "礼记",
+          "chapter": "第40章 大学",
+          "section": 1,
+          "score": 0.5706,
+          "vectorScore": 0,
+          "lexicalScore": 0.634,
+          "evidenceScore": 3.275,
+          "matchedTerms": [
+            "知止",
+            "止于至善",
+            "至善",
+            "止于",
+            "于至"
+          ],
+          "text": "大学之道，在明明德，在亲民，在止于至善。知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。物有本末，事有终始，知所先后，则近道矣。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-xunzi-9-1",
+          "rysxguji-lunyu-17-22",
+          "rysxguji-xunzi-4-10"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2",
+          "zhongyong-1-3"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2",
+          "zhongyong-1-3"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "settle-present"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "知止",
+          "止于至善",
+          "定静安虑得",
+          "喜怒哀乐",
+          "未发",
+          "中和",
+          "中庸",
+          "慎独",
+          "诚意",
+          "至善"
+        ],
+        "trustedMatchedTerms": [
+          "喜怒哀乐",
+          "未发",
+          "中和",
+          "中庸",
+          "喜怒",
+          "怒哀",
+          "哀乐",
+          "知止",
+          "止于至善",
+          "至善",
+          "止于",
+          "于至"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 24,
+      "category": "tuned-regression",
+      "query": "爱自己的老人也爱别人家的老人",
+      "passed": false,
+      "note": "由己及人关爱老人应泛化到老吾老以及人之老。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-mengzi-1-8"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-5-25",
+          "rysxguji-lunyu-6-21",
+          "rysxguji-zhouyi-3-7"
+        ],
+        "lexicalTop3Ids": [
+          "lunyu-1-2",
+          "rysxguji-chunqiu-zuozhuan-100-6",
+          "rysxguji-chunqiu-zuozhuan-114-9"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 25,
+      "category": "tuned-regression",
+      "query": "条件再好不如人心齐",
+      "passed": false,
+      "note": "条件不如人心齐应泛化到天时地利人和。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-mengzi-3-1"
+        ]
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-liji-12-27",
+          "lunyu-1-9",
+          "rysxguji-lunyu-3-8"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-79-9",
+          "rysxguji-chunqiu-zuozhuan-94-5",
+          "rysxguji-hanfeizi-66-5"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 26,
+      "category": "ood",
+      "query": "如何安装docker",
+      "passed": true,
+      "note": "开发工具问题应返回 0。",
+      "expectation": {
+        "type": "empty"
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-7-12",
+          "rysxguji-lunyu-7-22",
+          "rysxguji-lunyu-9-4"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-103-6",
+          "rysxguji-chunqiu-zuozhuan-127-26"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 27,
+      "category": "ood",
+      "query": "明天上海天气",
+      "passed": true,
+      "note": "天气问题应返回 0。",
+      "expectation": {
+        "type": "empty"
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-1-1",
+          "rysxguji-zhouyi-1-2",
+          "rysxguji-zhouyi-1-5"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-146-7",
+          "rysxguji-liji-27-15",
+          "rysxguji-liji-28-13"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 28,
+      "category": "ood",
+      "query": "iPhone电池健康",
+      "passed": true,
+      "note": "消费电子问题应返回 0。",
+      "expectation": {
+        "type": "empty"
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-7-12",
+          "rysxguji-lunyu-7-22",
+          "rysxguji-lunyu-9-4"
+        ],
+        "lexicalTop3Ids": [],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 29,
+      "category": "ood",
+      "query": "高铁票退改签",
+      "passed": true,
+      "note": "出行服务问题应返回 0。",
+      "expectation": {
+        "type": "empty"
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-69-4",
+          "lunyu-1-10",
+          "rysxguji-lunyu-3-16"
+        ],
+        "lexicalTop3Ids": [],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 30,
+      "category": "ood",
+      "query": "咖啡豆研磨度",
+      "passed": true,
+      "note": "咖啡冲煮问题应返回 0。",
+      "expectation": {
+        "type": "empty"
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-3-11",
+          "rysxguji-zhouyi-10-15",
+          "rysxguji-zhouyi-17-1"
+        ],
+        "lexicalTop3Ids": [],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    }
+  ]
+}

@@ -5,7 +5,7 @@ describe("loadCorpus", () => {
   it("returns stable reboot passage records with generated ids", async () => {
     const corpus = await loadCorpus();
 
-    expect(corpus).toHaveLength(20);
+    expect(corpus.length).toBeGreaterThan(20);
     expect(corpus[0]).toMatchObject({
       id: "lunyu-1-1",
       source: "论语",
@@ -17,7 +17,7 @@ describe("loadCorpus", () => {
       text: "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？",
     });
     expect(corpus[0]?.textHash).toHaveLength(64);
-    expect(corpus[0]?.corpusVersion).toBe("sixclassics-sample-v1");
+    expect(corpus[0]?.corpusVersion).toBe("guji-core-v1");
 
     expect(corpus.find((passage) => passage.source === "大学")).toMatchObject({
       collection: "six_classics",
@@ -29,6 +29,14 @@ describe("loadCorpus", () => {
       collection: "six_classics",
       workId: "zhongyong",
       workTitle: "中庸",
+    });
+
+    expect(corpus.find((passage) => passage.id.startsWith("rysxguji-mozi-"))).toMatchObject({
+      source: "墨子",
+      collection: "rysxguji_core",
+      workId: "mozi",
+      workTitle: "墨子",
+      corpusVersion: "guji-core-v1",
     });
   });
 

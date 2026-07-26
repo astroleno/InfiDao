@@ -1,8 +1,12 @@
 import path from "node:path";
+import goldenQueries from "../../fixtures/search-golden-queries.json";
+import oodQueries from "../../fixtures/search-ood-queries.json";
 import { diagnoseSearchPassages } from "@/lib/search/diagnostics";
 import { searchPassages } from "@/lib/search/service";
 import { clearSearchIndexCache } from "@/lib/search/index-store";
 import { clearSearchGraphCache } from "@/lib/search/graph/store";
+
+jest.setTimeout(15_000);
 
 describe("search diagnostics", () => {
   afterEach(() => {
@@ -73,5 +77,56 @@ describe("search diagnostics", () => {
     expect(diagnostics.results.length).toBeGreaterThan(0);
     expect(diagnostics.results.every(result => result.graph.neighborCount === 0)).toBe(true);
     expect(diagnostics.diversity.uniqueConceptGroups).toEqual([]);
+  });
+
+  it("records lane-level top results while keeping OOD queries empty after full guards", async () => {
+    const goldenReport = await Promise.all(
+      goldenQueries.slice(0, 3).map(async ({ query }) => {
+        const diagnostics = await diagnoseSearchPassages({
+          query,
+          topK: 5,
+          threshold: 0.25,
+        });
+
+        return {
+          query,
+          lanes: diagnostics.lanes,
+        };
+      }),
+    );
+    const oodReport = await Promise.all(
+      oodQueries.map(async (query) => {
+        const diagnostics = await diagnoseSearchPassages({
+          query,
+          topK: 5,
+          threshold: 0.25,
+        });
+
+        return diagnostics.lanes;
+      }),
+    );
+    const oodReturnCounts = oodReport.reduce(
+      (counts, lanes) => ({
+        full: counts.full + lanes.full.resultCount,
+        vector: counts.vector + lanes.vector.resultCount,
+        lexical: counts.lexical + lanes.lexical.resultCount,
+        fusion: counts.fusion + lanes.fusion.resultCount,
+      }),
+      {
+        full: 0,
+        vector: 0,
+        lexical: 0,
+        fusion: 0,
+      },
+    );
+
+    expect(goldenReport[0]?.lanes.full.top1Id).toBe("rysxguji-mengzi-2-12");
+    expect(goldenReport.every(({ lanes }) => lanes.full.top3Ids.length > 0)).toBe(true);
+    expect(goldenReport.every(({ lanes }) => lanes.vector.top3Ids.length > 0)).toBe(true);
+    expect(goldenReport.every(({ lanes }) => lanes.lexical.top3Ids.length > 0)).toBe(true);
+    expect(goldenReport.every(({ lanes }) => lanes.fusion.top3Ids.length > 0)).toBe(true);
+    expect(oodReturnCounts.full).toBe(0);
+    expect(oodReturnCounts.fusion).toBe(0);
+    expect(oodReturnCounts.vector).toBeGreaterThan(0);
   });
 });

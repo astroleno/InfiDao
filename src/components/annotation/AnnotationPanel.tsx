@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type KeyboardEvent } from "react";
 import type { AnnotationLink, AnnotationResult } from "@/types";
 import { AnnotationLinks } from "./AnnotationLinks";
+import { GrowthTrace } from "@/components/growth/GrowthTrace";
 import { MeToSixView } from "./MeToSixView";
 import { SixToMeView } from "./SixToMeView";
 import { StreamingText } from "./StreamingText";
@@ -317,6 +318,8 @@ export function AnnotationPanel({
               </div>
             ))
           )}
+
+          <GrowthTrace trace={annotation.agentTrace} compact={isMobile} />
 
           {annotation.links.length > 0 && (
             <AnnotationLinks links={annotation.links} onNavigate={onWikiNavigate} />

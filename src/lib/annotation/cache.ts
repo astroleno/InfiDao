@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type { AnnotationResult, AnnotationStyle } from "@/types";
 import type { AnnotationLlmMode } from "@/lib/annotation/llm";
 
@@ -11,6 +12,7 @@ interface AnnotationCacheKeyInput {
   style: AnnotationStyle;
   mode: AnnotationLlmMode;
   visitedPassageIds?: string[];
+  growthContextHash?: string;
 }
 
 export type CachedAnnotationCopy = Pick<
@@ -27,6 +29,10 @@ const annotationCache = new Map<string, AnnotationCacheEntry>();
 
 function normalizeCacheText(value: string): string {
   return value.trim().replace(/\s+/gu, " ");
+}
+
+function hashCacheText(value: string): string {
+  return createHash("sha256").update(normalizeCacheText(value), "utf8").digest("hex").slice(0, 18);
 }
 
 function resolvePositiveIntegerEnv(key: string, fallback: number): number {
@@ -46,7 +52,12 @@ function resolvePositiveIntegerEnv(key: string, fallback: number): number {
 }
 
 function cloneAnnotationCopy(result: CachedAnnotationCopy): CachedAnnotationCopy {
-  return { ...result };
+  return {
+    passageId: result.passageId,
+    passageText: result.passageText,
+    sixToMe: result.sixToMe,
+    meToSix: result.meToSix,
+  };
 }
 
 export function resolveAnnotationCacheTtlMs(): number {
@@ -62,12 +73,13 @@ export function resolveAnnotationCacheMaxEntries(): number {
 
 export function buildAnnotationCacheKey(input: AnnotationCacheKeyInput): string {
   return JSON.stringify({
-    version: 3,
+    version: 5,
     mode: input.mode,
     style: input.style,
     passageId: normalizeCacheText(input.passageId),
-    query: normalizeCacheText(input.query),
-    passageText: normalizeCacheText(input.passageText),
+    queryHash: hashCacheText(input.query),
+    passageTextHash: hashCacheText(input.passageText),
+    growthContextHash: input.growthContextHash ?? "none",
   });
 }
 

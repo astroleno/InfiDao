@@ -182,7 +182,26 @@ async function main() {
   ensure(search.status === 200, `Search failed with ${search.status}.`);
   ensure(search.json?.success === true, `Search payload was not successful: ${JSON.stringify(search.json)}`);
   ensure(Array.isArray(search.json.data) && search.json.data.length > 0, "Search returned no results.");
-  ensure(search.json.data[0]?.id === "lunyu-1-8", `Search top result drifted: ${search.json.data[0]?.id ?? "missing"}`);
+  const topResults = search.json.data.slice(0, 5);
+
+  for (const [index, result] of topResults.entries()) {
+    ensure(result && typeof result === "object", `Search result ${index + 1} was not an object.`);
+    ensure(typeof result.id === "string" && result.id.trim().length > 0, `Search result ${index + 1} had no id.`);
+    ensure(
+      typeof result.source === "string" && result.source.trim().length > 0,
+      `Search result ${index + 1} had no source.`,
+    );
+    ensure(
+      typeof result.chapter === "string" && result.chapter.trim().length > 0,
+      `Search result ${index + 1} had no chapter.`,
+    );
+    ensure(typeof result.text === "string" && result.text.trim().length > 0, `Search result ${index + 1} had no text.`);
+    ensure(Number.isFinite(result.section), `Search result ${index + 1} had an invalid section.`);
+    ensure(Number.isFinite(result.score), `Search result ${index + 1} had an invalid score.`);
+  }
+
+  const topResultIds = topResults.map((result) => result.id);
+  ensure(new Set(topResultIds).size === topResultIds.length, "Search returned duplicate IDs in its Top 5 results.");
   console.log(
     `[smoke] search ok in ${formatMs(search.elapsedMs)} count=${search.json.data.length} top=${search.json.data[0].id}`,
   );

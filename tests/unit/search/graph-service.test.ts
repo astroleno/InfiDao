@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { clearSearchIndexCache, loadSearchIndex } from "@/lib/search/index-store";
 import { attachSearchGraphArtifactSignature } from "@/lib/search/graph/signature";
 import { clearSearchGraphCache } from "@/lib/search/graph/store";
 import {
@@ -14,6 +13,7 @@ import type {
   SearchGraphEdge,
   SearchGraphNode,
 } from "@/lib/search/graph/types";
+import { createSearchIndexFixture } from "../../helpers/search-index.fixture";
 
 const validFixturePath = path.join(process.cwd(), "tests", "fixtures", "search-graph.valid.json");
 
@@ -37,11 +37,10 @@ function resignArtifact(artifact: SearchGraphArtifact): SearchGraphArtifact {
 describe("search graph service", () => {
   afterEach(() => {
     clearSearchGraphCache();
-    clearSearchIndexCache();
   });
 
   it("returns bounded passage relation hints from a valid graph", async () => {
-    const index = await loadSearchIndex();
+    const index = createSearchIndexFixture();
     const service = await loadSearchGraphServiceForIndex(index, {
       required: true,
       graphPath: validFixturePath,
@@ -57,7 +56,7 @@ describe("search graph service", () => {
   });
 
   it("returns empty graph results when the sidecar is disabled", async () => {
-    const index = await loadSearchIndex();
+    const index = createSearchIndexFixture();
     const service = await loadSearchGraphServiceForIndex(index, {
       graphPath: path.join(os.tmpdir(), "missing-search-graph-service.json"),
     });
@@ -68,7 +67,7 @@ describe("search graph service", () => {
   });
 
   it("caps traversal for dense graph neighborhoods", async () => {
-    const index = await loadSearchIndex();
+    const index = createSearchIndexFixture();
     const base = await readValidFixture();
     const conceptNodes: SearchGraphNode[] = Array.from({ length: 30 }, (_, index) => ({
       id: `concept:dense-${index}`,
@@ -107,7 +106,7 @@ describe("search graph service", () => {
   });
 
   it("sanitizes malicious graph text before relation hints reach annotation links", async () => {
-    const index = await loadSearchIndex();
+    const index = createSearchIndexFixture();
     const base = await readValidFixture();
     const graphPath = await writeArtifact(
       resignArtifact({

@@ -16,12 +16,10 @@ const nextConfig = {
       'framer-motion',
       'recharts',
     ],
-    // Enable server components external packages
-    serverComponentsExternalPackages: [
-      '@lancedb/lancedb',
-      '@xenova/transformers',
-      'sharp',
-    ],
+    optimizeCss: true,
+    optimizeServerReact: true,
+    scrollRestoration: true,
+    largePageDataBytes: 128 * 1000, // 128KB
   },
 
   // Images configuration
@@ -206,11 +204,9 @@ const nextConfig = {
   // React strict mode
   reactStrictMode: true,
 
-  // SWC minification
-  swcMinify: true,
-
   // Output configuration
   output: 'standalone',
+  outputFileTracingRoot: __dirname,
 
   // Power headers
   poweredByHeader: false,
@@ -227,14 +223,6 @@ const nextConfig = {
   // Configure page extensions
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
 
-  // Experimental features
-  experimental: {
-    // ...previous experimental config
-    optimizeCss: true,
-    optimizeServerReact: true,
-    scrollRestoration: true,
-    largePageDataBytes: 128 * 1000, // 128KB
-  },
 }
 
 module.exports = bundleAnalyzer(nextConfig)

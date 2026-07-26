@@ -38,10 +38,22 @@ describe("reboot MVP release readiness", () => {
 
     expect(document).toContain(".github/workflows/reboot-mvp-ci.yml");
     expect(document).toContain("npm run smoke:release");
+    expect(document).toContain("npm run test:search-quality");
     expect(document).toContain("cp -R .next/static .next/standalone/.next/static");
-    expect(document).toContain("top result `lunyu-1-8`");
+    expect(document).toContain("search response shape");
+    expect(document).toContain("historical baseline");
+    expect(document).toContain("如何面对困境");
     expect(document).toContain("referenced `/_next/static/*.js` assets return `200`");
     expect(document).toContain("`GET /api/embed` -> `410 LEGACY_EMBED_DISABLED`");
+  });
+
+  it("distinguishes the current convergence blocker from historical evidence", () => {
+    const document = readFileSync(releaseReadinessPath, "utf8");
+
+    expect(document).toContain("Decision: blocked; not a current Release Candidate signoff");
+    expect(document).toContain("independently authored and one-shot executed frozen holdout v1");
+    expect(document).toContain("Historical Release Evidence (2026-04-29)");
+    expect(document).toContain("two no-cache full Jest runs");
   });
 
   it("covers the release smoke matrix requested for Phase 6.5", () => {

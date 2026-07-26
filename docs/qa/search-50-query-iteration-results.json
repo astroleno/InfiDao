@@ -1,0 +1,6487 @@
+{
+  "generatedAt": "2026-06-10T16:32:16.364Z",
+  "total": 50,
+  "passed": 50,
+  "outputs": [
+    {
+      "index": 1,
+      "category": "golden",
+      "query": "治理国家",
+      "passed": true,
+      "note": "治理/仁政相关结果应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-mengzi-2-12",
+          "rysxguji-mozi-10-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-mengzi-2-12",
+        "rysxguji-mozi-25-13",
+        "rysxguji-mozi-10-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-mengzi-2-12",
+          "source": "孟子",
+          "chapter": "第2章 卷二 梁惠王下",
+          "section": 12,
+          "score": 0.6152,
+          "vectorScore": 0,
+          "lexicalScore": 0.6836,
+          "evidenceScore": 3.325,
+          "matchedTerms": [
+            "治国",
+            "治国家",
+            "民悦",
+            "国家",
+            "乘之",
+            "之国"
+          ],
+          "text": "孟子谓齐宣王曰：“为巨室，则必使工师求大木。工师得大木，则王喜，以为能胜其任也。匠人斫而小之，则王怒，以为不胜其任矣。夫人幼而学之，壮而欲行之，王曰：‘姑舍女所学而从我’，则何如？今有璞玉於此，虽万镒，必使玉人彫琢之。至於治国家，则曰：‘姑舍女所学而从我’，则何以异於教玉人彫琢玉哉？”齐人伐燕，胜之。宣王问曰：“或谓寡人勿取，或谓寡人取之。以万乘之国伐万乘之国，五旬而举之，人力不至於此。不取，必有天殃。取之，何如？”孟子对曰：“取之而燕民悦，则取之。古之人有行之者，武王是也。取之而燕民不悦，则勿取。古之人有行之者，文王是也。以万乘之国伐万乘之国，箪食壶浆以迎王师，岂有它哉？避水火也。如水益深，如火益热，亦运而已矣。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-mozi-25-13",
+          "source": "墨子",
+          "chapter": "第25章 明鬼下第三十一",
+          "section": 13,
+          "score": 0.5809,
+          "vectorScore": 0.9899,
+          "lexicalScore": 0.5872,
+          "evidenceScore": 2.225,
+          "matchedTerms": [
+            "治国",
+            "治国家",
+            "国家",
+            "之国"
+          ],
+          "text": "是故子墨子曰：“尝若鬼神之能赏贤如罚暴也。盖本施之国家，施之万民，实所以治国家利万民之道也。若以为不然，是以吏治官府之不絜廉，男女之为无别者，鬼神见之；民之为淫暴寇乱盗贼，以兵刃毒药水火，退无罪人乎道路，夺人车马衣裘以自利者，有鬼神见之。是以吏治官府，不敢不絜廉，见善不敢不赏，见暴不敢不罪。民之为淫暴寇乱盗贼，以兵刃毒药水火，退无罪人乎道路，夺车马衣裘以自利者，由此止。是以莫放幽闲，拟乎鬼神之明显，明有一人畏上诛罚，是以天下治。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-mozi-10-1",
+          "source": "墨子",
+          "chapter": "第10章 尚贤中第九",
+          "section": 1,
+          "score": 0.5285,
+          "vectorScore": 0,
+          "lexicalScore": 0.5872,
+          "evidenceScore": 2.225,
+          "matchedTerms": [
+            "治国",
+            "治国家",
+            "国家",
+            "为政"
+          ],
+          "text": "子墨子言曰：“今王公大人之君人民，主社稷，治国家，欲修保而勿失，故不察尚贤为政之本也。何以知尚贤之为政本也？曰自贵且智者，为政乎愚且贱者，则治；自愚贱者，为政乎贵且智者，则乱。是以知尚贤之为政本也。故古者圣王甚尊尚贤而任使能，不党父兄，不偏贵富，不嬖颜色，贤者举而上之，富而贵之，以为官长；不肖者抑而废之，贫而贱之以为徒役，是以民皆劝其赏，畏其罚，相率而为贤。者以贤者众，而不肖者寡，此谓进贤。然后圣人听其言，迹其行，察其所能，而慎予官，此谓事能。故可使治国者，使治国，可使长官者，使长官，可使治邑者，使治邑。凡所使治国家，官府，邑里，此皆国之贤者也。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-mozi-10-6",
+          "source": "墨子",
+          "chapter": "第10章 尚贤中第九",
+          "section": 6,
+          "score": 0.5285,
+          "vectorScore": 0,
+          "lexicalScore": 0.5872,
+          "evidenceScore": 2.225,
+          "matchedTerms": [
+            "治国",
+            "治国家",
+            "国家",
+            "为政"
+          ],
+          "text": "今王公大人，有一衣裳不能制也，必藉良工；有一牛羊不能杀也，必藉良宰。故当若之二物者，王公大人未知以尚贤使能为政也。逮至其国家之乱，社稷之危，则不知使能以治之，亲戚则使之，无故富贵、面目佼好则使之。夫无故富贵、面目佼好则使之，岂必智且有慧哉！若使之治国家，则此使不智能者治国家也，国家之乱既可得而知已。且夫王公大人有所爱其色而使，其心不察其知而与其爱。是故不能治百人者，使处乎千人之官，不能治千人者，使处乎万人之官。此其故何也？曰处若官者爵高而禄厚，故爱其色而使之焉。夫不能治千人者，使处乎万人之官，则此官什倍也。夫治之法将日至者也，日以治之，日不什修，知以治之，知不什益，而予官什倍，则此治一而弃其九矣。虽日夜相接以治若官，官犹若不治，此其故何也？则王公大人不明乎以尚贤使能为政也。"
+        },
+        {
+          "rank": 5,
+          "id": "lunyu-1-5",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 5,
+          "score": 0.5038,
+          "vectorScore": 0,
+          "lexicalScore": 0.5598,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "道千乘之国",
+            "道千",
+            "千乘",
+            "乘之",
+            "之国"
+          ],
+          "text": "道千乘之国，敬事而信，节用而爱人，使民以时。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouli-5-82",
+          "rysxguji-zhouli-2-108",
+          "rysxguji-mozi-40-7"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-mengzi-2-12",
+          "rysxguji-mozi-10-1",
+          "rysxguji-mozi-10-6"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-mengzi-2-12",
+          "rysxguji-mozi-25-13",
+          "rysxguji-mozi-10-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "governance"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "治国",
+          "治国家",
+          "为政以德",
+          "道千乘之国",
+          "仁政",
+          "保民",
+          "民悦"
+        ],
+        "trustedMatchedTerms": [
+          "治国",
+          "治国家",
+          "民悦",
+          "国家",
+          "乘之",
+          "之国",
+          "为政",
+          "道千乘之国",
+          "道千",
+          "千乘",
+          "为政以德",
+          "政以",
+          "以德",
+          "治理",
+          "仁政"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 2,
+      "category": "golden",
+      "query": "朋友相处要诚信",
+      "passed": true,
+      "note": "朋友、诚信相关结果应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "lunyu-1-4",
+          "lunyu-1-7",
+          "rysxguji-lunyu-1-3"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "lunyu-1-7",
+        "rysxguji-lunyu-1-3",
+        "lunyu-1-4"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "lunyu-1-7",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 7,
+          "score": 0.6584,
+          "vectorScore": 0.865,
+          "lexicalScore": 0.6909,
+          "evidenceScore": 3.225,
+          "matchedTerms": [
+            "与朋友交",
+            "言而有信",
+            "朋友",
+            "与朋",
+            "友交",
+            "言而",
+            "而有",
+            "有信"
+          ],
+          "text": "贤贤易色，事父母能竭其力，事君能致其身，与朋友交言而有信。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-1-3",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 3,
+          "score": 0.6584,
+          "vectorScore": 0.8644,
+          "lexicalScore": 0.6909,
+          "evidenceScore": 3.225,
+          "matchedTerms": [
+            "与朋友交",
+            "言而有信",
+            "朋友",
+            "与朋",
+            "友交",
+            "言而",
+            "而有",
+            "有信"
+          ],
+          "text": "子夏曰：“贤贤易色；事父母，能竭其力，事君，能致其身；与朋友交，言而有信。虽曰未学，吾必谓之学矣。”"
+        },
+        {
+          "rank": 3,
+          "id": "lunyu-1-4",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 4,
+          "score": 0.5258,
+          "vectorScore": 0,
+          "lexicalScore": 0.5842,
+          "evidenceScore": 2.15,
+          "matchedTerms": [
+            "与朋友交",
+            "朋友",
+            "与朋",
+            "友交"
+          ],
+          "text": "吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.5258,
+          "vectorScore": 0,
+          "lexicalScore": 0.5842,
+          "evidenceScore": 2.15,
+          "matchedTerms": [
+            "与朋友交",
+            "朋友",
+            "与朋",
+            "友交"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-1-8",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 8,
+          "score": 0.5113,
+          "vectorScore": 0.8037,
+          "lexicalScore": 0.5159,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "信近于义",
+            "信近",
+            "近于",
+            "于义"
+          ],
+          "text": "有子曰：“信近于义，言可复也。恭近于礼，远耻辱也。因不失其亲，亦可宗也。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "lunyu-1-7",
+          "rysxguji-lunyu-1-3",
+          "rysxguji-xunzi-28-85"
+        ],
+        "lexicalTop3Ids": [
+          "lunyu-1-7",
+          "rysxguji-lunyu-1-3",
+          "lunyu-1-4"
+        ],
+        "fusionTop3Ids": [
+          "lunyu-1-7",
+          "rysxguji-lunyu-1-3",
+          "lunyu-1-4"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "friends-trust"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "与朋友交",
+          "言而有信",
+          "朋友",
+          "信近于义",
+          "忠信"
+        ],
+        "trustedMatchedTerms": [
+          "与朋友交",
+          "言而有信",
+          "朋友",
+          "与朋",
+          "友交",
+          "言而",
+          "而有",
+          "有信",
+          "信近于义",
+          "信近",
+          "近于",
+          "于义",
+          "忠信",
+          "诚信"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 3,
+      "category": "golden",
+      "query": "面对别人不理解",
+      "passed": true,
+      "note": "人不知而不愠相关结果应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-1-12",
+          "rysxguji-lunyu-14-32",
+          "lunyu-1-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-lunyu-1-12",
+        "rysxguji-lunyu-14-32",
+        "lunyu-1-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-1-12",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 12,
+          "score": 0.6971,
+          "vectorScore": 0.8514,
+          "lexicalScore": 0.7391,
+          "evidenceScore": 3.3,
+          "matchedTerms": [
+            "不患人之不己知",
+            "不己知",
+            "不患",
+            "不知",
+            "患人",
+            "人之",
+            "之不",
+            "不己",
+            "己知"
+          ],
+          "text": "子曰：“不患人之不己知，患不知人也。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-14-32",
+          "source": "论语",
+          "chapter": "第14章 宪问第十四",
+          "section": 32,
+          "score": 0.6933,
+          "vectorScore": 0.8522,
+          "lexicalScore": 0.7344,
+          "evidenceScore": 3.3,
+          "matchedTerms": [
+            "不患人之不己知",
+            "不己知",
+            "不患",
+            "患人",
+            "人之",
+            "之不",
+            "不己",
+            "己知"
+          ],
+          "text": "子曰：“不患人之不己知，患其不能也。”"
+        },
+        {
+          "rank": 3,
+          "id": "lunyu-1-1",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 1,
+          "score": 0.5922,
+          "vectorScore": 0.8487,
+          "lexicalScore": 0.6113,
+          "evidenceScore": 2.25,
+          "matchedTerms": [
+            "人不知",
+            "不愠",
+            "人不",
+            "不知"
+          ],
+          "text": "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.5502,
+          "vectorScore": 0,
+          "lexicalScore": 0.6113,
+          "evidenceScore": 2.25,
+          "matchedTerms": [
+            "人不知",
+            "不愠",
+            "人不",
+            "不知"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-15-16",
+          "source": "论语",
+          "chapter": "第15章 卫灵公第十五",
+          "section": 16,
+          "score": 0.539,
+          "vectorScore": 0,
+          "lexicalScore": 0.5989,
+          "evidenceScore": 1.175,
+          "matchedTerms": [
+            "不己知",
+            "人之",
+            "之不",
+            "不己",
+            "己知"
+          ],
+          "text": "子曰：“不曰‘如之何，如之何’者，吾末如之何也已矣！”子曰：“群居终日，言不及义，好行小慧，难矣哉！”子曰：“君子义以为质，礼以行之，孙以出之，信以成之。君子哉！”子曰：“君子病无能焉，不病人之不己知也。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-14-32",
+          "rysxguji-lunyu-1-12",
+          "lunyu-1-1"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-1-12",
+          "rysxguji-lunyu-14-32",
+          "lunyu-1-1"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-1-12",
+          "rysxguji-lunyu-14-32",
+          "lunyu-1-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "misunderstood"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "人不知",
+          "不愠",
+          "不患人之不己知",
+          "不己知",
+          "不患"
+        ],
+        "trustedMatchedTerms": [
+          "不患人之不己知",
+          "不己知",
+          "不患",
+          "不知",
+          "患人",
+          "人之",
+          "之不",
+          "不己",
+          "己知",
+          "人不知",
+          "不愠",
+          "人不"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 4,
+      "category": "golden",
+      "query": "修身齐家治国平天下",
+      "passed": true,
+      "note": "大学修齐治平相关结果应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "daxue-2-2",
+          "rysxguji-daxue-1-5",
+          "daxue-2-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "daxue-2-2",
+        "rysxguji-daxue-1-5",
+        "rysxguji-liji-40-2"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "daxue-2-2",
+          "source": "大学",
+          "chapter": "传二章",
+          "section": 2,
+          "score": 0.6254,
+          "vectorScore": 0.8628,
+          "lexicalScore": 0.6508,
+          "evidenceScore": 4.5,
+          "matchedTerms": [
+            "身修",
+            "家齐",
+            "国治",
+            "天下平",
+            "天下",
+            "下平"
+          ],
+          "text": "身修而后家齐，家齐而后国治，国治而后天下平。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-daxue-1-5",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 5,
+          "score": 0.625,
+          "vectorScore": 0.8551,
+          "lexicalScore": 0.6508,
+          "evidenceScore": 4.5,
+          "matchedTerms": [
+            "身修",
+            "家齐",
+            "国治",
+            "天下平",
+            "天下",
+            "下平"
+          ],
+          "text": "物格而后知至，知至而后意诚，意诚而后心正，心正而后身修，身修而后家齐，家齐而后国治，国治而后天下平。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-liji-40-2",
+          "source": "礼记",
+          "chapter": "第40章 大学",
+          "section": 2,
+          "score": 0.5857,
+          "vectorScore": 0,
+          "lexicalScore": 0.6508,
+          "evidenceScore": 4.5,
+          "matchedTerms": [
+            "身修",
+            "家齐",
+            "国治",
+            "天下平",
+            "天下",
+            "下平"
+          ],
+          "text": "古之欲明明德于天下者，先治其国；欲治其国者，先齐其家；欲齐其家者，先修其身；欲修其身者，先正其心；欲正其心者，先诚其意；欲诚其意者，先致其知；致知在格物。物格而后知至，知至而后意诚，意诚而后心正，心正而后身修，身修而后家齐，家齐而后国治，国治而后天下平。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-mozi-25-13",
+          "source": "墨子",
+          "chapter": "第25章 明鬼下第三十一",
+          "section": 13,
+          "score": 0.5673,
+          "vectorScore": 0.8309,
+          "lexicalScore": 0.5822,
+          "evidenceScore": 2.225,
+          "matchedTerms": [
+            "治国",
+            "治国家",
+            "天下",
+            "国家",
+            "之国"
+          ],
+          "text": "是故子墨子曰：“尝若鬼神之能赏贤如罚暴也。盖本施之国家，施之万民，实所以治国家利万民之道也。若以为不然，是以吏治官府之不絜廉，男女之为无别者，鬼神见之；民之为淫暴寇乱盗贼，以兵刃毒药水火，退无罪人乎道路，夺人车马衣裘以自利者，有鬼神见之。是以吏治官府，不敢不絜廉，见善不敢不赏，见暴不敢不罪。民之为淫暴寇乱盗贼，以兵刃毒药水火，退无罪人乎道路，夺车马衣裘以自利者，由此止。是以莫放幽闲，拟乎鬼神之明显，明有一人畏上诛罚，是以天下治。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-mengzi-2-12",
+          "source": "孟子",
+          "chapter": "第2章 卷二 梁惠王下",
+          "section": 12,
+          "score": 0.5549,
+          "vectorScore": 0,
+          "lexicalScore": 0.6165,
+          "evidenceScore": 3.325,
+          "matchedTerms": [
+            "治国",
+            "治国家",
+            "民悦",
+            "国家",
+            "乘之",
+            "之国"
+          ],
+          "text": "孟子谓齐宣王曰：“为巨室，则必使工师求大木。工师得大木，则王喜，以为能胜其任也。匠人斫而小之，则王怒，以为不胜其任矣。夫人幼而学之，壮而欲行之，王曰：‘姑舍女所学而从我’，则何如？今有璞玉於此，虽万镒，必使玉人彫琢之。至於治国家，则曰：‘姑舍女所学而从我’，则何以异於教玉人彫琢玉哉？”齐人伐燕，胜之。宣王问曰：“或谓寡人勿取，或谓寡人取之。以万乘之国伐万乘之国，五旬而举之，人力不至於此。不取，必有天殃。取之，何如？”孟子对曰：“取之而燕民悦，则取之。古之人有行之者，武王是也。取之而燕民不悦，则勿取。古之人有行之者，文王是也。以万乘之国伐万乘之国，箪食壶浆以迎王师，岂有它哉？避水火也。如水益深，如火益热，亦运而已矣。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-mozi-40-8",
+          "rysxguji-mozi-12-5",
+          "rysxguji-xunzi-12-11"
+        ],
+        "lexicalTop3Ids": [
+          "daxue-2-2",
+          "rysxguji-daxue-1-5",
+          "rysxguji-liji-40-2"
+        ],
+        "fusionTop3Ids": [
+          "daxue-2-2",
+          "rysxguji-daxue-1-5",
+          "rysxguji-liji-40-2"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "cultivate-govern",
+          "governance"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "修身",
+          "齐家",
+          "治国",
+          "平天下",
+          "身修",
+          "家齐",
+          "国治",
+          "天下平",
+          "治国家",
+          "为政以德",
+          "道千乘之国",
+          "仁政",
+          "保民",
+          "民悦"
+        ],
+        "trustedMatchedTerms": [
+          "身修",
+          "家齐",
+          "国治",
+          "天下平",
+          "天下",
+          "下平",
+          "治国",
+          "治国家",
+          "民悦",
+          "国家",
+          "乘之",
+          "之国",
+          "为政",
+          "以德",
+          "道千乘之国",
+          "道千",
+          "千乘",
+          "修身",
+          "家治",
+          "为政以德",
+          "政以"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 5,
+      "category": "golden",
+      "query": "中庸和谐",
+      "passed": true,
+      "note": "中庸/中和相关结果应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "zhongyong-1-4",
+          "rysxguji-zhongyong-1-1",
+          "rysxguji-liji-29-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "zhongyong-1-4",
+        "rysxguji-zhongyong-1-1",
+        "rysxguji-liji-29-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "zhongyong-1-4",
+          "source": "中庸",
+          "chapter": "第一章",
+          "section": 4,
+          "score": 0.9186,
+          "vectorScore": 0.9764,
+          "lexicalScore": 1,
+          "evidenceScore": 5.425,
+          "matchedTerms": [
+            "中庸",
+            "中也",
+            "和也",
+            "大本",
+            "达道"
+          ],
+          "text": "中也者，天下之大本也；和也者，天下之达道也。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-zhongyong-1-1",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 1,
+          "score": 0.9113,
+          "vectorScore": 0.8543,
+          "lexicalScore": 1,
+          "evidenceScore": 6.55,
+          "matchedTerms": [
+            "中和",
+            "中庸",
+            "中也",
+            "和也",
+            "大本",
+            "达道"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发，谓之中；发而皆中节，谓之和；中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-liji-29-1",
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "section": 1,
+          "score": 0.8605,
+          "vectorScore": 0.8537,
+          "lexicalScore": 0.9381,
+          "evidenceScore": 6.35,
+          "matchedTerms": [
+            "中和",
+            "中庸",
+            "中也",
+            "和也",
+            "大本",
+            "达道"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发谓之中，发而皆中节谓之和。中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 4,
+          "id": "zhongyong-1-3",
+          "source": "中庸",
+          "chapter": "第一章",
+          "section": 3,
+          "score": 0.7131,
+          "vectorScore": 0.8707,
+          "lexicalScore": 0.7571,
+          "evidenceScore": 2.45,
+          "matchedTerms": [
+            "中和",
+            "中庸"
+          ],
+          "text": "致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-zhongyong-1-27",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 27,
+          "score": 0.7019,
+          "vectorScore": 0.7659,
+          "lexicalScore": 0.7511,
+          "evidenceScore": 2.35,
+          "matchedTerms": [
+            "中庸",
+            "达道"
+          ],
+          "text": "“天下之达道五，所以行之者三。曰：君臣也，父子也，夫妇也，昆弟也，朋友之交也，五者天下之达道也。知，仁，勇，三者天下之达德也，所以行之者一也。或生而知之，或学而知之，或困而知之，及其知之，一也。或安而行之，或利而行之，或勉强而行之，及其成功，一也。子曰：好学近乎知，力行近乎仁，知耻近乎勇。知斯三者，则知所以修身；知所以修身，则知所以治人；知所以治人，则知所以治天下国家矣。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-xunzi-28-26",
+          "rysxguji-liji-1-90",
+          "zhongyong-1-4"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-4",
+          "rysxguji-liji-29-1"
+        ],
+        "fusionTop3Ids": [
+          "zhongyong-1-4",
+          "rysxguji-zhongyong-1-1",
+          "rysxguji-liji-29-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "harmony-balance"
+        ],
+        "sourceTerms": [
+          "中庸"
+        ],
+        "coreTerms": [
+          "中和",
+          "中庸",
+          "中也",
+          "和也",
+          "大本",
+          "达道"
+        ],
+        "trustedMatchedTerms": [
+          "中和",
+          "中庸",
+          "中也",
+          "和也",
+          "大本",
+          "达道"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 6,
+      "category": "golden",
+      "query": "反省自己哪里做得不够",
+      "passed": true,
+      "note": "三省、改过相关结果应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "lunyu-1-4",
+          "lunyu-1-8",
+          "rysxguji-lunyu-1-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "lunyu-1-4",
+        "rysxguji-lunyu-1-1",
+        "lunyu-1-8"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "lunyu-1-4",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 4,
+          "score": 0.7221,
+          "vectorScore": 0.927,
+          "lexicalScore": 0.764,
+          "evidenceScore": 5.5,
+          "matchedTerms": [
+            "三省",
+            "吾日三省",
+            "不忠",
+            "不信",
+            "传不习",
+            "吾日",
+            "日三",
+            "传不",
+            "不习"
+          ],
+          "text": "吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.6876,
+          "vectorScore": 0,
+          "lexicalScore": 0.764,
+          "evidenceScore": 5.5,
+          "matchedTerms": [
+            "三省",
+            "吾日三省",
+            "不忠",
+            "不信",
+            "传不习",
+            "吾日",
+            "日三",
+            "传不",
+            "不习"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 3,
+          "id": "lunyu-1-8",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 8,
+          "score": 0.5005,
+          "vectorScore": 0,
+          "lexicalScore": 0.5561,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "过则勿惮改",
+            "过则",
+            "则勿",
+            "勿惮",
+            "惮改"
+          ],
+          "text": "君子不重则不威，学则不固。主忠信，无友不如己者，过则勿惮改。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-lunyu-1-4",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 4,
+          "score": 0.5005,
+          "vectorScore": 0,
+          "lexicalScore": 0.5561,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "过则勿惮改",
+            "过则",
+            "则勿",
+            "勿惮",
+            "惮改"
+          ],
+          "text": "子曰：“君子不重，则不威。学则不固。主忠信。无友不如己者。过则勿惮改。”"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-9-19",
+          "source": "论语",
+          "chapter": "第9章 子罕第九",
+          "section": 19,
+          "score": 0.5005,
+          "vectorScore": 0,
+          "lexicalScore": 0.5561,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "过则勿惮改",
+            "过则",
+            "则勿",
+            "勿惮",
+            "惮改"
+          ],
+          "text": "子曰：“主忠信，毋友不如己者，过则勿惮改。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-4-14",
+          "rysxguji-xunzi-2-1",
+          "lunyu-1-4"
+        ],
+        "lexicalTop3Ids": [
+          "lunyu-1-4",
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-8"
+        ],
+        "fusionTop3Ids": [
+          "lunyu-1-4",
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-8"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "self-reflection"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "三省",
+          "吾日三省",
+          "不忠",
+          "不信",
+          "传不习",
+          "过则勿惮改"
+        ],
+        "trustedMatchedTerms": [
+          "三省",
+          "吾日三省",
+          "不忠",
+          "不信",
+          "传不习",
+          "吾日",
+          "日三",
+          "传不",
+          "不习",
+          "过则勿惮改",
+          "过则",
+          "则勿",
+          "勿惮",
+          "惮改",
+          "得不"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 7,
+      "category": "golden",
+      "query": "学习之后要实践",
+      "passed": true,
+      "note": "学而时习或学文相关结果应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "lunyu-1-1",
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-6"
+        ]
+      },
+      "resultCount": 4,
+      "top3Ids": [
+        "lunyu-1-1",
+        "rysxguji-lunyu-1-1",
+        "lunyu-1-6"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "lunyu-1-1",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 1,
+          "score": 0.6532,
+          "vectorScore": 0.6702,
+          "lexicalScore": 0.6988,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "学而时习",
+            "时习",
+            "习之",
+            "学而",
+            "而时"
+          ],
+          "text": "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.6289,
+          "vectorScore": 0,
+          "lexicalScore": 0.6988,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "学而时习",
+            "时习",
+            "习之",
+            "学而",
+            "而时"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 3,
+          "id": "lunyu-1-6",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 6,
+          "score": 0.4698,
+          "vectorScore": 0.7826,
+          "lexicalScore": 0.4669,
+          "evidenceScore": 1.05,
+          "matchedTerms": [
+            "学文",
+            "学而"
+          ],
+          "text": "弟子入则孝，出则弟，谨而信，泛爱众，而亲仁。行有余力，则以学文。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-lunyu-1-2",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 2,
+          "score": 0.4698,
+          "vectorScore": 0.7818,
+          "lexicalScore": 0.4669,
+          "evidenceScore": 1.05,
+          "matchedTerms": [
+            "学文",
+            "学而"
+          ],
+          "text": "子曰：“弟子入则孝，出则悌，谨而信，泛爱众，而亲仁。行有馀力，则以学文。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-2-12",
+          "rysxguji-xunzi-5-4",
+          "rysxguji-hanfeizi-59-1"
+        ],
+        "lexicalTop3Ids": [
+          "lunyu-1-1",
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-6"
+        ],
+        "fusionTop3Ids": [
+          "lunyu-1-1",
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-6"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "practice-after-learning"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "学而时习",
+          "时习",
+          "学文"
+        ],
+        "trustedMatchedTerms": [
+          "学而时习",
+          "时习",
+          "习之",
+          "学而",
+          "而时",
+          "学文"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 8,
+      "category": "golden",
+      "query": "什么是至善",
+      "passed": true,
+      "note": "大学至善相关结果应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "daxue-1-1",
+          "rysxguji-daxue-1-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "daxue-1-1",
+        "rysxguji-daxue-1-1",
+        "rysxguji-daxue-1-12"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "daxue-1-1",
+          "source": "大学",
+          "chapter": "经一章",
+          "section": 1,
+          "score": 0.4844,
+          "vectorScore": 0,
+          "lexicalScore": 0.5382,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "至善"
+          ],
+          "text": "大学之道，在明明德，在亲民，在止于至善。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-daxue-1-1",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 1,
+          "score": 0.4844,
+          "vectorScore": 0,
+          "lexicalScore": 0.5382,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "至善"
+          ],
+          "text": "大学之道，在明明德，在亲民，在止于至善。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-daxue-1-12",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 12,
+          "score": 0.4844,
+          "vectorScore": 0,
+          "lexicalScore": 0.5382,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "至善"
+          ],
+          "text": "《诗》云：“瞻彼淇澳，菉竹猗猗。有斐君子，如切如磋，如琢如磨。瑟兮僴兮，赫兮喧兮。有斐君子，终不可諠兮！”“如切如磋”者，道学也。“如琢如磨”者，自修也。“瑟兮僴兮”者，恂慄也。“赫兮喧兮”者，威仪也。“有斐君子，终不可諠兮”者，道盛德至善，民之不能忘也。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-liji-40-1",
+          "source": "礼记",
+          "chapter": "第40章 大学",
+          "section": 1,
+          "score": 0.4844,
+          "vectorScore": 0,
+          "lexicalScore": 0.5382,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "至善"
+          ],
+          "text": "大学之道，在明明德，在亲民，在止于至善。知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。物有本末，事有终始，知所先后，则近道矣。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-liji-40-5",
+          "source": "礼记",
+          "chapter": "第40章 大学",
+          "section": 5,
+          "score": 0.4844,
+          "vectorScore": 0,
+          "lexicalScore": 0.5382,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "至善"
+          ],
+          "text": "诗云：“瞻彼淇澳，菉竹猗猗。有斐君子，如切如磋，如琢如磨。瑟兮僩兮，赫兮喧兮，有斐君子，终不可諠兮。”如切如磋者，道学也；如琢如磨者，自修也；瑟兮僩兮者，恂栗也；赫兮喧兮者，威仪也；有斐君子终不可諠兮者，道盛德至善，民之不能忘也。诗云：“于戏前王不忘！君子贤其贤而亲其亲，小人乐其乐而利其利。”此以没世不忘也。康诰曰：“克明德。”大甲曰：“顾諟天之明命。”帝典曰：“克明峻德。”皆自明也。汤之盘铭曰：“苟日新，日日新，又日新。”康诰曰：“作新民。”诗曰：“周虽旧邦，其命惟新。”是故君子无所不用其极。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-20-14",
+          "rysxguji-liji-15-49",
+          "rysxguji-zhouyi-9-15"
+        ],
+        "lexicalTop3Ids": [
+          "daxue-1-1",
+          "rysxguji-daxue-1-1",
+          "rysxguji-daxue-1-12"
+        ],
+        "fusionTop3Ids": [
+          "daxue-1-1",
+          "rysxguji-daxue-1-1",
+          "rysxguji-daxue-1-12"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [
+          "至善"
+        ],
+        "coreTerms": [
+          "至善"
+        ],
+        "trustedMatchedTerms": [
+          "至善"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 9,
+      "category": "golden",
+      "query": "面对焦虑如何安定",
+      "passed": true,
+      "note": "安定/中和相关结果应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-liji-29-1",
+        "rysxguji-zhongyong-1-1",
+        "zhongyong-1-2"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-liji-29-1",
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "section": 1,
+          "score": 0.6709,
+          "vectorScore": 0,
+          "lexicalScore": 0.7454,
+          "evidenceScore": 5.425,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "中和",
+            "中也",
+            "和也",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发谓之中，发而皆中节谓之和。中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-zhongyong-1-1",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 1,
+          "score": 0.6709,
+          "vectorScore": 0,
+          "lexicalScore": 0.7454,
+          "evidenceScore": 5.425,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "中和",
+            "中也",
+            "和也",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发，谓之中；发而皆中节，谓之和；中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 3,
+          "id": "zhongyong-1-2",
+          "source": "中庸",
+          "chapter": "第一章",
+          "section": 2,
+          "score": 0.5558,
+          "vectorScore": 0,
+          "lexicalScore": 0.6175,
+          "evidenceScore": 2.25,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "喜怒哀乐之未发，谓之中；发而皆中节，谓之和。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-xunzi-18-4",
+          "source": "荀子",
+          "chapter": "第18章 天论篇第十七",
+          "section": 4,
+          "score": 0.4626,
+          "vectorScore": 0,
+          "lexicalScore": 0.514,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天职既立，天功既成，形具而神生，好恶喜怒哀乐臧焉，夫是之谓天情。耳目鼻口形能各有接而不相能也，夫是之谓天官。心居中虚，以治五官，夫是之谓天君。财非其类以养其类，夫是之谓天养。顺其类者谓之福，逆其类者谓之祸，夫是之谓天政。暗其天君，乱其天官，弃其天养，逆其天政，背其天情，以丧天功，夫是之谓大凶。圣人清其天君，正其天官，备其天养，顺其天政，养其天情，以全其天功。如是，则知其所为，知其所不为矣；则天地官而万物役矣。其行曲治，其养曲适，其生不伤，夫是之谓知天。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-xunzi-1-7",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "section": 7,
+          "score": 0.4468,
+          "vectorScore": 0,
+          "lexicalScore": 0.4961,
+          "evidenceScore": 2.15,
+          "matchedTerms": [
+            "中和",
+            "和也"
+          ],
+          "text": "学恶乎始？恶乎终？曰：其数则始乎诵经，终乎读礼；其义则始乎为士，终乎为圣人。真积力久则入。学至乎没而后止也。故学数有终，若其义则不可须臾舍也。为之人也，舍之禽兽也。故书者、政事之纪也；诗者、中声之所止也；礼者、法之大兮，类之纲纪也。故学至乎礼而止矣。夫是之谓道德之极。礼之敬文也，乐之中和也，诗书之博也，春秋之微也，在天地之间者毕矣。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-3-3",
+          "rysxguji-shangshu-16-3",
+          "rysxguji-xunzi-4-1"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "anxiety-stability"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "知止",
+          "定静安虑得",
+          "喜怒哀乐",
+          "未发",
+          "中和",
+          "不愠",
+          "中也",
+          "和也"
+        ],
+        "trustedMatchedTerms": [
+          "喜怒哀乐",
+          "未发",
+          "中和",
+          "中也",
+          "和也",
+          "喜怒",
+          "怒哀",
+          "哀乐",
+          "不愠",
+          "知止"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 10,
+      "category": "golden",
+      "query": "我怎样安住眼前这件事",
+      "passed": true,
+      "note": "安住当下相关结果应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2",
+          "zhongyong-1-3"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-zhongyong-1-1",
+        "zhongyong-1-2",
+        "zhongyong-1-3"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-zhongyong-1-1",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 1,
+          "score": 0.7834,
+          "vectorScore": 0,
+          "lexicalScore": 0.8704,
+          "evidenceScore": 4.7,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "中和",
+            "中庸",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发，谓之中；发而皆中节，谓之和；中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 2,
+          "id": "zhongyong-1-2",
+          "source": "中庸",
+          "chapter": "第一章",
+          "section": 2,
+          "score": 0.7512,
+          "vectorScore": 0,
+          "lexicalScore": 0.8347,
+          "evidenceScore": 3.575,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "中庸",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "喜怒哀乐之未发，谓之中；发而皆中节，谓之和。"
+        },
+        {
+          "rank": 3,
+          "id": "zhongyong-1-3",
+          "source": "中庸",
+          "chapter": "第一章",
+          "section": 3,
+          "score": 0.6138,
+          "vectorScore": 0,
+          "lexicalScore": 0.682,
+          "evidenceScore": 2.45,
+          "matchedTerms": [
+            "中和",
+            "中庸"
+          ],
+          "text": "致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-liji-29-1",
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "section": 1,
+          "score": 0.6034,
+          "vectorScore": 0,
+          "lexicalScore": 0.6704,
+          "evidenceScore": 4.5,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "中和",
+            "中庸",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发谓之中，发而皆中节谓之和。中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-liji-40-1",
+          "source": "礼记",
+          "chapter": "第40章 大学",
+          "section": 1,
+          "score": 0.5706,
+          "vectorScore": 0,
+          "lexicalScore": 0.634,
+          "evidenceScore": 3.275,
+          "matchedTerms": [
+            "知止",
+            "止于至善",
+            "至善",
+            "止于",
+            "于至"
+          ],
+          "text": "大学之道，在明明德，在亲民，在止于至善。知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。物有本末，事有终始，知所先后，则近道矣。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-xunzi-9-1",
+          "rysxguji-lunyu-17-22",
+          "rysxguji-xunzi-4-10"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2",
+          "zhongyong-1-3"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2",
+          "zhongyong-1-3"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "settle-present"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "知止",
+          "止于至善",
+          "定静安虑得",
+          "喜怒哀乐",
+          "未发",
+          "中和",
+          "中庸",
+          "慎独",
+          "诚意",
+          "至善"
+        ],
+        "trustedMatchedTerms": [
+          "喜怒哀乐",
+          "未发",
+          "中和",
+          "中庸",
+          "喜怒",
+          "怒哀",
+          "哀乐",
+          "知止",
+          "止于至善",
+          "至善",
+          "止于",
+          "于至"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 11,
+      "category": "golden",
+      "query": "被别人误解怎么办",
+      "passed": true,
+      "note": "误解场景应回到不己知/不愠。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-1-12",
+          "rysxguji-lunyu-14-32",
+          "lunyu-1-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-lunyu-1-12",
+        "rysxguji-lunyu-14-32",
+        "lunyu-1-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-1-12",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 12,
+          "score": 0.6855,
+          "vectorScore": 0.8515,
+          "lexicalScore": 0.7249,
+          "evidenceScore": 3.3,
+          "matchedTerms": [
+            "不患人之不己知",
+            "不己知",
+            "不患",
+            "不知",
+            "患人",
+            "人之",
+            "之不",
+            "不己",
+            "己知"
+          ],
+          "text": "子曰：“不患人之不己知，患不知人也。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-14-32",
+          "source": "论语",
+          "chapter": "第14章 宪问第十四",
+          "section": 32,
+          "score": 0.6822,
+          "vectorScore": 0.8527,
+          "lexicalScore": 0.7208,
+          "evidenceScore": 3.3,
+          "matchedTerms": [
+            "不患人之不己知",
+            "不己知",
+            "不患",
+            "患人",
+            "人之",
+            "之不",
+            "不己",
+            "己知"
+          ],
+          "text": "子曰：“不患人之不己知，患其不能也。”"
+        },
+        {
+          "rank": 3,
+          "id": "lunyu-1-1",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 1,
+          "score": 0.5853,
+          "vectorScore": 0.8486,
+          "lexicalScore": 0.6029,
+          "evidenceScore": 2.25,
+          "matchedTerms": [
+            "人不知",
+            "不愠",
+            "人不",
+            "不知"
+          ],
+          "text": "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.5426,
+          "vectorScore": 0,
+          "lexicalScore": 0.6029,
+          "evidenceScore": 2.25,
+          "matchedTerms": [
+            "人不知",
+            "不愠",
+            "人不",
+            "不知"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-15-16",
+          "source": "论语",
+          "chapter": "第15章 卫灵公第十五",
+          "section": 16,
+          "score": 0.5334,
+          "vectorScore": 0,
+          "lexicalScore": 0.5927,
+          "evidenceScore": 1.175,
+          "matchedTerms": [
+            "不己知",
+            "人之",
+            "之不",
+            "不己",
+            "己知"
+          ],
+          "text": "子曰：“不曰‘如之何，如之何’者，吾末如之何也已矣！”子曰：“群居终日，言不及义，好行小慧，难矣哉！”子曰：“君子义以为质，礼以行之，孙以出之，信以成之。君子哉！”子曰：“君子病无能焉，不病人之不己知也。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-14-32",
+          "rysxguji-lunyu-1-12",
+          "lunyu-1-1"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-1-12",
+          "rysxguji-lunyu-14-32",
+          "lunyu-1-1"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-1-12",
+          "rysxguji-lunyu-14-32",
+          "lunyu-1-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "misunderstood"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "人不知",
+          "不愠",
+          "不患人之不己知",
+          "不己知",
+          "不患"
+        ],
+        "trustedMatchedTerms": [
+          "不患人之不己知",
+          "不己知",
+          "不患",
+          "不知",
+          "患人",
+          "人之",
+          "之不",
+          "不己",
+          "己知",
+          "人不知",
+          "不愠",
+          "人不"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 12,
+      "category": "variant",
+      "query": "我被人误会了怎么不生气",
+      "passed": true,
+      "note": "误会、不生气应映射到不愠。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-1-12",
+          "rysxguji-lunyu-14-32",
+          "lunyu-1-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-lunyu-1-12",
+        "rysxguji-lunyu-14-32",
+        "lunyu-1-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-1-12",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 12,
+          "score": 0.64,
+          "vectorScore": 0.7629,
+          "lexicalScore": 0.6759,
+          "evidenceScore": 3.3,
+          "matchedTerms": [
+            "不患人之不己知",
+            "不己知",
+            "不患",
+            "不知",
+            "患人",
+            "人之",
+            "之不",
+            "不己",
+            "己知"
+          ],
+          "text": "子曰：“不患人之不己知，患不知人也。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-14-32",
+          "source": "论语",
+          "chapter": "第14章 宪问第十四",
+          "section": 32,
+          "score": 0.6386,
+          "vectorScore": 0.7637,
+          "lexicalScore": 0.6741,
+          "evidenceScore": 3.3,
+          "matchedTerms": [
+            "不患人之不己知",
+            "不己知",
+            "不患",
+            "患人",
+            "人之",
+            "之不",
+            "不己",
+            "己知"
+          ],
+          "text": "子曰：“不患人之不己知，患其不能也。”"
+        },
+        {
+          "rank": 3,
+          "id": "lunyu-1-1",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 1,
+          "score": 0.5591,
+          "vectorScore": 0.8042,
+          "lexicalScore": 0.5742,
+          "evidenceScore": 2.25,
+          "matchedTerms": [
+            "人不知",
+            "不愠",
+            "人不",
+            "不知"
+          ],
+          "text": "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.5168,
+          "vectorScore": 0,
+          "lexicalScore": 0.5742,
+          "evidenceScore": 2.25,
+          "matchedTerms": [
+            "人不知",
+            "不愠",
+            "人不",
+            "不知"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-15-16",
+          "source": "论语",
+          "chapter": "第15章 卫灵公第十五",
+          "section": 16,
+          "score": 0.514,
+          "vectorScore": 0,
+          "lexicalScore": 0.5711,
+          "evidenceScore": 1.175,
+          "matchedTerms": [
+            "不己知",
+            "人之",
+            "之不",
+            "不己",
+            "己知"
+          ],
+          "text": "子曰：“不曰‘如之何，如之何’者，吾末如之何也已矣！”子曰：“群居终日，言不及义，好行小慧，难矣哉！”子曰：“君子义以为质，礼以行之，孙以出之，信以成之。君子哉！”子曰：“君子病无能焉，不病人之不己知也。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "lunyu-1-1",
+          "rysxguji-lunyu-14-32",
+          "rysxguji-lunyu-1-12"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-1-12",
+          "rysxguji-lunyu-14-32",
+          "lunyu-1-1"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-1-12",
+          "rysxguji-lunyu-14-32",
+          "lunyu-1-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "misunderstood"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "人不知",
+          "不愠",
+          "不患人之不己知",
+          "不己知",
+          "误会",
+          "不生气",
+          "不患"
+        ],
+        "trustedMatchedTerms": [
+          "不患人之不己知",
+          "不己知",
+          "不患",
+          "不知",
+          "患人",
+          "人之",
+          "之不",
+          "不己",
+          "己知",
+          "人不知",
+          "不愠",
+          "人不"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 13,
+      "category": "variant",
+      "query": "没人理解我还要坚持吗",
+      "passed": true,
+      "note": "没人理解应映射到不己知。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-1-12",
+          "rysxguji-lunyu-14-32",
+          "lunyu-1-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-lunyu-1-12",
+        "rysxguji-lunyu-14-32",
+        "lunyu-1-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-1-12",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 12,
+          "score": 0.6662,
+          "vectorScore": 0.8511,
+          "lexicalScore": 0.7014,
+          "evidenceScore": 3.3,
+          "matchedTerms": [
+            "不患人之不己知",
+            "不己知",
+            "不患",
+            "不知",
+            "患人",
+            "人之",
+            "之不",
+            "不己",
+            "己知"
+          ],
+          "text": "子曰：“不患人之不己知，患不知人也。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-14-32",
+          "source": "论语",
+          "chapter": "第14章 宪问第十四",
+          "section": 32,
+          "score": 0.6638,
+          "vectorScore": 0.8517,
+          "lexicalScore": 0.6984,
+          "evidenceScore": 3.3,
+          "matchedTerms": [
+            "不患人之不己知",
+            "不己知",
+            "不患",
+            "患人",
+            "人之",
+            "之不",
+            "不己",
+            "己知"
+          ],
+          "text": "子曰：“不患人之不己知，患其不能也。”"
+        },
+        {
+          "rank": 3,
+          "id": "lunyu-1-1",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 1,
+          "score": 0.574,
+          "vectorScore": 0.8488,
+          "lexicalScore": 0.5891,
+          "evidenceScore": 2.25,
+          "matchedTerms": [
+            "人不知",
+            "不愠",
+            "人不",
+            "不知"
+          ],
+          "text": "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.5302,
+          "vectorScore": 0,
+          "lexicalScore": 0.5891,
+          "evidenceScore": 2.25,
+          "matchedTerms": [
+            "人不知",
+            "不愠",
+            "人不",
+            "不知"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-15-16",
+          "source": "论语",
+          "chapter": "第15章 卫灵公第十五",
+          "section": 16,
+          "score": 0.5241,
+          "vectorScore": 0,
+          "lexicalScore": 0.5823,
+          "evidenceScore": 1.175,
+          "matchedTerms": [
+            "不己知",
+            "人之",
+            "之不",
+            "不己",
+            "己知"
+          ],
+          "text": "子曰：“不曰‘如之何，如之何’者，吾末如之何也已矣！”子曰：“群居终日，言不及义，好行小慧，难矣哉！”子曰：“君子义以为质，礼以行之，孙以出之，信以成之。君子哉！”子曰：“君子病无能焉，不病人之不己知也。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-14-32",
+          "rysxguji-lunyu-1-12",
+          "lunyu-1-1"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-1-12",
+          "rysxguji-lunyu-14-32",
+          "lunyu-1-1"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-1-12",
+          "rysxguji-lunyu-14-32",
+          "lunyu-1-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "misunderstood"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "人不知",
+          "不愠",
+          "不患人之不己知",
+          "不己知",
+          "不患"
+        ],
+        "trustedMatchedTerms": [
+          "不患人之不己知",
+          "不己知",
+          "不患",
+          "不知",
+          "患人",
+          "人之",
+          "之不",
+          "不己",
+          "己知",
+          "人不知",
+          "不愠",
+          "人不"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 14,
+      "category": "variant",
+      "query": "如何与朋友保持信任",
+      "passed": true,
+      "note": "朋友信任相关结果应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "lunyu-1-4",
+          "lunyu-1-7",
+          "rysxguji-lunyu-1-3"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "lunyu-1-7",
+        "rysxguji-lunyu-1-3",
+        "lunyu-1-4"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "lunyu-1-7",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 7,
+          "score": 0.6466,
+          "vectorScore": 0.8381,
+          "lexicalScore": 0.6784,
+          "evidenceScore": 3.225,
+          "matchedTerms": [
+            "与朋友交",
+            "言而有信",
+            "朋友",
+            "与朋",
+            "友交",
+            "言而",
+            "而有",
+            "有信"
+          ],
+          "text": "贤贤易色，事父母能竭其力，事君能致其身，与朋友交言而有信。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-1-3",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 3,
+          "score": 0.6465,
+          "vectorScore": 0.8374,
+          "lexicalScore": 0.6784,
+          "evidenceScore": 3.225,
+          "matchedTerms": [
+            "与朋友交",
+            "言而有信",
+            "朋友",
+            "与朋",
+            "友交",
+            "言而",
+            "而有",
+            "有信"
+          ],
+          "text": "子夏曰：“贤贤易色；事父母，能竭其力，事君，能致其身；与朋友交，言而有信。虽曰未学，吾必谓之学矣。”"
+        },
+        {
+          "rank": 3,
+          "id": "lunyu-1-4",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 4,
+          "score": 0.5189,
+          "vectorScore": 0,
+          "lexicalScore": 0.5766,
+          "evidenceScore": 2.15,
+          "matchedTerms": [
+            "与朋友交",
+            "朋友",
+            "与朋",
+            "友交"
+          ],
+          "text": "吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.5189,
+          "vectorScore": 0,
+          "lexicalScore": 0.5766,
+          "evidenceScore": 2.15,
+          "matchedTerms": [
+            "与朋友交",
+            "朋友",
+            "与朋",
+            "友交"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-1-8",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 8,
+          "score": 0.5102,
+          "vectorScore": 0.8538,
+          "lexicalScore": 0.5109,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "信近于义",
+            "信近",
+            "近于",
+            "于义"
+          ],
+          "text": "有子曰：“信近于义，言可复也。恭近于礼，远耻辱也。因不失其亲，亦可宗也。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-1-8",
+          "lunyu-1-7",
+          "rysxguji-lunyu-1-3"
+        ],
+        "lexicalTop3Ids": [
+          "lunyu-1-7",
+          "rysxguji-lunyu-1-3",
+          "lunyu-1-4"
+        ],
+        "fusionTop3Ids": [
+          "lunyu-1-7",
+          "rysxguji-lunyu-1-3",
+          "lunyu-1-4"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "friends-trust"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "与朋友交",
+          "言而有信",
+          "朋友",
+          "信近于义",
+          "忠信",
+          "信任"
+        ],
+        "trustedMatchedTerms": [
+          "与朋友交",
+          "言而有信",
+          "朋友",
+          "与朋",
+          "友交",
+          "言而",
+          "而有",
+          "有信",
+          "信近于义",
+          "信近",
+          "近于",
+          "于义",
+          "忠信"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 15,
+      "category": "variant",
+      "query": "朋友之间说话算数",
+      "passed": true,
+      "note": "说话算数应映射到言而有信。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "lunyu-1-4",
+          "lunyu-1-7",
+          "rysxguji-lunyu-1-3"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "lunyu-1-7",
+        "rysxguji-lunyu-1-3",
+        "lunyu-1-4"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "lunyu-1-7",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 7,
+          "score": 0.6384,
+          "vectorScore": 0.8378,
+          "lexicalScore": 0.6685,
+          "evidenceScore": 3.225,
+          "matchedTerms": [
+            "与朋友交",
+            "言而有信",
+            "朋友",
+            "与朋",
+            "友交",
+            "言而",
+            "而有",
+            "有信"
+          ],
+          "text": "贤贤易色，事父母能竭其力，事君能致其身，与朋友交言而有信。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-1-3",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 3,
+          "score": 0.6384,
+          "vectorScore": 0.8374,
+          "lexicalScore": 0.6685,
+          "evidenceScore": 3.225,
+          "matchedTerms": [
+            "与朋友交",
+            "言而有信",
+            "朋友",
+            "与朋",
+            "友交",
+            "言而",
+            "而有",
+            "有信"
+          ],
+          "text": "子夏曰：“贤贤易色；事父母，能竭其力，事君，能致其身；与朋友交，言而有信。虽曰未学，吾必谓之学矣。”"
+        },
+        {
+          "rank": 3,
+          "id": "lunyu-1-4",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 4,
+          "score": 0.5136,
+          "vectorScore": 0,
+          "lexicalScore": 0.5707,
+          "evidenceScore": 2.15,
+          "matchedTerms": [
+            "与朋友交",
+            "朋友",
+            "与朋",
+            "友交"
+          ],
+          "text": "吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.5136,
+          "vectorScore": 0,
+          "lexicalScore": 0.5707,
+          "evidenceScore": 2.15,
+          "matchedTerms": [
+            "与朋友交",
+            "朋友",
+            "与朋",
+            "友交"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-1-8",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 8,
+          "score": 0.507,
+          "vectorScore": 0.8539,
+          "lexicalScore": 0.507,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "信近于义",
+            "信近",
+            "近于",
+            "于义"
+          ],
+          "text": "有子曰：“信近于义，言可复也。恭近于礼，远耻辱也。因不失其亲，亦可宗也。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-1-8",
+          "lunyu-1-7",
+          "rysxguji-lunyu-1-3"
+        ],
+        "lexicalTop3Ids": [
+          "lunyu-1-7",
+          "rysxguji-lunyu-1-3",
+          "lunyu-1-4"
+        ],
+        "fusionTop3Ids": [
+          "lunyu-1-7",
+          "rysxguji-lunyu-1-3",
+          "lunyu-1-4"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "friends-trust"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "与朋友交",
+          "言而有信",
+          "朋友",
+          "信近于义",
+          "忠信",
+          "说话算数"
+        ],
+        "trustedMatchedTerms": [
+          "与朋友交",
+          "言而有信",
+          "朋友",
+          "与朋",
+          "友交",
+          "言而",
+          "而有",
+          "有信",
+          "信近于义",
+          "信近",
+          "近于",
+          "于义",
+          "友之",
+          "忠信",
+          "之间"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 16,
+      "category": "variant",
+      "query": "诚信和义之间的关系",
+      "passed": true,
+      "note": "信近于义应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-1-8"
+        ]
+      },
+      "resultCount": 1,
+      "top3Ids": [
+        "rysxguji-lunyu-1-8"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-1-8",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 8,
+          "score": 0.6637,
+          "vectorScore": 0.9541,
+          "lexicalScore": 0.6908,
+          "evidenceScore": 2.15,
+          "matchedTerms": [
+            "信近于义",
+            "言可复",
+            "信近",
+            "近于",
+            "于义",
+            "言可",
+            "可复"
+          ],
+          "text": "有子曰：“信近于义，言可复也。恭近于礼，远耻辱也。因不失其亲，亦可宗也。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-228-14",
+          "rysxguji-hanfeizi-59-3",
+          "rysxguji-lunyu-1-8"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-1-8",
+          "rysxguji-chunqiu-zuozhuan-160-6",
+          "rysxguji-hanfeizi-29-3"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-1-8"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "trust-duty"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "信近于义",
+          "言可复"
+        ],
+        "trustedMatchedTerms": [
+          "信近于义",
+          "言可复",
+          "信近",
+          "近于",
+          "于义",
+          "言可",
+          "可复"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 17,
+      "category": "variant",
+      "query": "每天反省自己",
+      "passed": true,
+      "note": "每日三省应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "lunyu-1-4",
+          "rysxguji-lunyu-1-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "lunyu-1-4",
+        "rysxguji-lunyu-1-1",
+        "rysxguji-chunqiu-zuozhuan-117-8"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "lunyu-1-4",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 4,
+          "score": 0.7392,
+          "vectorScore": 0.9232,
+          "lexicalScore": 0.7851,
+          "evidenceScore": 5.5,
+          "matchedTerms": [
+            "三省",
+            "吾日三省",
+            "不忠",
+            "不信",
+            "传不习",
+            "吾日",
+            "日三",
+            "传不",
+            "不习"
+          ],
+          "text": "吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.7066,
+          "vectorScore": 0,
+          "lexicalScore": 0.7851,
+          "evidenceScore": 5.5,
+          "matchedTerms": [
+            "三省",
+            "吾日三省",
+            "不忠",
+            "不信",
+            "传不习",
+            "吾日",
+            "日三",
+            "传不",
+            "不习"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-chunqiu-zuozhuan-117-8",
+          "source": "春秋左传",
+          "chapter": "第117章 ◇宣公二年",
+          "section": 8,
+          "score": 0.507,
+          "vectorScore": 0.8645,
+          "lexicalScore": 0.5063,
+          "evidenceScore": 2.2,
+          "matchedTerms": [
+            "不忠",
+            "不信"
+          ],
+          "text": "晨往，寝门辟矣，盛服将朝，尚早，坐而假寐。麑退，叹而言曰：“不忘恭敬，民之主也。贼民之主，不忠。弃君之命，不信。有一于此，不如死也。”触槐而死。"
+        },
+        {
+          "rank": 4,
+          "id": "lunyu-1-8",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 8,
+          "score": 0.5062,
+          "vectorScore": 0,
+          "lexicalScore": 0.5625,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "过则勿惮改",
+            "过则",
+            "则勿",
+            "勿惮",
+            "惮改"
+          ],
+          "text": "君子不重则不威，学则不固。主忠信，无友不如己者，过则勿惮改。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-1-4",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 4,
+          "score": 0.5062,
+          "vectorScore": 0,
+          "lexicalScore": 0.5625,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "过则勿惮改",
+            "过则",
+            "则勿",
+            "勿惮",
+            "惮改"
+          ],
+          "text": "子曰：“君子不重，则不威。学则不固。主忠信。无友不如己者。过则勿惮改。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-4-14",
+          "rysxguji-xunzi-2-1",
+          "lunyu-1-4"
+        ],
+        "lexicalTop3Ids": [
+          "lunyu-1-4",
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-8"
+        ],
+        "fusionTop3Ids": [
+          "lunyu-1-4",
+          "rysxguji-lunyu-1-1",
+          "rysxguji-chunqiu-zuozhuan-117-8"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "self-reflection"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "三省",
+          "吾日三省",
+          "不忠",
+          "不信",
+          "传不习",
+          "过则勿惮改"
+        ],
+        "trustedMatchedTerms": [
+          "三省",
+          "吾日三省",
+          "不忠",
+          "不信",
+          "传不习",
+          "吾日",
+          "日三",
+          "传不",
+          "不习",
+          "过则勿惮改",
+          "过则",
+          "则勿",
+          "勿惮",
+          "惮改"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 18,
+      "category": "variant",
+      "query": "犯错了要不要马上改",
+      "passed": true,
+      "note": "过则勿惮改应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "lunyu-1-8",
+          "rysxguji-lunyu-1-4"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "lunyu-1-4",
+        "rysxguji-lunyu-1-1",
+        "lunyu-1-8"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "lunyu-1-4",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 4,
+          "score": 0.6909,
+          "vectorScore": 0.8999,
+          "lexicalScore": 0.7279,
+          "evidenceScore": 5.5,
+          "matchedTerms": [
+            "三省",
+            "吾日三省",
+            "不忠",
+            "不信",
+            "传不习",
+            "吾日",
+            "日三",
+            "传不",
+            "不习"
+          ],
+          "text": "吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.6551,
+          "vectorScore": 0,
+          "lexicalScore": 0.7279,
+          "evidenceScore": 5.5,
+          "matchedTerms": [
+            "三省",
+            "吾日三省",
+            "不忠",
+            "不信",
+            "传不习",
+            "吾日",
+            "日三",
+            "传不",
+            "不习"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 3,
+          "id": "lunyu-1-8",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 8,
+          "score": 0.4907,
+          "vectorScore": 0,
+          "lexicalScore": 0.5452,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "过则勿惮改",
+            "过则",
+            "则勿",
+            "勿惮",
+            "惮改"
+          ],
+          "text": "君子不重则不威，学则不固。主忠信，无友不如己者，过则勿惮改。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-lunyu-1-4",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 4,
+          "score": 0.4907,
+          "vectorScore": 0,
+          "lexicalScore": 0.5452,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "过则勿惮改",
+            "过则",
+            "则勿",
+            "勿惮",
+            "惮改"
+          ],
+          "text": "子曰：“君子不重，则不威。学则不固。主忠信。无友不如己者。过则勿惮改。”"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-9-19",
+          "source": "论语",
+          "chapter": "第9章 子罕第九",
+          "section": 19,
+          "score": 0.4907,
+          "vectorScore": 0,
+          "lexicalScore": 0.5452,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "过则勿惮改",
+            "过则",
+            "则勿",
+            "勿惮",
+            "惮改"
+          ],
+          "text": "子曰：“主忠信，毋友不如己者，过则勿惮改。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-4-14",
+          "rysxguji-xunzi-2-1",
+          "lunyu-1-4"
+        ],
+        "lexicalTop3Ids": [
+          "lunyu-1-4",
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-8"
+        ],
+        "fusionTop3Ids": [
+          "lunyu-1-4",
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-8"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "self-reflection"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "三省",
+          "吾日三省",
+          "不忠",
+          "不信",
+          "传不习",
+          "过则勿惮改",
+          "犯错",
+          "马上改"
+        ],
+        "trustedMatchedTerms": [
+          "三省",
+          "吾日三省",
+          "不忠",
+          "不信",
+          "传不习",
+          "吾日",
+          "日三",
+          "传不",
+          "不习",
+          "过则勿惮改",
+          "过则",
+          "则勿",
+          "勿惮",
+          "惮改",
+          "犯错",
+          "不要"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 19,
+      "category": "variant",
+      "query": "温故知新",
+      "passed": true,
+      "note": "温故而知新应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-2-8"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-lunyu-2-8",
+        "rysxguji-zhongyong-1-43",
+        "rysxguji-liji-29-29"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-2-8",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "section": 8,
+          "score": 0.6743,
+          "vectorScore": 0.735,
+          "lexicalScore": 0.7198,
+          "evidenceScore": 3.3,
+          "matchedTerms": [
+            "温故而知新",
+            "温故",
+            "知新",
+            "故而",
+            "而知"
+          ],
+          "text": "子曰：“视其所以，观其所由，察其所安，人焉廋哉？人焉廋哉？”子曰：“温故而知新，可以为师矣。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-zhongyong-1-43",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 43,
+          "score": 0.6648,
+          "vectorScore": 0.5755,
+          "lexicalScore": 0.7198,
+          "evidenceScore": 3.3,
+          "matchedTerms": [
+            "温故而知新",
+            "温故",
+            "知新",
+            "故而",
+            "而知"
+          ],
+          "text": "致广大而尽精微。极高明而道中庸。温故而知新，敦厚以崇礼。是故居上不骄，为下不倍；国有道，其言足以兴；国无道，其默足以容。《诗》曰：“既明且哲，以保其身。”其此之谓与！子曰：“愚而好自用，贱而好自专，生乎今之世，反古之道：如此者，灾及其身者也。”非天子，不议礼，不制度，不考文。今天下车同轨，书同文，行同伦。虽有其位，苟无其德，不敢作礼乐焉；虽有其德。苟无其位，亦不敢作礼乐焉。子曰：“吾说夏礼，杞不足徵也。吾学殷礼，有宋存焉。吾学周礼，今用之，吾从周。”"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-liji-29-29",
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "section": 29,
+          "score": 0.6645,
+          "vectorScore": 0.5709,
+          "lexicalScore": 0.7198,
+          "evidenceScore": 3.3,
+          "matchedTerms": [
+            "温故而知新",
+            "温故",
+            "知新",
+            "故而",
+            "而知"
+          ],
+          "text": "大哉圣人之道！洋洋乎发育万物，峻极于天。优优大哉，礼仪三百，威仪三千，待其人然后行。故曰：“苟不至德，至道不凝焉。”故君子尊德性而道问学，致广大而尽精微，极高明而道中庸，温故而知新，敦厚以崇礼。是故居上不骄，为下不倍。国有道，其言足以兴，国无道，其默足以容。诗曰：“既明且哲，以保其身。”其此之谓与。"
+        },
+        {
+          "rank": 4,
+          "id": "lunyu-1-1",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 1,
+          "score": 0.559,
+          "vectorScore": 0.5442,
+          "lexicalScore": 0.5931,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "学而时习",
+            "时习",
+            "学而",
+            "而时"
+          ],
+          "text": "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.5338,
+          "vectorScore": 0,
+          "lexicalScore": 0.5931,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "学而时习",
+            "时习",
+            "学而",
+            "而时"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-2-12",
+          "rysxguji-xunzi-5-4",
+          "rysxguji-hanfeizi-59-1"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-liji-29-29",
+          "rysxguji-lunyu-2-8",
+          "rysxguji-zhongyong-1-43"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-2-8",
+          "rysxguji-zhongyong-1-43",
+          "rysxguji-liji-29-29"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "practice-after-learning",
+          "review-old-learn-new"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "学而时习",
+          "时习",
+          "学文",
+          "温故而知新",
+          "温故",
+          "知新",
+          "温故知新"
+        ],
+        "trustedMatchedTerms": [
+          "温故而知新",
+          "温故",
+          "知新",
+          "故而",
+          "而知",
+          "学而时习",
+          "时习",
+          "学而",
+          "而时",
+          "学文"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 20,
+      "category": "variant",
+      "query": "学而不思思而不学",
+      "passed": true,
+      "note": "学思关系应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-2-12"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-lunyu-2-12",
+        "lunyu-1-1",
+        "rysxguji-lunyu-1-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-2-12",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "section": 12,
+          "score": 0.6797,
+          "vectorScore": 0.9982,
+          "lexicalScore": 0.7071,
+          "evidenceScore": 2.4,
+          "matchedTerms": [
+            "学而不思",
+            "思而不学",
+            "学而",
+            "而不",
+            "不思",
+            "思而",
+            "不学"
+          ],
+          "text": "子曰：“学而不思，则罔；思而不学，则殆。”"
+        },
+        {
+          "rank": 2,
+          "id": "lunyu-1-1",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 1,
+          "score": 0.6055,
+          "vectorScore": 0.6029,
+          "lexicalScore": 0.6455,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "学而时习",
+            "时习",
+            "学而",
+            "而不",
+            "而时"
+          ],
+          "text": "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.5809,
+          "vectorScore": 0,
+          "lexicalScore": 0.6455,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "学而时习",
+            "时习",
+            "学而",
+            "而不",
+            "而时"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 4,
+          "id": "lunyu-1-6",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 6,
+          "score": 0.4457,
+          "vectorScore": 0.7166,
+          "lexicalScore": 0.4423,
+          "evidenceScore": 1.05,
+          "matchedTerms": [
+            "学文",
+            "学而"
+          ],
+          "text": "弟子入则孝，出则弟，谨而信，泛爱众，而亲仁。行有余力，则以学文。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-1-2",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 2,
+          "score": 0.4456,
+          "vectorScore": 0.7157,
+          "lexicalScore": 0.4423,
+          "evidenceScore": 1.05,
+          "matchedTerms": [
+            "学文",
+            "学而"
+          ],
+          "text": "子曰：“弟子入则孝，出则悌，谨而信，泛爱众，而亲仁。行有馀力，则以学文。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-2-12",
+          "rysxguji-xunzi-5-4",
+          "rysxguji-hanfeizi-59-1"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-2-12",
+          "lunyu-1-1",
+          "rysxguji-lunyu-1-1"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-2-12",
+          "lunyu-1-1",
+          "rysxguji-lunyu-1-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "practice-after-learning"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "学而时习",
+          "时习",
+          "学文",
+          "学而不思",
+          "思而不学"
+        ],
+        "trustedMatchedTerms": [
+          "学而不思",
+          "思而不学",
+          "学而",
+          "而不",
+          "不思",
+          "思而",
+          "不学",
+          "学而时习",
+          "时习",
+          "而时",
+          "学文"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 21,
+      "category": "variant",
+      "query": "学习要和行动结合",
+      "passed": true,
+      "note": "学习实践相关结果应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "lunyu-1-1",
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-6"
+        ]
+      },
+      "resultCount": 4,
+      "top3Ids": [
+        "lunyu-1-1",
+        "rysxguji-lunyu-1-1",
+        "lunyu-1-6"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "lunyu-1-1",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 1,
+          "score": 0.5981,
+          "vectorScore": 0.677,
+          "lexicalScore": 0.6311,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "学而时习",
+            "时习",
+            "学而",
+            "而时"
+          ],
+          "text": "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.568,
+          "vectorScore": 0,
+          "lexicalScore": 0.6311,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "学而时习",
+            "时习",
+            "学而",
+            "而时"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 3,
+          "id": "lunyu-1-6",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 6,
+          "score": 0.4647,
+          "vectorScore": 0.8186,
+          "lexicalScore": 0.458,
+          "evidenceScore": 1.05,
+          "matchedTerms": [
+            "学文",
+            "学而"
+          ],
+          "text": "弟子入则孝，出则弟，谨而信，泛爱众，而亲仁。行有余力，则以学文。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-lunyu-1-2",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 2,
+          "score": 0.4646,
+          "vectorScore": 0.8175,
+          "lexicalScore": 0.458,
+          "evidenceScore": 1.05,
+          "matchedTerms": [
+            "学文",
+            "学而"
+          ],
+          "text": "子曰：“弟子入则孝，出则悌，谨而信，泛爱众，而亲仁。行有馀力，则以学文。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-2-12",
+          "rysxguji-xunzi-5-4",
+          "rysxguji-hanfeizi-59-1"
+        ],
+        "lexicalTop3Ids": [
+          "lunyu-1-1",
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-6"
+        ],
+        "fusionTop3Ids": [
+          "lunyu-1-1",
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-6"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "practice-after-learning"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "学而时习",
+          "时习",
+          "学文"
+        ],
+        "trustedMatchedTerms": [
+          "学而时习",
+          "时习",
+          "学而",
+          "而时",
+          "学文"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 22,
+      "category": "variant",
+      "query": "仁的根本是什么",
+      "passed": true,
+      "note": "孝弟为仁之本应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-2"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-lunyu-1-1",
+        "lunyu-1-2",
+        "rysxguji-liji-39-19"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.7088,
+          "vectorScore": 0,
+          "lexicalScore": 0.7876,
+          "evidenceScore": 3.225,
+          "matchedTerms": [
+            "仁之本",
+            "孝弟",
+            "务本",
+            "仁之",
+            "之本"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 2,
+          "id": "lunyu-1-2",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 2,
+          "score": 0.5621,
+          "vectorScore": 0.9589,
+          "lexicalScore": 0.5665,
+          "evidenceScore": 2.15,
+          "matchedTerms": [
+            "孝弟",
+            "务本"
+          ],
+          "text": "其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-liji-39-19",
+          "source": "礼记",
+          "chapter": "第39章 儒行",
+          "section": 19,
+          "score": 0.5208,
+          "vectorScore": 0.9629,
+          "lexicalScore": 0.5159,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "仁之本",
+            "仁之",
+            "之本"
+          ],
+          "text": "“温良者，仁之本也；敬慎者，仁之地也；宽裕者，仁之作也；孙接者，仁之能也；礼节者，仁之貌也；言谈者，仁之文也；歌乐者，仁之和也；分散者，仁之施也。儒皆兼此而有之，犹且不敢言仁也。其尊让有如此者。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-liji-16-20",
+          "source": "礼记",
+          "chapter": "第16章 学记",
+          "section": 20,
+          "score": 0.4556,
+          "vectorScore": 0.8642,
+          "lexicalScore": 0.4436,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "务本"
+          ],
+          "text": "三王之祭川也，皆先河而后海，或源也，或委也。此之谓务本。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-liji-43-5",
+          "source": "礼记",
+          "chapter": "第43章 乡饮酒义",
+          "section": 5,
+          "score": 0.4546,
+          "vectorScore": 0.8468,
+          "lexicalScore": 0.4436,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "孝弟"
+          ],
+          "text": "乡饮酒之礼，六十者坐，五十者立侍，以听政役，所以明尊长也。六十者三豆，七十者四豆，八十者五豆，九十者六豆，所以明养老也。民知尊长养老，而后乃能入孝弟。民入孝弟，出尊长养老，而后成教，成教而后国可安也。君子之所谓孝者，非家至而日见之也，合诸乡射，教之乡饮酒之礼，而孝弟之行立矣。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-liji-39-19",
+          "lunyu-1-2",
+          "rysxguji-liji-16-20"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-2",
+          "rysxguji-liji-39-19"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-2",
+          "rysxguji-liji-39-19"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "humaneness-root"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "仁之本",
+          "孝弟",
+          "务本"
+        ],
+        "trustedMatchedTerms": [
+          "仁之本",
+          "孝弟",
+          "务本",
+          "仁之",
+          "之本"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 23,
+      "category": "variant",
+      "query": "孝悌为什么是仁之本",
+      "passed": true,
+      "note": "孝悌/仁之本应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-2"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-lunyu-1-1",
+        "lunyu-1-2",
+        "rysxguji-liji-39-19"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.7108,
+          "vectorScore": 0.7385,
+          "lexicalScore": 0.764,
+          "evidenceScore": 3.225,
+          "matchedTerms": [
+            "仁之本",
+            "孝弟",
+            "务本",
+            "仁之",
+            "之本"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 2,
+          "id": "lunyu-1-2",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 2,
+          "score": 0.5483,
+          "vectorScore": 0.9201,
+          "lexicalScore": 0.5526,
+          "evidenceScore": 2.15,
+          "matchedTerms": [
+            "孝弟",
+            "务本"
+          ],
+          "text": "其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-liji-39-19",
+          "source": "礼记",
+          "chapter": "第39章 儒行",
+          "section": 19,
+          "score": 0.5134,
+          "vectorScore": 0.971,
+          "lexicalScore": 0.5063,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "仁之本",
+            "仁之",
+            "之本"
+          ],
+          "text": "“温良者，仁之本也；敬慎者，仁之地也；宽裕者，仁之作也；孙接者，仁之能也；礼节者，仁之貌也；言谈者，仁之文也；歌乐者，仁之和也；分散者，仁之施也。儒皆兼此而有之，犹且不敢言仁也。其尊让有如此者。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-liji-43-5",
+          "source": "礼记",
+          "chapter": "第43章 乡饮酒义",
+          "section": 5,
+          "score": 0.4514,
+          "vectorScore": 0.8894,
+          "lexicalScore": 0.4366,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "孝弟"
+          ],
+          "text": "乡饮酒之礼，六十者坐，五十者立侍，以听政役，所以明尊长也。六十者三豆，七十者四豆，八十者五豆，九十者六豆，所以明养老也。民知尊长养老，而后乃能入孝弟。民入孝弟，出尊长养老，而后成教，成教而后国可安也。君子之所谓孝者，非家至而日见之也，合诸乡射，教之乡饮酒之礼，而孝弟之行立矣。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-liji-16-20",
+          "source": "礼记",
+          "chapter": "第16章 学记",
+          "section": 20,
+          "score": 0.4444,
+          "vectorScore": 0.7739,
+          "lexicalScore": 0.4366,
+          "evidenceScore": 1.075,
+          "matchedTerms": [
+            "务本"
+          ],
+          "text": "三王之祭川也，皆先河而后海，或源也，或委也。此之谓务本。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-liji-39-19",
+          "lunyu-1-2",
+          "rysxguji-liji-43-5"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-2",
+          "rysxguji-liji-39-19"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-1-1",
+          "lunyu-1-2",
+          "rysxguji-liji-39-19"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "humaneness-root"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "仁之本",
+          "孝弟",
+          "务本",
+          "孝悌"
+        ],
+        "trustedMatchedTerms": [
+          "仁之本",
+          "孝弟",
+          "务本",
+          "仁之",
+          "之本"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 24,
+      "category": "variant",
+      "query": "父母需要敬养",
+      "passed": true,
+      "note": "孝养与敬应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-2-7",
+          "rysxguji-lunyu-2-6"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-lunyu-2-7",
+        "rysxguji-liji-22-33",
+        "rysxguji-liji-22-34"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-2-7",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "section": 7,
+          "score": 0.6395,
+          "vectorScore": 0.9722,
+          "lexicalScore": 0.66,
+          "evidenceScore": 3.15,
+          "matchedTerms": [
+            "问孝",
+            "能养",
+            "不敬"
+          ],
+          "text": "子游问孝。子曰：“今之孝者，是谓能养。至于犬马，皆能有养。不敬，何以别乎？”子夏问孝。子曰：“色难。有事，弟子服其劳；有酒食，先生馔，曾是以为孝乎？”子曰：“吾与回言终日，不违，如愚。退而省其私，亦足以发，回也不愚。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-liji-22-33",
+          "source": "礼记",
+          "chapter": "第22章 祭义",
+          "section": 33,
+          "score": 0.5462,
+          "vectorScore": 0.9891,
+          "lexicalScore": 0.545,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "能养",
+            "父母"
+          ],
+          "text": "曾子曰：“孝有三：大孝尊亲，其次弗辱，其下能养。”公明仪问于曾子曰：“夫子可以为孝乎？”曾子曰：“是何言与？是何言与？君子之所为孝者，先意承志，谕父母于道。参直养者也，安能为孝乎？”"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-liji-22-34",
+          "source": "礼记",
+          "chapter": "第22章 祭义",
+          "section": 34,
+          "score": 0.4905,
+          "vectorScore": 0,
+          "lexicalScore": 0.545,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "不敬",
+            "父母"
+          ],
+          "text": "曾子曰：“身也者，父母之遗体也。行父母之遗体，敢不敬乎？居处不庄，非孝也；事君不忠，非孝也；莅官不敬，非孝也；朋友不信，非孝也；战陈无勇，非孝也。五者不遂，灾及于亲。敢不敬乎？亨孰膻芗尝而荐之，非孝也，养也。君子之所谓孝也者，国人称愿然曰‘幸哉’。有子如此，所谓孝也已。众之本，教曰孝，其行曰养。养可能也，敬为难。敬可能也，安为难。安可能也，卒为难。父母既没慎行其身，不遗父母恶名，可谓能终矣！仁者仁此者也，礼者履此者也，义者宜此者也，信者信此者也，强者强此者也。乐自顺此生，刑自反此作。”"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-liji-23-23",
+          "source": "礼记",
+          "chapter": "第23章 祭统",
+          "section": 23,
+          "score": 0.4905,
+          "vectorScore": 0,
+          "lexicalScore": 0.545,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "不敬",
+            "父母"
+          ],
+          "text": "凡祭有四时：春祭曰礿，夏祭曰禘，秋祭曰尝，冬祭曰烝。礿、禘，阳义也；尝、烝，阴义也。禘者阳之盛也，尝者阴之盛也。故曰：“莫重于禘尝。”古者于禘也，发爵赐服，顺阳义也。于尝也，出田邑，发秋政，顺阴义也。故记曰：“尝之日，发公室。”示赏也。草艾则墨，未发秋政，则民弗敢草也。故曰：“禘尝之义大矣！治国之本也，不可不知也。”明其义者君也，能其事者臣也。不明其义，君人不全；不能其事，为臣不全。夫义者所以济志也，诸德之发也，是故其德盛者其志厚，其志厚者其义章，其义章者其祭也敬。祭敬，则竟内之子孙莫敢不敬矣。是故君子之祭也，必身亲莅之，有故则使人可也。虽使人也，君不失其义者，君明其义故也。其德薄者其志轻，疑于其义而求祭，使之必敬也弗可得已。祭而不敬，何以为民父母矣！"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-liji-28-22",
+          "source": "礼记",
+          "chapter": "第28章 坊记",
+          "section": 22,
+          "score": 0.4905,
+          "vectorScore": 0,
+          "lexicalScore": 0.545,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "能养",
+            "不敬"
+          ],
+          "text": "子云：“小人皆能养其亲，君子不敬，何以辨？”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-liji-10-15",
+          "rysxguji-shangshu-35-2",
+          "rysxguji-lunyu-4-15"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-2-7",
+          "rysxguji-liji-22-33",
+          "rysxguji-liji-22-34"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-2-7",
+          "rysxguji-liji-22-33",
+          "rysxguji-liji-22-34"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "filial-care"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "问孝",
+          "能养",
+          "不敬",
+          "父母",
+          "敬养"
+        ],
+        "trustedMatchedTerms": [
+          "问孝",
+          "能养",
+          "不敬",
+          "父母"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 25,
+      "category": "variant",
+      "query": "为政以德",
+      "passed": true,
+      "note": "为政以德应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-2-1",
+          "rysxguji-lunyu-2-2"
+        ]
+      },
+      "resultCount": 1,
+      "top3Ids": [
+        "rysxguji-lunyu-2-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-2-1",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "section": 1,
+          "score": 0.7803,
+          "vectorScore": 0.9944,
+          "lexicalScore": 0.8301,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "为政以德",
+            "为政",
+            "政以",
+            "以德"
+          ],
+          "text": "子曰：“为政以德，譬如北辰，居其所而众星共之。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-2-1",
+          "lunyu-1-5",
+          "rysxguji-lunyu-12-22"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-2-1",
+          "rysxguji-chunqiu-zuozhuan-71-8",
+          "rysxguji-lunyu-2-2"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-2-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [
+          "为政以德"
+        ],
+        "trustedMatchedTerms": [
+          "为政以德",
+          "为政",
+          "政以",
+          "以德"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 26,
+      "category": "variant",
+      "query": "道千乘之国",
+      "passed": true,
+      "note": "道千乘之国应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "lunyu-1-5",
+          "rysxguji-lunyu-1-1"
+        ]
+      },
+      "resultCount": 2,
+      "top3Ids": [
+        "lunyu-1-5",
+        "rysxguji-lunyu-1-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "lunyu-1-5",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 5,
+          "score": 0.7985,
+          "vectorScore": 0.9953,
+          "lexicalScore": 0.8522,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "道千乘之国",
+            "道千",
+            "千乘",
+            "乘之",
+            "之国"
+          ],
+          "text": "道千乘之国，敬事而信，节用而爱人，使民以时。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.767,
+          "vectorScore": 0,
+          "lexicalScore": 0.8522,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "道千乘之国",
+            "道千",
+            "千乘",
+            "乘之",
+            "之国"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "lunyu-1-5",
+          "rysxguji-lunyu-2-1",
+          "rysxguji-lunyu-12-22"
+        ],
+        "lexicalTop3Ids": [
+          "lunyu-1-5",
+          "rysxguji-lunyu-1-1",
+          "rysxguji-chunqiu-zuozhuan-243-3"
+        ],
+        "fusionTop3Ids": [
+          "lunyu-1-5",
+          "rysxguji-lunyu-1-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [
+          "道千乘之国"
+        ],
+        "trustedMatchedTerms": [
+          "道千乘之国",
+          "道千",
+          "千乘",
+          "乘之",
+          "之国"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 27,
+      "category": "variant",
+      "query": "为政者怎样使民服",
+      "passed": true,
+      "note": "举直错诸枉、民服应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-2-15"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-shangshu-12-3",
+        "rysxguji-zhouyi-15-9",
+        "rysxguji-lunyu-2-15"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-shangshu-12-3",
+          "source": "尚书",
+          "chapter": "第12章 商书 太甲中第六",
+          "section": 3,
+          "score": 0.5136,
+          "vectorScore": 0.9716,
+          "lexicalScore": 0.5065,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "民服"
+          ],
+          "text": "伊尹拜手稽首曰：“修厥身，允德协于下，惟明后。先王子惠困穷，民服厥命，罔有不悦。并其有邦厥邻，乃曰：‘徯我后，后来无罚。’王懋乃德，视乃厥祖，无时豫怠。奉先思孝，接下思恭。视远惟明；听德惟聪。朕承王之休无斁。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-zhouyi-15-9",
+          "source": "周易",
+          "chapter": "第15章 15. 谦（卦十五）",
+          "section": 9,
+          "score": 0.5127,
+          "vectorScore": 0.9569,
+          "lexicalScore": 0.5065,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "民服"
+          ],
+          "text": "《象》曰：“劳谦君子”，万民服也。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-lunyu-2-15",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "section": 15,
+          "score": 0.4919,
+          "vectorScore": 0,
+          "lexicalScore": 0.5465,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "民服",
+            "为政"
+          ],
+          "text": "哀公问曰：“何为则民服？”孔子对曰：“举直错诸枉，则民服；举枉错诸直，则民不服。”"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-chunqiu-zuozhuan-14-14",
+          "source": "春秋左传",
+          "chapter": "第14章 ◇桓公二年",
+          "section": 14,
+          "score": 0.4558,
+          "vectorScore": 0,
+          "lexicalScore": 0.5065,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "民服"
+          ],
+          "text": "初，晋穆侯之夫人姜氏以条之役生太子，命之曰仇。其弟以千亩之战生，命之曰成师。师服曰：“异哉，君之名子也！夫名以制义，义以出礼，礼以体政，政以正民。是以政成而民听，易则生乱。嘉耦曰妃，怨耦曰仇，古之命也。今君命大子曰仇，弟曰成师，始兆乱矣，兄其替乎？”惠之二十四年，晋始乱，故封桓叔于曲沃，靖侯之孙栾宾傅之。师服曰：“吾闻国家之立也，本大而末小，是以能固。故天子建国，诸侯立家，卿置侧室，大夫有贰宗，士有隶子弟，庶人、工、商，各有分亲，皆有等衰。是以民服事其上而下无觊觎。今晋，甸侯也，而建国。本既弱矣，其能久乎？”惠之三十年，晋潘父弑昭侯而立桓叔，不克。晋人立孝侯。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-chunqiu-zuozhuan-214-10",
+          "source": "春秋左传",
+          "chapter": "第214章 ◇昭公三十二年",
+          "section": 10,
+          "score": 0.4558,
+          "vectorScore": 0,
+          "lexicalScore": 0.5065,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "民服"
+          ],
+          "text": "赵简子问于史墨曰：“季氏出其君，而民服焉，诸侯与之，君死于外，而莫之或罪也。”对曰：“物生有两，有三，有五，有陪贰。故天有三辰，地有五行，体有左右，各有妃耦。王有公，诸侯有卿，皆有贰也。天生季氏，以贰鲁侯，为日久矣。民之服焉，不亦宜乎？鲁君世从其失，季氏世修其勤，民忘君矣。虽死于外，其谁矜之？社稷无常奉，君臣无常位，自古以然。故《诗》曰：‘高岸为谷，深谷为陵。’三后之姓，于今为庶，王所知也。在《易》卦，雷乘《乾》曰《大壮》ⅲⅰ，天之道也。昔成季友，桓之季也，文姜之爱子也，始震而卜。卜人谒之，曰：‘生有嘉闻，其名曰友，为公室辅。’及生，如卜人之言，有文在其手曰‘友’，遂以名之。既而有大功于鲁，受费以为上卿。至于文子、武子，世增其业，不废旧绩。鲁文公薨，而东门遂杀適立庶，鲁君于是乎失国，政在季氏，于此君也，四公矣。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-12-22",
+          "rysxguji-lunyu-2-1",
+          "lunyu-1-5"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-2-15",
+          "rysxguji-chunqiu-zuozhuan-14-14",
+          "rysxguji-chunqiu-zuozhuan-214-10"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-shangshu-12-3",
+          "rysxguji-zhouyi-15-9",
+          "rysxguji-lunyu-2-15"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [
+          "民服"
+        ],
+        "trustedMatchedTerms": [
+          "民服",
+          "为政"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 28,
+      "category": "variant",
+      "query": "举直错诸枉",
+      "passed": true,
+      "note": "举直错诸枉应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-2-15"
+        ]
+      },
+      "resultCount": 3,
+      "top3Ids": [
+        "rysxguji-lunyu-12-22",
+        "rysxguji-lunyu-12-23",
+        "rysxguji-lunyu-2-15"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-12-22",
+          "source": "论语",
+          "chapter": "第12章 颜渊第十二",
+          "section": 22,
+          "score": 0.8045,
+          "vectorScore": 0.9918,
+          "lexicalScore": 0.8597,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "举直错诸枉",
+            "举直",
+            "直错",
+            "错诸",
+            "诸枉"
+          ],
+          "text": "樊迟未达。子曰：“举直错诸枉，能使枉者直。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-12-23",
+          "source": "论语",
+          "chapter": "第12章 颜渊第十二",
+          "section": 23,
+          "score": 0.8039,
+          "vectorScore": 0.9825,
+          "lexicalScore": 0.8597,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "举直错诸枉",
+            "举直",
+            "直错",
+            "错诸",
+            "诸枉"
+          ],
+          "text": "樊迟退，见子夏曰：“乡也吾见于夫子而问知，子曰：‘举直错诸枉，能使枉者直。’何谓也？”子夏曰：“富哉，言乎！舜有天下，选于众，举皋陶，不仁者远矣。汤有天下，选于众，举伊尹，不仁者远矣。”"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-lunyu-2-15",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "section": 15,
+          "score": 0.7737,
+          "vectorScore": 0,
+          "lexicalScore": 0.8597,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "举直错诸枉",
+            "举直",
+            "直错",
+            "错诸",
+            "诸枉"
+          ],
+          "text": "哀公问曰：“何为则民服？”孔子对曰：“举直错诸枉，则民服；举枉错诸直，则民不服。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-12-22",
+          "lunyu-1-5",
+          "rysxguji-lunyu-2-1"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-12-22",
+          "rysxguji-lunyu-12-23",
+          "rysxguji-lunyu-2-15"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-12-22",
+          "rysxguji-lunyu-12-23",
+          "rysxguji-lunyu-2-15"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [
+          "举直错诸枉"
+        ],
+        "trustedMatchedTerms": [
+          "举直错诸枉",
+          "举直",
+          "直错",
+          "错诸",
+          "诸枉"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 29,
+      "category": "variant",
+      "query": "礼之用和为贵",
+      "passed": true,
+      "note": "礼之用、和为贵应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-1-7"
+        ]
+      },
+      "resultCount": 2,
+      "top3Ids": [
+        "rysxguji-lunyu-1-7",
+        "rysxguji-liji-45-4"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-1-7",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 7,
+          "score": 0.6669,
+          "vectorScore": 0.9615,
+          "lexicalScore": 0.6942,
+          "evidenceScore": 1,
+          "matchedTerms": [
+            "礼之用",
+            "礼之",
+            "之用",
+            "和为",
+            "为贵"
+          ],
+          "text": "有子曰：“礼之用，和为贵。先王之道斯为美，小大由之。有所不行，知和而和，不以礼节之，亦不可行也。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-liji-45-4",
+          "source": "礼记",
+          "chapter": "第45章 燕义",
+          "section": 4,
+          "score": 0.5147,
+          "vectorScore": 0,
+          "lexicalScore": 0.5719,
+          "evidenceScore": 1,
+          "matchedTerms": [
+            "礼之用",
+            "礼之",
+            "之用"
+          ],
+          "text": "君举旅于宾，及君所赐爵，皆降再拜稽首。升成拜，明臣礼也。君荅拜之，礼无不荅，明君上之礼也。臣下竭力尽能以立功于国，君必报之以爵禄，故臣下皆务竭力尽能以立功，是以国安而君宁。礼无不荅，言上之不虚取于下也。上必明正道以道民，民道之而有功，然后取其什一。故上用足而下不匮也，是以上下和亲而不相怨也。和宁，礼之用也，此君臣上下之大义也。故曰：燕礼者，所以明君臣之义也。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-2-14",
+          "rysxguji-lunyu-1-7",
+          "rysxguji-zhouyi-7-10"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-1-7",
+          "rysxguji-liji-45-4",
+          "rysxguji-liji-39-13"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-1-7",
+          "rysxguji-liji-45-4"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [
+          "礼之用"
+        ],
+        "trustedMatchedTerms": [
+          "礼之用",
+          "礼之",
+          "之用",
+          "和为",
+          "为贵"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 30,
+      "category": "variant",
+      "query": "做事有分寸不过也不及",
+      "passed": true,
+      "note": "分寸/过不及应回到中庸。",
+      "expectation": {
+        "type": "sourceTop3",
+        "sources": [
+          "中庸"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-zhongyong-1-2",
+        "rysxguji-zhongyong-1-4",
+        "zhongyong-4-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-zhongyong-1-2",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 2,
+          "score": 0.8077,
+          "vectorScore": 0,
+          "lexicalScore": 0.8975,
+          "evidenceScore": 4.45,
+          "matchedTerms": [
+            "中庸",
+            "时中",
+            "君子中庸",
+            "君子",
+            "子中"
+          ],
+          "text": "仲尼曰：“君子中庸，小人反中庸，君子之中庸也，君子而时中；小人之中庸也，小人而无忌惮也。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-zhongyong-1-4",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 4,
+          "score": 0.7733,
+          "vectorScore": 0,
+          "lexicalScore": 0.8592,
+          "evidenceScore": 3.425,
+          "matchedTerms": [
+            "中庸",
+            "知者过之",
+            "愚者不及",
+            "不及",
+            "知者",
+            "者过",
+            "过之",
+            "愚者",
+            "者不"
+          ],
+          "text": "子曰：“道之不行也，我知之矣：知者过之，愚者不及也。道之不明也，我知之矣：贤者过之，不肖者不及也。人莫不饮食也，鲜能知味也。”"
+        },
+        {
+          "rank": 3,
+          "id": "zhongyong-4-1",
+          "source": "中庸",
+          "chapter": "第四章",
+          "section": 1,
+          "score": 0.7733,
+          "vectorScore": 0,
+          "lexicalScore": 0.8592,
+          "evidenceScore": 3.425,
+          "matchedTerms": [
+            "中庸",
+            "知者过之",
+            "愚者不及",
+            "不及",
+            "知者",
+            "者过",
+            "过之",
+            "愚者",
+            "者不"
+          ],
+          "text": "道之不行也，我知之矣：知者过之，愚者不及也。"
+        },
+        {
+          "rank": 4,
+          "id": "zhongyong-2-1",
+          "source": "中庸",
+          "chapter": "第二章",
+          "section": 1,
+          "score": 0.6971,
+          "vectorScore": 0,
+          "lexicalScore": 0.7746,
+          "evidenceScore": 3.4,
+          "matchedTerms": [
+            "中庸",
+            "时中",
+            "君子"
+          ],
+          "text": "君子之中庸也，君子而时中；小人之中庸也，小人而无忌惮也。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-liji-29-2",
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "section": 2,
+          "score": 0.6278,
+          "vectorScore": 0,
+          "lexicalScore": 0.6975,
+          "evidenceScore": 4.25,
+          "matchedTerms": [
+            "中庸",
+            "时中",
+            "君子中庸",
+            "君子",
+            "子中"
+          ],
+          "text": "仲尼曰：“君子中庸，小人反中庸。君子之中庸也，君子而时中；小人之中庸也，小人而无忌惮也。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-20-8",
+          "rysxguji-zhouyi-20-9",
+          "rysxguji-zhouyi-57-4"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-zhongyong-1-2",
+          "rysxguji-zhongyong-1-4",
+          "zhongyong-4-1"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-zhongyong-1-2",
+          "rysxguji-zhongyong-1-4",
+          "zhongyong-4-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "measure-choice"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "中庸",
+          "时中",
+          "过犹不及",
+          "君子中庸",
+          "知者过之",
+          "愚者不及",
+          "君子"
+        ],
+        "trustedMatchedTerms": [
+          "中庸",
+          "时中",
+          "君子中庸",
+          "君子",
+          "子中",
+          "知者过之",
+          "愚者不及",
+          "不及",
+          "知者",
+          "者过",
+          "过之",
+          "愚者",
+          "者不"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 31,
+      "category": "variant",
+      "query": "知者过之愚者不及",
+      "passed": true,
+      "note": "知者过之、愚者不及应回到中庸。",
+      "expectation": {
+        "type": "sourceTop3",
+        "sources": [
+          "中庸"
+        ]
+      },
+      "resultCount": 3,
+      "top3Ids": [
+        "zhongyong-4-1",
+        "rysxguji-zhongyong-1-4",
+        "rysxguji-liji-29-4"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "zhongyong-4-1",
+          "source": "中庸",
+          "chapter": "第四章",
+          "section": 1,
+          "score": 0.7265,
+          "vectorScore": 0.9156,
+          "lexicalScore": 0.7702,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "知者过之",
+            "愚者不及",
+            "知者",
+            "者过",
+            "过之",
+            "愚者",
+            "者不",
+            "不及"
+          ],
+          "text": "道之不行也，我知之矣：知者过之，愚者不及也。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-zhongyong-1-4",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 4,
+          "score": 0.7264,
+          "vectorScore": 0.9131,
+          "lexicalScore": 0.7702,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "知者过之",
+            "愚者不及",
+            "知者",
+            "者过",
+            "过之",
+            "愚者",
+            "者不",
+            "不及"
+          ],
+          "text": "子曰：“道之不行也，我知之矣：知者过之，愚者不及也。道之不明也，我知之矣：贤者过之，不肖者不及也。人莫不饮食也，鲜能知味也。”"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-liji-29-4",
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "section": 4,
+          "score": 0.7263,
+          "vectorScore": 0.912,
+          "lexicalScore": 0.7702,
+          "evidenceScore": 2.1,
+          "matchedTerms": [
+            "知者过之",
+            "愚者不及",
+            "知者",
+            "者过",
+            "过之",
+            "愚者",
+            "者不",
+            "不及"
+          ],
+          "text": "子曰：“道之不行也，我知之矣！知者过之，愚者不及也。道之不明也，我知之矣！贤者过之，不肖者不及也。人莫不饮食也，鲜能知味也。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-11-15",
+          "zhongyong-4-1",
+          "rysxguji-zhongyong-1-4"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-liji-29-4",
+          "rysxguji-zhongyong-1-4",
+          "zhongyong-4-1"
+        ],
+        "fusionTop3Ids": [
+          "zhongyong-4-1",
+          "rysxguji-zhongyong-1-4",
+          "rysxguji-liji-29-4"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [
+          "知者过之",
+          "愚者不及"
+        ],
+        "trustedMatchedTerms": [
+          "知者过之",
+          "愚者不及",
+          "知者",
+          "者过",
+          "过之",
+          "愚者",
+          "者不",
+          "不及"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 32,
+      "category": "variant",
+      "query": "情绪没发作前怎么保持中",
+      "passed": true,
+      "note": "未发之中应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "zhongyong-1-2",
+          "rysxguji-zhongyong-1-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-liji-29-1",
+        "rysxguji-zhongyong-1-1",
+        "zhongyong-1-2"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-liji-29-1",
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "section": 1,
+          "score": 0.6539,
+          "vectorScore": 0,
+          "lexicalScore": 0.7265,
+          "evidenceScore": 5.425,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "中和",
+            "中也",
+            "和也",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发谓之中，发而皆中节谓之和。中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-zhongyong-1-1",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 1,
+          "score": 0.6539,
+          "vectorScore": 0,
+          "lexicalScore": 0.7265,
+          "evidenceScore": 5.425,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "中和",
+            "中也",
+            "和也",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发，谓之中；发而皆中节，谓之和；中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 3,
+          "id": "zhongyong-1-2",
+          "source": "中庸",
+          "chapter": "第一章",
+          "section": 2,
+          "score": 0.5477,
+          "vectorScore": 0,
+          "lexicalScore": 0.6085,
+          "evidenceScore": 2.25,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "未发",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "喜怒哀乐之未发，谓之中；发而皆中节，谓之和。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-xunzi-18-4",
+          "source": "荀子",
+          "chapter": "第18章 天论篇第十七",
+          "section": 4,
+          "score": 0.4576,
+          "vectorScore": 0,
+          "lexicalScore": 0.5085,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天职既立，天功既成，形具而神生，好恶喜怒哀乐臧焉，夫是之谓天情。耳目鼻口形能各有接而不相能也，夫是之谓天官。心居中虚，以治五官，夫是之谓天君。财非其类以养其类，夫是之谓天养。顺其类者谓之福，逆其类者谓之祸，夫是之谓天政。暗其天君，乱其天官，弃其天养，逆其天政，背其天情，以丧天功，夫是之谓大凶。圣人清其天君，正其天官，备其天养，顺其天政，养其天情，以全其天功。如是，则知其所为，知其所不为矣；则天地官而万物役矣。其行曲治，其养曲适，其生不伤，夫是之谓知天。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-xunzi-1-7",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "section": 7,
+          "score": 0.4413,
+          "vectorScore": 0,
+          "lexicalScore": 0.4894,
+          "evidenceScore": 2.15,
+          "matchedTerms": [
+            "中和",
+            "和也"
+          ],
+          "text": "学恶乎始？恶乎终？曰：其数则始乎诵经，终乎读礼；其义则始乎为士，终乎为圣人。真积力久则入。学至乎没而后止也。故学数有终，若其义则不可须臾舍也。为之人也，舍之禽兽也。故书者、政事之纪也；诗者、中声之所止也；礼者、法之大兮，类之纲纪也。故学至乎礼而止矣。夫是之谓道德之极。礼之敬文也，乐之中和也，诗书之博也，春秋之微也，在天地之间者毕矣。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-chunqiu-zuozhuan-3-3",
+          "rysxguji-xunzi-4-1",
+          "rysxguji-shangshu-16-3"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "anxiety-stability"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "知止",
+          "定静安虑得",
+          "喜怒哀乐",
+          "未发",
+          "中和",
+          "不愠",
+          "中也",
+          "和也"
+        ],
+        "trustedMatchedTerms": [
+          "喜怒哀乐",
+          "未发",
+          "中和",
+          "中也",
+          "和也",
+          "喜怒",
+          "怒哀",
+          "哀乐",
+          "不愠",
+          "知止"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 33,
+      "category": "variant",
+      "query": "喜怒哀乐发而中节",
+      "passed": true,
+      "note": "喜怒哀乐中节应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "zhongyong-1-2",
+          "rysxguji-zhongyong-1-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "zhongyong-1-2",
+        "rysxguji-liji-29-1",
+        "rysxguji-zhongyong-1-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "zhongyong-1-2",
+          "source": "中庸",
+          "chapter": "第一章",
+          "section": 2,
+          "score": 0.7515,
+          "vectorScore": 0.8874,
+          "lexicalScore": 0.8028,
+          "evidenceScore": 2.3,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "中节",
+            "喜怒",
+            "怒哀",
+            "哀乐",
+            "发而"
+          ],
+          "text": "喜怒哀乐之未发，谓之中；发而皆中节，谓之和。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-liji-29-1",
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "section": 1,
+          "score": 0.7225,
+          "vectorScore": 0,
+          "lexicalScore": 0.8028,
+          "evidenceScore": 2.3,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "中节",
+            "喜怒",
+            "怒哀",
+            "哀乐",
+            "发而"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发谓之中，发而皆中节谓之和。中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-zhongyong-1-1",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 1,
+          "score": 0.7225,
+          "vectorScore": 0,
+          "lexicalScore": 0.8028,
+          "evidenceScore": 2.3,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "中节",
+            "喜怒",
+            "怒哀",
+            "哀乐",
+            "发而"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发，谓之中；发而皆中节，谓之和；中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-xunzi-18-4",
+          "source": "荀子",
+          "chapter": "第18章 天论篇第十七",
+          "section": 4,
+          "score": 0.5916,
+          "vectorScore": 0.8546,
+          "lexicalScore": 0.6101,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "喜怒哀乐",
+            "喜怒",
+            "怒哀",
+            "哀乐"
+          ],
+          "text": "天职既立，天功既成，形具而神生，好恶喜怒哀乐臧焉，夫是之谓天情。耳目鼻口形能各有接而不相能也，夫是之谓天官。心居中虚，以治五官，夫是之谓天君。财非其类以养其类，夫是之谓天养。顺其类者谓之福，逆其类者谓之祸，夫是之谓天政。暗其天君，乱其天官，弃其天养，逆其天政，背其天情，以丧天功，夫是之谓大凶。圣人清其天君，正其天官，备其天养，顺其天政，养其天情，以全其天功。如是，则知其所为，知其所不为矣；则天地官而万物役矣。其行曲治，其养曲适，其生不伤，夫是之谓知天。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-zhouyi-39-14",
+          "source": "周易",
+          "chapter": "第39章 39. 蹇（卦三十九）",
+          "section": 14,
+          "score": 0.4996,
+          "vectorScore": 0.9081,
+          "lexicalScore": 0.494,
+          "evidenceScore": 1.175,
+          "matchedTerms": [
+            "中节"
+          ],
+          "text": "《象》曰：“大蹇朋来”，以中节也。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-39-14",
+          "rysxguji-liji-16-9",
+          "zhongyong-1-2"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-2"
+        ],
+        "fusionTop3Ids": [
+          "zhongyong-1-2",
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [
+          "喜怒哀乐",
+          "中节"
+        ],
+        "trustedMatchedTerms": [
+          "喜怒哀乐",
+          "中节",
+          "喜怒",
+          "怒哀",
+          "哀乐",
+          "发而"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 34,
+      "category": "variant",
+      "query": "中和天地位万物育",
+      "passed": true,
+      "note": "致中和、天地位焉应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "zhongyong-1-3",
+          "rysxguji-zhongyong-1-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-liji-29-1",
+        "rysxguji-zhongyong-1-1",
+        "zhongyong-1-3"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-liji-29-1",
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "section": 1,
+          "score": 0.6424,
+          "vectorScore": 0,
+          "lexicalScore": 0.7138,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "中和",
+            "天地",
+            "地位",
+            "万物",
+            "物育"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发谓之中，发而皆中节谓之和。中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-zhongyong-1-1",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 1,
+          "score": 0.6424,
+          "vectorScore": 0,
+          "lexicalScore": 0.7138,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "中和",
+            "天地",
+            "地位",
+            "万物",
+            "物育"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发，谓之中；发而皆中节，谓之和；中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 3,
+          "id": "zhongyong-1-3",
+          "source": "中庸",
+          "chapter": "第一章",
+          "section": 3,
+          "score": 0.6424,
+          "vectorScore": 0,
+          "lexicalScore": 0.7138,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "中和",
+            "天地",
+            "地位",
+            "万物",
+            "物育"
+          ],
+          "text": "致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-liji-17-34",
+          "source": "礼记",
+          "chapter": "第17章 乐记",
+          "section": 34,
+          "score": 0.4919,
+          "vectorScore": 0,
+          "lexicalScore": 0.5465,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "中和",
+            "天地"
+          ],
+          "text": "是故，乐在宗庙之中，君臣上下同听之，则莫不和敬。在族长乡里之中，长幼同听之，则莫不和顺。在闺门之内，父子兄弟同听之，则莫不和亲。故乐者，审一以定和，比物以饰节，节奏合以成文。所以合和父子君臣，附亲万民也。是先王立乐之方也。故听其雅颂之声，志意得广焉。执其干戚，习其俯仰诎伸，容貌得庄焉。行其缀兆，要其节奏，行列得正焉，进退得齐焉。故乐者，天地之命，中和之纪，人情之所不能免也。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-xunzi-1-7",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "section": 7,
+          "score": 0.4919,
+          "vectorScore": 0,
+          "lexicalScore": 0.5465,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "中和",
+            "天地"
+          ],
+          "text": "学恶乎始？恶乎终？曰：其数则始乎诵经，终乎读礼；其义则始乎为士，终乎为圣人。真积力久则入。学至乎没而后止也。故学数有终，若其义则不可须臾舍也。为之人也，舍之禽兽也。故书者、政事之纪也；诗者、中声之所止也；礼者、法之大兮，类之纲纪也。故学至乎礼而止矣。夫是之谓道德之极。礼之敬文也，乐之中和也，诗书之博也，春秋之微也，在天地之间者毕矣。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-32-7",
+          "rysxguji-zhouyi-63-2",
+          "rysxguji-zhouyi-34-6"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-3"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-3"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [
+          "中和"
+        ],
+        "coreTerms": [
+          "中和"
+        ],
+        "trustedMatchedTerms": [
+          "中和",
+          "天地",
+          "地位",
+          "万物",
+          "物育"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 35,
+      "category": "variant",
+      "query": "什么是天命率性修道",
+      "passed": true,
+      "note": "天命之谓性应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "zhongyong-1-1",
+          "rysxguji-zhongyong-1-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-liji-29-1",
+        "rysxguji-zhongyong-1-1",
+        "zhongyong-1-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-liji-29-1",
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "section": 1,
+          "score": 0.6369,
+          "vectorScore": 0,
+          "lexicalScore": 0.7077,
+          "evidenceScore": 3,
+          "matchedTerms": [
+            "天命",
+            "率性",
+            "修道"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发谓之中，发而皆中节谓之和。中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-zhongyong-1-1",
+          "source": "中庸",
+          "chapter": "第1章 正文",
+          "section": 1,
+          "score": 0.6369,
+          "vectorScore": 0,
+          "lexicalScore": 0.7077,
+          "evidenceScore": 3,
+          "matchedTerms": [
+            "天命",
+            "率性",
+            "修道"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。道也者，不可须臾离也，可离非道也。是故君子戒慎乎其所不睹，恐惧乎其所不闻。莫见乎隐，莫显乎微，故君子慎其独也。喜怒哀乐之未发，谓之中；发而皆中节，谓之和；中也者，天下之大本也；和也者，天下之达道也。致中和，天地位焉，万物育焉。"
+        },
+        {
+          "rank": 3,
+          "id": "zhongyong-1-1",
+          "source": "中庸",
+          "chapter": "第一章",
+          "section": 1,
+          "score": 0.6369,
+          "vectorScore": 0,
+          "lexicalScore": 0.7077,
+          "evidenceScore": 3,
+          "matchedTerms": [
+            "天命",
+            "率性",
+            "修道"
+          ],
+          "text": "天命之谓性，率性之谓道，修道之谓教。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-chunqiu-zuozhuan-118-5",
+          "source": "春秋左传",
+          "chapter": "第118章 ◇宣公三年",
+          "section": 5,
+          "score": 0.3994,
+          "vectorScore": 0,
+          "lexicalScore": 0.4383,
+          "evidenceScore": 1,
+          "matchedTerms": [
+            "天命"
+          ],
+          "text": "楚子伐陆浑之戎，遂至于洛，观兵于周疆。定王使王孙满劳楚子。楚子问鼎之大小轻重焉。对曰：“在德不在鼎。昔夏之方有德也，远方图物，贡金九牧，铸鼎象物，百物而为之备，使民知神、奸。故民入川泽山林，不逢不若。螭魅罔两，莫能逢之，用能协于上下以承天休。桀有昏德，鼎迁于商，载祀六百。商纣暴虐，鼎迁于周。德之休明，虽小，重也。其奸回昏乱，虽大，轻也。天祚明德，有所厎止。成王定鼎于郏鄏，卜世三十，卜年七百，天所命也。周德虽衰，天命未改，鼎之轻重，未可问也。”"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-chunqiu-zuozhuan-180-25",
+          "source": "春秋左传",
+          "chapter": "第180章 ◇襄公二十九年",
+          "section": 25,
+          "score": 0.3994,
+          "vectorScore": 0,
+          "lexicalScore": 0.4383,
+          "evidenceScore": 1,
+          "matchedTerms": [
+            "天命"
+          ],
+          "text": "郑伯有使公孙黑如楚，辞曰：“楚、郑方恶，而使余往，是杀余也。”伯有曰：“世行也。”子皙曰：“可则往，难则已，何世之有？”伯有将强使之。子皙怒，将伐伯有氏，大夫和之。十二月己巳，郑大夫盟于伯有氏。裨谌曰：“是盟也，其与几何？《诗》曰：‘君子屡盟，乱是用长。’今是长乱之道也。祸未歇也，必三年而后能纾。”然明曰：“政将焉往？”裨谌曰：“善之代不善，天命也，其焉辟子产？举不逾等，则位班也。择善而举，则世隆也。天又除之，夺伯有魄，子西即世，将焉辟之？天祸郑久矣，其必使子产息之，乃犹可以戾。不然，将亡矣。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-mozi-33-3",
+          "rysxguji-mozi-33-15",
+          "rysxguji-mozi-33-19"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-1"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-liji-29-1",
+          "rysxguji-zhongyong-1-1",
+          "zhongyong-1-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [
+          "天命",
+          "率性",
+          "修道"
+        ],
+        "trustedMatchedTerms": [
+          "天命",
+          "率性",
+          "修道"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 36,
+      "category": "variant",
+      "query": "慎独是什么意思",
+      "passed": true,
+      "note": "慎独应回到大学系统。",
+      "expectation": {
+        "type": "sourceTop3",
+        "sources": [
+          "大学"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-daxue-1-9",
+        "rysxguji-daxue-1-4",
+        "rysxguji-daxue-1-10"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-daxue-1-9",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 9,
+          "score": 0.8951,
+          "vectorScore": 0.9276,
+          "lexicalScore": 0.9749,
+          "evidenceScore": 4.5,
+          "matchedTerms": [
+            "大学",
+            "诚其意",
+            "毋自欺",
+            "慎其独",
+            "诚其",
+            "其意",
+            "毋自",
+            "自欺",
+            "慎其",
+            "其独"
+          ],
+          "text": "所谓诚其意者，毋自欺也。如恶恶臭，如好好色，此之谓自谦。故君子必慎其独也。小人闲居为不善，无所不至，见君子而后厌然，掩其不善，而著其善。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-daxue-1-4",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 4,
+          "score": 0.7461,
+          "vectorScore": 0.8953,
+          "lexicalScore": 0.7956,
+          "evidenceScore": 2.35,
+          "matchedTerms": [
+            "大学",
+            "诚其意",
+            "诚其",
+            "其意"
+          ],
+          "text": "古之欲明明德于天下者，先治其国。欲治其国者，先齐其家，欲齐其家者，先修其身。欲修其身者，先正其心。欲正其心者，先诚其意。欲诚其意者，先致其知。致知在格物。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-daxue-1-10",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 10,
+          "score": 0.743,
+          "vectorScore": 0.843,
+          "lexicalScore": 0.7956,
+          "evidenceScore": 2.35,
+          "matchedTerms": [
+            "大学",
+            "慎其独",
+            "慎其",
+            "其独"
+          ],
+          "text": "人之视己，如见其肺肝然，则何益矣。此谓诚于中，形于外，故君子必慎其独也。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-daxue-1-11",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 11,
+          "score": 0.7429,
+          "vectorScore": 0.8423,
+          "lexicalScore": 0.7956,
+          "evidenceScore": 2.35,
+          "matchedTerms": [
+            "大学",
+            "诚其意",
+            "诚其",
+            "其意"
+          ],
+          "text": "曾子曰：“十目所视，十手所指，其严乎！”富润屋，德润身，心广体胖，故君子必诚其意。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-liji-40-4",
+          "source": "礼记",
+          "chapter": "第40章 大学",
+          "section": 4,
+          "score": 0.7268,
+          "vectorScore": 0.8561,
+          "lexicalScore": 0.7749,
+          "evidenceScore": 4.3,
+          "matchedTerms": [
+            "大学",
+            "诚其意",
+            "毋自欺",
+            "慎其独",
+            "诚其",
+            "其意",
+            "毋自",
+            "自欺",
+            "慎其",
+            "其独"
+          ],
+          "text": "所谓诚其意者，毋自欺也。如恶恶臭，如好好色，此之谓自谦。故君子必慎其独也。小人闲居为不善，无所不至，见君子而后厌然，揜其不善而著其善。人之视己，如见其肺肝然，则何益矣？此谓诚于中，形于外，故君子必慎其独也。曾子曰：“十目所视，十手所指，其严乎？”富润屋，德润身，心广体胖，故君子必诚其意。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-daxue-1-9",
+          "rysxguji-daxue-1-4",
+          "rysxguji-liji-40-4"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-daxue-1-9",
+          "rysxguji-daxue-1-10",
+          "rysxguji-daxue-1-11"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-daxue-1-9",
+          "rysxguji-daxue-1-4",
+          "rysxguji-daxue-1-10"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "careful-solitude"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "慎独",
+          "大学",
+          "诚其意",
+          "毋自欺",
+          "慎其独"
+        ],
+        "trustedMatchedTerms": [
+          "大学",
+          "诚其意",
+          "毋自欺",
+          "慎其独",
+          "诚其",
+          "其意",
+          "毋自",
+          "自欺",
+          "慎其",
+          "其独"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 37,
+      "category": "variant",
+      "query": "知止而后定",
+      "passed": true,
+      "note": "知止定静安虑得应回到大学。",
+      "expectation": {
+        "type": "sourceTop3",
+        "sources": [
+          "大学"
+        ]
+      },
+      "resultCount": 3,
+      "top3Ids": [
+        "rysxguji-daxue-1-2",
+        "rysxguji-liji-40-1",
+        "rysxguji-hanfeizi-79-10"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-daxue-1-2",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 2,
+          "score": 0.5909,
+          "vectorScore": 0,
+          "lexicalScore": 0.6566,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "知止",
+            "止而",
+            "而后"
+          ],
+          "text": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-liji-40-1",
+          "source": "礼记",
+          "chapter": "第40章 大学",
+          "section": 1,
+          "score": 0.5909,
+          "vectorScore": 0,
+          "lexicalScore": 0.6566,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "知止",
+            "止而",
+            "而后"
+          ],
+          "text": "大学之道，在明明德，在亲民，在止于至善。知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。物有本末，事有终始，知所先后，则近道矣。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-hanfeizi-79-10",
+          "source": "韩非子",
+          "chapter": "第79章 六反第四十六",
+          "section": 10,
+          "score": 0.4949,
+          "vectorScore": 0,
+          "lexicalScore": 0.5499,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "知止"
+          ],
+          "text": "老聃有言曰知足不辱知止不殆夫以殆辱之故而不求于足之外者老聃也今以为足民而可以治是以民为皆如老聃也故桀贵在天子而不足于尊富有四海之内而不足于寳君人者虽足民不能足使为天子而桀未必以为天子为足也则虽足民何可以为治也故明主之治国也适其时事以致财物论其税赋以均贫富厚其爵禄以尽贤能重其刑罚以禁奸邪使民以力得富以事致贵以过受罪以功致赏而不念慈惠之赐此帝王之政也"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-60-13",
+          "rysxguji-zhouyi-2-14",
+          "rysxguji-zhouyi-29-8"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-daxue-1-2",
+          "rysxguji-liji-40-1",
+          "rysxguji-hanfeizi-79-10"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-daxue-1-2",
+          "rysxguji-liji-40-1",
+          "rysxguji-hanfeizi-79-10"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [
+          "知止"
+        ],
+        "coreTerms": [
+          "知止"
+        ],
+        "trustedMatchedTerms": [
+          "知止",
+          "止而",
+          "而后"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 38,
+      "category": "variant",
+      "query": "大学明明德亲民至善",
+      "passed": true,
+      "note": "大学三纲领应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "daxue-1-1",
+          "rysxguji-daxue-1-1"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "daxue-1-1",
+        "rysxguji-daxue-1-1",
+        "daxue-2-1"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "daxue-1-1",
+          "source": "大学",
+          "chapter": "经一章",
+          "section": 1,
+          "score": 0.9179,
+          "vectorScore": 0.9652,
+          "lexicalScore": 1,
+          "evidenceScore": 3.325,
+          "matchedTerms": [
+            "大学",
+            "明德",
+            "至善",
+            "明明",
+            "亲民"
+          ],
+          "text": "大学之道，在明明德，在亲民，在止于至善。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-daxue-1-1",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 1,
+          "score": 0.9178,
+          "vectorScore": 0.964,
+          "lexicalScore": 1,
+          "evidenceScore": 3.325,
+          "matchedTerms": [
+            "大学",
+            "明德",
+            "至善",
+            "明明",
+            "亲民"
+          ],
+          "text": "大学之道，在明明德，在亲民，在止于至善。"
+        },
+        {
+          "rank": 3,
+          "id": "daxue-2-1",
+          "source": "大学",
+          "chapter": "传二章",
+          "section": 1,
+          "score": 0.7772,
+          "vectorScore": 0.9653,
+          "lexicalScore": 0.8284,
+          "evidenceScore": 2.3,
+          "matchedTerms": [
+            "大学",
+            "明德",
+            "明明"
+          ],
+          "text": "古之欲明明德于天下者，先治其国；欲治其国者，先齐其家；欲齐其家者，先修其身。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-daxue-1-4",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 4,
+          "score": 0.7456,
+          "vectorScore": 0,
+          "lexicalScore": 0.8284,
+          "evidenceScore": 2.3,
+          "matchedTerms": [
+            "大学",
+            "明德",
+            "明明"
+          ],
+          "text": "古之欲明明德于天下者，先治其国。欲治其国者，先齐其家，欲齐其家者，先修其身。欲修其身者，先正其心。欲正其心者，先诚其意。欲诚其意者，先致其知。致知在格物。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-daxue-1-14",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 14,
+          "score": 0.7408,
+          "vectorScore": 0.9679,
+          "lexicalScore": 0.7838,
+          "evidenceScore": 2.3,
+          "matchedTerms": [
+            "大学",
+            "明德"
+          ],
+          "text": "《康诰》曰：“克明德。”《大甲》曰：“顾諟天之明命。”《帝典》曰：“克明峻德。”皆自明也。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-daxue-1-14",
+          "daxue-2-1",
+          "daxue-1-1"
+        ],
+        "lexicalTop3Ids": [
+          "daxue-1-1",
+          "rysxguji-daxue-1-1",
+          "daxue-2-1"
+        ],
+        "fusionTop3Ids": [
+          "daxue-1-1",
+          "rysxguji-daxue-1-1",
+          "daxue-2-1"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [
+          "大学",
+          "明德",
+          "至善"
+        ],
+        "coreTerms": [
+          "大学",
+          "明德",
+          "至善"
+        ],
+        "trustedMatchedTerms": [
+          "大学",
+          "明德",
+          "至善",
+          "明明",
+          "亲民"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 39,
+      "category": "variant",
+      "query": "格物致知诚意正心",
+      "passed": true,
+      "note": "八条目应回到大学。",
+      "expectation": {
+        "type": "sourceTop3",
+        "sources": [
+          "大学"
+        ]
+      },
+      "resultCount": 2,
+      "top3Ids": [
+        "rysxguji-daxue-1-4",
+        "rysxguji-liji-40-2"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-daxue-1-4",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 4,
+          "score": 0.4355,
+          "vectorScore": 0,
+          "lexicalScore": 0.4823,
+          "evidenceScore": 1,
+          "matchedTerms": [
+            "格物",
+            "致知"
+          ],
+          "text": "古之欲明明德于天下者，先治其国。欲治其国者，先齐其家，欲齐其家者，先修其身。欲修其身者，先正其心。欲正其心者，先诚其意。欲诚其意者，先致其知。致知在格物。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-liji-40-2",
+          "source": "礼记",
+          "chapter": "第40章 大学",
+          "section": 2,
+          "score": 0.4355,
+          "vectorScore": 0,
+          "lexicalScore": 0.4823,
+          "evidenceScore": 1,
+          "matchedTerms": [
+            "格物",
+            "致知"
+          ],
+          "text": "古之欲明明德于天下者，先治其国；欲治其国者，先齐其家；欲齐其家者，先修其身；欲修其身者，先正其心；欲正其心者，先诚其意；欲诚其意者，先致其知；致知在格物。物格而后知至，知至而后意诚，意诚而后心正，心正而后身修，身修而后家齐，家齐而后国治，国治而后天下平。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-41-9",
+          "rysxguji-zhouyi-3-4",
+          "rysxguji-zhouyi-18-5"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-daxue-1-4",
+          "rysxguji-liji-40-2",
+          "rysxguji-zhouyi-65-25"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-daxue-1-4",
+          "rysxguji-liji-40-2"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [
+          "格物",
+          "诚意"
+        ],
+        "coreTerms": [
+          "诚意",
+          "格物"
+        ],
+        "trustedMatchedTerms": [
+          "格物",
+          "致知"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 40,
+      "category": "variant",
+      "query": "身修家齐国治天下平",
+      "passed": true,
+      "note": "修齐治平递进应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "daxue-2-2",
+          "rysxguji-daxue-1-5"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "daxue-2-2",
+        "rysxguji-daxue-1-5",
+        "rysxguji-liji-40-2"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "daxue-2-2",
+          "source": "大学",
+          "chapter": "传二章",
+          "section": 2,
+          "score": 0.8102,
+          "vectorScore": 0.9715,
+          "lexicalScore": 0.8682,
+          "evidenceScore": 4.5,
+          "matchedTerms": [
+            "身修",
+            "家齐",
+            "国治",
+            "天下平",
+            "天下",
+            "下平"
+          ],
+          "text": "身修而后家齐，家齐而后国治，国治而后天下平。"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-daxue-1-5",
+          "source": "大学",
+          "chapter": "第1章 正文",
+          "section": 5,
+          "score": 0.8092,
+          "vectorScore": 0.9546,
+          "lexicalScore": 0.8682,
+          "evidenceScore": 4.5,
+          "matchedTerms": [
+            "身修",
+            "家齐",
+            "国治",
+            "天下平",
+            "天下",
+            "下平"
+          ],
+          "text": "物格而后知至，知至而后意诚，意诚而后心正，心正而后身修，身修而后家齐，家齐而后国治，国治而后天下平。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-liji-40-2",
+          "source": "礼记",
+          "chapter": "第40章 大学",
+          "section": 2,
+          "score": 0.8066,
+          "vectorScore": 0.9116,
+          "lexicalScore": 0.8682,
+          "evidenceScore": 4.5,
+          "matchedTerms": [
+            "身修",
+            "家齐",
+            "国治",
+            "天下平",
+            "天下",
+            "下平"
+          ],
+          "text": "古之欲明明德于天下者，先治其国；欲治其国者，先齐其家；欲齐其家者，先修其身；欲修其身者，先正其心；欲正其心者，先诚其意；欲诚其意者，先致其知；致知在格物。物格而后知至，知至而后意诚，意诚而后心正，心正而后身修，身修而后家齐，家齐而后国治，国治而后天下平。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-mengzi-6-14",
+          "source": "孟子",
+          "chapter": "第6章 卷七 离娄上",
+          "section": 14,
+          "score": 0.5149,
+          "vectorScore": 0.7639,
+          "lexicalScore": 0.5233,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "天下平",
+            "天下",
+            "下平"
+          ],
+          "text": "孟子曰：“自暴者不可与有言也，自弃者不可与有为也。言非礼义，谓之自暴也。吾身不能居仁由义，谓之自弃也。仁，人之安宅也；义，人之正路也。旷安宅而弗居，舍正路而不由，哀哉！”孟子曰：“道在迩而求诸远，事在易而求诸难。人人亲其亲，长其长，而天下平。”"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-chunqiu-zuozhuan-208-12",
+          "source": "春秋左传",
+          "chapter": "第208章 ◇昭公二十六年",
+          "section": 12,
+          "score": 0.4812,
+          "vectorScore": 0.7614,
+          "lexicalScore": 0.4823,
+          "evidenceScore": 1.125,
+          "matchedTerms": [
+            "国治",
+            "天下"
+          ],
+          "text": "九月，楚平王卒。令尹子常欲立子西，曰：“大子壬弱，其母非適也，王子建实聘之。子西长而好善。立长则顺，建善则治。王顺国治，可不务乎？”子西怒曰：“是乱国而恶君王也。国有外援，不可渎也。王有適嗣，不可乱也。败亲、速仇、乱嗣，不祥，我受其名。赂吾以天下，吾滋不从也。楚国何为？必杀令尹！”令尹惧，乃立昭王。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "daxue-2-2",
+          "rysxguji-daxue-1-5",
+          "rysxguji-liji-40-2"
+        ],
+        "lexicalTop3Ids": [
+          "daxue-2-2",
+          "rysxguji-daxue-1-5",
+          "rysxguji-liji-40-2"
+        ],
+        "fusionTop3Ids": [
+          "daxue-2-2",
+          "rysxguji-daxue-1-5",
+          "rysxguji-liji-40-2"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [
+          "身修",
+          "家齐",
+          "国治",
+          "天下平"
+        ],
+        "trustedMatchedTerms": [
+          "身修",
+          "家齐",
+          "国治",
+          "天下平",
+          "天下",
+          "下平",
+          "齐国"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 41,
+      "category": "variant",
+      "query": "君子怀德小人怀土",
+      "passed": true,
+      "note": "君子小人对比应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-4-10"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-lunyu-4-10",
+        "rysxguji-chunqiu-zuozhuan-79-22",
+        "rysxguji-chunqiu-zuozhuan-127-4"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-4-10",
+          "source": "论语",
+          "chapter": "第4章 里仁第四",
+          "section": 10,
+          "score": 0.6296,
+          "vectorScore": 0,
+          "lexicalScore": 0.6996,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "君子",
+            "子怀",
+            "怀德",
+            "小人",
+            "人怀",
+            "怀土"
+          ],
+          "text": "子曰：“君子怀德，小人怀土；君子怀刑，小人怀惠。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-chunqiu-zuozhuan-79-22",
+          "source": "春秋左传",
+          "chapter": "第79章 ◇僖公十五年",
+          "section": 22,
+          "score": 0.508,
+          "vectorScore": 0,
+          "lexicalScore": 0.5644,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "君子",
+            "怀德",
+            "小人"
+          ],
+          "text": "秦伯曰：“晋国和乎？”对曰：“不和。小人耻失其君而悼丧其亲，不惮征缮以立圉也，曰：‘必报仇，宁事戎狄。’君子爱其君而知其罪，不惮征缮以待秦命，曰：‘必报德，有死无二。’以此不和。”秦伯曰：“国谓君何？”对曰：“小人戚，谓之不免。君子恕，以为必归。小人曰：‘我毒秦，秦岂归君？’君子曰：‘我知罪矣，秦必归君。贰而执之，服而舍之，德莫厚焉，刑莫威焉。服者怀德，贰者畏刑。此一役也，秦可以霸。纳而不定，废而不立，以德为怨，秦不其然。’”秦伯曰：“是吾心也。”改馆晋侯，馈七牢焉。"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-chunqiu-zuozhuan-127-4",
+          "source": "春秋左传",
+          "chapter": "第127章 ◇宣公十二年",
+          "section": 4,
+          "score": 0.4621,
+          "vectorScore": 0,
+          "lexicalScore": 0.5135,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "君子",
+            "小人"
+          ],
+          "text": "德刑政事典礼不易，不可敌也，不为是征。楚军讨郑，怒其贰而哀其卑，叛而伐之，服而舍之，德刑成矣。伐叛，刑也；柔服，德也。二者立矣。昔岁入陈，今兹入郑，民不罢劳，君无怨讟，政有经矣。荆尸而举，商农工贾不败其业，而卒乘辑睦，事不奸矣。蒍敖为宰，择楚国之令典，军行，右辕，左追蓐，前茅虑无，中权，后劲，百官象物而动，军政不戒而备，能用典矣。其君之举也，内姓选于亲，外姓选于旧；举不失德，赏不失劳；老有加惠，旅有施舍；君子小人，物有服章，贵有常尊，贱有等威；礼不逆矣。德立，刑行，政成，事时，典从，礼顺，若之何敌之？见可而进，知难而退，军之善政也。兼弱攻昧，武之善经也。子姑整军而经武乎，犹有弱而昧者，何必楚？仲虺有言曰：‘取乱侮亡。’兼弱也。"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-chunqiu-zuozhuan-136-14",
+          "source": "春秋左传",
+          "chapter": "第136章 ◇成公三年",
+          "section": 14,
+          "score": 0.4621,
+          "vectorScore": 0,
+          "lexicalScore": 0.5135,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "君子",
+            "小人"
+          ],
+          "text": "贾人如晋，荀罃善视之，如实出己，贾人曰：“吾无其功，敢有其实乎？吾小人，不可以厚诬君子。”遂适齐。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-chunqiu-zuozhuan-142-13",
+          "source": "春秋左传",
+          "chapter": "第142章 ◇成公九年",
+          "section": 13,
+          "score": 0.4621,
+          "vectorScore": 0,
+          "lexicalScore": 0.5135,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "君子",
+            "小人"
+          ],
+          "text": "公曰：“君王何如？”对曰：“非小人之所得知也。”固问之，对曰：“其为大子也，师保奉之，以朝于婴齐而夕于侧也。不知其他。”公语范文子，文子曰：“楚囚，君子也。言称先职，不背本也。乐操土风，不忘旧也。称大子，抑无私也。名其二卿，尊君也。不背本，仁也。不忘旧，信也。无私，忠也。尊君。敏也。仁以接事，信以守之，忠以成之，敏以行之。事虽大，必济。君盍归之，使合晋、楚之成。”公从之，重为之礼，使归求成。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-13-1",
+          "rysxguji-zhouyi-15-1",
+          "rysxguji-zhouyi-20-12"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-4-10",
+          "rysxguji-chunqiu-zuozhuan-79-22",
+          "rysxguji-chunqiu-zuozhuan-127-4"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-4-10",
+          "rysxguji-chunqiu-zuozhuan-79-22",
+          "rysxguji-chunqiu-zuozhuan-127-4"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [
+          "君子"
+        ],
+        "trustedMatchedTerms": [
+          "君子",
+          "子怀",
+          "怀德",
+          "小人",
+          "人怀",
+          "怀土"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 42,
+      "category": "variant",
+      "query": "见贤思齐内自省",
+      "passed": true,
+      "note": "见贤思齐应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-4-14"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "lunyu-1-4",
+        "rysxguji-lunyu-1-1",
+        "rysxguji-lunyu-4-14"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "lunyu-1-4",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 4,
+          "score": 0.6939,
+          "vectorScore": 0.8866,
+          "lexicalScore": 0.7326,
+          "evidenceScore": 5.5,
+          "matchedTerms": [
+            "三省",
+            "吾日三省",
+            "不忠",
+            "不信",
+            "传不习",
+            "吾日",
+            "日三",
+            "传不",
+            "不习"
+          ],
+          "text": "吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-lunyu-1-1",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 1,
+          "score": 0.6593,
+          "vectorScore": 0,
+          "lexicalScore": 0.7326,
+          "evidenceScore": 5.5,
+          "matchedTerms": [
+            "三省",
+            "吾日三省",
+            "不忠",
+            "不信",
+            "传不习",
+            "吾日",
+            "日三",
+            "传不",
+            "不习"
+          ],
+          "text": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-lunyu-4-14",
+          "source": "论语",
+          "chapter": "第4章 里仁第四",
+          "section": 14,
+          "score": 0.6076,
+          "vectorScore": 0.9987,
+          "lexicalScore": 0.6191,
+          "evidenceScore": 2.3,
+          "matchedTerms": [
+            "见贤思齐",
+            "内自省",
+            "见贤",
+            "贤思",
+            "思齐",
+            "内自",
+            "自省"
+          ],
+          "text": "子曰：“见贤思齐焉，见不贤而内自省也。”"
+        },
+        {
+          "rank": 4,
+          "id": "lunyu-1-8",
+          "source": "论语",
+          "chapter": "学而篇",
+          "section": 8,
+          "score": 0.4919,
+          "vectorScore": 0,
+          "lexicalScore": 0.5466,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "过则勿惮改",
+            "过则",
+            "则勿",
+            "勿惮",
+            "惮改"
+          ],
+          "text": "君子不重则不威，学则不固。主忠信，无友不如己者，过则勿惮改。"
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-lunyu-1-4",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 4,
+          "score": 0.4919,
+          "vectorScore": 0,
+          "lexicalScore": 0.5466,
+          "evidenceScore": 1.1,
+          "matchedTerms": [
+            "过则勿惮改",
+            "过则",
+            "则勿",
+            "勿惮",
+            "惮改"
+          ],
+          "text": "子曰：“君子不重，则不威。学则不固。主忠信。无友不如己者。过则勿惮改。”"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-lunyu-4-14",
+          "rysxguji-xunzi-2-1",
+          "lunyu-1-4"
+        ],
+        "lexicalTop3Ids": [
+          "lunyu-1-4",
+          "rysxguji-lunyu-1-1",
+          "rysxguji-lunyu-4-14"
+        ],
+        "fusionTop3Ids": [
+          "lunyu-1-4",
+          "rysxguji-lunyu-1-1",
+          "rysxguji-lunyu-4-14"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [
+          "self-reflection"
+        ],
+        "sourceTerms": [],
+        "coreTerms": [
+          "三省",
+          "吾日三省",
+          "不忠",
+          "不信",
+          "传不习",
+          "过则勿惮改",
+          "见贤思齐",
+          "内自省"
+        ],
+        "trustedMatchedTerms": [
+          "三省",
+          "吾日三省",
+          "不忠",
+          "不信",
+          "传不习",
+          "吾日",
+          "日三",
+          "传不",
+          "不习",
+          "见贤思齐",
+          "内自省",
+          "见贤",
+          "贤思",
+          "思齐",
+          "内自",
+          "自省",
+          "过则勿惮改",
+          "过则",
+          "则勿",
+          "勿惮",
+          "惮改"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 43,
+      "category": "variant",
+      "query": "君子欲讷于言敏于行",
+      "passed": true,
+      "note": "讷言敏行应在 Top 3。",
+      "expectation": {
+        "type": "anyTop3Id",
+        "ids": [
+          "rysxguji-lunyu-4-20"
+        ]
+      },
+      "resultCount": 5,
+      "top3Ids": [
+        "rysxguji-lunyu-4-20",
+        "rysxguji-liji-31-8",
+        "rysxguji-lunyu-1-9"
+      ],
+      "top5": [
+        {
+          "rank": 1,
+          "id": "rysxguji-lunyu-4-20",
+          "source": "论语",
+          "chapter": "第4章 里仁第四",
+          "section": 20,
+          "score": 0.6279,
+          "vectorScore": 0,
+          "lexicalScore": 0.6977,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "君子",
+            "子欲",
+            "欲讷",
+            "讷于",
+            "于言",
+            "敏于",
+            "于行"
+          ],
+          "text": "子曰：“以约失之者鲜矣！”子曰：“君子欲讷于言而敏于行。”"
+        },
+        {
+          "rank": 2,
+          "id": "rysxguji-liji-31-8",
+          "source": "礼记",
+          "chapter": "第31章 缁衣",
+          "section": 8,
+          "score": 0.496,
+          "vectorScore": 0,
+          "lexicalScore": 0.5511,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "君子",
+            "于言",
+            "于行"
+          ],
+          "text": "子曰：“君子道人以言而禁人以行，故言必虑其所终而行必稽其所敝，则民谨于言而慎于行。诗云：‘慎尔出话，敬尔威仪。’大雅曰：‘穆穆文王，于缉熙敬止。’”"
+        },
+        {
+          "rank": 3,
+          "id": "rysxguji-lunyu-1-9",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "section": 9,
+          "score": 0.496,
+          "vectorScore": 0,
+          "lexicalScore": 0.5511,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "君子",
+            "于言",
+            "敏于"
+          ],
+          "text": "子曰：“君子食无求饱，居无求安，敏于事而慎于言，就有道而正焉，可谓好学也已。”"
+        },
+        {
+          "rank": 4,
+          "id": "rysxguji-xunzi-30-5",
+          "source": "荀子",
+          "chapter": "第30章 子道篇第二十九",
+          "section": 5,
+          "score": 0.496,
+          "vectorScore": 0,
+          "lexicalScore": 0.5511,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "君子",
+            "于言",
+            "于行"
+          ],
+          "text": "子路盛服而见孔子，孔子曰：\"由，是裾裾何也？昔者江出于岷山，其始出也，其源可以滥觞，及其至江之津也，不放舟，不避风，则不可涉也。非维下流水多邪？今女衣服既盛，颜色充盈，天下且孰肯谏女矣！子路趋而出，改服而入，盖犹若也。孔子曰：\"由志之！吾语汝：奋于言者华，奋于行者伐，色知而有能者，小人也。故君子知之曰知之，不知曰不知，言之要也；能之曰能之，不能曰不能，行之至也。言要则知，行至则仁；既仁且知，夫恶有不足矣哉！\""
+        },
+        {
+          "rank": 5,
+          "id": "rysxguji-chunqiu-zuozhuan-187-8",
+          "source": "春秋左传",
+          "chapter": "第187章 ◇昭公五年",
+          "section": 8,
+          "score": 0.4519,
+          "vectorScore": 0,
+          "lexicalScore": 0.5021,
+          "evidenceScore": 1.025,
+          "matchedTerms": [
+            "君子",
+            "于行"
+          ],
+          "text": "日上其中，食日为二，旦日为三。《明夷》之《谦》，明而未融，其当旦乎，故曰：‘为子祀’。日之《谦》，当鸟，故曰‘明夷于飞’。明之未融，故曰‘垂其翼’。象日之动，故曰‘君子于行’。当三在旦，故曰‘三日不食’。《离》，火也。《艮》，山也。《离》为火，火焚山，山败。于人为言，败言为谗，故曰‘有攸往，主人有言’，言必谗也。纯《离》为牛，世乱谗胜，胜将适《离》，故曰‘其名曰牛’。谦不足，飞不翔，垂不峻，翼不广，故曰‘其为子后乎’。"
+        }
+      ],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-15-1",
+          "rysxguji-zhouyi-15-8",
+          "rysxguji-zhouyi-12-1"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-lunyu-4-20",
+          "rysxguji-liji-31-8",
+          "rysxguji-lunyu-1-9"
+        ],
+        "fusionTop3Ids": [
+          "rysxguji-lunyu-4-20",
+          "rysxguji-liji-31-8",
+          "rysxguji-lunyu-1-9"
+        ]
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [
+          "君子"
+        ],
+        "trustedMatchedTerms": [
+          "君子",
+          "子欲",
+          "欲讷",
+          "讷于",
+          "于言",
+          "敏于",
+          "于行"
+        ],
+        "hasQueryEvidence": true,
+        "hasTrustedResultEvidence": true
+      }
+    },
+    {
+      "index": 44,
+      "category": "ood",
+      "query": "星际跃迁",
+      "passed": true,
+      "note": "无关查询应返回 0。",
+      "expectation": {
+        "type": "empty"
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-7-10",
+          "rysxguji-zhouyi-23-8",
+          "rysxguji-zhouyi-3-12"
+        ],
+        "lexicalTop3Ids": [],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 45,
+      "category": "ood",
+      "query": "今天北京天气",
+      "passed": true,
+      "note": "天气查询应返回 0。",
+      "expectation": {
+        "type": "empty"
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-1-2",
+          "rysxguji-zhouyi-24-7",
+          "rysxguji-zhouyi-24-9"
+        ],
+        "lexicalTop3Ids": [
+          "rysxguji-hanfeizi-45-15"
+        ],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 46,
+      "category": "ood",
+      "query": "怎么写React组件",
+      "passed": true,
+      "note": "编程查询应返回 0。",
+      "expectation": {
+        "type": "empty"
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-1-1",
+          "rysxguji-zhouyi-1-2",
+          "rysxguji-zhouyi-1-7"
+        ],
+        "lexicalTop3Ids": [],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 47,
+      "category": "ood",
+      "query": "股票怎么买",
+      "passed": true,
+      "note": "投资查询应返回 0。",
+      "expectation": {
+        "type": "empty"
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-69-4",
+          "rysxguji-zhouyi-3-11",
+          "rysxguji-zhouyi-30-1"
+        ],
+        "lexicalTop3Ids": [],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 48,
+      "category": "ood",
+      "query": "巴黎奥运会金牌榜",
+      "passed": true,
+      "note": "时事体育查询应返回 0。",
+      "expectation": {
+        "type": "empty"
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-50-15",
+          "rysxguji-zhouyi-30-5",
+          "rysxguji-lunyu-6-1"
+        ],
+        "lexicalTop3Ids": [],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 49,
+      "category": "ood",
+      "query": "量子计算入门",
+      "passed": true,
+      "note": "技术泛问应返回 0。",
+      "expectation": {
+        "type": "empty"
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-liji-4-115",
+          "rysxguji-zhouyi-58-6",
+          "rysxguji-zhouyi-9-6"
+        ],
+        "lexicalTop3Ids": [],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    },
+    {
+      "index": 50,
+      "category": "ood",
+      "query": "我想买咖啡机",
+      "passed": true,
+      "note": "购物查询应返回 0。",
+      "expectation": {
+        "type": "empty"
+      },
+      "resultCount": 0,
+      "top3Ids": [],
+      "top5": [],
+      "lanes": {
+        "vectorTop3Ids": [
+          "rysxguji-zhouyi-10-1",
+          "rysxguji-zhouyi-13-10",
+          "rysxguji-zhouyi-24-5"
+        ],
+        "lexicalTop3Ids": [],
+        "fusionTop3Ids": []
+      },
+      "evidence": {
+        "aliasLabels": [],
+        "sourceTerms": [],
+        "coreTerms": [],
+        "trustedMatchedTerms": [],
+        "hasQueryEvidence": false,
+        "hasTrustedResultEvidence": false
+      }
+    }
+  ]
+}

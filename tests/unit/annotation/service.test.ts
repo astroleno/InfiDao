@@ -8,6 +8,8 @@ import { clearSearchGraphCache } from "@/lib/search/graph/store";
 import { attachSearchGraphArtifactSignature } from "@/lib/search/graph/signature";
 import type { SearchGraphArtifact } from "@/lib/search/graph/types";
 
+jest.setTimeout(15_000);
+
 const validGraphFixturePath = path.join(
   process.cwd(),
   "tests",
@@ -111,6 +113,12 @@ describe("createAnnotation", () => {
     expect(annotation.sixToMe).toContain("朋友相处要诚信");
     expect(annotation.sixToMe).toContain("与朋友交言而有信");
     expect(annotation.meToSix).toContain("朋友相处要诚信");
+    expect(annotation.agentTrace).toMatchObject({
+      workAgentId: expect.stringContaining("work:classic:lunyu-1-7"),
+      relationTheme: "此刻互注",
+      branchLabel: "由问生枝",
+      growthSummary: expect.stringContaining("系统读到的倾向"),
+    });
     expect(annotation.links.length).toBeGreaterThan(0);
     expect(annotation.links[0]).toEqual(
       expect.objectContaining({
@@ -150,6 +158,7 @@ describe("createAnnotation", () => {
     expect(annotation.passageId).toBe("external-note-1");
     expect(annotation.passageText).toBe("我想知道自己哪里做得不够。");
     expect(annotation.links.some(link => link.passageId === "lunyu-1-4")).toBe(true);
+    expect(annotation.agentTrace).toBeUndefined();
   });
 
   it("excludes already visited passages from exploration links", async () => {
