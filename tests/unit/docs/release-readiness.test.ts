@@ -47,6 +47,15 @@ describe("reboot MVP release readiness", () => {
     expect(document).toContain("`GET /api/embed` -> `410 LEGACY_EMBED_DISABLED`");
   });
 
+  it("distinguishes the current convergence blocker from historical evidence", () => {
+    const document = readFileSync(releaseReadinessPath, "utf8");
+
+    expect(document).toContain("Decision: blocked; not a current Release Candidate signoff");
+    expect(document).toContain("independently authored and one-shot executed frozen holdout v1");
+    expect(document).toContain("Historical Release Evidence (2026-04-29)");
+    expect(document).toContain("two no-cache full Jest runs");
+  });
+
   it("covers the release smoke matrix requested for Phase 6.5", () => {
     const document = readFileSync(releaseReadinessPath, "utf8");
 

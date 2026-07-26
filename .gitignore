@@ -54,3 +54,10 @@ graphify-out/
 docs/simon-rogers-adjustment-guide.md
 ref/infidao---six-classics-annotate-me/
 ref/lyric-scroll-loop/
+
+# Explicit local QA and acquisition material, never part of a release commit
+.codex-screens/
+docs/simon-rogers-main-screen-plan/
+ref/rysxguji/
+docs/qa/a2a-agentic-framework-100-review-package/
+docs/qa/a2a-agentic-framework-100-review-package.zip

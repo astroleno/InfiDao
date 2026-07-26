@@ -51,6 +51,13 @@ Generated artifacts:
 - `data/embeddings.json`
 - `data/search-graph.json`
 
+Current release-artifact facts:
+
+- 14 works in `guji-core-v1`.
+- 11,809 rysxguji corpus records and matching provenance records; the combined
+  runtime corpus has 11,829 passages and embeddings.
+- `data/search-graph.json` has 12,825 nodes and 24,084 edges.
+
 ## Runtime Contract
 
 - `data/corpus-manifest.json` remains the single corpus entrypoint.
@@ -64,8 +71,8 @@ Generated artifacts:
 
 ```bash
 node scripts/rysxguji/build-corpus.mjs
-npm run generate-search-artifacts
-npm run generate-search-graph
+npm run generate:release-artifacts
+git diff --exit-code -- data/embeddings.json data/search-graph.json
 ```
 
 Optional limited run:
@@ -84,6 +91,7 @@ npm run type-check
 npm test -- tests/unit/data/corpus.test.ts tests/unit/data/embeddings.test.ts --runInBand
 npm test -- tests/unit/search/index-store.test.ts tests/unit/search/json-search.test.ts tests/unit/search/lexical.test.ts tests/unit/search/fusion.test.ts --runInBand
 npm test -- tests/integration/api/search.route.test.ts --runInBand
+npm run test:search-quality
 ```
 
 Search smoke checks:
@@ -97,6 +105,14 @@ Search smoke checks:
 - `关关雎鸠`
 - `乾元`
 - `郑伯克段`
+
+## Release evidence boundary
+
+The visible golden and tuned-paraphrase regression fixtures keep known behavior
+from regressing. They are not evidence of unseen generalization. A frozen
+holdout is authored independently after the search artifacts and implementation
+are frozen, then evaluated once under
+`docs/qa/search-quality-methodology.md`.
 
 ## Next Expansion
 

@@ -1,8 +1,32 @@
 # Reboot MVP Release Readiness
 
-Scope: release prep for the active reboot MVP path after Phase 6.4.
+Scope: quality/release convergence for the active reboot MVP path.
 
 This document freezes deployment-facing defaults, canonical environment naming, and the final smoke matrix. It does not add new product behavior.
+
+## 2026-07-26 Convergence Status
+
+**Decision: blocked; not a current Release Candidate signoff.** The
+2026-04-29 evidence below is historical MVP evidence only. The current search
+implementation is frozen at `81c6365766a7cf8c578cef6b060c5e43345f0d35`; the
+holdout protocol and evidence reclassification are frozen at
+`71fa97e7da563abc1d3365292132d36a75e6682b`.
+
+Before current release signoff, the project still needs:
+
+- an independently authored and one-shot executed frozen holdout v1;
+- integration of the current `origin/main` UI commit (`906cde4`) into the
+  release candidate, followed by clean-worktree verification on that integrated
+  commit;
+- two no-cache full Jest runs, two stability runs, artifact reproduction,
+  build, standalone smoke, and current desktop/mobile manual acceptance;
+- a current telemetry result, or the explicitly documented no-credential
+  deterministic-fallback exception.
+
+Visible golden and tuned-paraphrase regression fixtures protect known behavior;
+they do not substitute for the independent holdout. See
+`docs/qa/search-quality-methodology.md` for the frozen protocol and artifact
+identities.
 
 CI gate: `.github/workflows/reboot-mvp-ci.yml` runs on pull requests and pushes
 to `main` with `SEARCH_EMBEDDING_BACKEND=local`. Its fixed verify order is:
@@ -102,14 +126,16 @@ product decision to make users wait longer before fallback.
 Run these before release signoff:
 
 ```bash
-PATH=/opt/homebrew/bin:$PATH npm run generate:release-artifacts
+npm run generate:release-artifacts
 git diff --exit-code -- data/embeddings.json data/search-graph.json
-PATH=/opt/homebrew/bin:$PATH npm run type-check
-PATH=/opt/homebrew/bin:$PATH npm run lint
-PATH=/opt/homebrew/bin:$PATH npm test -- --runInBand --no-cache
-PATH=/opt/homebrew/bin:$PATH npm run test:stability
-PATH=/opt/homebrew/bin:$PATH npm run test:search-quality
-PATH=/opt/homebrew/bin:$PATH npm run build
+npm run type-check
+npm run lint
+npm test -- --runInBand --no-cache
+npm test -- --runInBand --no-cache
+npm run test:stability
+npm run test:stability
+npm run test:search-quality
+npm run build
 ```
 
 Expected artifact generation line:
@@ -180,7 +206,7 @@ Run the matrix against a dev server configured with canonical env first.
 | telemetry quality signals | Run multiple annotation requests across root and linked passages         | Summary includes p50/p95/p99 latency plus fallback breakdown by query hash, exploration depth, and slot.  |
 | production internal route | `NODE_ENV=production`                                                    | `/api/internal/annotation-telemetry` returns `404`.                                                        |
 
-## Browser Smoke Evidence
+## Historical Browser Smoke Evidence (2026-04-29)
 
 2026-04-29 headed browser smoke was rerun against a standalone production server
 at `http://127.0.0.1:3001`.
@@ -198,7 +224,7 @@ at `http://127.0.0.1:3001`.
 - Screenshots were regenerated under ignored `.tmp/browser-smoke/` with
   `desktop-task3-*` and `mobile-task3-*` filenames.
 
-## Release Signoff 2026-04-29
+## Historical Release Evidence (2026-04-29)
 
 Decision: release candidate with one accepted telemetry exception.
 
@@ -248,12 +274,14 @@ curl -sS http://localhost:3001/api/internal/annotation-telemetry
 
 ## Release Decision
 
-Sign off only when:
+Sign off the current convergence candidate only when:
 
-- Full command suite passes.
-- Canonical telemetry smoke has `llm.warnings: []`.
-- `npm run smoke:telemetry` passes against a fresh dev/test server.
-- Legacy telemetry smoke produces migration warnings without secrets.
-- Dev/test telemetry summary stays below alert thresholds: fallback rate <= 15% and p95 annotate latency <= 5000ms, or the release notes explicitly call out the exception.
-- Production internal telemetry route returns `404`.
-- MVP browser path still completes: `search -> annotate -> explore -> back -> reset -> leaf state`.
+- The independently authored frozen holdout meets its recorded threshold, or its
+  failing result remains recorded and the decision is `blocked`.
+- The full clean-worktree command suite passes twice where required.
+- Production internal telemetry route returns `404` and telemetry is either
+  freshly validated with canonical credentials or retains the documented
+  no-credential deterministic-fallback exception without claiming a canonical
+  pass.
+- Desktop and `390px` mobile MVP paths complete:
+  `search -> annotate -> explore -> back -> reset -> leaf state`.

@@ -68,6 +68,20 @@ The implementation plan's 2026-07-26 pre-execution evidence records that the fir
 - The fixed ranking assertion remains a known release-contract defect after corpus expansion; Task 1 must move ranking semantics to the golden quality gate and make smoke validate the end-to-end response contract.
 - Release sign-off remains blocked until clean-worktree reproducibility, two no-cache Jest runs, two stability runs, frozen holdout evidence, and manual desktop/mobile acceptance are complete.
 
+## Interim convergence update
+
+The baseline above remains a pre-execution record. The following later work is
+now committed without changing its historical measurements:
+
+- Task 1 through Task 4 corrected the smoke/ranking split, stabilized the
+  designated suites, expanded static checks, and added CI artifact/order gates.
+- `71fa97e7da563abc1d3365292132d36a75e6682b` reclassified the old visible
+  30/30 evidence as tuned paraphrase regression and froze the independent
+  holdout protocol.
+- No holdout v1 cases or results exist yet. Final signoff remains blocked until
+  an untainted reviewer authors and evaluates that holdout, and Task 7 is run
+  from a clean worktree on the integrated release commit.
+
 ## Protected files outside the release commit
 
 The following current paths must remain untracked or otherwise excluded from release commits unless separately approved:
