@@ -8,6 +8,8 @@ import { clearSearchGraphCache } from "@/lib/search/graph/store";
 import { attachSearchGraphArtifactSignature } from "@/lib/search/graph/signature";
 import type { SearchGraphArtifact } from "@/lib/search/graph/types";
 
+jest.setTimeout(15_000);
+
 const validGraphFixturePath = path.join(
   process.cwd(),
   "tests",

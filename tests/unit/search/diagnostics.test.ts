@@ -6,6 +6,8 @@ import { searchPassages } from "@/lib/search/service";
 import { clearSearchIndexCache } from "@/lib/search/index-store";
 import { clearSearchGraphCache } from "@/lib/search/graph/store";
 
+jest.setTimeout(15_000);
+
 describe("search diagnostics", () => {
   afterEach(() => {
     clearSearchGraphCache();

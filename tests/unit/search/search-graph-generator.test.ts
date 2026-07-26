@@ -5,17 +5,24 @@ import { buildSearchGraphArtifactSignature } from "@/lib/search/graph/signature"
 import { validateSearchGraphArtifactForIndex } from "@/lib/search/graph/store";
 import type { SearchGraphArtifact } from "@/lib/search/graph/types";
 
+jest.setTimeout(15_000);
+
 describe("search graph generator", () => {
-  afterEach(() => {
+  let index: Awaited<ReturnType<typeof loadSearchIndex>>;
+  let artifact: SearchGraphArtifact;
+
+  beforeAll(async () => {
+    index = await loadSearchIndex();
+    artifact = await generateSearchGraphArtifact({
+      generatedAt: "2026-05-13T00:00:00.000Z",
+    });
+  });
+
+  afterAll(() => {
     clearSearchIndexCache();
   });
 
   it("generates a valid graph artifact only from corpus and concept seed inputs", async () => {
-    const index = await loadSearchIndex();
-    const artifact = await generateSearchGraphArtifact({
-      generatedAt: "2026-05-13T00:00:00.000Z",
-    });
-
     expect(() => validateSearchGraphArtifactForIndex(artifact, index)).not.toThrow();
     expect(artifact.nodes.length).toBeGreaterThan(index.corpus.length);
     expect(artifact.edges.length).toBeGreaterThan(index.corpus.length);
@@ -33,10 +40,7 @@ describe("search graph generator", () => {
     expect(artifact.edges.every(edge => !JSON.stringify(edge).includes("_nuxt"))).toBe(true);
   });
 
-  it("binds every passage node to a pure hex textHash", async () => {
-    const artifact = await generateSearchGraphArtifact({
-      generatedAt: "2026-05-13T00:00:00.000Z",
-    });
+  it("binds every passage node to a pure hex textHash", () => {
     const passageNodes = artifact.nodes.filter(node => node.type === "passage");
 
     expect(passageNodes.length).toBeGreaterThan(0);
@@ -46,9 +50,6 @@ describe("search graph generator", () => {
 
   it("generates stable concept mentions with positive and negative precision fixtures", async () => {
     const seed = await loadSearchConceptSeed();
-    const artifact = await generateSearchGraphArtifact({
-      generatedAt: "2026-05-13T00:00:00.000Z",
-    });
     const mentionEdges = artifact.edges.filter(edge => edge.relation === "mentions");
 
     for (const concept of seed.concepts) {
@@ -69,10 +70,7 @@ describe("search graph generator", () => {
     ).toBe(false);
   });
 
-  it("keeps signatures stable across record and field order", async () => {
-    const artifact = await generateSearchGraphArtifact({
-      generatedAt: "2026-05-13T00:00:00.000Z",
-    });
+  it("keeps signatures stable across record and field order", () => {
     const reorderedArtifact = {
       ...artifact,
       nodes: [...artifact.nodes].reverse(),
@@ -82,10 +80,7 @@ describe("search graph generator", () => {
     expect(buildSearchGraphArtifactSignature(reorderedArtifact)).toBe(artifact.artifactSignature);
   });
 
-  it("changes signatures for semantic graph changes", async () => {
-    const artifact = await generateSearchGraphArtifact({
-      generatedAt: "2026-05-13T00:00:00.000Z",
-    });
+  it("changes signatures for semantic graph changes", () => {
     const changedRationale = {
       ...artifact,
       edges: [

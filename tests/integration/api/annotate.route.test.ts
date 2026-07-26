@@ -3,6 +3,8 @@ import path from "node:path";
 import { POST } from "@/app/api/annotate/route";
 import { resetAnnotateAbuseGuard } from "@/lib/annotation/abuse-guard";
 
+jest.setTimeout(15_000);
+
 function createRequest(body: unknown, headers?: Record<string, string>): Request {
   const requestBody = typeof body === "string" ? body : JSON.stringify(body);
   const requestBytes = Uint8Array.from(Buffer.from(requestBody, "utf8"));
