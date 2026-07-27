@@ -1,12 +1,99 @@
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import {
+  assertHoldoutCommitChain,
   assertFrozenProtocolRules,
   extractFrozenProtocolRules,
   writeHoldoutEvidence,
 } from "../../../scripts/search-holdout/runtime";
 import { createSearchHoldoutDecision, type HoldoutEvaluationOutput } from "../../../scripts/search-holdout/evaluator";
+
+const fixturePath = "tests/fixtures/search-holdout-v1.json";
+const requiredIndependenceAttestation =
+  "no-alias-tuning;no-current-review;no-evaluator-implementation;no-system-top3-inspection";
+
+function git(root: string, arguments_: string[]): string {
+  return execFileSync("git", arguments_, { cwd: root, encoding: "utf8" }).trim();
+}
+
+function commitFile(
+  root: string,
+  relativePath: string,
+  contents: string,
+  subject: string,
+  body?: string,
+): string {
+  const absolutePath = path.join(root, relativePath);
+  fs.mkdirSync(path.dirname(absolutePath), { recursive: true });
+  fs.writeFileSync(absolutePath, contents);
+  git(root, ["add", "--", relativePath]);
+  const arguments_ = [
+    "-c",
+    "user.name=Independent Reviewer",
+    "-c",
+    "user.email=reviewer@example.invalid",
+    "commit",
+    "-m",
+    subject,
+  ];
+
+  if (body) {
+    arguments_.push("-m", body);
+  }
+
+  git(root, arguments_);
+  return git(root, ["rev-parse", "HEAD"]);
+}
+
+function createRepository(): string {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "infidao-holdout-topology-"));
+  git(root, ["init", "--initial-branch=main"]);
+  commitFile(root, "README.md", "base\n", "test: add base");
+  return root;
+}
+
+function holdoutLedger(harnessCommit: string): string {
+  return [
+    "# Search Quality Methodology",
+    "",
+    "## Holdout ledger",
+    "",
+    "| Field | Value |",
+    "| --- | --- |",
+    `| Evaluation harness seal | \`${harnessCommit}\` |`,
+    "",
+  ].join("\n");
+}
+
+function createValidHoldoutChain(options: { includeAttestation?: boolean } = {}) {
+  const root = createRepository();
+  const harnessCommit = commitFile(
+    root,
+    "scripts/search-holdout/runtime.ts",
+    "export const sealed = true;\n",
+    "fix(holdout): seal harness",
+  );
+  commitFile(
+    root,
+    "docs/qa/search-quality-methodology.md",
+    holdoutLedger(harnessCommit),
+    "docs(qa): record harness seal",
+  );
+  const fixtureCommit = commitFile(
+    root,
+    fixturePath,
+    "[]\n",
+    "test(holdout): add independent v1 fixture",
+    options.includeAttestation === false
+      ? undefined
+      : `Holdout-Independence: ${requiredIndependenceAttestation}`,
+  );
+  const evaluatedCommit = commitFile(root, "docs/evaluated.md", "candidate\n", "docs: mark candidate");
+
+  return { root, harnessCommit, fixtureCommit, evaluatedCommit };
+}
 
 function buildOutputs(): HoldoutEvaluationOutput[] {
   return [
@@ -32,6 +119,116 @@ function buildOutputs(): HoldoutEvaluationOutput[] {
 }
 
 describe("search holdout runtime", () => {
+  it("binds the ledger-sealed harness, independent fixture, and evaluated HEAD", () => {
+    const topology = createValidHoldoutChain();
+
+    try {
+      expect(
+        assertHoldoutCommitChain(topology.root, {
+          fixtureCommit: topology.fixtureCommit,
+          fixtureRelativePath: fixturePath,
+        }),
+      ).toMatchObject({
+        harnessCommit: topology.harnessCommit,
+        fixtureCommit: topology.fixtureCommit,
+        fixtureAuthorName: "Independent Reviewer",
+        independenceAttestation: requiredIndependenceAttestation,
+      });
+    } finally {
+      fs.rmSync(topology.root, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects a fixture commit that is not an ancestor of evaluated HEAD", () => {
+    const root = createRepository();
+
+    try {
+      const harnessCommit = commitFile(
+        root,
+        "scripts/search-holdout/runtime.ts",
+        "export const sealed = true;\n",
+        "fix(holdout): seal harness",
+      );
+      commitFile(
+        root,
+        "docs/qa/search-quality-methodology.md",
+        holdoutLedger(harnessCommit),
+        "docs(qa): record harness seal",
+      );
+      git(root, ["switch", "-c", "reviewer-fixture"]);
+      const fixtureCommit = commitFile(
+        root,
+        fixturePath,
+        "[]\n",
+        "test(holdout): add independent v1 fixture",
+        `Holdout-Independence: ${requiredIndependenceAttestation}`,
+      );
+      git(root, ["switch", "main"]);
+      commitFile(root, "docs/evaluated.md", "candidate\n", "docs: mark candidate");
+
+      expect(() =>
+        assertHoldoutCommitChain(root, {
+          fixtureCommit,
+          fixtureRelativePath: fixturePath,
+        }),
+      ).toThrow("merge-base --is-ancestor");
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects a ledger harness seal that does not predate the fixture", () => {
+    const root = createRepository();
+
+    try {
+      git(root, ["switch", "-c", "rogue-harness"]);
+      const rogueHarnessCommit = commitFile(
+        root,
+        "scripts/search-holdout/runtime.ts",
+        "export const rogue = true;\n",
+        "fix(holdout): forge harness",
+      );
+      git(root, ["switch", "main"]);
+      commitFile(
+        root,
+        "docs/qa/search-quality-methodology.md",
+        holdoutLedger(rogueHarnessCommit),
+        "docs(qa): record forged harness seal",
+      );
+      const fixtureCommit = commitFile(
+        root,
+        fixturePath,
+        "[]\n",
+        "test(holdout): add independent v1 fixture",
+        `Holdout-Independence: ${requiredIndependenceAttestation}`,
+      );
+
+      expect(() =>
+        assertHoldoutCommitChain(root, {
+          fixtureCommit,
+          fixtureRelativePath: fixturePath,
+        }),
+      ).toThrow("merge-base --is-ancestor");
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects a fixture commit without the exact independence attestation", () => {
+    const topology = createValidHoldoutChain({ includeAttestation: false });
+
+    try {
+      expect(() =>
+        assertHoldoutCommitChain(topology.root, {
+          fixtureCommit: topology.fixtureCommit,
+          fixtureRelativePath: fixturePath,
+        }),
+      ).toThrow("Holdout-Independence");
+    } finally {
+      fs.rmSync(topology.root, { recursive: true, force: true });
+    }
+  });
+
   it("writes a blocked decision before a caller exposes the failing gate", () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), "infidao-holdout-runtime-"));
     const jsonPath = path.join(directory, "results.json");
@@ -47,6 +244,9 @@ describe("search holdout runtime", () => {
         fixtureCommit: "fixture",
         fixtureBlob: "blob",
         fixtureSha256: "b".repeat(64),
+        fixtureAuthorName: "Independent Reviewer",
+        fixtureAuthoredAt: "2026-07-27T00:00:00.000Z",
+        independenceAttestation: requiredIndependenceAttestation,
         artifacts: {
           graphArtifactSignature: "sha256:graph",
           graphFileSha256: "c".repeat(64),

@@ -11,6 +11,11 @@ import {
 export const FROZEN_SEARCH_COMMIT = "81c6365766a7cf8c578cef6b060c5e43345f0d35";
 export const PROTOCOL_CONTENT_COMMIT = "71fa97e7da563abc1d3365292132d36a75e6682b";
 export const PROTOCOL_PATH = "docs/qa/search-quality-methodology.md";
+export const HOLDOUT_FIXTURE_PATH = "tests/fixtures/search-holdout-v1.json";
+export const HOLDOUT_RESULTS_PATH = "docs/qa/search-holdout-v1-results.json";
+export const HOLDOUT_REPORT_PATH = "docs/qa/search-holdout-v1-report.md";
+export const REQUIRED_INDEPENDENCE_ATTESTATION =
+  "no-alias-tuning;no-current-review;no-evaluator-implementation;no-system-top3-inspection";
 export const FROZEN_SEARCH_PATHS = [
   "src/lib/search",
   "data/embeddings.json",
@@ -26,6 +31,15 @@ export interface ArtifactIdentity {
   graphArtifactSignature: string;
   graphFileSha256: string;
   embeddingsFileSha256: string;
+}
+
+export interface HoldoutCommitProvenance {
+  harnessCommit: string;
+  fixtureCommit: string;
+  fixtureBlob: string;
+  fixtureAuthorName: string;
+  fixtureAuthoredAt: string;
+  independenceAttestation: string;
 }
 
 function sha256(contents: Buffer | string): string {
@@ -77,6 +91,94 @@ export function assertCleanEvaluationTree(root: string): void {
   if (git(root, ["status", "--porcelain"])) {
     throw new Error("Holdout evaluation requires a clean working tree.");
   }
+}
+
+function readHarnessSealAtFixtureCommit(root: string, fixtureCommit: string): string {
+  const methodology = git(root, ["show", `${fixtureCommit}:${PROTOCOL_PATH}`]);
+  const match = methodology.match(/^\| Evaluation harness seal \| `([0-9a-f]{40})` \|$/mu);
+
+  if (!match?.[1]) {
+    throw new Error(
+      "Fixture commit does not contain one exact evaluation harness seal in the holdout ledger.",
+    );
+  }
+
+  return match[1];
+}
+
+export function assertHoldoutCommitChain(
+  root: string,
+  options: {
+    fixtureCommit: string;
+    fixtureRelativePath: string;
+  },
+): HoldoutCommitProvenance {
+  const { fixtureCommit, fixtureRelativePath } = options;
+  git(root, ["rev-parse", "--verify", `${fixtureCommit}^{commit}`]);
+  git(root, ["merge-base", "--is-ancestor", fixtureCommit, "HEAD"]);
+
+  const harnessCommit = readHarnessSealAtFixtureCommit(root, fixtureCommit);
+  git(root, ["rev-parse", "--verify", `${harnessCommit}^{commit}`]);
+  git(root, ["merge-base", "--is-ancestor", harnessCommit, fixtureCommit]);
+  git(root, [
+    "diff",
+    "--quiet",
+    harnessCommit,
+    "HEAD",
+    "--",
+    "scripts/search-holdout",
+    "scripts/run-search-holdout.ts",
+    "scripts/validate-search-holdout.ts",
+  ]);
+
+  const changedPaths = git(root, [
+    "diff-tree",
+    "--root",
+    "--no-commit-id",
+    "--name-only",
+    "-r",
+    fixtureCommit,
+  ])
+    .split("\n")
+    .filter(Boolean);
+
+  if (
+    fixtureRelativePath !== HOLDOUT_FIXTURE_PATH ||
+    changedPaths.length !== 1 ||
+    changedPaths[0] !== HOLDOUT_FIXTURE_PATH
+  ) {
+    throw new Error(`Fixture commit must change only ${HOLDOUT_FIXTURE_PATH}.`);
+  }
+
+  const fixtureBlob = git(root, ["rev-parse", `${fixtureCommit}:${HOLDOUT_FIXTURE_PATH}`]);
+  const actualBlob = git(root, ["hash-object", HOLDOUT_FIXTURE_PATH]);
+  if (fixtureBlob !== actualBlob) {
+    throw new Error("Fixture contents do not match the declared fixture commit.");
+  }
+
+  const commitIdentity = git(root, ["show", "-s", "--format=%an%x00%aI%x00%B", fixtureCommit]);
+  const [fixtureAuthorName, fixtureAuthoredAt, ...messageParts] = commitIdentity.split("\0");
+  const message = messageParts.join("\0");
+  const independenceAttestation = message.match(/^Holdout-Independence:\s*(.+)$/mu)?.[1]?.trim();
+
+  if (
+    !fixtureAuthorName ||
+    !fixtureAuthoredAt ||
+    independenceAttestation !== REQUIRED_INDEPENDENCE_ATTESTATION
+  ) {
+    throw new Error(
+      `Fixture commit must contain Holdout-Independence: ${REQUIRED_INDEPENDENCE_ATTESTATION}.`,
+    );
+  }
+
+  return {
+    harnessCommit,
+    fixtureCommit,
+    fixtureBlob,
+    fixtureAuthorName,
+    fixtureAuthoredAt,
+    independenceAttestation,
+  };
 }
 
 export function assertFixtureCommit(

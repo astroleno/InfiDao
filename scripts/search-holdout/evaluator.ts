@@ -11,6 +11,9 @@ export interface HoldoutEvaluationMetadata {
   fixtureCommit: string;
   fixtureBlob: string;
   fixtureSha256: string;
+  fixtureAuthorName: string;
+  fixtureAuthoredAt: string;
+  independenceAttestation: string;
   artifacts: {
     graphArtifactSignature: string;
     graphFileSha256: string;
@@ -140,6 +143,9 @@ export function renderSearchHoldoutReport(decision: SearchHoldoutDecision): stri
     `- Fixture commit: ${decision.metadata.fixtureCommit}`,
     `- Fixture blob: ${decision.metadata.fixtureBlob}`,
     `- Fixture SHA-256: ${decision.metadata.fixtureSha256}`,
+    `- Fixture author: ${decision.metadata.fixtureAuthorName}`,
+    `- Fixture authored at: ${decision.metadata.fixtureAuthoredAt}`,
+    `- Independence attestation: ${decision.metadata.independenceAttestation}`,
     `- Graph artifact signature: ${decision.metadata.artifacts.graphArtifactSignature}`,
     `- Graph file SHA-256: ${decision.metadata.artifacts.graphFileSha256}`,
     `- Embeddings file SHA-256: ${decision.metadata.artifacts.embeddingsFileSha256}`,

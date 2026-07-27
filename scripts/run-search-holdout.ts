@@ -5,10 +5,9 @@ import {
   FROZEN_SEARCH_COMMIT,
   PROTOCOL_CONTENT_COMMIT,
   assertCleanEvaluationTree,
-  assertEvaluationHarnessCommit,
-  assertFixtureCommit,
   assertFrozenProtocolRules,
   assertFrozenSearchPaths,
+  assertHoldoutCommitChain,
   readArtifactIdentity,
   readCurrentCommit,
   writeHoldoutEvidence,
@@ -87,8 +86,10 @@ async function main(): Promise<void> {
   const fixture = await validateSearchHoldoutFixtureFile(options.casesPath);
   assertFrozenSearchPaths(root);
   const protocolRulesSha256 = assertFrozenProtocolRules(root);
-  assertEvaluationHarnessCommit(root, options.harnessCommit);
-  const fixtureBlob = assertFixtureCommit(root, options.fixtureCommit, fixtureRelativePath);
+  const provenance = assertHoldoutCommitChain(root, {
+    fixtureCommit: options.fixtureCommit,
+    fixtureRelativePath,
+  });
   const evaluatedCommit = readCurrentCommit(root);
   const artifacts = readArtifactIdentity(root);
 
@@ -133,11 +134,14 @@ async function main(): Promise<void> {
       frozenSearchCommit: FROZEN_SEARCH_COMMIT,
       protocolContentCommit: PROTOCOL_CONTENT_COMMIT,
       protocolRulesSha256,
-      evaluationHarnessCommit: options.harnessCommit,
+      evaluationHarnessCommit: provenance.harnessCommit,
       evaluatedCommit,
-      fixtureCommit: options.fixtureCommit,
-      fixtureBlob,
+      fixtureCommit: provenance.fixtureCommit,
+      fixtureBlob: provenance.fixtureBlob,
       fixtureSha256: fixture.fixtureSha256,
+      fixtureAuthorName: provenance.fixtureAuthorName,
+      fixtureAuthoredAt: provenance.fixtureAuthoredAt,
+      independenceAttestation: provenance.independenceAttestation,
       artifacts,
       parameters: { topK: TOP_K, threshold: THRESHOLD },
     },
