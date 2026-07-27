@@ -3,8 +3,14 @@ import type { HoldoutExpectation } from "./search-holdout/contract";
 import { createSearchHoldoutDecision, type HoldoutEvaluationOutput } from "./search-holdout/evaluator";
 import {
   FROZEN_SEARCH_COMMIT,
+  HOLDOUT_FIXTURE_PATH,
+  HOLDOUT_REPORT_PATH,
+  HOLDOUT_RESULTS_PATH,
   PROTOCOL_CONTENT_COMMIT,
+  assertCanonicalHoldoutPaths,
   assertCleanEvaluationTree,
+  assertDefaultSearchArtifactEnvironment,
+  assertFrozenCorpusPaths,
   assertFrozenProtocolRules,
   assertFrozenSearchPaths,
   assertHoldoutCommitChain,
@@ -18,14 +24,6 @@ import { validateSearchHoldoutFixtureFile } from "./validate-search-holdout";
 const TOP_K = 5;
 const THRESHOLD = 0.25;
 
-interface CliOptions {
-  casesPath: string;
-  jsonPath: string;
-  markdownPath: string;
-  fixtureCommit: string;
-  harnessCommit: string;
-}
-
 function optionValue(name: string): string | null {
   const prefix = `--${name}=`;
   const inline = process.argv.find((argument) => argument.startsWith(prefix));
@@ -38,26 +36,14 @@ function optionValue(name: string): string | null {
   return index >= 0 ? process.argv[index + 1] ?? null : null;
 }
 
-function resolveOptions(): CliOptions {
-  const cases = optionValue("cases");
-  const json = optionValue("json");
-  const markdown = optionValue("markdown");
+function requireFixtureCommit(): string {
   const fixtureCommit = optionValue("fixture-commit");
-  const harnessCommit = optionValue("harness-commit");
 
-  if (!cases || !json || !markdown || !fixtureCommit || !harnessCommit) {
-    throw new Error(
-      "Usage: tsx scripts/run-search-holdout.ts --cases <fixture.json> --json <results.json> --markdown <report.md> --fixture-commit <sha> --harness-commit <sha>",
-    );
+  if (!fixtureCommit) {
+    throw new Error("Usage: tsx scripts/run-search-holdout.ts --fixture-commit <sha>");
   }
 
-  return {
-    casesPath: path.resolve(process.cwd(), cases),
-    jsonPath: path.resolve(process.cwd(), json),
-    markdownPath: path.resolve(process.cwd(), markdown),
-    fixtureCommit,
-    harnessCommit,
-  };
+  return fixtureCommit;
 }
 
 function evaluateExpectation(
@@ -76,27 +62,31 @@ function evaluateExpectation(
 }
 
 async function main(): Promise<void> {
-  const options = resolveOptions();
   const root = process.cwd();
-  const fixtureRelativePath = path.relative(root, options.casesPath);
-  if (!fixtureRelativePath || fixtureRelativePath.startsWith("..") || path.isAbsolute(fixtureRelativePath)) {
-    throw new Error("Holdout fixture must be inside the repository.");
-  }
+  const fixtureCommit = requireFixtureCommit();
+  const paths = {
+    casesPath: path.join(root, HOLDOUT_FIXTURE_PATH),
+    jsonPath: path.join(root, HOLDOUT_RESULTS_PATH),
+    markdownPath: path.join(root, HOLDOUT_REPORT_PATH),
+  };
 
   assertCleanEvaluationTree(root);
-  const fixture = await validateSearchHoldoutFixtureFile(options.casesPath);
+  assertCanonicalHoldoutPaths(root, paths);
+  assertDefaultSearchArtifactEnvironment();
+  const fixture = await validateSearchHoldoutFixtureFile(paths.casesPath);
   assertFrozenSearchPaths(root);
+  assertFrozenCorpusPaths(root);
   const protocolRulesSha256 = assertFrozenProtocolRules(root);
   const provenance = assertHoldoutCommitChain(root, {
-    fixtureCommit: options.fixtureCommit,
-    fixtureRelativePath,
+    fixtureCommit,
+    fixtureRelativePath: HOLDOUT_FIXTURE_PATH,
   });
   const evaluatedCommit = readCurrentCommit(root);
   const artifacts = readArtifactIdentity(root);
   const startedAt = new Date().toISOString();
   const reservation = reserveHoldoutEvidence({
-    jsonPath: options.jsonPath,
-    markdownPath: options.markdownPath,
+    jsonPath: paths.jsonPath,
+    markdownPath: paths.markdownPath,
     startedRecord: {
       status: "started",
       startedAt,
@@ -166,8 +156,8 @@ async function main(): Promise<void> {
       {
         decision: decision.decision,
         categories: decision.categories,
-        jsonPath: options.jsonPath,
-        markdownPath: options.markdownPath,
+        jsonPath: paths.jsonPath,
+        markdownPath: paths.markdownPath,
       },
       null,
       2,
