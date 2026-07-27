@@ -8,13 +8,16 @@ Scope: MVP 主路径闭环 / Phase 5 interaction polish.
 不代表本轮质量收敛已经满足发布条件。当前仍须完成：
 
 - [x] 集成预检完成：`f261607bf83560e746507e38d7dd93dffc5b8edb` 已合并
-  `906cde4` 与 `de369e3`；这不是 Task 7 或最终签署。
-- [x] 独立评审交接已封存：fixture validator 为
-  `e2e7121a1b4084d60e8c22f6dd48bd21ddf8f203`，evaluator harness 为
-  `ba3353e267a4990fc74978bdd8ead1b67475b4e5`。
+      `906cde4` 与 `de369e3`；这不是 Task 7 或最终签署。
+- [x] Unit 1–4 集成基线已复核：
+      `0e7a81768cbdfcf0b6cc8633edceee6e1e7c7990`。
+- [x] 独立评审交接已重新封存：fixture validator 为
+      `e2e7121a1b4084d60e8c22f6dd48bd21ddf8f203`，one-shot evaluator harness 为
+      `609a792179b7118c7c111744b9bc6a1702092326`；旧
+      `ba3353e267a4990fc74978bdd8ead1b67475b4e5` 在任何 fixture 前已废止。
 - [ ] 由未参与本轮调参的独立评审者创建并一次性执行冻结 holdout v1。
 - [ ] 在明确提交且干净的工作树中完成两轮全量无缓存测试、两轮稳定性测试、
-  构建和生产 smoke。
+      构建和生产 smoke。
 - [ ] 完成集成后的桌面 `1440px` 与移动端 `390px` 人工验收，并更新本轮发布记录。
 
 Canonical path:

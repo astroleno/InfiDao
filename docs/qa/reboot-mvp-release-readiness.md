@@ -34,6 +34,17 @@ contracts, and the Next.js 15.5.18 production build. The search freeze diff is
 empty. This is integration evidence only, not Task 7 or a Release Candidate
 signoff.
 
+### Resealed independent holdout handoff
+
+`0e7a81768cbdfcf0b6cc8633edceee6e1e7c7990` is the reviewed Unit 1–4
+integration base. The prior evaluator seal
+`ba3353e267a4990fc74978bdd8ead1b67475b4e5` was superseded before any fixture
+by `609a792179b7118c7c111744b9bc6a1702092326`, which enforces default search
+artifacts, frozen corpus inputs, commit-chain provenance, and one-shot evidence
+reservation. This hardening is not Task 7 or a Release Candidate signoff;
+fixture intake, immutable v1 evidence, and final clean-worktree verification
+remain required.
+
 CI gate: `.github/workflows/reboot-mvp-ci.yml` runs on pull requests and pushes
 to `main` with `SEARCH_EMBEDDING_BACKEND=local`. Its fixed verify order is:
 
@@ -209,7 +220,7 @@ Run the matrix against a dev server configured with canonical env first.
 | rate limit                | Send 21 annotate requests from one client within 60 seconds              | The 21st request returns `429` and `RATE_LIMITED`.                                                         |
 | telemetry canonical       | Canonical env only                                                       | `/api/internal/annotation-telemetry` returns `200`, `llm.warnings: []`, and no API key material.           |
 | telemetry legacy          | Legacy aliases only                                                      | `/api/internal/annotation-telemetry` returns migration warnings and no API key material.                   |
-| telemetry quality signals | Run multiple annotation requests across root and linked passages         | Summary includes p50/p95/p99 latency plus fallback breakdown by query hash, exploration depth, and slot.  |
+| telemetry quality signals | Run multiple annotation requests across root and linked passages         | Summary includes p50/p95/p99 latency plus fallback breakdown by query hash, exploration depth, and slot.   |
 | production internal route | `NODE_ENV=production`                                                    | `/api/internal/annotation-telemetry` returns `404`.                                                        |
 
 ## Historical Browser Smoke Evidence (2026-04-29)

@@ -1,12 +1,17 @@
 ---
 title: "fix: Complete frozen holdout and integrated release sign-off"
 type: fix
-status: active
+status: superseded
 date: 2026-07-26
 origin: docs/superpowers/plans/2026-07-26-quality-release-convergence.md
 ---
 
 # fix: Complete frozen holdout and integrated release sign-off
+
+> **Superseded:** before any v1 fixture existed, the audit-boundary findings
+> required [the 2026-07-27 hardening and release plan](../superpowers/plans/2026-07-27-holdout-harness-hardening-and-release.md).
+> Its resealed harness is the only valid basis for the independent reviewer
+> handoff; this historical plan remains for provenance only.
 
 ## Overview
 
@@ -30,17 +35,17 @@ commit that undergoes the final clean-worktree release verification.
 
 ## Current Review Verdict
 
-| Area | Verdict | Consequence |
-| --- | --- | --- |
-| Integration ancestry | Pass | `f261607` has parents `906cde4` and `de369e3`; frozen commits remain ancestors |
-| Search freeze | Pass | No diff from `81c6365` under `src/lib/search`, `data/embeddings.json`, or `data/search-graph.json` |
-| Integration preflight | Pass | Type check, lint, 12 UI suites / 48 UI tests, documentation tests, and production build pass |
-| Holdout fixture | Correctly absent | No v1 query may be generated or evaluated by a participant in the tuning/review cycle |
-| Holdout fixture validation | Blocked | The current runner accepts arbitrary arrays without validating category counts, labels, or query reuse |
-| Holdout release decision | Blocked | The current runner reports case totals but does not enforce 19/24 in-domain plus 6/6 OOD |
-| Evidence auditability | Blocked | Generated evidence omits the evaluated commit, fixture identity, frozen commits, and artifact identities |
-| UI integration correctness | Needs one targeted fix | The reading dwell timer is recreated when its props object changes, so unrelated rerenders can extend the bounded pause |
-| Remote publication | Blocked pending authorization | The local integration branch tracks `origin/main`, not a same-named remote branch |
+| Area                       | Verdict                       | Consequence                                                                                                             |
+| -------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Integration ancestry       | Pass                          | `f261607` has parents `906cde4` and `de369e3`; frozen commits remain ancestors                                          |
+| Search freeze              | Pass                          | No diff from `81c6365` under `src/lib/search`, `data/embeddings.json`, or `data/search-graph.json`                      |
+| Integration preflight      | Pass                          | Type check, lint, 12 UI suites / 48 UI tests, documentation tests, and production build pass                            |
+| Holdout fixture            | Correctly absent              | No v1 query may be generated or evaluated by a participant in the tuning/review cycle                                   |
+| Holdout fixture validation | Blocked                       | The current runner accepts arbitrary arrays without validating category counts, labels, or query reuse                  |
+| Holdout release decision   | Blocked                       | The current runner reports case totals but does not enforce 19/24 in-domain plus 6/6 OOD                                |
+| Evidence auditability      | Blocked                       | Generated evidence omits the evaluated commit, fixture identity, frozen commits, and artifact identities                |
+| UI integration correctness | Needs one targeted fix        | The reading dwell timer is recreated when its props object changes, so unrelated rerenders can extend the bounded pause |
+| Remote publication         | Blocked pending authorization | The local integration branch tracks `origin/main`, not a same-named remote branch                                       |
 
 ## Problem Frame
 
@@ -154,17 +159,17 @@ contracts, frozen local artifacts, and the existing release plan.
 
 ## Key Technical Decisions
 
-| Decision | Rationale |
-| --- | --- |
-| Separate fixture validation from evaluation | Structural and contamination checks must not query the frozen search system or consume the one-shot run |
-| Add a dedicated holdout entrypoint | The generic iteration runner must keep reproducing historical tuned and search-50 evidence without inheriting v1-only rules |
-| Freeze tooling before accepting v1 | Changing scoring or evidence semantics after receiving the fixture would weaken the audit boundary |
-| Use explicit `in-domain` and `ood` categories | The 19/24 and 6/6 decision cannot be inferred safely from arbitrary labels |
-| Write evidence before returning a failing gate | A genuine failure must remain reproducible and reviewable |
-| Record content and Git identities | A path name alone cannot prove which fixture or implementation was evaluated |
-| Never rerun real v1 in ordinary CI | CI may validate evidence integrity, but a routine push must not create a second evaluation timestamp or overwrite v1 |
-| Keep UI correction narrowly scoped | The timer defect is concrete, but the broader UI redesign remains outside this convergence plan |
-| Run Task 7 once on the final evidence-bearing SHA | Running it before v1 would validate a different candidate and require a complete rerun |
+| Decision                                          | Rationale                                                                                                                   |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Separate fixture validation from evaluation       | Structural and contamination checks must not query the frozen search system or consume the one-shot run                     |
+| Add a dedicated holdout entrypoint                | The generic iteration runner must keep reproducing historical tuned and search-50 evidence without inheriting v1-only rules |
+| Freeze tooling before accepting v1                | Changing scoring or evidence semantics after receiving the fixture would weaken the audit boundary                          |
+| Use explicit `in-domain` and `ood` categories     | The 19/24 and 6/6 decision cannot be inferred safely from arbitrary labels                                                  |
+| Write evidence before returning a failing gate    | A genuine failure must remain reproducible and reviewable                                                                   |
+| Record content and Git identities                 | A path name alone cannot prove which fixture or implementation was evaluated                                                |
+| Never rerun real v1 in ordinary CI                | CI may validate evidence integrity, but a routine push must not create a second evaluation timestamp or overwrite v1        |
+| Keep UI correction narrowly scoped                | The timer defect is concrete, but the broader UI redesign remains outside this convergence plan                             |
+| Run Task 7 once on the final evidence-bearing SHA | Running it before v1 would validate a different candidate and require a complete rerun                                      |
 
 ## Open Questions
 
@@ -200,9 +205,9 @@ contracts, frozen local artifacts, and the existing release plan.
 
 ## High-Level Technical Design
 
-> *This illustrates the intended approach and is directional guidance for
+> _This illustrates the intended approach and is directional guidance for
 > review, not implementation specification. The implementing agent should treat
-> it as context, not code to reproduce.*
+> it as context, not code to reproduce._
 
 ```mermaid
 flowchart TB
@@ -609,29 +614,29 @@ context only and cannot satisfy these gates.
 
 ## Failure Branches
 
-| Checkpoint | Failure outcome | Allowed next action |
-| --- | --- | --- |
-| Fixture validation | v1 not consumed | Return fixture to the independent reviewer without running search |
-| Frozen search/artifact check | v1 not consumed | Restore the correct candidate or create a newly frozen protocol cycle |
-| v1 threshold | v1 retained, RC blocked | Open a search-improvement cycle and create v2 after a new freeze |
-| Task 7 automated gate | RC blocked | Fix the non-search defect, create a new candidate SHA, rerun Task 7 |
-| Manual UI acceptance | RC blocked | Land a narrowly reviewed UI fix and rerun affected plus final gates |
-| Telemetry unavailable | Conditional | Use only the already approved fallback exception and record it honestly |
+| Checkpoint                   | Failure outcome         | Allowed next action                                                     |
+| ---------------------------- | ----------------------- | ----------------------------------------------------------------------- |
+| Fixture validation           | v1 not consumed         | Return fixture to the independent reviewer without running search       |
+| Frozen search/artifact check | v1 not consumed         | Restore the correct candidate or create a newly frozen protocol cycle   |
+| v1 threshold                 | v1 retained, RC blocked | Open a search-improvement cycle and create v2 after a new freeze        |
+| Task 7 automated gate        | RC blocked              | Fix the non-search defect, create a new candidate SHA, rerun Task 7     |
+| Manual UI acceptance         | RC blocked              | Land a narrowly reviewed UI fix and rerun affected plus final gates     |
+| Telemetry unavailable        | Conditional             | Use only the already approved fallback exception and record it honestly |
 
 ## Risks & Dependencies
 
-| Risk | Mitigation |
-| --- | --- |
-| Evaluator work accidentally becomes search tuning | Keep all changes outside frozen search paths and test only synthetic outputs |
-| Independent reviewer cannot access local commits | Request explicit publication authorization for the same-named integration branch or use a shared local Git object store |
-| Query collision checks miss visible evidence | Build the inventory from every tracked golden, search-50, batch2, and tuned evidence source |
-| Overall totals hide category failure | Compute and gate in-domain and OOD independently |
-| Failing evidence is lost because the process exits early | Persist JSON and Markdown before exposing the blocked status |
-| Ordinary CI accidentally reevaluates v1 | Test only evidence hashes and cross-file consistency after v1 is committed |
-| UI correctness fix grows into redesign | Restrict changes to timer lifetime, idempotence, and regression tests |
-| Remote branch accidentally targets `main` | Correct the upstream before the first push and require explicit publication authorization |
-| Task 7 validates the wrong SHA | Record the candidate before worktree creation and repeat it in every evidence document |
-| Sign-off documentation creates a child commit after verification | Record both SHAs and require the child to remain documentation-only |
+| Risk                                                             | Mitigation                                                                                                              |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Evaluator work accidentally becomes search tuning                | Keep all changes outside frozen search paths and test only synthetic outputs                                            |
+| Independent reviewer cannot access local commits                 | Request explicit publication authorization for the same-named integration branch or use a shared local Git object store |
+| Query collision checks miss visible evidence                     | Build the inventory from every tracked golden, search-50, batch2, and tuned evidence source                             |
+| Overall totals hide category failure                             | Compute and gate in-domain and OOD independently                                                                        |
+| Failing evidence is lost because the process exits early         | Persist JSON and Markdown before exposing the blocked status                                                            |
+| Ordinary CI accidentally reevaluates v1                          | Test only evidence hashes and cross-file consistency after v1 is committed                                              |
+| UI correctness fix grows into redesign                           | Restrict changes to timer lifetime, idempotence, and regression tests                                                   |
+| Remote branch accidentally targets `main`                        | Correct the upstream before the first push and require explicit publication authorization                               |
+| Task 7 validates the wrong SHA                                   | Record the candidate before worktree creation and repeat it in every evidence document                                  |
+| Sign-off documentation creates a child commit after verification | Record both SHAs and require the child to remain documentation-only                                                     |
 
 ## Documentation / Operational Notes
 

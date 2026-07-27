@@ -16,10 +16,17 @@ const metadata: HoldoutEvaluationMetadata = {
   fixtureCommit: "d".repeat(40),
   fixtureBlob: "e".repeat(40),
   fixtureSha256: "f".repeat(64),
+  fixtureAuthorName: "Independent Reviewer",
+  fixtureAuthoredAt: "2026-07-27T00:00:00.000Z",
+  independenceAttestation:
+    "no-alias-tuning;no-current-review;no-evaluator-implementation;no-system-top3-inspection",
   artifacts: {
     graphArtifactSignature: "sha256:graph-signature",
     graphFileSha256: "1".repeat(64),
     embeddingsFileSha256: "2".repeat(64),
+    corpusManifestSha256: "3".repeat(64),
+    sixClassicsSha256: "4".repeat(64),
+    gujiCoreSha256: "5".repeat(64),
   },
   parameters: {
     topK: 5,
@@ -80,6 +87,12 @@ describe("search holdout evaluator", () => {
     expect(report).toContain("Decision: **pass**");
     expect(report).toContain(metadata.fixtureSha256);
     expect(report).toContain(metadata.evaluatedCommit);
+    expect(report).toContain(metadata.fixtureAuthorName);
+    expect(report).toContain(metadata.fixtureAuthoredAt);
+    expect(report).toContain(metadata.independenceAttestation);
+    expect(report).toContain(metadata.artifacts.corpusManifestSha256);
+    expect(report).toContain(metadata.artifacts.sixClassicsSha256);
+    expect(report).toContain(metadata.artifacts.gujiCoreSha256);
     expect(report).toContain("In-domain: 19/24");
     expect(report).toContain("OOD: 6/6");
   });

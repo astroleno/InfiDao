@@ -24,17 +24,17 @@ The preceding five commits were:
 
 Read-only inspection of the committed-and-working artifact set reported:
 
-| Field | Value |
-| --- | --- |
-| Corpus version | `guji-core-v1` |
-| Corpus files | 2 |
-| Works | 14 |
-| Embedding model | `infidao-local-concept-v2` |
-| Embedding dimension | 151 |
-| Embeddings | 11,829 |
-| Graph nodes | 12,825 |
-| Graph edges | 24,084 |
-| Graph signature | `sha256:475107bebaad8544cde442d6908ec6ea847e63f22571dab2f844ba703d8452b3` |
+| Field               | Value                                                                     |
+| ------------------- | ------------------------------------------------------------------------- |
+| Corpus version      | `guji-core-v1`                                                            |
+| Corpus files        | 2                                                                         |
+| Works               | 14                                                                        |
+| Embedding model     | `infidao-local-concept-v2`                                                |
+| Embedding dimension | 151                                                                       |
+| Embeddings          | 11,829                                                                    |
+| Graph nodes         | 12,825                                                                    |
+| Graph edges         | 24,084                                                                    |
+| Graph signature     | `sha256:475107bebaad8544cde442d6908ec6ea847e63f22571dab2f844ba703d8452b3` |
 
 ## Quality evidence
 
@@ -42,13 +42,13 @@ Read-only inspection of the committed-and-working artifact set reported:
 
 The following commands were run against the pre-convergence working tree on 2026-07-26 and exited successfully:
 
-| Command | Result |
-| --- | --- |
-| `npm run type-check` | passed |
-| `npm run lint` | passed with zero lint warnings/errors; the current `next lint --dir src` command emitted the expected Next.js deprecation notice and does not yet cover tests or active scripts |
-| `npm test -- --runInBand --no-cache` | passed: 44 suites, 204 tests, 23.3s |
-| `npm run test:search-quality` | passed: 11/11 golden cases, OOD full/fusion both 0, embedding reproducibility passed |
-| `npm run build` | passed using Next.js 15.5.18 |
+| Command                              | Result                                                                                                                                                                          |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run type-check`                 | passed                                                                                                                                                                          |
+| `npm run lint`                       | passed with zero lint warnings/errors; the current `next lint --dir src` command emitted the expected Next.js deprecation notice and does not yet cover tests or active scripts |
+| `npm test -- --runInBand --no-cache` | passed: 44 suites, 204 tests, 23.3s                                                                                                                                             |
+| `npm run test:search-quality`        | passed: 11/11 golden cases, OOD full/fusion both 0, embedding reproducibility passed                                                                                            |
+| `npm run build`                      | passed using Next.js 15.5.18                                                                                                                                                    |
 
 ### Pass after rerun / historical evidence
 
@@ -94,6 +94,20 @@ fixture and its one-shot evidence remain absent. The two files under
 `docs/simon-rogers-main-screen-plan/` are tracked upstream content inherited
 through `906cde4`; the ignore rule applies only to additional untracked local
 material in that path.
+
+## Resealed holdout handoff
+
+`0e7a81768cbdfcf0b6cc8633edceee6e1e7c7990` is the reviewed Unit 1–4
+integration base. Before any fixture existed, the earlier evaluator seal
+`ba3353e267a4990fc74978bdd8ead1b67475b4e5` was superseded before any fixture
+by the hermetic one-shot harness seal
+`609a792179b7118c7c111744b9bc6a1702092326`. It rejects alternate artifact
+paths, freezes corpus inputs, binds the ledger seal to the independent fixture
+commit and evaluated HEAD, and exclusively reserves both evidence files before
+loading search.
+
+This resealing remains pre-release work: no v1 fixture or evidence exists, and
+Task 7 and Release Candidate signoff remain blocked.
 
 ## Protected files outside the release commit
 

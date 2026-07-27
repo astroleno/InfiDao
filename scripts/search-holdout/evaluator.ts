@@ -11,10 +11,16 @@ export interface HoldoutEvaluationMetadata {
   fixtureCommit: string;
   fixtureBlob: string;
   fixtureSha256: string;
+  fixtureAuthorName: string;
+  fixtureAuthoredAt: string;
+  independenceAttestation: string;
   artifacts: {
     graphArtifactSignature: string;
     graphFileSha256: string;
     embeddingsFileSha256: string;
+    corpusManifestSha256: string;
+    sixClassicsSha256: string;
+    gujiCoreSha256: string;
   };
   parameters: {
     topK: number;
@@ -140,9 +146,15 @@ export function renderSearchHoldoutReport(decision: SearchHoldoutDecision): stri
     `- Fixture commit: ${decision.metadata.fixtureCommit}`,
     `- Fixture blob: ${decision.metadata.fixtureBlob}`,
     `- Fixture SHA-256: ${decision.metadata.fixtureSha256}`,
+    `- Fixture author: ${decision.metadata.fixtureAuthorName}`,
+    `- Fixture authored at: ${decision.metadata.fixtureAuthoredAt}`,
+    `- Independence attestation: ${decision.metadata.independenceAttestation}`,
     `- Graph artifact signature: ${decision.metadata.artifacts.graphArtifactSignature}`,
     `- Graph file SHA-256: ${decision.metadata.artifacts.graphFileSha256}`,
     `- Embeddings file SHA-256: ${decision.metadata.artifacts.embeddingsFileSha256}`,
+    `- Corpus manifest SHA-256: ${decision.metadata.artifacts.corpusManifestSha256}`,
+    `- Six Classics corpus SHA-256: ${decision.metadata.artifacts.sixClassicsSha256}`,
+    `- Guji core corpus SHA-256: ${decision.metadata.artifacts.gujiCoreSha256}`,
     `- Parameters: topK=${decision.metadata.parameters.topK}, threshold=${decision.metadata.parameters.threshold}`,
     "",
     "## Failures",
