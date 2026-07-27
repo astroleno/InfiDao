@@ -24,6 +24,9 @@ const metadata: HoldoutEvaluationMetadata = {
     graphArtifactSignature: "sha256:graph-signature",
     graphFileSha256: "1".repeat(64),
     embeddingsFileSha256: "2".repeat(64),
+    corpusManifestSha256: "3".repeat(64),
+    sixClassicsSha256: "4".repeat(64),
+    gujiCoreSha256: "5".repeat(64),
   },
   parameters: {
     topK: 5,
@@ -87,6 +90,9 @@ describe("search holdout evaluator", () => {
     expect(report).toContain(metadata.fixtureAuthorName);
     expect(report).toContain(metadata.fixtureAuthoredAt);
     expect(report).toContain(metadata.independenceAttestation);
+    expect(report).toContain(metadata.artifacts.corpusManifestSha256);
+    expect(report).toContain(metadata.artifacts.sixClassicsSha256);
+    expect(report).toContain(metadata.artifacts.gujiCoreSha256);
     expect(report).toContain("In-domain: 19/24");
     expect(report).toContain("OOD: 6/6");
   });

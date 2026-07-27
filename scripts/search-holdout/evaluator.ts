@@ -18,6 +18,9 @@ export interface HoldoutEvaluationMetadata {
     graphArtifactSignature: string;
     graphFileSha256: string;
     embeddingsFileSha256: string;
+    corpusManifestSha256: string;
+    sixClassicsSha256: string;
+    gujiCoreSha256: string;
   };
   parameters: {
     topK: number;
@@ -149,6 +152,9 @@ export function renderSearchHoldoutReport(decision: SearchHoldoutDecision): stri
     `- Graph artifact signature: ${decision.metadata.artifacts.graphArtifactSignature}`,
     `- Graph file SHA-256: ${decision.metadata.artifacts.graphFileSha256}`,
     `- Embeddings file SHA-256: ${decision.metadata.artifacts.embeddingsFileSha256}`,
+    `- Corpus manifest SHA-256: ${decision.metadata.artifacts.corpusManifestSha256}`,
+    `- Six Classics corpus SHA-256: ${decision.metadata.artifacts.sixClassicsSha256}`,
+    `- Guji core corpus SHA-256: ${decision.metadata.artifacts.gujiCoreSha256}`,
     `- Parameters: topK=${decision.metadata.parameters.topK}, threshold=${decision.metadata.parameters.threshold}`,
     "",
     "## Failures",

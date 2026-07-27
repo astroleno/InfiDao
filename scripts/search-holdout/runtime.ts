@@ -21,16 +21,19 @@ export const FROZEN_SEARCH_PATHS = [
   "data/embeddings.json",
   "data/search-graph.json",
 ];
-
-export interface HoldoutEvidencePaths {
-  jsonPath: string;
-  markdownPath: string;
-}
+export const FROZEN_CORPUS_PATHS = [
+  "data/corpus-manifest.json",
+  "data/sixclassics-sample.jsonl",
+  "data/rysxguji/guji-core-v1.jsonl",
+] as const;
 
 export interface ArtifactIdentity {
   graphArtifactSignature: string;
   graphFileSha256: string;
   embeddingsFileSha256: string;
+  corpusManifestSha256: string;
+  sixClassicsSha256: string;
+  gujiCoreSha256: string;
 }
 
 export interface HoldoutCommitProvenance {
@@ -40,6 +43,25 @@ export interface HoldoutCommitProvenance {
   fixtureAuthorName: string;
   fixtureAuthoredAt: string;
   independenceAttestation: string;
+}
+
+export interface HoldoutStartedRecord {
+  status: "started";
+  startedAt: string;
+  fixtureCommit: string;
+  evaluatedCommit: string;
+}
+
+export interface HoldoutEvidenceReservation {
+  jsonFileDescriptor: number;
+  markdownFileDescriptor: number;
+  jsonPath: string;
+  markdownPath: string;
+}
+
+export interface SearchArtifactEnvironment {
+  SEARCH_EMBEDDING_ARTIFACT_PATH?: string;
+  SEARCH_GRAPH_PATH?: string;
 }
 
 function sha256(contents: Buffer | string): string {
@@ -85,6 +107,51 @@ export function assertFrozenProtocolRules(root: string): string {
 
 export function assertFrozenSearchPaths(root: string): void {
   git(root, ["diff", "--quiet", FROZEN_SEARCH_COMMIT, "--", ...FROZEN_SEARCH_PATHS]);
+}
+
+export function assertFrozenCorpusPaths(root: string): void {
+  git(root, ["diff", "--quiet", FROZEN_SEARCH_COMMIT, "--", ...FROZEN_CORPUS_PATHS]);
+}
+
+export function assertDefaultSearchArtifactEnvironment(
+  environment: SearchArtifactEnvironment = process.env as unknown as SearchArtifactEnvironment,
+): void {
+  for (const name of ["SEARCH_EMBEDDING_ARTIFACT_PATH", "SEARCH_GRAPH_PATH"] as const) {
+    if (environment[name]?.trim()) {
+      throw new Error(`${name} must be unset for frozen holdout evaluation.`);
+    }
+  }
+}
+
+export function assertCanonicalHoldoutPaths(
+  root: string,
+  paths: {
+    casesPath: string;
+    jsonPath: string;
+    markdownPath: string;
+  },
+): void {
+  const expected = {
+    casesPath: path.resolve(root, HOLDOUT_FIXTURE_PATH),
+    jsonPath: path.resolve(root, HOLDOUT_RESULTS_PATH),
+    markdownPath: path.resolve(root, HOLDOUT_REPORT_PATH),
+  };
+  const actual = {
+    casesPath: path.resolve(paths.casesPath),
+    jsonPath: path.resolve(paths.jsonPath),
+    markdownPath: path.resolve(paths.markdownPath),
+  };
+
+  if (
+    actual.casesPath !== expected.casesPath ||
+    actual.jsonPath !== expected.jsonPath ||
+    actual.markdownPath !== expected.markdownPath ||
+    new Set(Object.values(actual)).size !== 3
+  ) {
+    throw new Error(
+      `Frozen holdout must use canonical evidence paths: ${HOLDOUT_FIXTURE_PATH}, ${HOLDOUT_RESULTS_PATH}, ${HOLDOUT_REPORT_PATH}.`,
+    );
+  }
 }
 
 export function assertCleanEvaluationTree(root: string): void {
@@ -222,6 +289,9 @@ export function assertEvaluationHarnessCommit(root: string, harnessCommit: strin
 export function readArtifactIdentity(root: string): ArtifactIdentity {
   const graphPath = path.join(root, "data/search-graph.json");
   const embeddingsPath = path.join(root, "data/embeddings.json");
+  const corpusManifestPath = path.join(root, FROZEN_CORPUS_PATHS[0]);
+  const sixClassicsPath = path.join(root, FROZEN_CORPUS_PATHS[1]);
+  const gujiCorePath = path.join(root, FROZEN_CORPUS_PATHS[2]);
   const graph = JSON.parse(fs.readFileSync(graphPath, "utf8")) as { artifactSignature?: unknown };
 
   if (typeof graph.artifactSignature !== "string") {
@@ -232,15 +302,68 @@ export function readArtifactIdentity(root: string): ArtifactIdentity {
     graphArtifactSignature: graph.artifactSignature,
     graphFileSha256: sha256(fs.readFileSync(graphPath)),
     embeddingsFileSha256: sha256(fs.readFileSync(embeddingsPath)),
+    corpusManifestSha256: sha256(fs.readFileSync(corpusManifestPath)),
+    sixClassicsSha256: sha256(fs.readFileSync(sixClassicsPath)),
+    gujiCoreSha256: sha256(fs.readFileSync(gujiCorePath)),
   };
 }
 
+export function reserveHoldoutEvidence(options: {
+  jsonPath: string;
+  markdownPath: string;
+  startedRecord: HoldoutStartedRecord;
+}): HoldoutEvidenceReservation {
+  if (fs.existsSync(options.jsonPath) || fs.existsSync(options.markdownPath)) {
+    throw new Error("Frozen holdout evidence already exists; v1 must never be evaluated again.");
+  }
+
+  fs.mkdirSync(path.dirname(options.jsonPath), { recursive: true });
+  fs.mkdirSync(path.dirname(options.markdownPath), { recursive: true });
+
+  let jsonFileDescriptor: number | undefined;
+  let markdownFileDescriptor: number | undefined;
+
+  try {
+    jsonFileDescriptor = fs.openSync(options.jsonPath, "wx");
+    markdownFileDescriptor = fs.openSync(options.markdownPath, "wx");
+    fs.writeFileSync(jsonFileDescriptor, `${JSON.stringify(options.startedRecord, null, 2)}\n`);
+    fs.fsyncSync(jsonFileDescriptor);
+    fs.writeFileSync(
+      markdownFileDescriptor,
+      `# Search Frozen Holdout v1\n\nEvaluation started at ${options.startedRecord.startedAt}; evidence paths are reserved.\n`,
+    );
+    fs.fsyncSync(markdownFileDescriptor);
+
+    return {
+      jsonFileDescriptor,
+      markdownFileDescriptor,
+      jsonPath: options.jsonPath,
+      markdownPath: options.markdownPath,
+    };
+  } catch (error) {
+    if (jsonFileDescriptor !== undefined) {
+      fs.closeSync(jsonFileDescriptor);
+    }
+    if (markdownFileDescriptor !== undefined) {
+      fs.closeSync(markdownFileDescriptor);
+    }
+    throw error;
+  }
+}
+
 export function writeHoldoutEvidence(
-  paths: HoldoutEvidencePaths,
+  reservation: HoldoutEvidenceReservation,
   decision: SearchHoldoutDecision,
 ): void {
-  fs.mkdirSync(path.dirname(paths.jsonPath), { recursive: true });
-  fs.mkdirSync(path.dirname(paths.markdownPath), { recursive: true });
-  fs.writeFileSync(paths.jsonPath, `${JSON.stringify(decision, null, 2)}\n`);
-  fs.writeFileSync(paths.markdownPath, renderSearchHoldoutReport(decision));
+  try {
+    fs.ftruncateSync(reservation.jsonFileDescriptor, 0);
+    fs.writeSync(reservation.jsonFileDescriptor, `${JSON.stringify(decision, null, 2)}\n`, 0, "utf8");
+    fs.fsyncSync(reservation.jsonFileDescriptor);
+    fs.ftruncateSync(reservation.markdownFileDescriptor, 0);
+    fs.writeSync(reservation.markdownFileDescriptor, renderSearchHoldoutReport(decision), 0, "utf8");
+    fs.fsyncSync(reservation.markdownFileDescriptor);
+  } finally {
+    fs.closeSync(reservation.jsonFileDescriptor);
+    fs.closeSync(reservation.markdownFileDescriptor);
+  }
 }

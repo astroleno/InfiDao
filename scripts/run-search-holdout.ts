@@ -10,6 +10,7 @@ import {
   assertHoldoutCommitChain,
   readArtifactIdentity,
   readCurrentCommit,
+  reserveHoldoutEvidence,
   writeHoldoutEvidence,
 } from "./search-holdout/runtime";
 import { validateSearchHoldoutFixtureFile } from "./validate-search-holdout";
@@ -92,6 +93,17 @@ async function main(): Promise<void> {
   });
   const evaluatedCommit = readCurrentCommit(root);
   const artifacts = readArtifactIdentity(root);
+  const startedAt = new Date().toISOString();
+  const reservation = reserveHoldoutEvidence({
+    jsonPath: options.jsonPath,
+    markdownPath: options.markdownPath,
+    startedRecord: {
+      status: "started",
+      startedAt,
+      fixtureCommit: provenance.fixtureCommit,
+      evaluatedCommit,
+    },
+  });
 
   const { loadSearchIndex } = await import("../src/lib/search/index-store");
   const { diagnoseSearchPassages } = await import("../src/lib/search/diagnostics");
@@ -130,7 +142,7 @@ async function main(): Promise<void> {
 
   const decision = createSearchHoldoutDecision(
     {
-      generatedAt: new Date().toISOString(),
+      generatedAt: startedAt,
       frozenSearchCommit: FROZEN_SEARCH_COMMIT,
       protocolContentCommit: PROTOCOL_CONTENT_COMMIT,
       protocolRulesSha256,
@@ -148,10 +160,7 @@ async function main(): Promise<void> {
     outputs,
   );
 
-  writeHoldoutEvidence(
-    { jsonPath: options.jsonPath, markdownPath: options.markdownPath },
-    decision,
-  );
+  writeHoldoutEvidence(reservation, decision);
   console.log(
     JSON.stringify(
       {
