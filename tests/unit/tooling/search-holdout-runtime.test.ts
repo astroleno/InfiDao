@@ -64,6 +64,20 @@ function createRepository(): string {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "infidao-holdout-topology-"));
   git(root, ["init", "--initial-branch=main"]);
   commitFile(root, "README.md", "base\n", "test: add base");
+  commitFile(
+    root,
+    "package.json",
+    JSON.stringify(
+      {
+        scripts: {
+          "evaluate:search-holdout": "tsx scripts/run-search-holdout.ts",
+        },
+      },
+      null,
+      2,
+    ),
+    "test: add evaluator entrypoint",
+  );
   return root;
 }
 
@@ -201,6 +215,53 @@ describe("search holdout runtime", () => {
         fixtureAuthorName: "Independent Reviewer",
         independenceAttestation: requiredIndependenceAttestation,
       });
+    } finally {
+      fs.rmSync(topology.root, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects non-canonical fixture commit references", () => {
+    const topology = createValidHoldoutChain();
+
+    try {
+      for (const fixtureCommit of ["HEAD", "main", topology.fixtureCommit.slice(0, 12)]) {
+        expect(() =>
+          assertHoldoutCommitChain(topology.root, {
+            fixtureCommit,
+            fixtureRelativePath: fixturePath,
+          }),
+        ).toThrow("40-character lowercase commit SHA");
+      }
+    } finally {
+      fs.rmSync(topology.root, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects an evaluator npm entrypoint changed after the harness seal", () => {
+    const topology = createValidHoldoutChain();
+
+    try {
+      commitFile(
+        topology.root,
+        "package.json",
+        JSON.stringify(
+          {
+            scripts: {
+              "evaluate:search-holdout": "tsx scripts/alternate-evaluator.ts",
+            },
+          },
+          null,
+          2,
+        ),
+        "chore: redirect evaluator entrypoint",
+      );
+
+      expect(() =>
+        assertHoldoutCommitChain(topology.root, {
+          fixtureCommit: topology.fixtureCommit,
+          fixtureRelativePath: fixturePath,
+        }),
+      ).toThrow("package.json");
     } finally {
       fs.rmSync(topology.root, { recursive: true, force: true });
     }
