@@ -25,7 +25,7 @@ describe("reboot MVP acceptance checklist", () => {
     expect(checklist).toContain("f261607bf83560e746507e38d7dd93dffc5b8edb");
     expect(checklist).toContain("独立评审交接");
     expect(checklist).toContain("0e7a81768cbdfcf0b6cc8633edceee6e1e7c7990");
-    expect(checklist).toContain("609a792179b7118c7c111744b9bc6a1702092326");
+    expect(checklist).toContain("3e9eb8385ec2779708f0bbfe5afa41052a7f9f6b");
   });
 
   it("spells out the exact reboot health smoke contract", () => {
@@ -38,7 +38,9 @@ describe("reboot MVP acceptance checklist", () => {
     expect(checklist).toContain("`GET /api/internal/annotation-telemetry` returns `200`");
     expect(checklist).toContain("telemetry `llm.warnings` is empty");
     expect(checklist).toContain("telemetry reports migration warnings and never returns API keys");
-    expect(checklist).toContain("fallback breakdown by query hash, exploration depth, provider slot");
+    expect(checklist).toContain(
+      "fallback breakdown by query hash, exploration depth, provider slot",
+    );
     expect(checklist).toContain("p50/p95/p99 latency");
   });
 

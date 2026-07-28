@@ -26,6 +26,12 @@ export const FROZEN_CORPUS_PATHS = [
   "data/sixclassics-sample.jsonl",
   "data/rysxguji/guji-core-v1.jsonl",
 ] as const;
+export const HOLDOUT_HARNESS_PATHS = [
+  "package.json",
+  "scripts/search-holdout",
+  "scripts/run-search-holdout.ts",
+  "scripts/validate-search-holdout.ts",
+] as const;
 
 export interface ArtifactIdentity {
   graphArtifactSignature: string;
@@ -162,7 +168,9 @@ export function assertCleanEvaluationTree(root: string): void {
 
 function readHarnessSealAtFixtureCommit(root: string, fixtureCommit: string): string {
   const methodology = git(root, ["show", `${fixtureCommit}:${PROTOCOL_PATH}`]);
-  const match = methodology.match(/^\| Evaluation harness seal \| `([0-9a-f]{40})` \|$/mu);
+  const match = methodology.match(
+    /^\|\s*Evaluation harness seal\s*\|\s*`([0-9a-f]{40})`\s*\|$/mu,
+  );
 
   if (!match?.[1]) {
     throw new Error(
@@ -173,6 +181,19 @@ function readHarnessSealAtFixtureCommit(root: string, fixtureCommit: string): st
   return match[1];
 }
 
+function resolveImmutableCommitSha(root: string, value: string, label: string): string {
+  if (!/^[0-9a-f]{40}$/.test(value)) {
+    throw new Error(`${label} must be a 40-character lowercase commit SHA.`);
+  }
+
+  const resolved = git(root, ["rev-parse", "--verify", `${value}^{commit}`]);
+  if (resolved !== value) {
+    throw new Error(`${label} must identify a commit directly, not a tag or other ref.`);
+  }
+
+  return resolved;
+}
+
 export function assertHoldoutCommitChain(
   root: string,
   options: {
@@ -181,21 +202,22 @@ export function assertHoldoutCommitChain(
   },
 ): HoldoutCommitProvenance {
   const { fixtureCommit, fixtureRelativePath } = options;
-  git(root, ["rev-parse", "--verify", `${fixtureCommit}^{commit}`]);
-  git(root, ["merge-base", "--is-ancestor", fixtureCommit, "HEAD"]);
+  const resolvedFixtureCommit = resolveImmutableCommitSha(root, fixtureCommit, "Fixture commit");
+  git(root, ["merge-base", "--is-ancestor", resolvedFixtureCommit, "HEAD"]);
 
-  const harnessCommit = readHarnessSealAtFixtureCommit(root, fixtureCommit);
-  git(root, ["rev-parse", "--verify", `${harnessCommit}^{commit}`]);
-  git(root, ["merge-base", "--is-ancestor", harnessCommit, fixtureCommit]);
+  const harnessCommit = resolveImmutableCommitSha(
+    root,
+    readHarnessSealAtFixtureCommit(root, resolvedFixtureCommit),
+    "Evaluation harness seal",
+  );
+  git(root, ["merge-base", "--is-ancestor", harnessCommit, resolvedFixtureCommit]);
   git(root, [
     "diff",
     "--quiet",
     harnessCommit,
     "HEAD",
     "--",
-    "scripts/search-holdout",
-    "scripts/run-search-holdout.ts",
-    "scripts/validate-search-holdout.ts",
+    ...HOLDOUT_HARNESS_PATHS,
   ]);
 
   const changedPaths = git(root, [
@@ -204,7 +226,7 @@ export function assertHoldoutCommitChain(
     "--no-commit-id",
     "--name-only",
     "-r",
-    fixtureCommit,
+    resolvedFixtureCommit,
   ])
     .split("\n")
     .filter(Boolean);
@@ -217,13 +239,18 @@ export function assertHoldoutCommitChain(
     throw new Error(`Fixture commit must change only ${HOLDOUT_FIXTURE_PATH}.`);
   }
 
-  const fixtureBlob = git(root, ["rev-parse", `${fixtureCommit}:${HOLDOUT_FIXTURE_PATH}`]);
+  const fixtureBlob = git(root, ["rev-parse", `${resolvedFixtureCommit}:${HOLDOUT_FIXTURE_PATH}`]);
   const actualBlob = git(root, ["hash-object", HOLDOUT_FIXTURE_PATH]);
   if (fixtureBlob !== actualBlob) {
     throw new Error("Fixture contents do not match the declared fixture commit.");
   }
 
-  const commitIdentity = git(root, ["show", "-s", "--format=%an%x00%aI%x00%B", fixtureCommit]);
+  const commitIdentity = git(root, [
+    "show",
+    "-s",
+    "--format=%an%x00%aI%x00%B",
+    resolvedFixtureCommit,
+  ]);
   const [fixtureAuthorName, fixtureAuthoredAt, ...messageParts] = commitIdentity.split("\0");
   const message = messageParts.join("\0");
   const independenceAttestation = message.match(/^Holdout-Independence:\s*(.+)$/mu)?.[1]?.trim();
@@ -240,50 +267,12 @@ export function assertHoldoutCommitChain(
 
   return {
     harnessCommit,
-    fixtureCommit,
+    fixtureCommit: resolvedFixtureCommit,
     fixtureBlob,
     fixtureAuthorName,
     fixtureAuthoredAt,
     independenceAttestation,
   };
-}
-
-export function assertFixtureCommit(
-  root: string,
-  fixtureCommit: string,
-  fixtureRelativePath: string,
-): string {
-  git(root, ["rev-parse", "--verify", `${fixtureCommit}^{commit}`]);
-  const changedPaths = git(root, ["diff-tree", "--root", "--no-commit-id", "--name-only", "-r", fixtureCommit])
-    .split("\n")
-    .filter(Boolean);
-
-  if (changedPaths.length !== 1 || changedPaths[0] !== fixtureRelativePath) {
-    throw new Error("Fixture commit must change only the holdout fixture path.");
-  }
-
-  const expectedBlob = git(root, ["rev-parse", `${fixtureCommit}:${fixtureRelativePath}`]);
-  const actualBlob = git(root, ["hash-object", fixtureRelativePath]);
-  if (expectedBlob !== actualBlob) {
-    throw new Error("Fixture contents do not match the declared fixture commit.");
-  }
-
-  return actualBlob;
-}
-
-export function assertEvaluationHarnessCommit(root: string, harnessCommit: string): void {
-  git(root, ["rev-parse", "--verify", `${harnessCommit}^{commit}`]);
-  git(root, ["merge-base", "--is-ancestor", harnessCommit, "HEAD"]);
-  git(root, [
-    "diff",
-    "--quiet",
-    harnessCommit,
-    "HEAD",
-    "--",
-    "scripts/search-holdout",
-    "scripts/run-search-holdout.ts",
-    "scripts/validate-search-holdout.ts",
-  ]);
 }
 
 export function readArtifactIdentity(root: string): ArtifactIdentity {
