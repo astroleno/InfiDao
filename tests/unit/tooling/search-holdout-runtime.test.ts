@@ -89,7 +89,7 @@ function holdoutLedger(harnessCommit: string): string {
     "",
     "| Field | Value |",
     "| --- | --- |",
-    `| Evaluation harness seal | \`${harnessCommit}\` |`,
+    `| Evaluation harness seal            | \`${harnessCommit}\` |`,
     "",
   ].join("\n");
 }

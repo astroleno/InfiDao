@@ -168,7 +168,9 @@ export function assertCleanEvaluationTree(root: string): void {
 
 function readHarnessSealAtFixtureCommit(root: string, fixtureCommit: string): string {
   const methodology = git(root, ["show", `${fixtureCommit}:${PROTOCOL_PATH}`]);
-  const match = methodology.match(/^\| Evaluation harness seal \| `([0-9a-f]{40})` \|$/mu);
+  const match = methodology.match(
+    /^\|\s*Evaluation harness seal\s*\|\s*`([0-9a-f]{40})`\s*\|$/mu,
+  );
 
   if (!match?.[1]) {
     throw new Error(
