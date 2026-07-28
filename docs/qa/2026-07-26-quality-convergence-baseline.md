@@ -99,12 +99,14 @@ material in that path.
 
 `0e7a81768cbdfcf0b6cc8633edceee6e1e7c7990` is the reviewed Unit 1–4
 integration base. Before any fixture existed, the earlier evaluator seal
-`ba3353e267a4990fc74978bdd8ead1b67475b4e5` was superseded before any fixture
+`ba3353e267a4990fc74978bdd8ead1b67475b4e5` and
+`609a792179b7118c7c111744b9bc6a1702092326` were superseded before any fixture
 by the hermetic one-shot harness seal
-`609a792179b7118c7c111744b9bc6a1702092326`. It rejects alternate artifact
-paths, freezes corpus inputs, binds the ledger seal to the independent fixture
-commit and evaluated HEAD, and exclusively reserves both evidence files before
-loading search.
+`3e9eb8385ec2779708f0bbfe5afa41052a7f9f6b`. It rejects alternate artifact
+paths, accepts only a 40-character lowercase fixture SHA, seals the
+`package.json` evaluation entrypoint, freezes corpus inputs, binds the ledger
+seal to the independent fixture commit and evaluated HEAD, and exclusively
+reserves both evidence files before loading search.
 
 This resealing remains pre-release work: no v1 fixture or evidence exists, and
 Task 7 and Release Candidate signoff remain blocked.

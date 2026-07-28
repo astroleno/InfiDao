@@ -57,7 +57,7 @@ describe("reboot MVP release readiness", () => {
     expect(document).toContain("f261607bf83560e746507e38d7dd93dffc5b8edb");
     expect(document).toContain("Integration preflight complete");
     expect(document).toContain("0e7a81768cbdfcf0b6cc8633edceee6e1e7c7990");
-    expect(document).toContain("609a792179b7118c7c111744b9bc6a1702092326");
+    expect(document).toContain("3e9eb8385ec2779708f0bbfe5afa41052a7f9f6b");
     expect(document).toContain("superseded before any fixture");
   });
 

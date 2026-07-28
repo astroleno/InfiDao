@@ -38,12 +38,14 @@ signoff.
 
 `0e7a81768cbdfcf0b6cc8633edceee6e1e7c7990` is the reviewed Unit 1–4
 integration base. The prior evaluator seal
-`ba3353e267a4990fc74978bdd8ead1b67475b4e5` was superseded before any fixture
-by `609a792179b7118c7c111744b9bc6a1702092326`, which enforces default search
-artifacts, frozen corpus inputs, commit-chain provenance, and one-shot evidence
-reservation. This hardening is not Task 7 or a Release Candidate signoff;
-fixture intake, immutable v1 evidence, and final clean-worktree verification
-remain required.
+`ba3353e267a4990fc74978bdd8ead1b67475b4e5` and
+`609a792179b7118c7c111744b9bc6a1702092326` were superseded before any fixture
+by `3e9eb8385ec2779708f0bbfe5afa41052a7f9f6b`, which enforces default search
+artifacts, an immutable 40-character lowercase fixture SHA, the sealed
+`package.json` evaluator entrypoint, frozen corpus inputs, commit-chain
+provenance, and one-shot evidence reservation. This hardening is not Task 7 or a
+Release Candidate signoff; fixture intake, immutable v1 evidence, and final
+clean-worktree verification remain required.
 
 CI gate: `.github/workflows/reboot-mvp-ci.yml` runs on pull requests and pushes
 to `main` with `SEARCH_EMBEDDING_BACKEND=local`. Its fixed verify order is:

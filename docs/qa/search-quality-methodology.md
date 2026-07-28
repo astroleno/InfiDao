@@ -48,8 +48,8 @@ search-tuning cycle creates a new v2 holdout instead of changing v1.
 | Frozen protocol rules SHA-256      | `bf0ec2ae2353cadba91488eb6359a77c78acf3d0ca1122154871c930ee2098d0`                                                                                                                                 |
 | Reviewed Unit 1–4 integration base | `0e7a81768cbdfcf0b6cc8633edceee6e1e7c7990`                                                                                                                                                         |
 | Fixture validator commit           | `e2e7121a1b4084d60e8c22f6dd48bd21ddf8f203`                                                                                                                                                         |
-| Previous evaluation harness seal   | `ba3353e267a4990fc74978bdd8ead1b67475b4e5` — superseded before any fixture                                                                                                                         |
-| Evaluation harness seal            | `609a792179b7118c7c111744b9bc6a1702092326`                                                                                                                                                         |
+| Previous evaluation harness seal   | `ba3353e267a4990fc74978bdd8ead1b67475b4e5` and `609a792179b7118c7c111744b9bc6a1702092326` — superseded before any fixture                                                                          |
+| Evaluation harness seal            | `3e9eb8385ec2779708f0bbfe5afa41052a7f9f6b`                                                                                                                                                         |
 | Holdout v1 status                  | Awaiting an independent reviewer; no v1 cases or results have been created                                                                                                                         |
 
 ## Sealed evaluation harness
@@ -57,9 +57,13 @@ search-tuning cycle creates a new v2 holdout instead of changing v1.
 Before the evaluator loads the search index, it rejects alternate embedding or
 graph environment paths, validates the canonical fixture, verifies the frozen
 search and corpus inputs, binds the harness to the fixture commit, and reserves
-the canonical JSON and Markdown evidence paths with exclusive creation. The
-validator checks only the fixture, corpus identities, and visible-query
-inventory; it does not load or query the frozen search system.
+the canonical JSON and Markdown evidence paths with exclusive creation. It
+accepts the fixture only as a 40-character lowercase commit SHA, resolves and
+records that exact SHA, and proves the ordered harness → fixture → evaluated-HEAD
+ancestry chain. The sealed harness surface includes `package.json`, so a changed
+`evaluate:search-holdout` npm entrypoint also rejects evaluation. The validator
+checks only the fixture, corpus identities, and visible-query inventory; it does
+not load or query the frozen search system.
 
 ## Independent reviewer handoff
 
@@ -67,8 +71,9 @@ The reviewer receives the exact resealed handoff commit supplied by the release
 owner, the reviewed Unit 1–4 integration base
 `0e7a81768cbdfcf0b6cc8633edceee6e1e7c7990`, the frozen identities above, and
 only corpus/source materials needed for semantic labels. The earlier
-`ba3353e267a4990fc74978bdd8ead1b67475b4e5` harness was reviewed but superseded
-before any fixture existed.
+`ba3353e267a4990fc74978bdd8ead1b67475b4e5` and
+`609a792179b7118c7c111744b9bc6a1702092326` harnesses were superseded before any
+fixture existed.
 
 The reviewer must create a fixture-only commit that changes
 `tests/fixtures/search-holdout-v1.json`, must not inspect system search output
