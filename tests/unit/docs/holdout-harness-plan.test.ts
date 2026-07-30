@@ -15,6 +15,17 @@ function taskSection(plan: string, taskNumber: number): string {
   return plan.slice(start, end === -1 ? undefined : end);
 }
 
+function stepSection(task: string, stepNumber: number): string {
+  const start = task.indexOf(`- [ ] **Step ${stepNumber}:`);
+  const end = task.indexOf("\n- [ ] **Step ", start + 1);
+
+  if (start === -1) {
+    throw new Error(`Step ${stepNumber} is missing from the holdout fixture intake task.`);
+  }
+
+  return task.slice(start, end === -1 ? undefined : end);
+}
+
 describe("holdout harness hardening plan", () => {
   it("marks completed harness tasks and documents the whitespace-tolerant ledger parser", () => {
     const plan = readFileSync(
@@ -41,7 +52,7 @@ describe("holdout harness hardening plan", () => {
       "utf8",
     );
     const ledger = readFileSync(path.join(root, "docs/qa/search-quality-methodology.md"), "utf8");
-    const sedScript = plan.match(/^\s*sed -n '([^']+)'$/m)?.[1];
+    const sedScript = taskSection(plan, 4).match(/^\s*sed -n '([^']+)'$/m)?.[1];
 
     expect(sedScript).toBeDefined();
     expect(
@@ -50,5 +61,30 @@ describe("holdout harness hardening plan", () => {
         input: ledger,
       }).trim(),
     ).toBe(HARNESS_SEAL);
+  });
+
+  it("binds the fixture to the supplied authoring base and fast-forwards integration", () => {
+    const plan = readFileSync(
+      path.join(
+        process.cwd(),
+        "docs/superpowers/plans/2026-07-27-holdout-harness-hardening-and-release.md",
+      ),
+      "utf8",
+    );
+    const task = taskSection(plan, 4);
+
+    expect(task).toContain("exact 40-character authoring-base integration SHA");
+    expect(task).toContain('fixture_parent="$(git rev-parse "$fixture_commit^")"');
+    expect(task).toContain('test "$fixture_parent" = "$authoring_base"');
+    expect(task).toContain('git rev-list --count "$authoring_base..$fixture_commit"');
+    expect(task).toContain('test "$fixture_commit_count" = "1"');
+    expect(stepSection(task, 2)).toContain('test -z "$(git status --short)"');
+    expect(stepSection(task, 3)).not.toContain('test -z "$(git status --short)"');
+    expect(stepSection(task, 3)).toContain(
+      'test "$(git diff --cached --name-only)" = "tests/fixtures/search-holdout-v1.json"',
+    );
+    expect(task).toContain('git merge --ff-only "$fixture_commit"');
+    expect(task).toContain('test "$(git rev-parse HEAD)" = "$fixture_commit"');
+    expect(task).toContain("Do not use `--no-ff`, `cherry-pick`, `rebase`, `amend`, or `squash`");
   });
 });
