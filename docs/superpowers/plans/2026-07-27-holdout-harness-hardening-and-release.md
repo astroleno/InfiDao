@@ -801,15 +801,18 @@ git diff --cached --check
 git commit -m "docs(qa): reseal independent holdout handoff"
 ```
 
-This commit is the authoring base to provide to the independent reviewer.
-Remote publication remains a separate explicit action.
+This completed historical Task 3 handoff is superseded as an authoring base by
+the post-repair integration commit specified in Task 4. Remote publication
+remains a separate explicit action.
 
 ---
 
 ### Task 4: Accept the independent fixture without consuming v1
 
-**Authoring base:** use the exact integration commit that includes this runbook
-repair, supplied by the release owner. Do not use a prior handoff SHA.
+**Authoring base:** the release owner must supply the exact 40-character
+authoring-base integration SHA created after this runbook repair. The reviewer
+must create the fixture as its direct child; do not use a prior handoff SHA or a
+mere ancestor.
 
 **Files:**
 
@@ -820,7 +823,8 @@ repair, supplied by the release owner. Do not use a prior handoff SHA.
 
 Provide:
 
-- the exact Task 3 handoff commit SHA;
+- the exact 40-character authoring-base integration SHA supplied by the release
+  owner;
 - the corpus files and source mappings;
 - `docs/qa/search-quality-methodology.md`;
 - the validator command;
@@ -828,9 +832,20 @@ Provide:
 - the exact independence trailer.
 
 Do not provide search Top 3 output, tuned aliases, debug diagnostics, or the real
-evaluator output.
+evaluator output. The reviewer must start directly from the supplied authoring
+base and return only the complete fixture commit SHA.
 
 - [ ] **Step 2: Reviewer creates the fixture**
+
+Before writing the fixture, verify the reviewer branch is clean and starts at
+the supplied authoring base:
+
+```bash
+authoring_base="<exact 40-character authoring-base integration SHA supplied by release owner>"
+test "$(git rev-parse --verify "$authoring_base^{commit}")" = "$authoring_base"
+test -z "$(git status --short)"
+test "$(git rev-parse HEAD)" = "$authoring_base"
+```
 
 The reviewer creates exactly 24 `in-domain` and 6 `ood` cases at:
 
@@ -861,17 +876,32 @@ Holdout-Independence: no-alias-tuning;no-current-review;no-evaluator-implementat
 Commands:
 
 ```bash
+authoring_base="<exact 40-character authoring-base integration SHA supplied by release owner>"
+test "$(git rev-parse --verify "$authoring_base^{commit}")" = "$authoring_base"
 git add -- tests/fixtures/search-holdout-v1.json
 git diff --cached --check
 git diff --cached --name-only
+test "$(git diff --cached --name-only)" = "tests/fixtures/search-holdout-v1.json"
 git commit \
   -m "test(holdout): add independent v1 fixture" \
   -m "Holdout-Independence: no-alias-tuning;no-current-review;no-evaluator-implementation;no-system-top3-inspection"
-git rev-parse HEAD
+fixture_commit="$(git rev-parse HEAD)"
+fixture_parent="$(git rev-parse "$fixture_commit^")"
+test "$fixture_parent" = "$authoring_base"
+fixture_commit_count="$(git rev-list --count "$authoring_base..$fixture_commit")"
+test "$fixture_commit_count" = "1"
+test "$(git diff-tree --no-commit-id --name-only -r "$fixture_commit")" = "tests/fixtures/search-holdout-v1.json"
+git rev-parse "$fixture_commit"
 ```
 
 Expected: the staged and committed path list contains exactly
-`tests/fixtures/search-holdout-v1.json`.
+`tests/fixtures/search-holdout-v1.json`; the fixture has the supplied authoring
+base as its direct parent; and the range from authoring base to fixture contains
+exactly one commit.
+
+Before intake, the release owner may use an approved transport to make that exact
+fixture object available locally, but must not move the integration branch away
+from `authoring_base`.
 
 - [ ] **Step 4: Intake verifies without ranking**
 
@@ -879,11 +909,24 @@ On the integration branch, verify:
 
 ```bash
 git status --short
-fixture_commit="$(git rev-parse HEAD)"
+test -z "$(git status --short)"
+authoring_base="<exact 40-character authoring-base integration SHA supplied by release owner>"
+fixture_commit="<exact 40-character fixture SHA returned by independent reviewer>"
+test "$(git rev-parse --verify "$authoring_base^{commit}")" = "$authoring_base"
+test "$(git rev-parse --verify "$fixture_commit^{commit}")" = "$fixture_commit"
+test "$(git rev-parse HEAD)" = "$authoring_base"
+fixture_parent="$(git rev-parse "$fixture_commit^")"
+test "$fixture_parent" = "$authoring_base"
+fixture_commit_count="$(git rev-list --count "$authoring_base..$fixture_commit")"
+test "$fixture_commit_count" = "1"
+test "$(git diff-tree --no-commit-id --name-only -r "$fixture_commit")" = "tests/fixtures/search-holdout-v1.json"
+git merge --ff-only "$fixture_commit"
+test "$(git rev-parse HEAD)" = "$fixture_commit"
 harness_seal="$(
   git show "$fixture_commit":docs/qa/search-quality-methodology.md |
     sed -n 's/^|[[:space:]]*Evaluation harness seal[[:space:]]*|[[:space:]]*`\([0-9a-f]\{40\}\)`[[:space:]]*|[[:space:]]*$/\1/p'
 )"
+test -n "$harness_seal"
 git show --name-only --format=fuller "$fixture_commit"
 git merge-base --is-ancestor "$harness_seal" "$fixture_commit"
 npm run validate:search-holdout -- \
@@ -899,13 +942,20 @@ git diff --exit-code \
   data/rysxguji/guji-core-v1.jsonl
 ```
 
-Expected: clean tree, fixture-only commit, correct ancestry, valid fixture, and
-empty frozen diff. If any command fails, return the fixture to the reviewer and
-do not run the evaluator.
+Expected: clean integration branch at the supplied authoring base, one
+fixture-only direct child, an ff-only integration whose `HEAD` is exactly the
+reviewer-provided fixture SHA, correct harness ancestry, valid fixture, and empty
+frozen diff. Do not use `--no-ff`, `cherry-pick`, `rebase`, `amend`, or `squash`.
+If any command fails, return the fixture to the reviewer and do not run the
+evaluator.
 
 ---
 
 ### Task 5: Execute v1 once and commit immutable evidence
+
+**Dependency:** Task 4 must have completed the ff-only handoff and verified that
+`HEAD` equals the reviewer-provided fixture SHA. No branch manipulation is
+permitted between that check and the one-shot evaluator.
 
 **Files:**
 
