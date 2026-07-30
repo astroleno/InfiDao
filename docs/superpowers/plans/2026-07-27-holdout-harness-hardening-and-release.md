@@ -65,6 +65,11 @@ consumed. That makes this the last safe point to harden and reseal the harness.
 
 ### Task 1: Bind harness, fixture, and reviewer provenance
 
+**Status: completed (2026-07-30).** The provenance boundary landed in
+`225a257`; it is included in the final sealed harness
+`3e9eb8385ec2779708f0bbfe5afa41052a7f9f6b`. No v1 fixture existed while this
+task was completed.
+
 **Files:**
 
 - Modify: `scripts/search-holdout/runtime.ts`
@@ -72,7 +77,7 @@ consumed. That makes this the last safe point to harden and reseal the harness.
 - Modify: `tests/unit/tooling/search-holdout-runtime.test.ts`
 - Modify: `tests/unit/tooling/search-holdout-evaluator.test.ts`
 
-- [ ] **Step 1: Add failing Git-topology tests**
+- [x] **Step 1: Add failing Git-topology tests**
 
 Add temporary-repository helpers to
 `tests/unit/tooling/search-holdout-runtime.test.ts`:
@@ -140,7 +145,7 @@ Add three rejection cases:
 - a harness commit created after the fixture is supplied through the ledger;
 - the fixture commit lacks the exact independence trailer.
 
-- [ ] **Step 2: Run the topology tests and confirm RED**
+- [x] **Step 2: Run the topology tests and confirm RED**
 
 Run:
 
@@ -151,7 +156,7 @@ npm test -- --runInBand --no-cache tests/unit/tooling/search-holdout-runtime.tes
 Expected: FAIL because `assertHoldoutCommitChain` does not exist and current
 runtime accepts no reviewer attestation.
 
-- [ ] **Step 3: Implement ledger-bound commit ancestry**
+- [x] **Step 3: Implement ledger-bound commit ancestry**
 
 Add these constants and types to `scripts/search-holdout/runtime.ts`:
 
@@ -178,7 +183,7 @@ commit:
 ```ts
 function readHarnessSealAtFixtureCommit(root: string, fixtureCommit: string): string {
   const methodology = git(root, ["show", `${fixtureCommit}:${PROTOCOL_PATH}`]);
-  const match = methodology.match(/^\| Evaluation harness seal \| `([0-9a-f]{40})` \|$/mu);
+  const match = methodology.match(/^\|\s*Evaluation harness seal\s*\|\s*`([0-9a-f]{40})`\s*\|$/mu);
 
   if (!match?.[1]) {
     throw new Error(
@@ -270,7 +275,7 @@ export function assertHoldoutCommitChain(
 }
 ```
 
-- [ ] **Step 4: Extend evidence metadata**
+- [x] **Step 4: Extend evidence metadata**
 
 Add these fields to `HoldoutEvaluationMetadata` in
 `scripts/search-holdout/evaluator.ts`:
@@ -293,7 +298,7 @@ Update the synthetic metadata in
 `tests/unit/tooling/search-holdout-evaluator.test.ts` and assert that all three
 values appear in the Markdown report.
 
-- [ ] **Step 5: Run tests and commit the provenance boundary**
+- [x] **Step 5: Run tests and commit the provenance boundary**
 
 Run:
 
@@ -322,6 +327,11 @@ git commit -m "fix(holdout): bind fixture and harness provenance"
 
 ### Task 2: Make runtime inputs hermetic and evidence one-shot
 
+**Status: completed (2026-07-30).** The hermetic runtime boundary landed in
+`95ca02d` and is included in the final sealed harness
+`3e9eb8385ec2779708f0bbfe5afa41052a7f9f6b`. No v1 fixture existed while this
+task was completed.
+
 **Files:**
 
 - Modify: `scripts/search-holdout/runtime.ts`
@@ -329,7 +339,7 @@ git commit -m "fix(holdout): bind fixture and harness provenance"
 - Modify: `tests/unit/tooling/search-holdout-runtime.test.ts`
 - Modify: `tests/unit/tooling/search-holdout-evaluator.test.ts`
 
-- [ ] **Step 1: Add failing environment and path tests**
+- [x] **Step 1: Add failing environment and path tests**
 
 Add tests for:
 
@@ -399,7 +409,7 @@ expect(() =>
 ).toThrow("already exists");
 ```
 
-- [ ] **Step 2: Run the new tests and confirm RED**
+- [x] **Step 2: Run the new tests and confirm RED**
 
 Run:
 
@@ -410,7 +420,7 @@ npm test -- --runInBand --no-cache tests/unit/tooling/search-holdout-runtime.tes
 Expected: FAIL because the hermetic environment, canonical path, and reservation
 APIs do not exist.
 
-- [ ] **Step 3: Reject artifact path overrides**
+- [x] **Step 3: Reject artifact path overrides**
 
 Add to `scripts/search-holdout/runtime.ts`:
 
@@ -429,7 +439,7 @@ export function assertDefaultSearchArtifactEnvironment(
 This check must run before either search module is imported. Remote annotation
 credentials are unrelated and must not be logged.
 
-- [ ] **Step 4: Freeze the corpus inputs used by source contracts**
+- [x] **Step 4: Freeze the corpus inputs used by source contracts**
 
 Add:
 
@@ -457,7 +467,7 @@ Compute each hash from the exact paths in `FROZEN_CORPUS_PATHS`. Add the same
 fields to evaluator JSON and Markdown metadata. This prevents a `sourceTop3`
 decision from silently using source labels that differ from the frozen corpus.
 
-- [ ] **Step 5: Enforce canonical v1 paths**
+- [x] **Step 5: Enforce canonical v1 paths**
 
 Add:
 
@@ -493,7 +503,7 @@ Task 3 removes `--cases`, `--json`, `--markdown`, and `--harness-commit` from
 the real evaluator CLI. The runtime API added here supplies the canonical paths
 that Task 3 will wire into the runner.
 
-- [ ] **Step 6: Reserve the result path before importing search**
+- [x] **Step 6: Reserve the result path before importing search**
 
 Add these runtime types and functions:
 
@@ -555,7 +565,7 @@ If evaluation throws after reservation, retain the `status: "started"` record,
 exit non-zero, and treat v1 as consumed and blocked pending audit. Do not delete
 the marker or retry.
 
-- [ ] **Step 7: Run tests and commit the hermetic boundary**
+- [x] **Step 7: Run tests and commit the hermetic boundary**
 
 Run:
 
@@ -585,6 +595,10 @@ git commit -m "fix(holdout): enforce hermetic one-shot runtime"
 
 ### Task 3: Integrate, verify, and reseal the reviewer handoff
 
+**Status: completed (2026-07-30).** The final sealed harness is
+`3e9eb8385ec2779708f0bbfe5afa41052a7f9f6b`; its ledger and release handoff
+were resealed in `a5e1bc4`. No v1 fixture or evidence exists.
+
 **Files:**
 
 - Modify: `scripts/run-search-holdout.ts`
@@ -599,7 +613,7 @@ git commit -m "fix(holdout): enforce hermetic one-shot runtime"
 - Modify: `tests/unit/docs/release-readiness.test.ts`
 - Modify: `tests/unit/docs/acceptance-checklist.test.ts`
 
-- [ ] **Step 1: Put preflight in a non-consuming order**
+- [x] **Step 1: Put preflight in a non-consuming order**
 
 The `main` function in `scripts/run-search-holdout.ts` must execute in this
 order:
@@ -664,7 +678,7 @@ Remove handling for `--cases`, `--json`, `--markdown`, and
 `--harness-commit`; the three paths and harness seal now come from repository
 constants and the fixture commit's ledger.
 
-- [ ] **Step 2: Strengthen the static runner boundary test**
+- [x] **Step 2: Strengthen the static runner boundary test**
 
 In `tests/unit/tooling/search-holdout-runner.test.ts`, assert all of these calls
 appear before the first dynamic search import:
@@ -689,7 +703,7 @@ for (const boundary of [
 Also assert that the real runner no longer contains the option names
 `--cases`, `--json`, `--markdown`, or `--harness-commit`.
 
-- [ ] **Step 3: Run the full pre-seal verification**
+- [x] **Step 3: Run the full pre-seal verification**
 
 Run:
 
@@ -712,7 +726,7 @@ git diff --exit-code \
 Expected: all commands pass and the frozen diff is empty. Do not run
 `evaluate:search-holdout`.
 
-- [ ] **Step 4: Commit and capture the new harness seal**
+- [x] **Step 4: Commit and capture the new harness seal**
 
 Commit all harness behavior and tests before changing the ledger:
 
@@ -732,7 +746,7 @@ git rev-parse HEAD
 Record the exact 40-character output as the new evaluation harness seal. Do not
 amend or squash this commit after the fixture author begins work.
 
-- [ ] **Step 5: Update the ledger and release documents**
+- [x] **Step 5: Update the ledger and release documents**
 
 Use `apply_patch` to:
 
@@ -755,7 +769,7 @@ npm run evaluate:search-holdout -- \
 The angle-bracket text above is documentation for a future external SHA, not a
 shell value to execute.
 
-- [ ] **Step 6: Run documentation contracts and commit the handoff**
+- [x] **Step 6: Run documentation contracts and commit the handoff**
 
 Run:
 
@@ -793,6 +807,9 @@ Remote publication remains a separate explicit action.
 ---
 
 ### Task 4: Accept the independent fixture without consuming v1
+
+**Authoring base:** use the exact integration commit that includes this runbook
+repair, supplied by the release owner. Do not use a prior handoff SHA.
 
 **Files:**
 
@@ -865,7 +882,7 @@ git status --short
 fixture_commit="$(git rev-parse HEAD)"
 harness_seal="$(
   git show "$fixture_commit":docs/qa/search-quality-methodology.md |
-    sed -n 's/^| Evaluation harness seal | `\([0-9a-f]\{40\}\)` |$/\1/p'
+    sed -n 's/^|[[:space:]]*Evaluation harness seal[[:space:]]*|[[:space:]]*`\([0-9a-f]\{40\}\)`[[:space:]]*|[[:space:]]*$/\1/p'
 )"
 git show --name-only --format=fuller "$fixture_commit"
 git merge-base --is-ancestor "$harness_seal" "$fixture_commit"
