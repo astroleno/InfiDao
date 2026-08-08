@@ -1,0 +1,266 @@
+[
+  {
+    "category": "in-domain",
+    "query": "每天复盘自己是否把承诺和职责都做到位",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["论语"]
+    },
+    "note": "独立语义标注：对应日省言行、忠信自守的自我检点主题。"
+  },
+  {
+    "category": "in-domain",
+    "query": "和同事合作时怎样建立长期可信赖的口碑",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["论语"]
+    },
+    "note": "独立语义标注：对应与朋友交往守信、以信立身的主题。"
+  },
+  {
+    "category": "in-domain",
+    "query": "孩子的家庭教育先培养礼貌还是先堆知识",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["论语"]
+    },
+    "note": "独立语义标注：对应孝悌、谨信、亲仁后再博学的教养次序。"
+  },
+  {
+    "category": "in-domain",
+    "query": "公共部门用预算时怎样兼顾节约与体恤民众",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["论语"]
+    },
+    "note": "独立语义标注：对应敬事守信、节用爱人的施政原则。"
+  },
+  {
+    "category": "in-domain",
+    "query": "个人成长规划为何要先修炼自己再经营家庭",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["大学"]
+    },
+    "note": "独立语义标注：对应修身、齐家、治国的递进路径。"
+  },
+  {
+    "category": "in-domain",
+    "query": "开始复杂项目前如何明确止点让心思安定",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["大学"]
+    },
+    "note": "独立语义标注：对应知止、定、静、安、虑、得的行动准备。"
+  },
+  {
+    "category": "in-domain",
+    "query": "冲突谈判中怎样让喜怒表达都不过界",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["中庸"]
+    },
+    "note": "独立语义标注：对应情绪未发有中、发而中节为和的分寸观。"
+  },
+  {
+    "category": "in-domain",
+    "query": "独处无人看见时怎样守住自己的原则",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["中庸"]
+    },
+    "note": "独立语义标注：对应慎独与在不睹不闻处保持戒慎的主题。"
+  },
+  {
+    "category": "in-domain",
+    "query": "做公共决策时只追逐经济收益会带来什么后果",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["孟子"]
+    },
+    "note": "独立语义标注：对应梁惠王篇对先利后义、上下交征利的反思。"
+  },
+  {
+    "category": "in-domain",
+    "query": "灾荒年份怎样安排农时和粮食才能让百姓无憾",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["孟子"]
+    },
+    "note": "独立语义标注：对应不违农时、养生丧死无憾的王道治理。"
+  },
+  {
+    "category": "in-domain",
+    "query": "只比别人少犯一点错也值得骄傲吗",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["孟子"]
+    },
+    "note": "独立语义标注：对应五十步笑百步的自欺与比较批评。"
+  },
+  {
+    "category": "in-domain",
+    "query": "远距离恋爱让人夜里翻来覆去想念该读什么诗",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["诗经"]
+    },
+    "note": "独立语义标注：对应关雎中求偶、思念而辗转反侧的抒情。"
+  },
+  {
+    "category": "in-domain",
+    "query": "战乱中与伴侣久别的思念如何用古诗表达",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["诗经"]
+    },
+    "note": "独立语义标注：对应击鼓篇关于征役、久别与誓言的诗歌意象。"
+  },
+  {
+    "category": "in-domain",
+    "query": "怎样选拔德才兼备又出身寒微的公共人才",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["尚书"]
+    },
+    "note": "独立语义标注：对应尧典明扬侧陋、以德举舜的人才选择。"
+  },
+  {
+    "category": "in-domain",
+    "query": "政府如何按季节规划农业和公共事务",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["尚书"]
+    },
+    "note": "独立语义标注：对应尧典观天授时、分工安排四时农事。"
+  },
+  {
+    "category": "in-domain",
+    "query": "面对低谷时应该积蓄力量等待时机还是贸然出手",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["周易"]
+    },
+    "note": "独立语义标注：对应乾卦潜龙勿用、蓄势待时的处境判断。"
+  },
+  {
+    "category": "in-domain",
+    "query": "持续自我精进不因阶段性成功停下来",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["周易"]
+    },
+    "note": "独立语义标注：对应天行健、君子自强不息的进取精神。"
+  },
+  {
+    "category": "in-domain",
+    "query": "在职场礼仪里如何尊重他人又不逾越分寸",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["礼记"]
+    },
+    "note": "独立语义标注：对应曲礼关于敬、节、不侵侮与合宜举止的规范。"
+  },
+  {
+    "category": "in-domain",
+    "query": "面对财富和风险怎样守住底线不苟且",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["礼记"]
+    },
+    "note": "独立语义标注：对应临财毋苟得、临难毋苟免的操守要求。"
+  },
+  {
+    "category": "in-domain",
+    "query": "成年礼策划需要哪些迎宾和加冠步骤",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["仪礼"]
+    },
+    "note": "独立语义标注：对应士冠礼中戒宾、迎宾、三加与礼成的仪程。"
+  },
+  {
+    "category": "in-domain",
+    "query": "大型组织如何分设岗位并用制度协调各部门",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["周礼"]
+    },
+    "note": "独立语义标注：对应设官分职、六典八法与官府协同的制度设计。"
+  },
+  {
+    "category": "in-domain",
+    "query": "家族权力失衡时为何要尽早处理隐患",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["春秋左传"]
+    },
+    "note": "独立语义标注：对应郑伯克段于鄢故事中防微杜渐、避免祸患滋蔓。"
+  },
+  {
+    "category": "in-domain",
+    "query": "团队遇到困难时如何发现人才并让其承担关键任务",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["墨子"]
+    },
+    "note": "独立语义标注：对应墨子亲士篇重贤、用士与任人以成事。"
+  },
+  {
+    "category": "in-domain",
+    "query": "长期学习如何靠小步积累而不是三分钟热度",
+    "expectation": {
+      "type": "sourceTop3",
+      "sources": ["荀子"]
+    },
+    "note": "独立语义标注：对应劝学篇积土成山、锲而不舍与日积月累。"
+  },
+  {
+    "category": "ood",
+    "query": "量子纠缠如何提高量子通信带宽",
+    "expectation": {
+      "type": "empty"
+    },
+    "note": "OOD：现代量子信息技术问题，语料不含相关技术论述。"
+  },
+  {
+    "category": "ood",
+    "query": "本周比特币价格走势会怎样",
+    "expectation": {
+      "type": "empty"
+    },
+    "note": "OOD：加密资产行情预测，语料不含金融市场数据。"
+  },
+  {
+    "category": "ood",
+    "query": "如何在 React 项目配置 Vite 热更新",
+    "expectation": {
+      "type": "empty"
+    },
+    "note": "OOD：现代前端工程配置问题，语料不含软件开发文档。"
+  },
+  {
+    "category": "ood",
+    "query": "上海地铁二号线末班车几点发车",
+    "expectation": {
+      "type": "empty"
+    },
+    "note": "OOD：城市交通实时信息查询，语料不含当代时刻表。"
+  },
+  {
+    "category": "ood",
+    "query": "今日世界杯比赛赛程和比分",
+    "expectation": {
+      "type": "empty"
+    },
+    "note": "OOD：当日体育赛事信息，语料不含现代比赛数据。"
+  },
+  {
+    "category": "ood",
+    "query": "家用烤箱烘焙戚风蛋糕要设多少度",
+    "expectation": {
+      "type": "empty"
+    },
+    "note": "OOD：现代烘焙操作问题，语料不含家电或食谱说明。"
+  }
+]
