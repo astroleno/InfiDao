@@ -26,6 +26,9 @@ describe("reboot MVP acceptance checklist", () => {
     expect(checklist).toContain("独立评审交接");
     expect(checklist).toContain("0e7a81768cbdfcf0b6cc8633edceee6e1e7c7990");
     expect(checklist).toContain("3e9eb8385ec2779708f0bbfe5afa41052a7f9f6b");
+    expect(checklist).toContain("dc2944974ccf4a837a7894e12b073427d1d58cf0");
+    expect(checklist).toContain("结果为");
+    expect(checklist).toContain("v1 不得重跑");
   });
 
   it("spells out the exact reboot health smoke contract", () => {

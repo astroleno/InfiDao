@@ -16,7 +16,12 @@ Scope: MVP 主路径闭环 / Phase 5 interaction polish.
       `3e9eb8385ec2779708f0bbfe5afa41052a7f9f6b`；旧
       `ba3353e267a4990fc74978bdd8ead1b67475b4e5` 与
       `609a792179b7118c7c111744b9bc6a1702092326` 在任何 fixture 前已废止。
-- [ ] 由未参与本轮调参的独立评审者创建并一次性执行冻结 holdout v1。
+- [x] 由未参与本轮调参的独立评审者创建并一次性执行冻结 holdout v1；fixture
+      commit 为 `dc2944974ccf4a837a7894e12b073427d1d58cf0`，结果为
+      **blocked**（in-domain `0/24`，OOD `6/6`），因此不授权 Task 7 或最终签署。
+- [x] v1 JSON/Markdown 不可变证据已生成并记录 fixture SHA-256
+      `da6827eb453bd65fb07bba04cfff5fd34d64a8184cdac7dbcf5cd2507c4b37df`；
+      v1 不得重跑，后续搜索改进必须创建 v2 fixture。
 - [ ] 在明确提交且干净的工作树中完成两轮全量无缓存测试、两轮稳定性测试、
       构建和生产 smoke。
 - [ ] 完成集成后的桌面 `1440px` 与移动端 `390px` 人工验收，并更新本轮发布记录。

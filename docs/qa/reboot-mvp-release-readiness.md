@@ -14,7 +14,8 @@ holdout protocol and evidence reclassification are frozen at
 
 Before current release signoff, the project still needs:
 
-- an independently authored and one-shot executed frozen holdout v1;
+- review of the independently authored one-shot frozen holdout v1; the current
+  v1 result is recorded below as blocked and cannot authorize release signoff;
 - two no-cache full Jest runs, two stability runs, artifact reproduction,
   build, standalone smoke, and current desktop/mobile manual acceptance;
 - a current telemetry result, or the explicitly documented no-credential
@@ -46,6 +47,26 @@ artifacts, an immutable 40-character lowercase fixture SHA, the sealed
 provenance, and one-shot evidence reservation. This hardening is not Task 7 or a
 Release Candidate signoff; fixture intake, immutable v1 evidence, and final
 clean-worktree verification remain required.
+
+### Frozen holdout v1 result
+
+The final authoring base was `057e05b88c3fa60461e74279eec6311fc840fc4e`.
+The independent fixture commit was
+`dc2944974ccf4a837a7894e12b073427d1d58cf0`, and the evaluated commit is the
+same fixture SHA. The sealed one-shot evaluator recorded:
+
+- Decision: **blocked**.
+- In-domain: `0/24` (required `19`).
+- OOD: `6/6` (required `6`).
+- Fixture SHA-256:
+  `da6827eb453bd65fb07bba04cfff5fd34d64a8184cdac7dbcf5cd2507c4b37df`.
+- Evidence generated at `2026-08-08T09:20:49.944Z`.
+
+The immutable evidence is in
+`docs/qa/search-holdout-v1-results.json` and
+`docs/qa/search-holdout-v1-report.md`. This failing v1 remains recorded and
+must not be rerun or tuned; a future search-improvement cycle requires a new
+v2 fixture. Task 7 and Release Candidate signoff remain blocked.
 
 CI gate: `.github/workflows/reboot-mvp-ci.yml` runs on pull requests and pushes
 to `main` with `SEARCH_EMBEDDING_BACKEND=local`. Its fixed verify order is:
@@ -295,8 +316,8 @@ curl -sS http://localhost:3001/api/internal/annotation-telemetry
 
 Sign off the current convergence candidate only when:
 
-- The independently authored frozen holdout meets its recorded threshold, or its
-  failing result remains recorded and the decision is `blocked`.
+- The independently authored frozen holdout meets its recorded threshold. A
+  failing v1 remains recorded and keeps the release decision `blocked`.
 - The full clean-worktree command suite passes twice where required.
 - Production internal telemetry route returns `404` and telemetry is either
   freshly validated with canonical credentials or retains the documented

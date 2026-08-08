@@ -35,6 +35,13 @@ describe("search quality methodology", () => {
     );
     expect(methodology).toContain("without inspecting the frozen system's Top 3");
     expect(methodology).toContain("npm run validate:search-holdout");
-    expect(methodology).toContain("Awaiting an independent reviewer");
+    expect(methodology).toContain("Final holdout authoring base");
+    expect(methodology).toContain("dc2944974ccf4a837a7894e12b073427d1d58cf0");
+    expect(methodology).toContain(
+      "da6827eb453bd65fb07bba04cfff5fd34d64a8184cdac7dbcf5cd2507c4b37df",
+    );
+    expect(methodology).toContain("Holdout v1 status");
+    expect(methodology).toContain("in-domain `0/24`");
+    expect(methodology).toContain("docs/qa/search-holdout-v1-results.json");
   });
 });

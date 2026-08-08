@@ -50,7 +50,29 @@ search-tuning cycle creates a new v2 holdout instead of changing v1.
 | Fixture validator commit           | `e2e7121a1b4084d60e8c22f6dd48bd21ddf8f203`                                                                                                                                                         |
 | Previous evaluation harness seal   | `ba3353e267a4990fc74978bdd8ead1b67475b4e5` and `609a792179b7118c7c111744b9bc6a1702092326` — superseded before any fixture                                                                          |
 | Evaluation harness seal            | `3e9eb8385ec2779708f0bbfe5afa41052a7f9f6b`                                                                                                                                                         |
-| Holdout v1 status                  | Awaiting an independent reviewer; no v1 cases or results have been created                                                                                                                         |
+| Final holdout authoring base        | `057e05b88c3fa60461e74279eec6311fc840fc4e`                                                                                                                                                         |
+| Fixture commit                      | `dc2944974ccf4a837a7894e12b073427d1d58cf0`                                                                                                                                                         |
+| Fixture blob                        | `5fd8875da5842770710ceabd40b372440a65669b`                                                                                                                                                         |
+| Fixture SHA-256                     | `da6827eb453bd65fb07bba04cfff5fd34d64a8184cdac7dbcf5cd2507c4b37df`                                                                                                                                |
+| Evaluated commit                    | `dc2944974ccf4a837a7894e12b073427d1d58cf0`                                                                                                                                                         |
+| Evidence generated at               | `2026-08-08T09:20:49.944Z`                                                                                                                                                                         |
+| Holdout v1 status                   | **Blocked** — in-domain `0/24` (required `19`), OOD `6/6` (required `6`); evidence is immutable and v1 must not be rerun                                                                         |
+
+## Frozen holdout v1 evidence
+
+The one-shot v1 evaluation is recorded in
+`docs/qa/search-holdout-v1-results.json` and
+`docs/qa/search-holdout-v1-report.md`.
+
+- Decision: **blocked**.
+- In-domain: `0/24` (required `19`).
+- OOD: `6/6` (required `6`).
+- All 24 in-domain expectations used the permitted `sourceTop3` contract, so
+  this result is source-level evidence rather than a claim about a specific
+  passage-level semantic label.
+- The fixture, evaluator identities, artifact hashes, and independence
+  attestation are recorded in both evidence files. The v1 fixture and evidence
+  are immutable; any later search-tuning cycle requires a new v2 fixture.
 
 ## Sealed evaluation harness
 

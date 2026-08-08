@@ -51,7 +51,7 @@ describe("reboot MVP release readiness", () => {
     const document = readFileSync(releaseReadinessPath, "utf8");
 
     expect(document).toContain("Decision: blocked; not a current Release Candidate signoff");
-    expect(document).toContain("independently authored and one-shot executed frozen holdout v1");
+    expect(document).toContain("review of the independently authored one-shot frozen holdout v1");
     expect(document).toContain("Historical Release Evidence (2026-04-29)");
     expect(document).toContain("two no-cache full Jest runs");
     expect(document).toContain("f261607bf83560e746507e38d7dd93dffc5b8edb");
@@ -59,6 +59,11 @@ describe("reboot MVP release readiness", () => {
     expect(document).toContain("0e7a81768cbdfcf0b6cc8633edceee6e1e7c7990");
     expect(document).toContain("3e9eb8385ec2779708f0bbfe5afa41052a7f9f6b");
     expect(document).toContain("superseded before any fixture");
+    expect(document).toContain("dc2944974ccf4a837a7894e12b073427d1d58cf0");
+    expect(document).toContain("Decision: **blocked**");
+    expect(document).toContain("In-domain: `0/24`");
+    expect(document).toContain("OOD: `6/6`");
+    expect(document).toContain("Task 7 and Release Candidate signoff remain blocked");
   });
 
   it("covers the release smoke matrix requested for Phase 6.5", () => {
