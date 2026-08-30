@@ -121,7 +121,33 @@ describe("annotation eval artifacts", () => {
     expect(parseCliArgs(["validate"])).toEqual({ command: "validate" });
     expect(
       parseCliArgs(["generate", "--partition", "dev", "--variant", "v4", "--rounds", "2"]),
-    ).toEqual({ command: "generate", partition: "dev", variant: "v4", rounds: 2 });
+    ).toEqual({
+      command: "generate",
+      partition: "dev",
+      variant: "v4",
+      rounds: 2,
+      retryInvalid: false,
+    });
+    expect(
+      parseCliArgs([
+        "generate",
+        "--partition",
+        "dev",
+        "--variant",
+        "v4",
+        "--retry-invalid",
+      ]),
+    ).toMatchObject({ retryInvalid: true });
+    expect(() =>
+      parseCliArgs([
+        "generate",
+        "--partition",
+        "holdout",
+        "--variant",
+        "v4",
+        "--retry-invalid",
+      ]),
+    ).toThrow("--retry-invalid is only allowed for dev");
     expect(() => parseCliArgs(["explode"])).toThrow("unknown command: explode");
     expect(() => parseCliArgs(["generate", "--variant", "v4"])).toThrow(
       "missing --partition",

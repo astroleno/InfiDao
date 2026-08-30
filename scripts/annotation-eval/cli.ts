@@ -7,6 +7,7 @@ import {
   artifactRunDir,
   readGenerationCheckpoint,
   readRawJson,
+  resolveRawArtifactPath,
   writeGenerationCheckpoint,
   writeRawJson,
   writeTrackedSummary,
@@ -29,7 +30,13 @@ type Partition = "dev" | "holdout" | "golden";
 
 export type CliCommand =
   | { command: "validate" }
-  | { command: "generate"; partition: Partition; variant: string; rounds: number }
+  | {
+      command: "generate";
+      partition: Partition;
+      variant: string;
+      rounds: number;
+      retryInvalid: boolean;
+    }
   | { command: "blind"; partition: Partition; candidates: string[]; rounds: number }
   | {
       command: "aggregate";
@@ -122,11 +129,17 @@ export function parseCliArgs(argv: string[]): CliCommand {
   if (positionals.length > 1) throw new Error(`unexpected argument: ${positionals[1]}`);
   if (command === "validate") return { command };
   if (command === "generate") {
+    const partition = parsePartition(options);
+    const retryInvalid = options.get("retry-invalid") === true;
+    if (retryInvalid && partition !== "dev") {
+      throw new Error("--retry-invalid is only allowed for dev");
+    }
     return {
       command,
-      partition: parsePartition(options),
+      partition,
       variant: requiredOption(options, "variant"),
       rounds: parsePositiveInteger(options, "rounds", 1),
+      retryInvalid,
     };
   }
   if (command === "blind") {
@@ -280,7 +293,21 @@ async function runGenerate(
     variant: prompt.id,
     fixtureHash,
   };
-  const rows = readGenerationCheckpoint(root, identity);
+  const checkpointRows = readGenerationCheckpoint(root, identity);
+  const retryRows = command.retryInvalid ? checkpointRows.filter(row => !row.valid) : [];
+  if (retryRows.length > 0) {
+    const archivePath = resolveRawArtifactPath(root, identity, "generation-failures.json");
+    const archive = fs.existsSync(archivePath)
+      ? (readRawJson(root, identity, "generation-failures.json") as unknown[])
+      : [];
+    writeRawJson(root, identity, "generation-failures.json", [
+      ...archive,
+      { archivedAt: new Date().toISOString(), rows: retryRows },
+    ]);
+  }
+  const rows = command.retryInvalid
+    ? checkpointRows.filter(row => row.valid)
+    : [...checkpointRows];
   const expectedRows = fixture.cases.length * command.rounds;
   assertGenerationPolicy({
     partition: command.partition,
@@ -345,6 +372,7 @@ async function runGenerate(
     validRows: valid,
     invalidRows: rows.length - valid,
     resumedRows: expectedRows - tasks.length,
+    archivedFailures: retryRows.length,
     runDirectory: path.relative(root, artifactRunDir(root, identity)),
   };
 }

@@ -11,6 +11,7 @@
 - 请求：streaming
 - 并发：`3`
 - dev 可按稳定 key 断点续跑。
+- dev 的三次 Provider 尝试均失败时会保留 invalid row；确认只重跑这些失败项时显式追加 `--retry-invalid`，旧失败会归档到 raw artifact。该选项禁止用于 holdout。
 - holdout 只接受已冻结 prompt 和 sealed fixture；中断后仅可在 prompt hash、模型和参数完全一致时续跑，完整结果已存在时拒绝覆盖。
 
 ## 命令

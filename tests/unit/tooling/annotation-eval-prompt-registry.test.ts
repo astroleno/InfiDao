@@ -32,6 +32,32 @@ describe("annotation eval prompt registry", () => {
     expect(prompt.instructions.join("\n")).toContain("若属于关系支持或互惠");
   });
 
+  it("records v5 as the evidence-driven precision child of v4", () => {
+    const prompt = getPromptVariant("v5");
+    const instructions = prompt.instructions.join("\n");
+
+    expect(prompt.parentId).toBe("v4");
+    expect(prompt.frozen).toBe(true);
+    expect(instructions).toContain("并列要素");
+    expect(instructions).toContain("示例也不例外");
+    expect(instructions).toContain("不得据此断定人的动机");
+    expect(instructions).toContain("如何改变对原文的理解");
+    expect(promptHash(prompt)).toBe(prompt.sha256);
+  });
+
+  it("records v6 as the compressed precision child of v4", () => {
+    const prompt = getPromptVariant("v6");
+    const instructions = prompt.instructions.join("\n");
+
+    expect(prompt.parentId).toBe("v4");
+    expect(prompt.frozen).toBe(true);
+    expect(instructions).toContain("全组功能与关系");
+    expect(instructions).toContain("不得推断说话者的动机");
+    expect(instructions).toContain("不是再给一遍行动建议");
+    expect(instructions.length).toBeLessThan(getPromptVariant("v5").instructions.join("\n").length);
+    expect(promptHash(prompt)).toBe(prompt.sha256);
+  });
+
   it("rejects unknown prompt ids", () => {
     expect(() => getPromptVariant("v404")).toThrow("unknown prompt variant: v404");
   });

@@ -130,6 +130,62 @@ export const PROMPT_VARIANTS: Readonly<Record<string, PromptVariant>> = Object.f
     ],
     frozen: true,
   }),
+  v5: definePrompt({
+    id: "v5",
+    parentId: "v4",
+    description: "Preserve source structure and tighten causal and numeric precision",
+    hypothesis:
+      "Source-structure preservation plus explicit causal and numeric audits remove the remaining hard fail and precision regressions without restoring v3 boilerplate.",
+    expectedImprovements: [
+      "semantic precision",
+      "interpretive depth",
+      "parallel-element preservation",
+      "bidirectional causal reasoning",
+      "zero hard fails",
+    ],
+    regressionRisks: ["longer prompt", "overloaded conditional routing", "reduced fluency"],
+    system: sharedSystem,
+    instructions: [
+      "任务是写两个方向不同的当代注释，不宣称唯一原意。",
+      "先静默识别原文的最小主张、并列要素、要素关系与限制，再识别问题真正要求解释的张力和类型。原文若列出多个并列要素，必须保留其整体作用，不得擅自缩减为少数要素。",
+      "sixToMe 从原文进入问题：直接回答为什么或怎么办，先给出有原文依据的判断，再给出与本题直接相关的观察、取舍或行动标准。不得把回答写成脱离原文的通用流程，也不得把某个因素、结果或标准写成唯一原因或唯一标准。",
+      "meToSix 从现代处境返回原文：只增加一个最相关的机制、条件或边界，并说明它如何改变对原文的理解；不得重复前向建议，不得只追加流程清单，也不得贬称原文简单、静态或缺少现代概念。",
+      "若属于证据不确定，区分事实、推测和未知，要求溯源、复验与更新；即使说法没有依据，也不得据此断定人的动机。若属于资源排序，结合阶段目标、边际收益、机会成本、维护替代成本和系统瓶颈，只写与本题相关者。",
+      "若属于制度执行，同时处理制度安排、角色授权、执行条件、反馈监督与可复核例外；原文列举多项治理机制时保留整体关联。若属于环境塑造，同时保留环境、机会和反馈的影响，以及个人选择、练习和反向塑造环境的能力，不作单因归因。",
+      "若属于关系支持或互惠，结合关系角色、意愿、能力、边界与长期互惠，不把对方改变、顺从或情绪当作唯一成效。若属于方法变化，区分目标、方法与环境，处理可逆替代、过渡交接、反馈更新和防止复发，只写命中的部分。",
+      "精度审计：除输入已有且语义必需的数量词外，不得添加任何数字、期限、比例、频率、次数、分数或数值阈值，示例也不例外；不得使用‘唯一’‘必然’‘不可逆’等绝对判断，除非原文或问题明确支持。",
+      "禁止虚构史实、动机、因果和现代术语来源；输出前删除与本题无关的安全、拒绝、权益、证据或试错套话，并检查是否遗漏原文关键要素、是否单因归因、是否两个方向重复。",
+      "每个字段两到三句，简体中文；只输出含 sixToMe、meToSix 的 JSON。",
+    ],
+    frozen: true,
+  }),
+  v6: definePrompt({
+    id: "v6",
+    parentId: "v4",
+    description: "Compressed conditional routing with targeted precision audits",
+    hypothesis:
+      "Keeping v4 concise while guarding source structure, directional function and unsupported thresholds recovers depth and removes the measured precision failures.",
+    expectedImprovements: [
+      "dual-direction separation",
+      "interpretive depth",
+      "semantic precision",
+      "zero hard fails",
+    ],
+    regressionRisks: ["missed routed detail", "overcompression", "source-list verbosity"],
+    system: sharedSystem,
+    instructions: [
+      "任务是写两个方向不同的当代注释，不宣称唯一原意。",
+      "先静默识别原文最小主张、要素关系、限制和问题张力，再只启用相关规则。原文若列举一组并列要素，概括时必须保留全组功能与关系，不得只挑少数要素当作全部原意。",
+      "sixToMe 从原文进入问题：直接回答为什么或怎么办，处理题目张力，并给出本题相关的判断依据；不要套用固定决策流程，不把单个因素、结果或标准写成唯一原因或唯一标准。",
+      "meToSix 从现代处境返回原文：增加一个最相关的因果机制、条件或适用边界，说明它怎样补充或限制我们对原文的理解；它不是再给一遍行动建议，不得与 sixToMe 重复。",
+      "若属证据不确定，区分事实、推测和未知，处理溯源、复验与更新，不得推断说话者的动机；若属资源排序，结合阶段目标、边际收益、机会成本、维护替代成本或系统瓶颈，只写命中者。",
+      "若属制度执行，兼顾制度安排、执行条件、反馈监督与可复核例外；若属环境塑造，同时保留环境、机会和反馈的影响，以及个人选择、练习和反向塑造环境的能力，避免单因归因。",
+      "若属关系支持或互惠，结合角色、意愿、能力、边界与长期互惠，不把对方改变、顺从或情绪当作唯一成效；若属方法变化，区分目标、方法与环境，按题意处理可逆替代、过渡交接、反馈更新或防止复发。",
+      "精度审计：除输入已有且语义必需的数量词外，不添加数字、期限、比例、频率、次数、分数或阈值，举例也不例外；不虚构史实、动机、因果或现代术语来源，不用绝对化判断，不写未命中本题的套话。",
+      "每个字段两到三句，简体中文；只输出含 sixToMe、meToSix 的 JSON。",
+    ],
+    frozen: true,
+  }),
 });
 
 export function getPromptVariant(id: string): PromptVariant {
