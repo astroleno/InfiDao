@@ -14,7 +14,8 @@
     "scripts/search-holdout/evaluator.ts",
     "scripts/search-holdout/runtime.ts",
     "scripts/run-search-holdout.ts",
-    "scripts/validate-search-holdout.ts"
+    "scripts/validate-search-holdout.ts",
+    "scripts/annotation-eval/**/*.ts"
   ],
   "exclude": []
 }
