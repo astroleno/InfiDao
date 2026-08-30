@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 1,
+  "evalId": "annotation-holdout-v2",
+  "partition": "holdout",
+  "sealed": true,
+  "cases": [
+    {
+      "id": "annotation-holdout-v2-u1",
+      "sourceId": "rysxguji-lunyu-15-24",
+      "category": "uncertainty",
+      "scenario": "群体评价",
+      "query": "所有人都赞成或反对一个人时，怎样避免把群体意见直接当成事实？",
+      "source": "论语",
+      "passage": "众恶之，必察焉；众好之，必察焉。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "群体一致的好恶仍需审察",
+          "判断不能被舆论替代"
+        ],
+        "sixToMe": [
+          "核对具体行为和独立证据",
+          "保留修正空间"
+        ],
+        "meToSix": [
+          "加入信息传播和群体偏差机制",
+          "不能重复前向核查步骤"
+        ],
+        "forbiddenClaims": [
+          "多数意见必然错误",
+          "只有亲眼所见才可信"
+        ],
+        "acceptableVariants": [
+          "独立来源",
+          "行为记录",
+          "反方证据"
+        ]
+      }
+    },
+    {
+      "id": "annotation-holdout-v2-u2",
+      "sourceId": "rysxguji-lunyu-5-11",
+      "category": "uncertainty",
+      "scenario": "言行核验",
+      "query": "候选人在面试里说得很好，怎样判断这些承诺是否可靠？",
+      "source": "论语",
+      "passage": "始吾于人也，听其言而信其行；今吾于人也，听其言而观其行。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "不能从言辞直接推定行为",
+          "观察行动用于校正判断"
+        ],
+        "sixToMe": [
+          "寻找与承诺相关的行为证据",
+          "避免一次表现决定整体评价"
+        ],
+        "meToSix": [
+          "加入结构化验证和情境差异",
+          "说明证据仍可能不完整"
+        ],
+        "forbiddenClaims": [
+          "表达能力好的人都不可信",
+          "过去行为保证未来表现"
+        ],
+        "acceptableVariants": [
+          "工作样本",
+          "一致性核验",
+          "试用反馈"
+        ]
+      }
+    },
+    {
+      "id": "annotation-holdout-v2-r1",
+      "sourceId": "rysxguji-mozi-7-1",
+      "category": "resource-priority",
+      "scenario": "建设标准",
+      "query": "公共设施达到安全和使用要求后，怎样判断额外装修是否值得？",
+      "source": "墨子",
+      "passage": "室高足以辟润湿，边足以圉风寒，上足以待雪霜雨露，宫墙之高足以别男女之礼。谨此则止，凡费财劳力，不加利者，不为也。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "建设首先满足安全、使用和必要秩序",
+          "不增加实际利益的劳费应受限制"
+        ],
+        "sixToMe": [
+          "明确必要功能和受益者",
+          "比较额外投入与被挤占的公共需求"
+        ],
+        "meToSix": [
+          "加入全周期维护和可达性",
+          "说明审美价值需接受公共论证"
+        ],
+        "forbiddenClaims": [
+          "公共空间不应有任何审美投入",
+          "最低成本永远最好"
+        ],
+        "acceptableVariants": [
+          "需求分层",
+          "机会成本",
+          "维护负担"
+        ]
+      }
+    },
+    {
+      "id": "annotation-holdout-v2-r2",
+      "sourceId": "rysxguji-mengzi-1-3",
+      "category": "resource-priority",
+      "scenario": "资源使用节律",
+      "query": "追求短期产量时，怎样把资源恢复周期纳入决策？",
+      "source": "孟子",
+      "passage": "不违农时，穀不可胜食也；数罟不入洿池，鱼鳖不可胜食也；斧斤以时入山林，材木不可胜用也。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "使用资源不能违背其生长和恢复节律",
+          "节制当下开采服务于持续供给"
+        ],
+        "sixToMe": [
+          "识别恢复周期和不可逆损害",
+          "把长期供给纳入目标"
+        ],
+        "meToSix": [
+          "加入监测、配额和代际影响",
+          "不能把古代经验直接说成现代生态模型"
+        ],
+        "forbiddenClaims": [
+          "自然资源永远不能开发",
+          "遵守固定时令即可消除风险"
+        ],
+        "acceptableVariants": [
+          "恢复指标",
+          "长期产能",
+          "替代资源"
+        ]
+      }
+    },
+    {
+      "id": "annotation-holdout-v2-i1",
+      "sourceId": "rysxguji-liji-7-1",
+      "category": "institution-execution",
+      "scenario": "公共照护制度",
+      "query": "把照顾弱者写进愿景之后，还需要哪些制度条件才能避免愿景停在口号？",
+      "source": "礼记",
+      "passage": "大道之行也，天下为公，选贤与能，讲信修睦。故人不独亲其亲，不独子其子，使老有所终，壮有所用，幼有所长，矜寡孤独废疾者皆有所养。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "公共秩序超越只照顾亲属",
+          "选贤、信用、协作与弱者照护共同构成愿景"
+        ],
+        "sixToMe": [
+          "把责任、资源和服务对象落实到制度",
+          "同时检查执行可达性"
+        ],
+        "meToSix": [
+          "加入财政持续性、申诉和效果反馈",
+          "区分普遍目标与具体实施"
+        ],
+        "forbiddenClaims": [
+          "善意倡议自然会实现公平",
+          "只要选贤就不需监督"
+        ],
+        "acceptableVariants": [
+          "责任主体",
+          "服务可达性",
+          "效果审计"
+        ]
+      }
+    },
+    {
+      "id": "annotation-holdout-v2-i2",
+      "sourceId": "rysxguji-shangshu-14-2",
+      "category": "institution-execution",
+      "scenario": "任人与持续履职",
+      "query": "选对负责人以后，怎样避免把组织成败全部押在最初任命上？",
+      "source": "尚书",
+      "passage": "任官惟贤材，左右惟其人。臣为上为德，为下为民。其难其慎，惟和惟一。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "任官需要贤能与合适人选",
+          "履职同时面向上位责任和民众"
+        ],
+        "sixToMe": [
+          "明确职责、协作和持续考察",
+          "任命后仍需反馈纠偏"
+        ],
+        "meToSix": [
+          "加入任期评估、利益冲突和问责",
+          "不把贤能简化为单次绩效"
+        ],
+        "forbiddenClaims": [
+          "选到贤者就不必设置制度",
+          "负责人只需向上负责"
+        ],
+        "acceptableVariants": [
+          "任期目标",
+          "多方反馈",
+          "调整机制"
+        ]
+      }
+    },
+    {
+      "id": "annotation-holdout-v2-a1",
+      "sourceId": "rysxguji-xunzi-1-1",
+      "category": "agency-environment",
+      "scenario": "教育与差异",
+      "query": "背景相近的孩子长大后习惯差异明显，怎样同时理解教育影响和个人选择？",
+      "source": "荀子",
+      "passage": "干、越、夷、貉之子，生而同声，长而异俗，教使之然也。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "后天教育和习俗会造成差异",
+          "差异不应被解释为先天高下"
+        ],
+        "sixToMe": [
+          "检查学习环境和可获得机会",
+          "仍保留个人练习与选择"
+        ],
+        "meToSix": [
+          "加入教育质量、反馈和同伴影响",
+          "说明环境作用并非机械决定"
+        ],
+        "forbiddenClaims": [
+          "人的发展完全由教育决定",
+          "文化差异等于能力高低"
+        ],
+        "acceptableVariants": [
+          "机会公平",
+          "主动练习",
+          "环境调整"
+        ]
+      }
+    },
+    {
+      "id": "annotation-holdout-v2-a2",
+      "sourceId": "rysxguji-lunyu-4-1",
+      "category": "agency-environment",
+      "scenario": "选择所处环境",
+      "query": "一个环境回报投机却惩罚诚实，个人应该怎样判断留下、改变还是离开？",
+      "source": "论语",
+      "passage": "里仁为美。择不处仁，焉得知？",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "选择所处环境本身属于判断",
+          "有利于仁的环境值得主动接近"
+        ],
+        "sixToMe": [
+          "评估环境奖励的行为和自身可改变空间",
+          "区分暂时困难与结构性伤害"
+        ],
+        "meToSix": [
+          "加入组织激励、集体行动和退出成本",
+          "不把环境选择写成随时可自由离开"
+        ],
+        "forbiddenClaims": [
+          "不理想环境中的人必然不仁",
+          "离开永远是唯一答案"
+        ],
+        "acceptableVariants": [
+          "激励观察",
+          "联合改善",
+          "退出准备"
+        ]
+      }
+    },
+    {
+      "id": "annotation-holdout-v2-l1",
+      "sourceId": "rysxguji-lunyu-16-7",
+      "category": "relationship-consent",
+      "scenario": "朋友带来的影响",
+      "query": "选择长期合作伙伴时，怎样判断对方是在帮助你成长还是只让相处舒服？",
+      "source": "论语",
+      "passage": "益者三友，损者三友。友直，友谅，友多闻，益矣。友便辟，友善柔，有便佞，损矣。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "正直、诚信和见闻能带来益处",
+          "逢迎、谄媚和巧言可能造成损害"
+        ],
+        "sixToMe": [
+          "观察对方在分歧和承诺中的行为",
+          "不能只以舒服或尖锐判断"
+        ],
+        "meToSix": [
+          "加入权力关系、互相反馈和边界",
+          "说明友益需要双向形成"
+        ],
+        "forbiddenClaims": [
+          "会批评的人一定是益友",
+          "表达圆融的人都不可信"
+        ],
+        "acceptableVariants": [
+          "承诺一致",
+          "善意异议",
+          "双向成长"
+        ]
+      }
+    },
+    {
+      "id": "annotation-holdout-v2-l2",
+      "sourceId": "rysxguji-shijing-26-3",
+      "category": "relationship-consent",
+      "scenario": "不可强迫的内心",
+      "query": "亲密关系中对方希望你改变核心选择时，怎样表达坚定而不把分歧变成对抗？",
+      "source": "诗经",
+      "passage": "我心匪石，不可转也。我心匪席，不可卷也。",
+      "style": "允许更有画面感，但不要空泛或抒情过度。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "内心并非可由他人任意转卷的物件",
+          "坚定表达维护主体性"
+        ],
+        "sixToMe": [
+          "说明不可让渡的选择与可协商部分",
+          "尊重双方都能拒绝"
+        ],
+        "meToSix": [
+          "加入同意、依赖和安全退出",
+          "不能把诗句写成永不改变意见"
+        ],
+        "forbiddenClaims": [
+          "坚定就无需倾听",
+          "爱意味着必须接受对方要求"
+        ],
+        "acceptableVariants": [
+          "核心边界",
+          "可协商范围",
+          "平等退出"
+        ]
+      }
+    },
+    {
+      "id": "annotation-holdout-v2-c1",
+      "sourceId": "rysxguji-mozi-14-1",
+      "category": "change-experiment",
+      "scenario": "先找原因再改革",
+      "query": "系统反复出问题时，怎样避免一上来就更换工具或追责个人？",
+      "source": "墨子",
+      "passage": "必知乱之所自起，焉能治之，不知乱之所自起，则不能治。譬之如医之攻人之疾者然，必知疾之所自起，焉能攻之。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "治理问题需先知道问题从何而起",
+          "诊断与处置存在先后"
+        ],
+        "sixToMe": [
+          "区分症状、近因和结构原因",
+          "根据原因选择可验证措施"
+        ],
+        "meToSix": [
+          "加入日志、对照和因果验证",
+          "说明诊断也可能需要更新"
+        ],
+        "forbiddenClaims": [
+          "未找到唯一根因前不能采取任何缓解",
+          "所有问题都有单一原因"
+        ],
+        "acceptableVariants": [
+          "临时止损",
+          "根因假设",
+          "验证措施"
+        ]
+      }
+    },
+    {
+      "id": "annotation-holdout-v2-c2",
+      "sourceId": "rysxguji-zhouyi-66-7",
+      "category": "change-experiment",
+      "scenario": "暂时退让",
+      "query": "项目受阻时，怎样区分必要的暂退蓄力与没有方向的拖延？",
+      "source": "周易",
+      "passage": "尺蠖之屈，以求信也；龙蛇之蛰，以存身也。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "屈与蛰可以服务于后续伸展和保存",
+          "暂退不是终点"
+        ],
+        "sixToMe": [
+          "明确退让所保护的目标和恢复条件",
+          "观察是否积累了再次行动的能力"
+        ],
+        "meToSix": [
+          "加入可检验里程碑和机会窗口",
+          "不把自然比喻说成确定因果"
+        ],
+        "forbiddenClaims": [
+          "所有退让最终都会带来成功",
+          "拖延只要换名为蓄力就合理"
+        ],
+        "acceptableVariants": [
+          "保护目标",
+          "恢复信号",
+          "退出拖延"
+        ]
+      }
+    }
+  ],
+  "fixtureSha256": "f2ad98c1e8a0bbce1338efc5edd47e1385a3b882ad8e737797704262777860fb"
+}

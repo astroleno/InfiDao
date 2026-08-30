@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import { z } from "zod";
 
 export const SCORE_DIMENSIONS = [
@@ -32,9 +33,17 @@ export const EvaluationConstraintsSchema = z
   })
   .strict();
 
+export const AnnotationOutputSchema = z
+  .object({
+    sixToMe: NonEmptyString,
+    meToSix: NonEmptyString,
+  })
+  .strict();
+
 export const EvalCaseSchema = z
   .object({
     id: NonEmptyString,
+    sourceId: NonEmptyString,
     category: NonEmptyString,
     scenario: NonEmptyString,
     query: NonEmptyString,
@@ -42,6 +51,7 @@ export const EvalCaseSchema = z
     passage: NonEmptyString,
     style: NonEmptyString,
     evaluationConstraints: EvaluationConstraintsSchema,
+    referenceAnswer: AnnotationOutputSchema.optional(),
   })
   .strict();
 
@@ -68,13 +78,6 @@ export const PromptVariantSchema = z
     instructions: z.array(NonEmptyString).min(1),
     sha256: Sha256Schema,
     frozen: z.boolean(),
-  })
-  .strict();
-
-export const AnnotationOutputSchema = z
-  .object({
-    sixToMe: NonEmptyString,
-    meToSix: NonEmptyString,
   })
   .strict();
 
@@ -239,6 +242,29 @@ export function parseEvalFixture(value: unknown): EvalFixture {
     queries.add(query);
   }
   return fixture;
+}
+
+export function fixtureHash(fixture: EvalFixture): string {
+  return crypto
+    .createHash("sha256")
+    .update(
+      JSON.stringify({
+        schemaVersion: fixture.schemaVersion,
+        evalId: fixture.evalId,
+        partition: fixture.partition,
+        sealed: fixture.sealed,
+        cases: fixture.cases,
+      }),
+    )
+    .digest("hex");
+}
+
+export function assertFixtureHash(fixture: EvalFixture): void {
+  if (!fixture.fixtureSha256) throw new Error(`fixture hash missing: ${fixture.evalId}`);
+  const actual = fixtureHash(fixture);
+  if (actual !== fixture.fixtureSha256) {
+    throw new Error(`fixture hash mismatch: ${fixture.evalId}`);
+  }
 }
 
 export function parseGeneration(value: unknown): Generation {

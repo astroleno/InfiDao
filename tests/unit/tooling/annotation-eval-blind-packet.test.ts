@@ -14,6 +14,7 @@ function buildInput(round = 1): BuildBlindPacketInput {
     cases: [
       {
         id: "dev-1",
+        sourceId: "rysxguji-lunyu-7-26",
         category: "uncertainty",
         scenario: "证据不足",
         query: "怎样保留疑问？",
@@ -30,6 +31,7 @@ function buildInput(round = 1): BuildBlindPacketInput {
       },
       {
         id: "dev-2",
+        sourceId: "rysxguji-daxue-1-2",
         category: "resource-priority",
         scenario: "项目排序",
         query: "怎样判断先后？",

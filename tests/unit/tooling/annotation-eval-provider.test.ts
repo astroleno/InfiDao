@@ -5,6 +5,7 @@ import type { EvalCase } from "../../../scripts/annotation-eval/contract";
 
 const testCase: EvalCase = {
   id: "dev-1",
+  sourceId: "rysxguji-lunyu-2-17",
   category: "uncertainty",
   scenario: "证据不足",
   query: "信息不足时怎样表达判断？",

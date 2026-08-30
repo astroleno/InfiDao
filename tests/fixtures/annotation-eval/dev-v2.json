@@ -1,0 +1,602 @@
+{
+  "schemaVersion": 1,
+  "evalId": "annotation-dev-v2",
+  "partition": "dev",
+  "sealed": false,
+  "cases": [
+    {
+      "id": "annotation-dev-v2-u1",
+      "sourceId": "rysxguji-lunyu-7-26",
+      "category": "uncertainty",
+      "scenario": "未知与行动",
+      "query": "没有把握却必须推进工作时，怎样避免一边装懂、一边停在原地？",
+      "source": "论语",
+      "passage": "盖有不知而作之者，我无是也。多闻，多见而识之；知之次也。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "不凭无知妄作",
+          "通过多闻多见形成次一级的可靠认识"
+        ],
+        "sixToMe": [
+          "区分已知与待验证部分",
+          "允许依据观察采取有限行动"
+        ],
+        "meToSix": [
+          "加入证据来源与更新机制",
+          "不能重复前向行动步骤"
+        ],
+        "forbiddenClaims": [
+          "不知道就永远不能行动",
+          "听得多便必然正确"
+        ],
+        "acceptableVariants": [
+          "小范围试行",
+          "补充观察",
+          "记录判断依据"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-u2",
+      "sourceId": "rysxguji-zhongyong-1-31",
+      "category": "uncertainty",
+      "scenario": "复杂判断",
+      "query": "面对互相冲突的专业意见，怎样形成暂时判断而不仓促站队？",
+      "source": "中庸",
+      "passage": "博学之，审问之，慎思之，明辨之，笃行之。",
+      "style": "语气克制、结构清晰，偏义理分析。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "学习、追问、思考、辨别与行动构成连续过程"
+        ],
+        "sixToMe": [
+          "先核对分歧依据再形成暂时结论",
+          "判断需要能够被后续行动检验"
+        ],
+        "meToSix": [
+          "加入现代证据质量和专业边界",
+          "说明结论可被新证据更新"
+        ],
+        "forbiddenClaims": [
+          "流程保证结论必然正确",
+          "把笃行解释为拒绝修正"
+        ],
+        "acceptableVariants": [
+          "列出争议假设",
+          "寻找独立证据",
+          "标明暂定结论"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-u3",
+      "sourceId": "rysxguji-hanfeizi-91-1",
+      "category": "uncertainty",
+      "scenario": "未经验证的断言",
+      "query": "团队里有人把无法核验的说法讲得很确定，应该怎样处理？",
+      "source": "韩非子",
+      "passage": "无参验而必之者愚也弗能必而据之者诬也",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "没有验证却断言确定并不可靠",
+          "不能确定却仍据为事实会误导"
+        ],
+        "sixToMe": [
+          "要求给出可核验依据",
+          "把断言降级为假设而非直接定罪"
+        ],
+        "meToSix": [
+          "加入现代信息溯源和可重复验证",
+          "说明验证失败后的更新方式"
+        ],
+        "forbiddenClaims": [
+          "说错一次就是蓄意欺骗",
+          "只有量化数据才算证据"
+        ],
+        "acceptableVariants": [
+          "标注来源",
+          "复核原始记录",
+          "保留未知"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-r1",
+      "sourceId": "rysxguji-mengzi-9-11",
+      "category": "resource-priority",
+      "scenario": "不可兼得",
+      "query": "两个都重要的目标无法兼得时，怎样决定舍取而不是只看眼前损失？",
+      "source": "孟子",
+      "passage": "鱼，我所欲也，熊掌亦我所欲也；二者不可得兼，舍鱼而取熊掌者也。",
+      "style": "语气克制、结构清晰，偏义理分析。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "承认两个目标都具有价值",
+          "不可兼得时按更高价值作舍取"
+        ],
+        "sixToMe": [
+          "先明确不可替代的核心目标",
+          "比较放弃各项造成的长期后果"
+        ],
+        "meToSix": [
+          "加入机会成本与可逆性",
+          "不能把现代选择工具说成原文已有"
+        ],
+        "forbiddenClaims": [
+          "所有选择都有唯一客观答案",
+          "只凭收益大小决定"
+        ],
+        "acceptableVariants": [
+          "底线排序",
+          "机会成本",
+          "可逆方案"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-r2",
+      "sourceId": "rysxguji-mozi-20-5",
+      "category": "resource-priority",
+      "scenario": "功能与额外投入",
+      "query": "产品已经满足基本用途后，怎样判断继续投入是在创造价值还是徒增成本？",
+      "source": "墨子",
+      "passage": "凡足以奉给民用，则止。诸加费不加于民利者，圣王弗为。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "满足实际使用是投入的界限",
+          "不增加民利的额外费用应停止"
+        ],
+        "sixToMe": [
+          "先确认新增投入是否改善真实使用结果",
+          "同时考虑维护和替代成本"
+        ],
+        "meToSix": [
+          "加入用户证据与边际收益",
+          "说明公共利益需由反馈验证"
+        ],
+        "forbiddenClaims": [
+          "基本可用后任何改进都无价值",
+          "审美和体验永远不属于民利"
+        ],
+        "acceptableVariants": [
+          "边际收益",
+          "全生命周期成本",
+          "用户反馈"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-r3",
+      "sourceId": "rysxguji-xunzi-7-6",
+      "category": "resource-priority",
+      "scenario": "顺境中的预留",
+      "query": "资源看起来充足时，为什么还需要给风险和波动留下余量？",
+      "source": "荀子",
+      "passage": "故知者之举事也，满则虑嗛，平则虑险，安则虑危，曲重其豫，犹恐及其祸，是以百举而不陷也。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "充足、平稳和安全时仍需想到其反面",
+          "预先准备用于避免陷入风险"
+        ],
+        "sixToMe": [
+          "识别资源耗尽和关键瓶颈",
+          "预留应服务于主要风险而非无限囤积"
+        ],
+        "meToSix": [
+          "加入概率、缓冲和监测机制",
+          "区分合理余量与浪费"
+        ],
+        "forbiddenClaims": [
+          "所有资源都应尽量保留不用",
+          "预案能消除全部风险"
+        ],
+        "acceptableVariants": [
+          "安全余量",
+          "触发信号",
+          "压力测试"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-i1",
+      "sourceId": "rysxguji-hanfeizi-73-4",
+      "category": "institution-execution",
+      "scenario": "制度与个人能力",
+      "query": "组织不能总等到完美领导者出现，怎样让一般管理者也能维持基本秩序？",
+      "source": "韩非子",
+      "passage": "抱法处势则治背法去势则乱",
+      "style": "语气克制、结构清晰，偏义理分析。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "治理不能只依赖罕见的圣贤",
+          "制度与职位条件能提高常态治理能力"
+        ],
+        "sixToMe": [
+          "把关键规则、职责和授权固定下来",
+          "说明规则仍需执行与监督"
+        ],
+        "meToSix": [
+          "加入现代制衡、透明和纠错",
+          "不能把法势解释成无条件集权"
+        ],
+        "forbiddenClaims": [
+          "制度可以替代所有人的判断",
+          "权力越集中越有效"
+        ],
+        "acceptableVariants": [
+          "职责边界",
+          "监督反馈",
+          "异常纠正"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-i2",
+      "sourceId": "rysxguji-mozi-9-6",
+      "category": "institution-execution",
+      "scenario": "岗位流动",
+      "query": "怎样建立能者上、不能者调整的机制，同时避免考核变成任意升降？",
+      "source": "墨子",
+      "passage": "故官无常贵，而民无终贱，有能则举之，无能则下之，举公义，辟私怨。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "职位不应永久固化",
+          "升降应基于能力和公共标准而非私怨"
+        ],
+        "sixToMe": [
+          "公开岗位要求和可复核证据",
+          "为调整提供说明与申诉"
+        ],
+        "meToSix": [
+          "加入程序公平和能力发展的机会",
+          "区分绩效问题与资源不足"
+        ],
+        "forbiddenClaims": [
+          "一次表现不好即可降职",
+          "管理者个人判断就是公义"
+        ],
+        "acceptableVariants": [
+          "公开标准",
+          "多源证据",
+          "申诉与改进期"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-i3",
+      "sourceId": "rysxguji-zhouli-1-59",
+      "category": "institution-execution",
+      "scenario": "跨部门协同",
+      "query": "大型组织怎样让岗位、流程和协作机制互相咬合，而不是各部门各自为政？",
+      "source": "周礼",
+      "passage": "以八法治官府：一曰官属，以举邦治。二曰官职，以辨邦治。三曰官联，以会官治。四曰官常，以听官治。五曰官成，以经邦治。六曰官法，以正邦治。七曰官刑，以纠邦治。八曰官计，以弊邦治。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "组织治理包含编制、职责、协作、常规、成效、规范、纠错和考核",
+          "不能只靠单一规则"
+        ],
+        "sixToMe": [
+          "先明确共同目标和接口责任",
+          "建立跨部门反馈与纠偏"
+        ],
+        "meToSix": [
+          "加入现代信息共享和结果审计",
+          "说明制度需由实际协作检验"
+        ],
+        "forbiddenClaims": [
+          "流程越多协作越好",
+          "考核可以替代共同目标"
+        ],
+        "acceptableVariants": [
+          "责任矩阵",
+          "交接标准",
+          "复盘机制"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-a1",
+      "sourceId": "rysxguji-lunyu-17-4",
+      "category": "agency-environment",
+      "scenario": "习惯差异",
+      "query": "团队成员起点相近却逐渐形成很大差距时，应该怎样理解个人与习惯的作用？",
+      "source": "论语",
+      "passage": "性相近也，习相远也。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "人的起点有相近处",
+          "长期习染会扩大差异"
+        ],
+        "sixToMe": [
+          "同时检查练习环境与个人选择",
+          "不要把差距固定成本性标签"
+        ],
+        "meToSix": [
+          "加入反馈、机会和持续训练",
+          "解释环境与能动性的互动"
+        ],
+        "forbiddenClaims": [
+          "所有差距都只由环境造成",
+          "习惯一旦形成就无法改变"
+        ],
+        "acceptableVariants": [
+          "训练机会",
+          "行为反馈",
+          "自主调整"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-a2",
+      "sourceId": "rysxguji-mozi-4-1",
+      "category": "agency-environment",
+      "scenario": "组织文化影响",
+      "query": "新成员进入一种强势组织文化后，怎样既看到环境影响，又不否定个人责任？",
+      "source": "墨子",
+      "passage": "染于苍则苍，染于黄则黄，所入者变，其色亦变。故染不可不慎也！",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "所处环境会持续改变人",
+          "因此选择和建设环境必须谨慎"
+        ],
+        "sixToMe": [
+          "识别奖励、榜样和日常规范",
+          "保留个人反思与拒绝不当规范的责任"
+        ],
+        "meToSix": [
+          "加入制度激励和同伴反馈",
+          "说明人也能反向塑造环境"
+        ],
+        "forbiddenClaims": [
+          "个人只是被动染色",
+          "换环境必然解决问题"
+        ],
+        "acceptableVariants": [
+          "激励审计",
+          "同伴反馈",
+          "主动选择"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-a3",
+      "sourceId": "rysxguji-xunzi-8-27",
+      "category": "agency-environment",
+      "scenario": "职业与长期塑造",
+      "query": "长期从事一种工作会塑造人的判断方式，怎样利用这种积累又避免路径依赖？",
+      "source": "荀子",
+      "passage": "工匠之子，莫不继事，而都国之民安习其服，居楚而楚，居越而越，居夏而夏，是非天性也，积靡使然也。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "长期实践和习俗会塑造能力与行为",
+          "这种差异并非不可改变的天性"
+        ],
+        "sixToMe": [
+          "利用重复实践形成专长",
+          "定期引入外部视角检查惯性"
+        ],
+        "meToSix": [
+          "加入跨域协作和反馈网络",
+          "解释积累既能赋能也会限制"
+        ],
+        "forbiddenClaims": [
+          "职业完全决定人格",
+          "跨领域经验必然优于专业积累"
+        ],
+        "acceptableVariants": [
+          "轮岗",
+          "同行评审",
+          "反例训练"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-l1",
+      "sourceId": "rysxguji-lunyu-12-24",
+      "category": "relationship-consent",
+      "scenario": "劝告边界",
+      "query": "朋友反复做出你认为有害的选择时，怎样真诚劝告又不过度控制？",
+      "source": "论语",
+      "passage": "忠告而善道之，不可则止，毋自辱焉。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "朋友可以真诚劝告",
+          "对方不接受时应停止强求"
+        ],
+        "sixToMe": [
+          "说清风险和关切而非命令",
+          "尊重对方明确拒绝"
+        ],
+        "meToSix": [
+          "加入能力、紧急危险和支持方式的区分",
+          "不能重复停止建议"
+        ],
+        "forbiddenClaims": [
+          "只要出于关心就可持续施压",
+          "停止劝告等于放弃朋友"
+        ],
+        "acceptableVariants": [
+          "一次清楚表达",
+          "提供可选择支持",
+          "紧急风险例外"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-l2",
+      "sourceId": "rysxguji-mengzi-7-27",
+      "category": "relationship-consent",
+      "scenario": "不同关系中的批评",
+      "query": "同样一句尖锐批评，在朋友和家人之间为什么可能产生不同后果？",
+      "source": "孟子",
+      "passage": "责善，朋友之道也。父子责善，贼恩之大者。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "劝善在朋友关系中具有正当位置",
+          "相同方式用于亲密亲属可能伤害恩情"
+        ],
+        "sixToMe": [
+          "根据关系角色调整表达与频率",
+          "先确认对方是否愿意接受直接批评"
+        ],
+        "meToSix": [
+          "加入权力、依赖和沟通契约",
+          "说明现代关系角色可协商"
+        ],
+        "forbiddenClaims": [
+          "家人之间不能指出错误",
+          "朋友越尖锐越真诚"
+        ],
+        "acceptableVariants": [
+          "请求许可",
+          "改变表达方式",
+          "第三方支持"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-l3",
+      "sourceId": "rysxguji-liji-30-44",
+      "category": "relationship-consent",
+      "scenario": "关系中的强度",
+      "query": "一段合作关系开局非常热络，怎样判断它是可靠连接还是短期讨好？",
+      "source": "礼记",
+      "passage": "故君子之接如水，小人之接如醴。君子淡以成，小人甘以坏。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "平淡而持久的交往可能比甜美讨好更可靠",
+          "关系价值要看能否长期成就"
+        ],
+        "sixToMe": [
+          "观察承诺、分歧和利益变化时的行为",
+          "不以情绪强度代替可靠性"
+        ],
+        "meToSix": [
+          "加入长期记录、边界和互惠能力",
+          "避免把冷淡等同高尚"
+        ],
+        "forbiddenClaims": [
+          "热情必然虚假",
+          "关系越少表达越可靠"
+        ],
+        "acceptableVariants": [
+          "承诺一致性",
+          "分歧处理",
+          "稳定互惠"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-c1",
+      "sourceId": "rysxguji-lunyu-15-26",
+      "category": "change-experiment",
+      "scenario": "承认错误之后",
+      "query": "已经承认方案有问题，却迟迟不改，怎样判断真正的纠错是否发生？",
+      "source": "论语",
+      "passage": "过而不改，是谓过矣。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "错误在拒绝改正时被延续",
+          "承认错误本身不等于完成纠正"
+        ],
+        "sixToMe": [
+          "明确需要改变的行为和后果",
+          "以新行动而非口头表态判断"
+        ],
+        "meToSix": [
+          "加入验证、反馈和复发预防",
+          "区分未知错误与明知不改"
+        ],
+        "forbiddenClaims": [
+          "所有错误都必须立即彻底解决",
+          "出现复发就证明从未改正"
+        ],
+        "acceptableVariants": [
+          "纠正行动",
+          "结果复核",
+          "防复发机制"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-c2",
+      "sourceId": "rysxguji-hanfeizi-90-3",
+      "category": "change-experiment",
+      "scenario": "方法与时代",
+      "query": "过去有效的方法在新环境里失灵时，怎样避免把传统经验全盘否定？",
+      "source": "韩非子",
+      "passage": "世异则事异。",
+      "style": "直接、清楚、可落地，贴近当代处境。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "处境变化会要求应对方法变化",
+          "改变针对的是事与备的关系"
+        ],
+        "sixToMe": [
+          "先确认失效来自环境、目标还是执行",
+          "保留仍成立的原则"
+        ],
+        "meToSix": [
+          "加入可逆试验和迁移条件",
+          "区分原则稳定与方法更新"
+        ],
+        "forbiddenClaims": [
+          "新时代必须抛弃一切旧方法",
+          "变化本身就是进步"
+        ],
+        "acceptableVariants": [
+          "失效诊断",
+          "小范围替代",
+          "保留有效部分"
+        ]
+      }
+    },
+    {
+      "id": "annotation-dev-v2-c3",
+      "sourceId": "rysxguji-zhouyi-49-4",
+      "category": "change-experiment",
+      "scenario": "变革与时间",
+      "query": "推动组织变革时，为什么不仅要改制度，还要让成员理解新的时间和节奏？",
+      "source": "周易",
+      "passage": "泽中有火，革。君子以治历明时。",
+      "style": "语气克制、结构清晰，偏义理分析。",
+      "evaluationConstraints": {
+        "mustPreserve": [
+          "革不仅是破旧，也包含重新厘定时间秩序",
+          "变革需使行动有共同节奏"
+        ],
+        "sixToMe": [
+          "说明阶段、转换条件和新旧交接",
+          "让成员知道何时按新规则行动"
+        ],
+        "meToSix": [
+          "加入变更沟通、反馈和回顾点",
+          "不把治历直接等同现代项目管理"
+        ],
+        "forbiddenClaims": [
+          "宣布日期就等于完成变革",
+          "所有成员必须以同一速度适应"
+        ],
+        "acceptableVariants": [
+          "过渡期",
+          "触发条件",
+          "反馈节奏"
+        ]
+      }
+    }
+  ],
+  "fixtureSha256": "599805155455086a139e4a68bd60daee24d9caab79b06a93937940ffc21d2ffe"
+}

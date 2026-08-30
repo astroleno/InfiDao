@@ -1,5 +1,9 @@
+import fs from "node:fs";
+import path from "node:path";
 import {
   assertDisjointPartitions,
+  assertFixtureHash,
+  fixtureHash,
   parseEvalFixture,
   parseGeneration,
   parseJudgment,
@@ -17,6 +21,7 @@ const constraints = {
 function buildCase(id: string, overrides: Partial<EvalCase> = {}): EvalCase {
   return {
     id,
+    sourceId: `source-${id}`,
     category: "uncertainty",
     scenario: `场景-${id}`,
     query: `问题-${id}`,
@@ -165,5 +170,96 @@ describe("annotation eval contracts", () => {
         },
       }),
     ).toThrow();
+  });
+
+  it("validates the frozen project fixtures and their hashes", () => {
+    const readFixture = (name: string) =>
+      parseEvalFixture(
+        JSON.parse(
+          fs.readFileSync(
+            path.join(process.cwd(), "tests/fixtures/annotation-eval", name),
+            "utf8",
+          ),
+        ) as unknown,
+      );
+    const dev = readFixture("dev-v2.json");
+    const holdout = readFixture("holdout-v2.json");
+    const golden = readFixture("golden-v1.json");
+
+    expect(() => assertFixtureHash(dev)).not.toThrow();
+    expect(() => assertFixtureHash(holdout)).not.toThrow();
+    expect(() => assertFixtureHash(golden)).not.toThrow();
+    expect(fixtureHash(holdout)).toBe(holdout.fixtureSha256);
+    expect(() => assertDisjointPartitions([dev, holdout, golden])).not.toThrow();
+    expect(golden.cases.every(testCase => testCase.referenceAnswer)).toBe(true);
+  });
+
+  it("has exactly three dev and two holdout cases in every routed category", () => {
+    const read = (name: string) =>
+      parseEvalFixture(
+        JSON.parse(
+          fs.readFileSync(
+            path.join(process.cwd(), "tests/fixtures/annotation-eval", name),
+            "utf8",
+          ),
+        ) as unknown,
+      );
+    const counts = (name: string) =>
+      Object.fromEntries(
+        read(name).cases.reduce<Map<string, number>>((map, testCase) => {
+          map.set(testCase.category, (map.get(testCase.category) ?? 0) + 1);
+          return map;
+        }, new Map()),
+      );
+
+    expect(counts("dev-v2.json")).toEqual({
+      uncertainty: 3,
+      "resource-priority": 3,
+      "institution-execution": 3,
+      "agency-environment": 3,
+      "relationship-consent": 3,
+      "change-experiment": 3,
+    });
+    expect(counts("holdout-v2.json")).toEqual({
+      uncertainty: 2,
+      "resource-priority": 2,
+      "institution-execution": 2,
+      "agency-environment": 2,
+      "relationship-consent": 2,
+      "change-experiment": 2,
+    });
+  });
+
+  it("anchors every frozen passage to its declared corpus source", () => {
+    const corpus = new Map(
+      fs
+        .readFileSync(
+          path.join(process.cwd(), "data/rysxguji/guji-core-v1.jsonl"),
+          "utf8",
+        )
+        .trim()
+        .split("\n")
+        .map(line => {
+          const row = JSON.parse(line) as { id: string; source: string; text: string };
+          return [row.id, row] as const;
+        }),
+    );
+    for (const filename of ["dev-v2.json", "holdout-v2.json", "golden-v1.json"]) {
+      const fixture = parseEvalFixture(
+        JSON.parse(
+          fs.readFileSync(
+            path.join(process.cwd(), "tests/fixtures/annotation-eval", filename),
+            "utf8",
+          ),
+        ) as unknown,
+      );
+      for (const testCase of fixture.cases) {
+        const source = corpus.get(testCase.sourceId);
+        expect(source?.source).toBe(testCase.source);
+        for (const clause of testCase.passage.split(/[，。；！？、：]/u).filter(Boolean)) {
+          expect(source?.text).toContain(clause);
+        }
+      }
+    }
   });
 });
