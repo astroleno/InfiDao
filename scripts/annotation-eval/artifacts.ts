@@ -38,6 +38,27 @@ export function resolveRawArtifactPath(
   return resolved;
 }
 
+export function readRawJson(
+  root: string,
+  identity: ArtifactIdentity,
+  filename: string,
+): unknown {
+  const artifactPath = resolveRawArtifactPath(root, identity, filename);
+  if (!fs.existsSync(artifactPath)) throw new Error(`raw artifact not found: ${filename}`);
+  return JSON.parse(fs.readFileSync(artifactPath, "utf8")) as unknown;
+}
+
+export function writeRawJson(
+  root: string,
+  identity: ArtifactIdentity,
+  filename: string,
+  value: unknown,
+): void {
+  const artifactPath = resolveRawArtifactPath(root, identity, filename);
+  fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
+  fs.writeFileSync(artifactPath, `${JSON.stringify(value, null, 2)}\n`);
+}
+
 export function readGenerationCheckpoint(
   root: string,
   identity: ArtifactIdentity,
@@ -78,4 +99,23 @@ export function writeTrackedSummary(
   }
   fs.mkdirSync(path.dirname(resolved), { recursive: true });
   fs.writeFileSync(resolved, serialized);
+}
+
+export function writeTrackedText(
+  root: string,
+  relativePath: string,
+  value: string,
+  secrets: string[],
+): void {
+  const projectRoot = path.resolve(root);
+  const allowedRoot = path.join(projectRoot, "docs", "qa", "annotation-eval");
+  const resolved = path.resolve(projectRoot, relativePath);
+  if (!resolved.startsWith(`${allowedRoot}${path.sep}`)) {
+    throw new Error("tracked report path must be below docs/qa/annotation-eval");
+  }
+  if (secrets.some(secret => secret && value.includes(secret))) {
+    throw new Error("tracked report contains a secret");
+  }
+  fs.mkdirSync(path.dirname(resolved), { recursive: true });
+  fs.writeFileSync(resolved, value.endsWith("\n") ? value : `${value}\n`);
 }

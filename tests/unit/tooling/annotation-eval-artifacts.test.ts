@@ -8,6 +8,10 @@ import {
   writeGenerationCheckpoint,
   writeTrackedSummary,
 } from "../../../scripts/annotation-eval/artifacts";
+import {
+  assertGenerationPolicy,
+  parseCliArgs,
+} from "../../../scripts/annotation-eval/cli";
 
 describe("annotation eval artifacts", () => {
   let root: string;
@@ -111,5 +115,42 @@ describe("annotation eval artifacts", () => {
     expect(readGenerationCheckpoint(root, identity)).toEqual([]);
     writeGenerationCheckpoint(root, identity, [generation]);
     expect(readGenerationCheckpoint(root, identity)).toEqual([generation]);
+  });
+
+  it("parses supported CLI commands and rejects incomplete arguments", () => {
+    expect(parseCliArgs(["validate"])).toEqual({ command: "validate" });
+    expect(
+      parseCliArgs(["generate", "--partition", "dev", "--variant", "v4", "--rounds", "2"]),
+    ).toEqual({ command: "generate", partition: "dev", variant: "v4", rounds: 2 });
+    expect(() => parseCliArgs(["explode"])).toThrow("unknown command: explode");
+    expect(() => parseCliArgs(["generate", "--variant", "v4"])).toThrow(
+      "missing --partition",
+    );
+    expect(() => parseCliArgs(["generate", "--partition", "dev"])).toThrow(
+      "missing --variant",
+    );
+  });
+
+  it("blocks unfrozen or already completed holdout generations", () => {
+    expect(() =>
+      assertGenerationPolicy({
+        partition: "holdout",
+        promptFrozen: false,
+        fixtureSealed: true,
+        existingRows: 0,
+        expectedRows: 36,
+        checkpointMatches: true,
+      }),
+    ).toThrow("holdout requires a frozen prompt and sealed fixture");
+    expect(() =>
+      assertGenerationPolicy({
+        partition: "holdout",
+        promptFrozen: true,
+        fixtureSealed: true,
+        existingRows: 36,
+        expectedRows: 36,
+        checkpointMatches: true,
+      }),
+    ).toThrow("holdout result already exists for this prompt hash");
   });
 });
