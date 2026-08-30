@@ -1,0 +1,550 @@
+{
+  "evalId": "infidao-classical-annotation-v1",
+  "counts": {
+    "rounds": 3,
+    "casesPerRound": 10,
+    "candidates": 5,
+    "generatedOutputs": 150,
+    "judgeCandidateReviews": 450,
+    "dimensionScores": 2250,
+    "deepseekApiCalls": 60
+  },
+  "totals": {
+    "luna": {
+      "total": 2132,
+      "dimensions": {
+        "passageFidelity": 4.944444444444445,
+        "queryRelevance": 4.988888888888889,
+        "dualDirection": 4.455555555555556,
+        "interpretiveDepth": 4.455555555555556,
+        "semanticPrecision": 4.844444444444444
+      },
+      "firstPlaces": 25,
+      "rankSum": 221,
+      "rankCount": 90,
+      "average25": 23.68888888888889,
+      "scorePercent": 0.9475555555555556,
+      "averageRank": 2.4555555555555557,
+      "averageCharacters": 175.6
+    },
+    "terra": {
+      "total": 2169,
+      "dimensions": {
+        "passageFidelity": 4.933333333333334,
+        "queryRelevance": 4.988888888888889,
+        "dualDirection": 4.955555555555556,
+        "interpretiveDepth": 4.388888888888889,
+        "semanticPrecision": 4.833333333333333
+      },
+      "firstPlaces": 7,
+      "rankSum": 225,
+      "rankCount": 90,
+      "average25": 24.1,
+      "scorePercent": 0.964,
+      "averageRank": 2.5,
+      "averageCharacters": 151.53333333333333
+    },
+    "sol": {
+      "total": 2227,
+      "dimensions": {
+        "passageFidelity": 4.944444444444445,
+        "queryRelevance": 5,
+        "dualDirection": 5,
+        "interpretiveDepth": 4.933333333333334,
+        "semanticPrecision": 4.866666666666666
+      },
+      "firstPlaces": 57,
+      "rankSum": 135,
+      "rankCount": 90,
+      "average25": 24.744444444444444,
+      "scorePercent": 0.9897777777777778,
+      "averageRank": 1.5,
+      "averageCharacters": 171
+    },
+    "deepseek_enabled": {
+      "total": 1871,
+      "dimensions": {
+        "passageFidelity": 4.366666666666666,
+        "queryRelevance": 4.144444444444445,
+        "dualDirection": 4.766666666666667,
+        "interpretiveDepth": 3.966666666666667,
+        "semanticPrecision": 3.5444444444444443
+      },
+      "firstPlaces": 0,
+      "rankSum": 383,
+      "rankCount": 90,
+      "average25": 20.788888888888888,
+      "scorePercent": 0.8315555555555556,
+      "averageRank": 4.2555555555555555,
+      "averageCharacters": 163.53333333333333
+    },
+    "deepseek_disabled": {
+      "total": 1871,
+      "dimensions": {
+        "passageFidelity": 4.155555555555556,
+        "queryRelevance": 4.233333333333333,
+        "dualDirection": 4.688888888888889,
+        "interpretiveDepth": 4.133333333333334,
+        "semanticPrecision": 3.577777777777778
+      },
+      "firstPlaces": 1,
+      "rankSum": 386,
+      "rankCount": 90,
+      "average25": 20.788888888888888,
+      "scorePercent": 0.8315555555555556,
+      "averageRank": 4.288888888888889,
+      "averageCharacters": 166.6
+    }
+  },
+  "perRound": {
+    "1": {
+      "luna": {
+        "total": 738,
+        "firstPlaces": 17,
+        "average25": 24.6
+      },
+      "terra": {
+        "total": 713,
+        "firstPlaces": 0,
+        "average25": 23.766666666666666
+      },
+      "sol": {
+        "total": 741,
+        "firstPlaces": 13,
+        "average25": 24.7
+      },
+      "deepseek_enabled": {
+        "total": 582,
+        "firstPlaces": 0,
+        "average25": 19.4
+      },
+      "deepseek_disabled": {
+        "total": 615,
+        "firstPlaces": 0,
+        "average25": 20.5
+      }
+    },
+    "2": {
+      "luna": {
+        "total": 726,
+        "firstPlaces": 5,
+        "average25": 24.2
+      },
+      "terra": {
+        "total": 731,
+        "firstPlaces": 4,
+        "average25": 24.366666666666667
+      },
+      "sol": {
+        "total": 742,
+        "firstPlaces": 21,
+        "average25": 24.733333333333334
+      },
+      "deepseek_enabled": {
+        "total": 645,
+        "firstPlaces": 0,
+        "average25": 21.5
+      },
+      "deepseek_disabled": {
+        "total": 619,
+        "firstPlaces": 0,
+        "average25": 20.633333333333333
+      }
+    },
+    "3": {
+      "luna": {
+        "total": 668,
+        "firstPlaces": 3,
+        "average25": 22.266666666666666
+      },
+      "terra": {
+        "total": 725,
+        "firstPlaces": 3,
+        "average25": 24.166666666666668
+      },
+      "sol": {
+        "total": 744,
+        "firstPlaces": 23,
+        "average25": 24.8
+      },
+      "deepseek_enabled": {
+        "total": 644,
+        "firstPlaces": 0,
+        "average25": 21.466666666666665
+      },
+      "deepseek_disabled": {
+        "total": 637,
+        "firstPlaces": 1,
+        "average25": 21.233333333333334
+      }
+    }
+  },
+  "perJudge": {
+    "luna": {
+      "luna": 719,
+      "terra": 719,
+      "sol": 740,
+      "deepseek_enabled": 638,
+      "deepseek_disabled": 652
+    },
+    "terra": {
+      "luna": 715,
+      "terra": 730,
+      "sol": 741,
+      "deepseek_enabled": 629,
+      "deepseek_disabled": 612
+    },
+    "sol": {
+      "luna": 698,
+      "terra": 720,
+      "sol": 746,
+      "deepseek_enabled": 604,
+      "deepseek_disabled": 607
+    }
+  },
+  "perCase": {
+    "1": {
+      "luna": 197,
+      "terra": 214,
+      "sol": 222,
+      "deepseek_enabled": 207,
+      "deepseek_disabled": 198
+    },
+    "2": {
+      "luna": 205,
+      "terra": 215,
+      "sol": 222,
+      "deepseek_enabled": 186,
+      "deepseek_disabled": 193
+    },
+    "3": {
+      "luna": 213,
+      "terra": 215,
+      "sol": 221,
+      "deepseek_enabled": 175,
+      "deepseek_disabled": 187
+    },
+    "4": {
+      "luna": 212,
+      "terra": 218,
+      "sol": 220,
+      "deepseek_enabled": 186,
+      "deepseek_disabled": 186
+    },
+    "5": {
+      "luna": 213,
+      "terra": 219,
+      "sol": 225,
+      "deepseek_enabled": 198,
+      "deepseek_disabled": 191
+    },
+    "6": {
+      "luna": 220,
+      "terra": 217,
+      "sol": 220,
+      "deepseek_enabled": 183,
+      "deepseek_disabled": 177
+    },
+    "7": {
+      "luna": 214,
+      "terra": 216,
+      "sol": 225,
+      "deepseek_enabled": 191,
+      "deepseek_disabled": 191
+    },
+    "8": {
+      "luna": 220,
+      "terra": 219,
+      "sol": 224,
+      "deepseek_enabled": 187,
+      "deepseek_disabled": 209
+    },
+    "9": {
+      "luna": 220,
+      "terra": 219,
+      "sol": 223,
+      "deepseek_enabled": 173,
+      "deepseek_disabled": 164
+    },
+    "10": {
+      "luna": 218,
+      "terra": 217,
+      "sol": 225,
+      "deepseek_enabled": 185,
+      "deepseek_disabled": 175
+    }
+  },
+  "consensus": {
+    "unanimous": 13,
+    "majority": 15,
+    "split": 2
+  },
+  "pairwise": {
+    "luna_vs_terra": {
+      "left": "luna",
+      "right": "terra",
+      "wins": 37,
+      "losses": 33,
+      "ties": 20,
+      "nonTieWinRate": 0.5285714285714286,
+      "exactTwoSidedP": 0.7202027723528612,
+      "wilson95": [0.4132188746832562, 0.6409512360361571]
+    },
+    "luna_vs_sol": {
+      "left": "luna",
+      "right": "sol",
+      "wins": 14,
+      "losses": 47,
+      "ties": 29,
+      "nonTieWinRate": 0.22950819672131148,
+      "exactTwoSidedP": 0.00002719187682281854,
+      "wilson95": [0.1419323035287129, 0.34913405123584]
+    },
+    "luna_vs_deepseek_enabled": {
+      "left": "luna",
+      "right": "deepseek_enabled",
+      "wins": 73,
+      "losses": 14,
+      "ties": 3,
+      "nonTieWinRate": 0.8390804597701149,
+      "exactTwoSidedP": 8.584489517282403e-11,
+      "wilson95": [0.7478296289321998, 0.9016535560137414]
+    },
+    "luna_vs_deepseek_disabled": {
+      "left": "luna",
+      "right": "deepseek_disabled",
+      "wins": 74,
+      "losses": 11,
+      "ties": 5,
+      "nonTieWinRate": 0.8705882352941177,
+      "exactTwoSidedP": 1.2888315230163817e-12,
+      "wilson95": [0.7829519105661322, 0.9261764720187473]
+    },
+    "terra_vs_sol": {
+      "left": "terra",
+      "right": "sol",
+      "wins": 10,
+      "losses": 59,
+      "ties": 21,
+      "nonTieWinRate": 0.14492753623188406,
+      "exactTwoSidedP": 1.3765197153783534e-9,
+      "wilson95": [0.08067095280675704, 0.24663521605213476]
+    },
+    "terra_vs_deepseek_enabled": {
+      "left": "terra",
+      "right": "deepseek_enabled",
+      "wins": 82,
+      "losses": 3,
+      "ties": 5,
+      "nonTieWinRate": 0.9647058823529412,
+      "exactTwoSidedP": 2.7959374761947534e-16,
+      "wilson95": [0.9012995216039354, 0.987924958145358]
+    },
+    "terra_vs_deepseek_disabled": {
+      "left": "terra",
+      "right": "deepseek_disabled",
+      "wins": 84,
+      "losses": 1,
+      "ties": 5,
+      "nonTieWinRate": 0.9882352941176471,
+      "exactTwoSidedP": 2.7959374761947534e-16,
+      "wilson95": [0.9363282911750611, 0.997920212865336]
+    },
+    "sol_vs_deepseek_enabled": {
+      "left": "sol",
+      "right": "deepseek_enabled",
+      "wins": 89,
+      "losses": 0,
+      "ties": 1,
+      "nonTieWinRate": 1,
+      "exactTwoSidedP": 2.5248620379419315e-16,
+      "wilson95": [0.9586234547637477, 1.0000000000000002]
+    },
+    "sol_vs_deepseek_disabled": {
+      "left": "sol",
+      "right": "deepseek_disabled",
+      "wins": 87,
+      "losses": 1,
+      "ties": 2,
+      "nonTieWinRate": 0.9886363636363636,
+      "exactTwoSidedP": 4.601761192576427e-16,
+      "wilson95": [0.9384050610770144, 0.9979912146822955]
+    },
+    "deepseek_enabled_vs_deepseek_disabled": {
+      "left": "deepseek_enabled",
+      "right": "deepseek_disabled",
+      "wins": 39,
+      "losses": 40,
+      "ties": 11,
+      "nonTieWinRate": 0.4936708860759494,
+      "exactTwoSidedP": 1,
+      "wilson95": [0.38630272176150804, 0.6016260277530987]
+    }
+  },
+  "pairwiseCaseRound": {
+    "luna_vs_terra": {
+      "left": "luna",
+      "right": "terra",
+      "wins": 16,
+      "losses": 12,
+      "ties": 2,
+      "nonTieWinRate": 0.5714285714285714,
+      "exactTwoSidedP": 0.5715881884098053,
+      "wilson95": [0.3907078562746876, 0.734914528758763]
+    },
+    "luna_vs_sol": {
+      "left": "luna",
+      "right": "sol",
+      "wins": 5,
+      "losses": 20,
+      "ties": 5,
+      "nonTieWinRate": 0.2,
+      "exactTwoSidedP": 0.004077315330505371,
+      "wilson95": [0.08860584686802572, 0.3913095036954033]
+    },
+    "luna_vs_deepseek_enabled": {
+      "left": "luna",
+      "right": "deepseek_enabled",
+      "wins": 25,
+      "losses": 5,
+      "ties": 0,
+      "nonTieWinRate": 0.8333333333333334,
+      "exactTwoSidedP": 0.00032491423189640045,
+      "wilson95": [0.6643564949358398, 0.9266345762815145]
+    },
+    "luna_vs_deepseek_disabled": {
+      "left": "luna",
+      "right": "deepseek_disabled",
+      "wins": 25,
+      "losses": 5,
+      "ties": 0,
+      "nonTieWinRate": 0.8333333333333334,
+      "exactTwoSidedP": 0.00032491423189640045,
+      "wilson95": [0.6643564949358398, 0.9266345762815145]
+    },
+    "terra_vs_sol": {
+      "left": "terra",
+      "right": "sol",
+      "wins": 2,
+      "losses": 25,
+      "ties": 3,
+      "nonTieWinRate": 0.07407407407407407,
+      "exactTwoSidedP": 0.000005647540092468262,
+      "wilson95": [0.020554654060988622, 0.23369592683023144]
+    },
+    "terra_vs_deepseek_enabled": {
+      "left": "terra",
+      "right": "deepseek_enabled",
+      "wins": 30,
+      "losses": 0,
+      "ties": 0,
+      "nonTieWinRate": 1,
+      "exactTwoSidedP": 1.862645149230957e-9,
+      "wilson95": [0.8864866068260312, 0.9999999999999999]
+    },
+    "terra_vs_deepseek_disabled": {
+      "left": "terra",
+      "right": "deepseek_disabled",
+      "wins": 29,
+      "losses": 0,
+      "ties": 1,
+      "nonTieWinRate": 1,
+      "exactTwoSidedP": 3.725290298461914e-9,
+      "wilson95": [0.8830302015002593, 1]
+    },
+    "sol_vs_deepseek_enabled": {
+      "left": "sol",
+      "right": "deepseek_enabled",
+      "wins": 30,
+      "losses": 0,
+      "ties": 0,
+      "nonTieWinRate": 1,
+      "exactTwoSidedP": 1.862645149230957e-9,
+      "wilson95": [0.8864866068260312, 0.9999999999999999]
+    },
+    "sol_vs_deepseek_disabled": {
+      "left": "sol",
+      "right": "deepseek_disabled",
+      "wins": 30,
+      "losses": 0,
+      "ties": 0,
+      "nonTieWinRate": 1,
+      "exactTwoSidedP": 1.862645149230957e-9,
+      "wilson95": [0.8864866068260312, 0.9999999999999999]
+    },
+    "deepseek_enabled_vs_deepseek_disabled": {
+      "left": "deepseek_enabled",
+      "right": "deepseek_disabled",
+      "wins": 14,
+      "losses": 14,
+      "ties": 2,
+      "nonTieWinRate": 0.5,
+      "exactTwoSidedP": 1,
+      "wilson95": [0.32633127457293465, 0.6736687254270654]
+    }
+  },
+  "stability": {
+    "luna": {
+      "roundAverages25": [24.6, 24.2, 22.266666666666666],
+      "min": 22.266666666666666,
+      "max": 24.6,
+      "range": 2.3333333333333357
+    },
+    "terra": {
+      "roundAverages25": [23.766666666666666, 24.366666666666667, 24.166666666666668],
+      "min": 23.766666666666666,
+      "max": 24.366666666666667,
+      "range": 0.6000000000000014
+    },
+    "sol": {
+      "roundAverages25": [24.7, 24.733333333333334, 24.8],
+      "min": 24.7,
+      "max": 24.8,
+      "range": 0.10000000000000142
+    },
+    "deepseek_enabled": {
+      "roundAverages25": [19.4, 21.5, 21.466666666666665],
+      "min": 19.4,
+      "max": 21.5,
+      "range": 2.1000000000000014
+    },
+    "deepseek_disabled": {
+      "roundAverages25": [20.5, 20.633333333333333, 21.233333333333334],
+      "min": 20.5,
+      "max": 21.233333333333334,
+      "range": 0.7333333333333343
+    }
+  },
+  "deepseekTechnical": {
+    "enabled": {
+      "calls": 30,
+      "valid": 30,
+      "stopped": 30,
+      "p50FirstTokenMs": 479,
+      "p95FirstTokenMs": 730,
+      "p50FirstContentMs": 1279,
+      "p95FirstContentMs": 3966,
+      "p50TotalMs": 3014,
+      "p95TotalMs": 5334,
+      "promptTokens": 6579,
+      "completionTokens": 6656,
+      "reasoningTokens": 3052,
+      "totalTokens": 13235
+    },
+    "disabled": {
+      "calls": 30,
+      "valid": 30,
+      "stopped": 30,
+      "p50FirstTokenMs": 461,
+      "p95FirstTokenMs": 745,
+      "p50FirstContentMs": 461,
+      "p95FirstContentMs": 745,
+      "p50TotalMs": 2357,
+      "p95TotalMs": 3200,
+      "promptTokens": 4209,
+      "completionTokens": 3711,
+      "reasoningTokens": 0,
+      "totalTokens": 7920
+    }
+  }
+}

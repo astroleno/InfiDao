@@ -1,0 +1,855 @@
+{
+  "schemaVersion": 1,
+  "evalId": "infidao-annotation-cross-provider-golden-v1-three-run-codex-validation",
+  "date": "2026-08-30",
+  "purpose": "three-run stability validation of the promoted golden cases",
+  "protocol": {
+    "goldenCases": 12,
+    "independentRunsPerCandidate": 3,
+    "candidates": ["codex_luna_max", "codex_terra_max", "codex_sol_xhigh", "codex_sol_max"],
+    "generatedOutputs": 144,
+    "judges": ["codex_luna_max", "codex_terra_max", "codex_sol_xhigh"],
+    "blindCandidateReviews": 432,
+    "dimensionScores": 2160,
+    "dimensions": [
+      "passageFidelity",
+      "queryRelevance",
+      "dualDirection",
+      "interpretiveDepth",
+      "semanticPrecision"
+    ]
+  },
+  "ranking": [
+    {
+      "candidate": "codex_sol_max",
+      "totalPoints": 2692,
+      "maxPoints": 2700,
+      "average25": 24.926,
+      "scoreRate": 0.997,
+      "hardFailReviews": 0,
+      "hardFailFlags": 0,
+      "averageCharacters": 203.1,
+      "averageCaseRange25": 0.222,
+      "worstCaseRoundAverage25": 23.667,
+      "dimensions": {
+        "passageFidelity": 4.981,
+        "queryRelevance": 4.981,
+        "dualDirection": 5,
+        "interpretiveDepth": 5,
+        "semanticPrecision": 4.963
+      },
+      "rounds": {
+        "1": 24.972,
+        "2": 24.861,
+        "3": 24.944
+      }
+    },
+    {
+      "candidate": "codex_sol_xhigh",
+      "totalPoints": 2683,
+      "maxPoints": 2700,
+      "average25": 24.843,
+      "scoreRate": 0.994,
+      "hardFailReviews": 0,
+      "hardFailFlags": 0,
+      "averageCharacters": 204.3,
+      "averageCaseRange25": 0.444,
+      "worstCaseRoundAverage25": 23.333,
+      "dimensions": {
+        "passageFidelity": 4.991,
+        "queryRelevance": 5,
+        "dualDirection": 5,
+        "interpretiveDepth": 4.926,
+        "semanticPrecision": 4.926
+      },
+      "rounds": {
+        "1": 24.944,
+        "2": 24.944,
+        "3": 24.639
+      }
+    },
+    {
+      "candidate": "codex_luna_max",
+      "totalPoints": 2652,
+      "maxPoints": 2700,
+      "average25": 24.556,
+      "scoreRate": 0.982,
+      "hardFailReviews": 0,
+      "hardFailFlags": 0,
+      "averageCharacters": 181.5,
+      "averageCaseRange25": 0.722,
+      "worstCaseRoundAverage25": 23.333,
+      "dimensions": {
+        "passageFidelity": 4.963,
+        "queryRelevance": 5,
+        "dualDirection": 4.972,
+        "interpretiveDepth": 4.722,
+        "semanticPrecision": 4.898
+      },
+      "rounds": {
+        "1": 24.528,
+        "2": 24.444,
+        "3": 24.694
+      }
+    },
+    {
+      "candidate": "codex_terra_max",
+      "totalPoints": 2632,
+      "maxPoints": 2700,
+      "average25": 24.37,
+      "scoreRate": 0.975,
+      "hardFailReviews": 0,
+      "hardFailFlags": 0,
+      "averageCharacters": 187.3,
+      "averageCaseRange25": 1.333,
+      "worstCaseRoundAverage25": 23,
+      "dimensions": {
+        "passageFidelity": 4.944,
+        "queryRelevance": 5,
+        "dualDirection": 4.954,
+        "interpretiveDepth": 4.565,
+        "semanticPrecision": 4.907
+      },
+      "rounds": {
+        "1": 24.861,
+        "2": 24.444,
+        "3": 23.806
+      }
+    }
+  ],
+  "pairwise": [
+    {
+      "left": "codex_luna_max",
+      "right": "codex_terra_max",
+      "leftWins": 17,
+      "rightWins": 9,
+      "ties": 10,
+      "exactTwoSidedP": 0.168638
+    },
+    {
+      "left": "codex_luna_max",
+      "right": "codex_sol_xhigh",
+      "leftWins": 6,
+      "rightWins": 21,
+      "ties": 9,
+      "exactTwoSidedP": 0.005925
+    },
+    {
+      "left": "codex_luna_max",
+      "right": "codex_sol_max",
+      "leftWins": 3,
+      "rightWins": 22,
+      "ties": 11,
+      "exactTwoSidedP": 0.000157
+    },
+    {
+      "left": "codex_terra_max",
+      "right": "codex_sol_xhigh",
+      "leftWins": 3,
+      "rightWins": 18,
+      "ties": 15,
+      "exactTwoSidedP": 0.00149
+    },
+    {
+      "left": "codex_terra_max",
+      "right": "codex_sol_max",
+      "leftWins": 2,
+      "rightWins": 19,
+      "ties": 15,
+      "exactTwoSidedP": 0.000221
+    },
+    {
+      "left": "codex_sol_xhigh",
+      "right": "codex_sol_max",
+      "leftWins": 4,
+      "rightWins": 8,
+      "ties": 24,
+      "exactTwoSidedP": 0.387695
+    }
+  ],
+  "cases": [
+    {
+      "case": 2,
+      "id": "annotation-golden-v1-02",
+      "source": "论语",
+      "scenario": "偏好投射",
+      "candidates": {
+        "codex_luna_max": {
+          "average25": 24.444,
+          "minRoundAverage25": 24,
+          "maxRoundAverage25": 25,
+          "range": 1,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24,
+            "2": 24.333,
+            "3": 25
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.333,
+          "minRoundAverage25": 24,
+          "maxRoundAverage25": 25,
+          "range": 1,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24,
+            "2": 25,
+            "3": 24
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.889,
+          "minRoundAverage25": 24.667,
+          "maxRoundAverage25": 25,
+          "range": 0.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 25,
+          "minRoundAverage25": 25,
+          "maxRoundAverage25": 25,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        }
+      }
+    },
+    {
+      "case": 3,
+      "id": "annotation-golden-v1-03",
+      "source": "论语",
+      "scenario": "远虑与焦虑",
+      "candidates": {
+        "codex_luna_max": {
+          "average25": 24,
+          "minRoundAverage25": 23.333,
+          "maxRoundAverage25": 25,
+          "range": 1.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23.333,
+            "2": 23.667,
+            "3": 25
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.444,
+          "minRoundAverage25": 23.333,
+          "maxRoundAverage25": 25,
+          "range": 1.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 23.333,
+            "3": 25
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.444,
+          "minRoundAverage25": 23.333,
+          "maxRoundAverage25": 25,
+          "range": 1.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 23.333
+          }
+        },
+        "codex_sol_max": {
+          "average25": 25,
+          "minRoundAverage25": 25,
+          "maxRoundAverage25": 25,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        }
+      }
+    },
+    {
+      "case": 4,
+      "id": "annotation-golden-v1-04",
+      "source": "论语",
+      "scenario": "责任归因",
+      "candidates": {
+        "codex_luna_max": {
+          "average25": 24.444,
+          "minRoundAverage25": 24,
+          "maxRoundAverage25": 25,
+          "range": 1,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 25,
+            "3": 24
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.444,
+          "minRoundAverage25": 23.667,
+          "maxRoundAverage25": 25,
+          "range": 1.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.667,
+            "3": 23.667
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.889,
+          "minRoundAverage25": 24.667,
+          "maxRoundAverage25": 25,
+          "range": 0.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.667,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 24.556,
+          "minRoundAverage25": 23.667,
+          "maxRoundAverage25": 25,
+          "range": 1.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 23.667,
+            "3": 25
+          }
+        }
+      }
+    },
+    {
+      "case": 6,
+      "id": "annotation-golden-v1-06",
+      "source": "大学",
+      "scenario": "目标过载",
+      "candidates": {
+        "codex_luna_max": {
+          "average25": 24.778,
+          "minRoundAverage25": 24.667,
+          "maxRoundAverage25": 25,
+          "range": 0.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.667,
+            "3": 24.667
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.111,
+          "minRoundAverage25": 23.333,
+          "maxRoundAverage25": 25,
+          "range": 1.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24,
+            "3": 23.333
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.778,
+          "minRoundAverage25": 24.333,
+          "maxRoundAverage25": 25,
+          "range": 0.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 24.333
+          }
+        },
+        "codex_sol_max": {
+          "average25": 24.889,
+          "minRoundAverage25": 24.667,
+          "maxRoundAverage25": 25,
+          "range": 0.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 25,
+            "3": 25
+          }
+        }
+      }
+    },
+    {
+      "case": 8,
+      "id": "annotation-golden-v1-08",
+      "source": "周易",
+      "scenario": "自强与休息",
+      "candidates": {
+        "codex_luna_max": {
+          "average25": 24.667,
+          "minRoundAverage25": 24.333,
+          "maxRoundAverage25": 25,
+          "range": 0.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.333,
+            "3": 24.667
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.222,
+          "minRoundAverage25": 23,
+          "maxRoundAverage25": 25,
+          "range": 2,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.667,
+            "3": 23
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.889,
+          "minRoundAverage25": 24.667,
+          "maxRoundAverage25": 25,
+          "range": 0.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 24.667
+          }
+        },
+        "codex_sol_max": {
+          "average25": 25,
+          "minRoundAverage25": 25,
+          "maxRoundAverage25": 25,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        }
+      }
+    },
+    {
+      "case": 10,
+      "id": "annotation-golden-v1-10",
+      "source": "孟子",
+      "scenario": "支持与正确",
+      "candidates": {
+        "codex_luna_max": {
+          "average25": 24.667,
+          "minRoundAverage25": 24.667,
+          "maxRoundAverage25": 24.667,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 24.667,
+            "3": 24.667
+          }
+        },
+        "codex_terra_max": {
+          "average25": 23.778,
+          "minRoundAverage25": 23,
+          "maxRoundAverage25": 24.333,
+          "range": 1.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 24,
+            "3": 23
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 25,
+          "minRoundAverage25": 25,
+          "maxRoundAverage25": 25,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 24.889,
+          "minRoundAverage25": 24.667,
+          "maxRoundAverage25": 25,
+          "range": 0.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.667,
+            "3": 25
+          }
+        }
+      }
+    },
+    {
+      "case": 11,
+      "id": "annotation-golden-v1-11",
+      "source": "孟子",
+      "scenario": "善意与制度",
+      "candidates": {
+        "codex_luna_max": {
+          "average25": 24.444,
+          "minRoundAverage25": 24.333,
+          "maxRoundAverage25": 24.667,
+          "range": 0.334,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 24.333,
+            "3": 24.667
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.111,
+          "minRoundAverage25": 23.667,
+          "maxRoundAverage25": 25,
+          "range": 1.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 23.667,
+            "3": 23.667
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 25,
+          "minRoundAverage25": 25,
+          "maxRoundAverage25": 25,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 25,
+          "minRoundAverage25": 25,
+          "maxRoundAverage25": 25,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        }
+      }
+    },
+    {
+      "case": 12,
+      "id": "annotation-golden-v1-12",
+      "source": "诗经",
+      "scenario": "回报与关系",
+      "candidates": {
+        "codex_luna_max": {
+          "average25": 24.444,
+          "minRoundAverage25": 23.667,
+          "maxRoundAverage25": 25,
+          "range": 1.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 23.667,
+            "3": 25
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.556,
+          "minRoundAverage25": 23.667,
+          "maxRoundAverage25": 25,
+          "range": 1.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 23.667
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.667,
+          "minRoundAverage25": 24,
+          "maxRoundAverage25": 25,
+          "range": 1,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 24
+          }
+        },
+        "codex_sol_max": {
+          "average25": 25,
+          "minRoundAverage25": 25,
+          "maxRoundAverage25": 25,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        }
+      }
+    },
+    {
+      "case": 13,
+      "id": "annotation-golden-v1-13",
+      "source": "礼记",
+      "scenario": "互惠边界",
+      "candidates": {
+        "codex_luna_max": {
+          "average25": 24.778,
+          "minRoundAverage25": 24.333,
+          "maxRoundAverage25": 25,
+          "range": 0.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.333,
+            "3": 25
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.667,
+          "minRoundAverage25": 24,
+          "maxRoundAverage25": 25,
+          "range": 1,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 24
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.889,
+          "minRoundAverage25": 24.667,
+          "maxRoundAverage25": 25,
+          "range": 0.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 25,
+          "minRoundAverage25": 25,
+          "maxRoundAverage25": 25,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        }
+      }
+    },
+    {
+      "case": 14,
+      "id": "annotation-golden-v1-14",
+      "source": "荀子",
+      "scenario": "环境塑造",
+      "candidates": {
+        "codex_luna_max": {
+          "average25": 24.333,
+          "minRoundAverage25": 24,
+          "maxRoundAverage25": 24.667,
+          "range": 0.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24,
+            "2": 24.333,
+            "3": 24.667
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.556,
+          "minRoundAverage25": 24,
+          "maxRoundAverage25": 25,
+          "range": 1,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24,
+            "3": 24.667
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.667,
+          "minRoundAverage25": 24.333,
+          "maxRoundAverage25": 25,
+          "range": 0.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.667,
+            "3": 24.333
+          }
+        },
+        "codex_sol_max": {
+          "average25": 25,
+          "minRoundAverage25": 25,
+          "maxRoundAverage25": 25,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        }
+      }
+    },
+    {
+      "case": 15,
+      "id": "annotation-golden-v1-15",
+      "source": "韩非子",
+      "scenario": "规则与情境",
+      "candidates": {
+        "codex_luna_max": {
+          "average25": 24.778,
+          "minRoundAverage25": 24.333,
+          "maxRoundAverage25": 25,
+          "range": 0.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 24.333
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.556,
+          "minRoundAverage25": 23.667,
+          "maxRoundAverage25": 25,
+          "range": 1.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 23.667
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 25,
+          "minRoundAverage25": 25,
+          "maxRoundAverage25": 25,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 25,
+          "minRoundAverage25": 25,
+          "maxRoundAverage25": 25,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        }
+      }
+    },
+    {
+      "case": 16,
+      "id": "annotation-golden-v1-16",
+      "source": "论语",
+      "scenario": "极致与适度",
+      "candidates": {
+        "codex_luna_max": {
+          "average25": 24.889,
+          "minRoundAverage25": 24.667,
+          "maxRoundAverage25": 25,
+          "range": 0.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 24.667
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.667,
+          "minRoundAverage25": 24,
+          "maxRoundAverage25": 25,
+          "range": 1,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 24
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 25,
+          "minRoundAverage25": 25,
+          "maxRoundAverage25": 25,
+          "range": 0,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 24.778,
+          "minRoundAverage25": 24.333,
+          "maxRoundAverage25": 25,
+          "range": 0.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 24.333
+          }
+        }
+      }
+    }
+  ],
+  "completion": {
+    "codex": "complete",
+    "kimi_for_coding": "1/12 third-run outputs; provider usage window not reset",
+    "kimi_k3": "0/12 third-run outputs; provider usage window not reset"
+  },
+  "limitations": [
+    "The golden cases were selected from rounds 1-2; round 3 validates generation stability but is not a new unseen-case holdout.",
+    "The same three Codex settings judge all rounds, so family bias and score ceiling remain possible.",
+    "Round 3 contains four Codex candidates while rounds 1-2 were judged in a six-candidate pool; the primary comparable measure is the five-dimension score, not rank position.",
+    "Kimi third-run completion remains pending because the provider five-hour usage window has not reset."
+  ]
+}

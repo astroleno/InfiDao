@@ -1,0 +1,1014 @@
+{
+  "schemaVersion": 1,
+  "evalId": "infidao-annotation-cross-provider-golden-v1",
+  "date": "2026-08-30",
+  "purpose": "offline evaluation and golden-case construction; not a production recommendation",
+  "protocol": {
+    "lockedCases": 16,
+    "balancedRounds": 2,
+    "candidates": [
+      "codex_luna_max",
+      "codex_terra_max",
+      "codex_sol_xhigh",
+      "codex_sol_max",
+      "kimi_for_coding",
+      "kimi_k3"
+    ],
+    "generatedOutputs": 192,
+    "judges": ["codex_luna_max", "codex_terra_max", "codex_sol_xhigh"],
+    "blindCaseReviews": 96,
+    "blindCandidateReviews": 576,
+    "dimensionScores": 2880,
+    "dimensions": [
+      "passageFidelity",
+      "queryRelevance",
+      "dualDirection",
+      "interpretiveDepth",
+      "semanticPrecision"
+    ]
+  },
+  "ranking": [
+    {
+      "candidate": "codex_sol_xhigh",
+      "totalPoints": 2394,
+      "maxPoints": 2400,
+      "average25": 24.938,
+      "scoreRate": 0.998,
+      "firstPlaceVotes": 27,
+      "averageRank": 2.229,
+      "hardFailReviews": 0,
+      "hardFailFlags": 0,
+      "averageCharacters": 201,
+      "caseRoundStdDev": 0.13,
+      "dimensions": {
+        "passageFidelity": 5,
+        "queryRelevance": 5,
+        "dualDirection": 5,
+        "interpretiveDepth": 4.99,
+        "semanticPrecision": 4.948
+      },
+      "rounds": {
+        "1": 24.938,
+        "2": 24.938
+      },
+      "judges": {
+        "luna": {
+          "totalPoints": 799,
+          "average25": 24.969
+        },
+        "terra": {
+          "totalPoints": 799,
+          "average25": 24.969
+        },
+        "sol": {
+          "totalPoints": 796,
+          "average25": 24.875
+        }
+      }
+    },
+    {
+      "candidate": "codex_sol_max",
+      "totalPoints": 2393,
+      "maxPoints": 2400,
+      "average25": 24.927,
+      "scoreRate": 0.997,
+      "firstPlaceVotes": 42,
+      "averageRank": 1.885,
+      "hardFailReviews": 0,
+      "hardFailFlags": 0,
+      "averageCharacters": 203.2,
+      "caseRoundStdDev": 0.246,
+      "dimensions": {
+        "passageFidelity": 4.979,
+        "queryRelevance": 4.99,
+        "dualDirection": 5,
+        "interpretiveDepth": 4.99,
+        "semanticPrecision": 4.969
+      },
+      "rounds": {
+        "1": 24.958,
+        "2": 24.896
+      },
+      "judges": {
+        "luna": {
+          "totalPoints": 797,
+          "average25": 24.906
+        },
+        "terra": {
+          "totalPoints": 799,
+          "average25": 24.969
+        },
+        "sol": {
+          "totalPoints": 797,
+          "average25": 24.906
+        }
+      }
+    },
+    {
+      "candidate": "codex_terra_max",
+      "totalPoints": 2361,
+      "maxPoints": 2400,
+      "average25": 24.594,
+      "scoreRate": 0.984,
+      "firstPlaceVotes": 12,
+      "averageRank": 3.281,
+      "hardFailReviews": 0,
+      "hardFailFlags": 0,
+      "averageCharacters": 191.6,
+      "caseRoundStdDev": 0.588,
+      "dimensions": {
+        "passageFidelity": 4.948,
+        "queryRelevance": 4.99,
+        "dualDirection": 4.969,
+        "interpretiveDepth": 4.729,
+        "semanticPrecision": 4.958
+      },
+      "rounds": {
+        "1": 24.75,
+        "2": 24.438
+      },
+      "judges": {
+        "luna": {
+          "totalPoints": 792,
+          "average25": 24.75
+        },
+        "terra": {
+          "totalPoints": 783,
+          "average25": 24.469
+        },
+        "sol": {
+          "totalPoints": 786,
+          "average25": 24.563
+        }
+      }
+    },
+    {
+      "candidate": "codex_luna_max",
+      "totalPoints": 2338,
+      "maxPoints": 2400,
+      "average25": 24.354,
+      "scoreRate": 0.974,
+      "firstPlaceVotes": 8,
+      "averageRank": 3.438,
+      "hardFailReviews": 0,
+      "hardFailFlags": 0,
+      "averageCharacters": 169,
+      "caseRoundStdDev": 0.629,
+      "dimensions": {
+        "passageFidelity": 4.927,
+        "queryRelevance": 5,
+        "dualDirection": 4.958,
+        "interpretiveDepth": 4.563,
+        "semanticPrecision": 4.906
+      },
+      "rounds": {
+        "1": 24.354,
+        "2": 24.354
+      },
+      "judges": {
+        "luna": {
+          "totalPoints": 785,
+          "average25": 24.531
+        },
+        "terra": {
+          "totalPoints": 779,
+          "average25": 24.344
+        },
+        "sol": {
+          "totalPoints": 774,
+          "average25": 24.188
+        }
+      }
+    },
+    {
+      "candidate": "kimi_k3",
+      "totalPoints": 2139,
+      "maxPoints": 2400,
+      "average25": 22.281,
+      "scoreRate": 0.891,
+      "firstPlaceVotes": 6,
+      "averageRank": 4.708,
+      "hardFailReviews": 7,
+      "hardFailFlags": 7,
+      "averageCharacters": 238.6,
+      "caseRoundStdDev": 1.99,
+      "dimensions": {
+        "passageFidelity": 4.281,
+        "queryRelevance": 4.76,
+        "dualDirection": 4.896,
+        "interpretiveDepth": 4.479,
+        "semanticPrecision": 3.865
+      },
+      "rounds": {
+        "1": 22.083,
+        "2": 22.479
+      },
+      "judges": {
+        "luna": {
+          "totalPoints": 723,
+          "average25": 22.594
+        },
+        "terra": {
+          "totalPoints": 725,
+          "average25": 22.656
+        },
+        "sol": {
+          "totalPoints": 691,
+          "average25": 21.594
+        }
+      }
+    },
+    {
+      "candidate": "kimi_for_coding",
+      "totalPoints": 2017,
+      "maxPoints": 2400,
+      "average25": 21.01,
+      "scoreRate": 0.84,
+      "firstPlaceVotes": 1,
+      "averageRank": 5.458,
+      "hardFailReviews": 13,
+      "hardFailFlags": 14,
+      "averageCharacters": 203.8,
+      "caseRoundStdDev": 2.657,
+      "dimensions": {
+        "passageFidelity": 4.104,
+        "queryRelevance": 4.74,
+        "dualDirection": 4.615,
+        "interpretiveDepth": 3.938,
+        "semanticPrecision": 3.615
+      },
+      "rounds": {
+        "1": 20.292,
+        "2": 21.729
+      },
+      "judges": {
+        "luna": {
+          "totalPoints": 703,
+          "average25": 21.969
+        },
+        "terra": {
+          "totalPoints": 676,
+          "average25": 21.125
+        },
+        "sol": {
+          "totalPoints": 638,
+          "average25": 19.938
+        }
+      }
+    }
+  ],
+  "pairwise": [
+    {
+      "left": "codex_luna_max",
+      "right": "codex_terra_max",
+      "leftWins": 9,
+      "rightWins": 13,
+      "ties": 10,
+      "leftNonTieWinRate": 0.409,
+      "exactTwoSidedP": 0.523467
+    },
+    {
+      "left": "codex_luna_max",
+      "right": "codex_sol_xhigh",
+      "leftWins": 2,
+      "rightWins": 23,
+      "ties": 7,
+      "leftNonTieWinRate": 0.08,
+      "exactTwoSidedP": 0.000019
+    },
+    {
+      "left": "codex_luna_max",
+      "right": "codex_sol_max",
+      "leftWins": 2,
+      "rightWins": 22,
+      "ties": 8,
+      "leftNonTieWinRate": 0.083,
+      "exactTwoSidedP": 0.000036
+    },
+    {
+      "left": "codex_luna_max",
+      "right": "kimi_for_coding",
+      "leftWins": 30,
+      "rightWins": 0,
+      "ties": 2,
+      "leftNonTieWinRate": 1,
+      "exactTwoSidedP": 0
+    },
+    {
+      "left": "codex_luna_max",
+      "right": "kimi_k3",
+      "leftWins": 26,
+      "rightWins": 3,
+      "ties": 3,
+      "leftNonTieWinRate": 0.897,
+      "exactTwoSidedP": 0.000015
+    },
+    {
+      "left": "codex_terra_max",
+      "right": "codex_sol_xhigh",
+      "leftWins": 2,
+      "rightWins": 13,
+      "ties": 17,
+      "leftNonTieWinRate": 0.133,
+      "exactTwoSidedP": 0.007385
+    },
+    {
+      "left": "codex_terra_max",
+      "right": "codex_sol_max",
+      "leftWins": 3,
+      "rightWins": 13,
+      "ties": 16,
+      "leftNonTieWinRate": 0.188,
+      "exactTwoSidedP": 0.021271
+    },
+    {
+      "left": "codex_terra_max",
+      "right": "kimi_for_coding",
+      "leftWins": 30,
+      "rightWins": 2,
+      "ties": 0,
+      "leftNonTieWinRate": 0.938,
+      "exactTwoSidedP": 0
+    },
+    {
+      "left": "codex_terra_max",
+      "right": "kimi_k3",
+      "leftWins": 27,
+      "rightWins": 1,
+      "ties": 4,
+      "leftNonTieWinRate": 0.964,
+      "exactTwoSidedP": 0
+    },
+    {
+      "left": "codex_sol_xhigh",
+      "right": "codex_sol_max",
+      "leftWins": 3,
+      "rightWins": 4,
+      "ties": 25,
+      "leftNonTieWinRate": 0.429,
+      "exactTwoSidedP": 1
+    },
+    {
+      "left": "codex_sol_xhigh",
+      "right": "kimi_for_coding",
+      "leftWins": 32,
+      "rightWins": 0,
+      "ties": 0,
+      "leftNonTieWinRate": 1,
+      "exactTwoSidedP": 0
+    },
+    {
+      "left": "codex_sol_xhigh",
+      "right": "kimi_k3",
+      "leftWins": 29,
+      "rightWins": 0,
+      "ties": 3,
+      "leftNonTieWinRate": 1,
+      "exactTwoSidedP": 0
+    },
+    {
+      "left": "codex_sol_max",
+      "right": "kimi_for_coding",
+      "leftWins": 31,
+      "rightWins": 0,
+      "ties": 1,
+      "leftNonTieWinRate": 1,
+      "exactTwoSidedP": 0
+    },
+    {
+      "left": "codex_sol_max",
+      "right": "kimi_k3",
+      "leftWins": 28,
+      "rightWins": 1,
+      "ties": 3,
+      "leftNonTieWinRate": 0.966,
+      "exactTwoSidedP": 0
+    },
+    {
+      "left": "kimi_for_coding",
+      "right": "kimi_k3",
+      "leftWins": 6,
+      "rightWins": 22,
+      "ties": 4,
+      "leftNonTieWinRate": 0.214,
+      "exactTwoSidedP": 0.003719
+    }
+  ],
+  "cases": [
+    {
+      "case": 1,
+      "sourceId": "rysxguji-lunyu-2-14",
+      "source": "论语",
+      "category": "epistemic-boundary",
+      "difficulty": "medium",
+      "overallMean25": 23.528,
+      "spread25": 2.833,
+      "hardFailReviews": 1,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.476,
+      "candidateAverages": {
+        "codex_luna_max": 23.667,
+        "codex_terra_max": 23.167,
+        "codex_sol_xhigh": 24.833,
+        "codex_sol_max": 25,
+        "kimi_for_coding": 22.333,
+        "kimi_k3": 22.167
+      }
+    },
+    {
+      "case": 2,
+      "sourceId": "rysxguji-lunyu-15-21",
+      "source": "论语",
+      "category": "ambiguity-and-boundary",
+      "difficulty": "hard",
+      "overallMean25": 23.278,
+      "spread25": 4.833,
+      "hardFailReviews": 2,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.742,
+      "candidateAverages": {
+        "codex_luna_max": 24.167,
+        "codex_terra_max": 24.5,
+        "codex_sol_xhigh": 24.833,
+        "codex_sol_max": 25,
+        "kimi_for_coding": 20.167,
+        "kimi_k3": 21
+      }
+    },
+    {
+      "case": 3,
+      "sourceId": "rysxguji-lunyu-15-12",
+      "source": "论语",
+      "category": "tension-resolution",
+      "difficulty": "medium",
+      "overallMean25": 22.389,
+      "spread25": 7.667,
+      "hardFailReviews": 2,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.742,
+      "candidateAverages": {
+        "codex_luna_max": 23.5,
+        "codex_terra_max": 24.167,
+        "codex_sol_xhigh": 25,
+        "codex_sol_max": 25,
+        "kimi_for_coding": 19.333,
+        "kimi_k3": 17.333
+      }
+    },
+    {
+      "case": 4,
+      "sourceId": "rysxguji-lunyu-15-18",
+      "source": "论语",
+      "category": "anti-overreach",
+      "difficulty": "hard",
+      "overallMean25": 23.778,
+      "spread25": 4,
+      "hardFailReviews": 2,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.316,
+      "candidateAverages": {
+        "codex_luna_max": 24.667,
+        "codex_terra_max": 24.833,
+        "codex_sol_xhigh": 24.833,
+        "codex_sol_max": 24.333,
+        "kimi_for_coding": 20.833,
+        "kimi_k3": 23.167
+      }
+    },
+    {
+      "case": 5,
+      "sourceId": "rysxguji-mengzi-12-13",
+      "source": "孟子",
+      "category": "stakeholder-priority",
+      "difficulty": "hard",
+      "overallMean25": 23.944,
+      "spread25": 3.333,
+      "hardFailReviews": 0,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.547,
+      "candidateAverages": {
+        "codex_luna_max": 24.5,
+        "codex_terra_max": 24.833,
+        "codex_sol_xhigh": 25,
+        "codex_sol_max": 25,
+        "kimi_for_coding": 22.667,
+        "kimi_k3": 21.667
+      }
+    },
+    {
+      "case": 6,
+      "sourceId": "rysxguji-daxue-1-2",
+      "source": "大学",
+      "category": "process-structure",
+      "difficulty": "medium",
+      "overallMean25": 23.361,
+      "spread25": 5.667,
+      "hardFailReviews": 1,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.44,
+      "candidateAverages": {
+        "codex_luna_max": 24.833,
+        "codex_terra_max": 24.5,
+        "codex_sol_xhigh": 25,
+        "codex_sol_max": 24.833,
+        "kimi_for_coding": 19.333,
+        "kimi_k3": 21.667
+      }
+    },
+    {
+      "case": 7,
+      "sourceId": "rysxguji-liji-16-10",
+      "source": "礼记",
+      "category": "tension-resolution",
+      "difficulty": "hard",
+      "overallMean25": 23.972,
+      "spread25": 3.333,
+      "hardFailReviews": 2,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.387,
+      "candidateAverages": {
+        "codex_luna_max": 24.5,
+        "codex_terra_max": 24.667,
+        "codex_sol_xhigh": 25,
+        "codex_sol_max": 25,
+        "kimi_for_coding": 23,
+        "kimi_k3": 21.667
+      }
+    },
+    {
+      "case": 8,
+      "sourceId": "rysxguji-zhouyi-1-10",
+      "source": "周易",
+      "category": "anti-overreach",
+      "difficulty": "hard",
+      "overallMean25": 23.861,
+      "spread25": 4,
+      "hardFailReviews": 0,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.484,
+      "candidateAverages": {
+        "codex_luna_max": 24.667,
+        "codex_terra_max": 24.833,
+        "codex_sol_xhigh": 25,
+        "codex_sol_max": 25,
+        "kimi_for_coding": 22.667,
+        "kimi_k3": 21
+      }
+    },
+    {
+      "case": 9,
+      "sourceId": "rysxguji-mozi-15-3",
+      "source": "墨子",
+      "category": "ambiguity-and-boundary",
+      "difficulty": "hard",
+      "overallMean25": 23.639,
+      "spread25": 3.5,
+      "hardFailReviews": 0,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.796,
+      "candidateAverages": {
+        "codex_luna_max": 23.167,
+        "codex_terra_max": 25,
+        "codex_sol_xhigh": 24.833,
+        "codex_sol_max": 24.833,
+        "kimi_for_coding": 21.5,
+        "kimi_k3": 22.5
+      }
+    },
+    {
+      "case": 10,
+      "sourceId": "rysxguji-mengzi-3-2",
+      "source": "孟子",
+      "category": "anti-overreach",
+      "difficulty": "hard",
+      "overallMean25": 24.194,
+      "spread25": 2.167,
+      "hardFailReviews": 0,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.467,
+      "candidateAverages": {
+        "codex_luna_max": 24.667,
+        "codex_terra_max": 24.167,
+        "codex_sol_xhigh": 25,
+        "codex_sol_max": 24.833,
+        "kimi_for_coding": 22.833,
+        "kimi_k3": 23.667
+      }
+    },
+    {
+      "case": 11,
+      "sourceId": "rysxguji-mengzi-6-1",
+      "source": "孟子",
+      "category": "system-and-agency",
+      "difficulty": "medium",
+      "overallMean25": 24.194,
+      "spread25": 3.333,
+      "hardFailReviews": 1,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.502,
+      "candidateAverages": {
+        "codex_luna_max": 24.333,
+        "codex_terra_max": 24.333,
+        "codex_sol_xhigh": 25,
+        "codex_sol_max": 25,
+        "kimi_for_coding": 21.667,
+        "kimi_k3": 24.833
+      }
+    },
+    {
+      "case": 12,
+      "sourceId": "rysxguji-shijing-65-2",
+      "source": "诗经",
+      "category": "relational-meaning",
+      "difficulty": "medium",
+      "overallMean25": 22.583,
+      "spread25": 11,
+      "hardFailReviews": 6,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.502,
+      "candidateAverages": {
+        "codex_luna_max": 24.167,
+        "codex_terra_max": 25,
+        "codex_sol_xhigh": 25,
+        "codex_sol_max": 25,
+        "kimi_for_coding": 14,
+        "kimi_k3": 22.333
+      }
+    },
+    {
+      "case": 13,
+      "sourceId": "rysxguji-liji-1-12",
+      "source": "礼记",
+      "category": "boundary-and-reciprocity",
+      "difficulty": "medium",
+      "overallMean25": 23.528,
+      "spread25": 6,
+      "hardFailReviews": 2,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.387,
+      "candidateAverages": {
+        "codex_luna_max": 24.667,
+        "codex_terra_max": 25,
+        "codex_sol_xhigh": 24.833,
+        "codex_sol_max": 25,
+        "kimi_for_coding": 19,
+        "kimi_k3": 22.667
+      }
+    },
+    {
+      "case": 14,
+      "sourceId": "rysxguji-xunzi-1-1",
+      "source": "荀子",
+      "category": "causal-boundary",
+      "difficulty": "hard",
+      "overallMean25": 23.556,
+      "spread25": 4,
+      "hardFailReviews": 1,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.671,
+      "candidateAverages": {
+        "codex_luna_max": 24.167,
+        "codex_terra_max": 24.5,
+        "codex_sol_xhigh": 24.833,
+        "codex_sol_max": 25,
+        "kimi_for_coding": 21,
+        "kimi_k3": 21.833
+      }
+    },
+    {
+      "case": 15,
+      "sourceId": "rysxguji-hanfeizi-12-7",
+      "source": "韩非子",
+      "category": "rule-and-exception",
+      "difficulty": "hard",
+      "overallMean25": 24.528,
+      "spread25": 2.5,
+      "hardFailReviews": 0,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.333,
+      "candidateAverages": {
+        "codex_luna_max": 25,
+        "codex_terra_max": 25,
+        "codex_sol_xhigh": 25,
+        "codex_sol_max": 25,
+        "kimi_for_coding": 22.5,
+        "kimi_k3": 24.667
+      }
+    },
+    {
+      "case": 16,
+      "sourceId": "rysxguji-lunyu-11-15",
+      "source": "论语",
+      "category": "optimality-boundary",
+      "difficulty": "medium",
+      "overallMean25": 24.611,
+      "spread25": 1.667,
+      "hardFailReviews": 0,
+      "ambiguityVotes": 0,
+      "meanPairwiseKendall": 0.351,
+      "candidateAverages": {
+        "codex_luna_max": 25,
+        "codex_terra_max": 25,
+        "codex_sol_xhigh": 25,
+        "codex_sol_max": 25,
+        "kimi_for_coding": 23.333,
+        "kimi_k3": 24.333
+      }
+    }
+  ],
+  "selection": {
+    "policy": {
+      "ambiguityExclusion": "exclude cases with at least 2 of 6 ambiguity votes",
+      "discriminative": "select 8 eligible cases by descending candidate score spread",
+      "stable": "select 4 remaining eligible cases by descending overall score, then fewer hard fails and higher rank agreement",
+      "reference": "highest-scoring candidate-round output after minimizing hard-fail reviews"
+    },
+    "discriminativeCases": [12, 3, 13, 6, 2, 8, 14, 4],
+    "stableCases": [16, 15, 10, 11],
+    "selectedCases": [2, 3, 4, 6, 8, 10, 11, 12, 13, 14, 15, 16],
+    "referenceSources": [
+      {
+        "case": 2,
+        "candidate": "codex_sol_max",
+        "round": 2,
+        "mean25": 25,
+        "hardFailReviews": 0,
+        "averageRank": 1
+      },
+      {
+        "case": 3,
+        "candidate": "codex_sol_max",
+        "round": 2,
+        "mean25": 25,
+        "hardFailReviews": 0,
+        "averageRank": 1
+      },
+      {
+        "case": 4,
+        "candidate": "codex_sol_max",
+        "round": 1,
+        "mean25": 25,
+        "hardFailReviews": 0,
+        "averageRank": 1.333
+      },
+      {
+        "case": 6,
+        "candidate": "codex_sol_max",
+        "round": 2,
+        "mean25": 25,
+        "hardFailReviews": 0,
+        "averageRank": 1.333
+      },
+      {
+        "case": 8,
+        "candidate": "codex_sol_max",
+        "round": 2,
+        "mean25": 25,
+        "hardFailReviews": 0,
+        "averageRank": 1.667
+      },
+      {
+        "case": 10,
+        "candidate": "codex_sol_xhigh",
+        "round": 2,
+        "mean25": 25,
+        "hardFailReviews": 0,
+        "averageRank": 1
+      },
+      {
+        "case": 11,
+        "candidate": "codex_sol_max",
+        "round": 1,
+        "mean25": 25,
+        "hardFailReviews": 0,
+        "averageRank": 1.333
+      },
+      {
+        "case": 12,
+        "candidate": "codex_sol_max",
+        "round": 1,
+        "mean25": 25,
+        "hardFailReviews": 0,
+        "averageRank": 1
+      },
+      {
+        "case": 13,
+        "candidate": "codex_sol_max",
+        "round": 2,
+        "mean25": 25,
+        "hardFailReviews": 0,
+        "averageRank": 2
+      },
+      {
+        "case": 14,
+        "candidate": "codex_sol_max",
+        "round": 2,
+        "mean25": 25,
+        "hardFailReviews": 0,
+        "averageRank": 1.333
+      },
+      {
+        "case": 15,
+        "candidate": "codex_sol_xhigh",
+        "round": 2,
+        "mean25": 25,
+        "hardFailReviews": 0,
+        "averageRank": 2
+      },
+      {
+        "case": 16,
+        "candidate": "codex_sol_max",
+        "round": 2,
+        "mean25": 25,
+        "hardFailReviews": 0,
+        "averageRank": 1.333
+      }
+    ],
+    "provenanceVerification": "source id/source equality plus normalized clause-level containment in the local corpus record"
+  },
+  "technicalMetrics": {
+    "kimi_for_coding": {
+      "samples": 32,
+      "streaming": true,
+      "reasoningEffort": "provider-default",
+      "retries": 4,
+      "firstEventMs": {
+        "min": 492,
+        "mean": 1501.875,
+        "p50": 1200,
+        "p95": 3193.7,
+        "max": 3885
+      },
+      "firstVisibleTextMs": {
+        "min": 11273,
+        "mean": 28267.469,
+        "p50": 27516,
+        "p95": 44722.3,
+        "max": 47883
+      },
+      "totalMs": {
+        "min": 12211,
+        "mean": 29094.469,
+        "p50": 28249,
+        "p95": 44730.05,
+        "max": 48084
+      },
+      "inputTokens": {
+        "min": 202,
+        "mean": 213.25,
+        "p50": 211,
+        "p95": 227.35,
+        "max": 229
+      },
+      "completionTokens": {
+        "min": 545,
+        "mean": 1463.906,
+        "p50": 1463.5,
+        "p95": 2330.95,
+        "max": 2356
+      },
+      "reasoningTokens": {
+        "min": 414,
+        "mean": 1321.406,
+        "p50": 1338.5,
+        "p95": 2190.45,
+        "max": 2209
+      },
+      "totalTokens": {
+        "min": 752,
+        "mean": 1677.156,
+        "p50": 1678.5,
+        "p95": 2538.75,
+        "max": 2571
+      },
+      "cachedInputTokens": {
+        "min": 0,
+        "mean": 162.719,
+        "p50": 207,
+        "p95": 224.35,
+        "max": 229
+      },
+      "reasoningCharacters": {
+        "min": 1150,
+        "mean": 3537.75,
+        "p50": 3480.5,
+        "p95": 5947.75,
+        "max": 6466
+      },
+      "visibleCharacters": {
+        "min": 159,
+        "mean": 203.75,
+        "p50": 198.5,
+        "p95": 251.25,
+        "max": 277
+      },
+      "cost": null
+    },
+    "kimi_k3": {
+      "samples": 32,
+      "streaming": true,
+      "reasoningEffort": "max",
+      "retries": 0,
+      "firstEventMs": {
+        "min": 825,
+        "mean": 4893.188,
+        "p50": 1495.5,
+        "p95": 19609.3,
+        "max": 53336
+      },
+      "firstVisibleTextMs": {
+        "min": 13770,
+        "mean": 32133.938,
+        "p50": 27326.5,
+        "p95": 64747.05,
+        "max": 73123
+      },
+      "totalMs": {
+        "min": 15304,
+        "mean": 33930.156,
+        "p50": 28762,
+        "p95": 66508.1,
+        "max": 77943
+      },
+      "inputTokens": {
+        "min": 287,
+        "mean": 298.25,
+        "p50": 296,
+        "p95": 312.35,
+        "max": 314
+      },
+      "completionTokens": {
+        "min": 686,
+        "mean": 1211.438,
+        "p50": 1060.5,
+        "p95": 2254.4,
+        "max": 2984
+      },
+      "reasoningTokens": {
+        "min": 504,
+        "mean": 1033.406,
+        "p50": 877,
+        "p95": 2052,
+        "max": 2768
+      },
+      "totalTokens": {
+        "min": 986,
+        "mean": 1509.688,
+        "p50": 1353.5,
+        "p95": 2562.55,
+        "max": 3292
+      },
+      "cachedInputTokens": {
+        "min": 0,
+        "mean": 205.031,
+        "p50": 291.5,
+        "p95": 309.35,
+        "max": 314
+      },
+      "reasoningCharacters": {
+        "min": 1049,
+        "mean": 2972.156,
+        "p50": 2618,
+        "p95": 5305.25,
+        "max": 8607
+      },
+      "visibleCharacters": {
+        "min": 205,
+        "mean": 238.594,
+        "p50": 239.5,
+        "p95": 277.15,
+        "max": 295
+      },
+      "cost": null
+    }
+  },
+  "providerAvailability": {
+    "openCodeGo": {
+      "ranked": false,
+      "glm_5_2": "HTTP 401 CreditsError: insufficient balance",
+      "kimi_k2_7_code": "HTTP 401 CreditsError: insufficient balance",
+      "deepseek_v4_flash": "HTTP 401 CreditsError: insufficient balance",
+      "qwen3_7_max": "real generation rejected as unsupported by provider"
+    },
+    "kimi": {
+      "ranked": true,
+      "balancedRows": 64,
+      "excludedPartialRound3Rows": 3,
+      "round3StopReason": "provider 5-hour usage limit reached"
+    }
+  },
+  "limitations": [
+    "Kimi quota ended during round 3, so the primary cross-provider comparison uses the two complete balanced rounds only.",
+    "OpenCode Go candidates were unavailable and are reported as provider failures, not model-quality results.",
+    "The judge panel is three Codex settings because Kimi K3 judging was unavailable after quota exhaustion.",
+    "Codex task execution exposes no comparable streaming latency or token telemetry; technical metrics are Kimi-only.",
+    "LLM-as-judge scores can exhibit family and self-preference bias even under label blinding."
+  ],
+  "goldenProtocol": {
+    "independentRunsPerCandidate": 3,
+    "scoreEachRunIndependently": true,
+    "aggregateUnit": "case-candidate across three independent generations",
+    "exactStringMatching": false,
+    "promotionGate": "must preserve required semantics, avoid forbidden claims, and pass five-dimension semantic review"
+  }
+}

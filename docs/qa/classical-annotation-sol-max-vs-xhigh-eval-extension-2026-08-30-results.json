@@ -1,0 +1,200 @@
+{
+  "evalId": "infidao-classical-annotation-sol-max-vs-xhigh-extension",
+  "counts": {
+    "rounds": 3,
+    "casesPerRound": 10,
+    "candidates": 2,
+    "pairedGeneratedOutputs": 60,
+    "newlyGeneratedMaxOutputs": 30,
+    "reusedXhighOutputs": 30,
+    "judgeCandidateReviews": 180,
+    "dimensionScores": 900
+  },
+  "settings": {
+    "max": {
+      "model": "gpt-5.6-sol",
+      "reasoning": "max"
+    },
+    "xhigh": {
+      "model": "gpt-5.6-sol",
+      "reasoning": "xhigh"
+    }
+  },
+  "totals": {
+    "max": {
+      "total": 2200,
+      "dimensions": {
+        "passageFidelity": 4.944444444444445,
+        "queryRelevance": 4.988888888888889,
+        "dualDirection": 4.988888888888889,
+        "interpretiveDepth": 4.7,
+        "semanticPrecision": 4.822222222222222
+      },
+      "firstPlaces": 44,
+      "rankSum": 136,
+      "rankCount": 90,
+      "average25": 24.444444444444443,
+      "scorePercent": 0.9777777777777777,
+      "averageRank": 1.511111111111111,
+      "averageCharacters": 162.63333333333333
+    },
+    "xhigh": {
+      "total": 2213,
+      "dimensions": {
+        "passageFidelity": 4.911111111111111,
+        "queryRelevance": 5,
+        "dualDirection": 5,
+        "interpretiveDepth": 4.811111111111111,
+        "semanticPrecision": 4.866666666666666
+      },
+      "firstPlaces": 46,
+      "rankSum": 134,
+      "rankCount": 90,
+      "average25": 24.58888888888889,
+      "scorePercent": 0.9835555555555555,
+      "averageRank": 1.488888888888889,
+      "averageCharacters": 171
+    }
+  },
+  "perRound": {
+    "1": {
+      "max": {
+        "total": 730,
+        "firstPlaces": 17,
+        "average25": 24.333333333333332
+      },
+      "xhigh": {
+        "total": 730,
+        "firstPlaces": 13,
+        "average25": 24.333333333333332
+      }
+    },
+    "2": {
+      "max": {
+        "total": 730,
+        "firstPlaces": 9,
+        "average25": 24.333333333333332
+      },
+      "xhigh": {
+        "total": 746,
+        "firstPlaces": 21,
+        "average25": 24.866666666666667
+      }
+    },
+    "3": {
+      "max": {
+        "total": 740,
+        "firstPlaces": 18,
+        "average25": 24.666666666666668
+      },
+      "xhigh": {
+        "total": 737,
+        "firstPlaces": 12,
+        "average25": 24.566666666666666
+      }
+    }
+  },
+  "perJudge": {
+    "luna": {
+      "max": 732,
+      "xhigh": 740
+    },
+    "terra": {
+      "max": 737,
+      "xhigh": 736
+    },
+    "sol": {
+      "max": 731,
+      "xhigh": 737
+    }
+  },
+  "perCase": {
+    "1": {
+      "max": 214,
+      "xhigh": 223
+    },
+    "2": {
+      "max": 220,
+      "xhigh": 220
+    },
+    "3": {
+      "max": 222,
+      "xhigh": 220
+    },
+    "4": {
+      "max": 222,
+      "xhigh": 221
+    },
+    "5": {
+      "max": 220,
+      "xhigh": 225
+    },
+    "6": {
+      "max": 214,
+      "xhigh": 218
+    },
+    "7": {
+      "max": 223,
+      "xhigh": 220
+    },
+    "8": {
+      "max": 225,
+      "xhigh": 221
+    },
+    "9": {
+      "max": 218,
+      "xhigh": 224
+    },
+    "10": {
+      "max": 222,
+      "xhigh": 221
+    }
+  },
+  "stability": {
+    "max": {
+      "roundAverages25": [24.333333333333332, 24.333333333333332, 24.666666666666668],
+      "min": 24.333333333333332,
+      "max": 24.666666666666668,
+      "range": 0.3333333333333357
+    },
+    "xhigh": {
+      "roundAverages25": [24.333333333333332, 24.866666666666667, 24.566666666666666],
+      "min": 24.333333333333332,
+      "max": 24.866666666666667,
+      "range": 0.533333333333335
+    }
+  },
+  "dimensionDeltaMaxMinusXhigh": {
+    "passageFidelity": 0.033333333333333215,
+    "queryRelevance": -0.011111111111111072,
+    "dualDirection": -0.011111111111111072,
+    "interpretiveDepth": -0.11111111111111072,
+    "semanticPrecision": -0.04444444444444429
+  },
+  "consensus": {
+    "unanimousMax": 7,
+    "unanimousXhigh": 9,
+    "majorityMax": 9,
+    "majorityXhigh": 5
+  },
+  "pairwiseJudgeCase": {
+    "left": "max",
+    "right": "xhigh",
+    "wins": 29,
+    "losses": 38,
+    "ties": 23,
+    "nonTieWinRate": 0.43283582089552236,
+    "exactTwoSidedP": 0.32843206269718994,
+    "wilson95": [0.3210431149754174, 0.5519126350920708]
+  },
+  "pairwiseCaseRound": {
+    "left": "max",
+    "right": "xhigh",
+    "wins": 14,
+    "losses": 15,
+    "ties": 1,
+    "nonTieWinRate": 0.4827586206896552,
+    "exactTwoSidedP": 1,
+    "wilson95": [0.3138609015268349, 0.6556897811800528]
+  }
+}

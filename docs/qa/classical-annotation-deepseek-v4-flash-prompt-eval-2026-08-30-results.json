@@ -1,0 +1,1677 @@
+{
+  "schemaVersion": 1,
+  "evalId": "infidao-annotation-cross-provider-golden-v1-deepseek-prompt-final",
+  "date": "2026-08-30",
+  "prompt": {
+    "id": "v3-qualitative-evidence-boundary",
+    "hash": "736e3a223ed96798945c4a1a7de4aab82db34c78045a358af760acccd64c2baf",
+    "frozenBeforeGoldenGeneration": true
+  },
+  "protocol": {
+    "goldenCases": 12,
+    "independentRunsPerCandidate": 3,
+    "candidates": [
+      "deepseek_v4_flash_v3",
+      "codex_luna_max",
+      "codex_terra_max",
+      "codex_sol_xhigh",
+      "codex_sol_max",
+      "kimi_for_coding",
+      "kimi_k3"
+    ],
+    "generatedOutputs": 252,
+    "deepseekGeneratedOutputs": 36,
+    "judges": ["codex_luna_max", "codex_terra_max", "codex_sol_xhigh"],
+    "blindCandidateReviews": 756,
+    "dimensionScores": 3780,
+    "dimensions": [
+      "passageFidelity",
+      "queryRelevance",
+      "dualDirection",
+      "interpretiveDepth",
+      "semanticPrecision"
+    ]
+  },
+  "ranking": [
+    {
+      "candidate": "codex_sol_max",
+      "totalPoints": 2652,
+      "maxPoints": 2700,
+      "average25": 24.556,
+      "firstPlaceVotes": 50,
+      "averageRank": 2.074,
+      "hardFailReviews": 0,
+      "hardFailFlags": 0,
+      "dimensions": {
+        "passageFidelity": 4.991,
+        "queryRelevance": 5,
+        "dualDirection": 4.972,
+        "interpretiveDepth": 4.944,
+        "semanticPrecision": 4.648
+      },
+      "rounds": {
+        "1": 24.444,
+        "2": 24.75,
+        "3": 24.472
+      },
+      "failureTags": {
+        "unsupported_daily_and_weekly_frequency": 2,
+        "power_asymmetry_only_implicit": 2,
+        "unsupported_fixed_observation_count": 1,
+        "unsupported-six-to-twelve-week-window": 1,
+        "unsupported-one-to-two-reminder-threshold": 1,
+        "power-asymmetry-missing": 1,
+        "unsupported_numeric_risk_range": 1,
+        "unsupported_six_to_twelve_week_horizon": 1,
+        "single_indicator_trigger_may_be_overresponsive": 1,
+        "unsupported_one_to_two_reminder_threshold": 1,
+        "power_asymmetry_underdeveloped": 1,
+        "unsupported_repetition_threshold": 1,
+        "unsupported-weekly-review-cadence": 1,
+        "unsupported_weekly_review_frequency": 1,
+        "replacement_person_counterfactual_overweighted": 1,
+        "recipient_actual_need_underdeveloped": 1,
+        "underdeveloped_probability_or_reversible_decision": 1,
+        "unsupported_fixed_observation_period": 1,
+        "unsupported-three-item-planning-template": 1,
+        "unsupported-four-week-window": 1,
+        "unsupported-four-week-experiment": 1,
+        "unsupported-daily-practice-cadence": 1,
+        "fixed_three_category_plan": 1,
+        "probability_only_implicit": 1,
+        "unsupported_four_week_horizon": 1,
+        "unsupported_daily_frequency": 1,
+        "recipient_actual_need_only_implicit": 1,
+        "unsupported_four_week_duration": 1,
+        "user_detectability_overused_as_universal_stop_test": 1
+      }
+    },
+    {
+      "candidate": "codex_sol_xhigh",
+      "totalPoints": 2650,
+      "maxPoints": 2700,
+      "average25": 24.537,
+      "firstPlaceVotes": 28,
+      "averageRank": 2.519,
+      "hardFailReviews": 0,
+      "hardFailFlags": 0,
+      "dimensions": {
+        "passageFidelity": 5,
+        "queryRelevance": 5,
+        "dualDirection": 4.981,
+        "interpretiveDepth": 4.917,
+        "semanticPrecision": 4.639
+      },
+      "rounds": {
+        "1": 24.639,
+        "2": 24.528,
+        "3": 24.444
+      },
+      "failureTags": {
+        "unsupported_weekly_frequency": 3,
+        "unsupported_daily_and_weekly_frequency": 2,
+        "power_asymmetry_only_implicit": 2,
+        "missing_probability_buffer_or_reversibility": 1,
+        "unsupported-three-to-five-assumption-cap": 1,
+        "unsupported_numeric_range": 1,
+        "unsupported_fixed_review_frequency": 1,
+        "probability_and_reversibility_underdeveloped": 1,
+        "overly_narrow_counterfactual_threshold": 1,
+        "unsupported_fixed_observation_period": 1,
+        "unsupported-three-to-five-scenario-cap": 1,
+        "unsupported-four-week-observation-window": 1,
+        "unsupported-weekly-reflection-cadence": 1,
+        "unsupported_three_to_five_scenario_range": 1,
+        "individual_versus_system_counterfactual_too_binary": 1,
+        "unsupported_multiweek_validation_horizon": 1,
+        "unsupported_four_week_duration": 1,
+        "missing_probability_or_reversible_decision": 1,
+        "underdeveloped_cross_context_support": 1,
+        "unsupported-monthly-and-half-year-cadence": 1,
+        "unsupported-four-week-and-weekly-cadence": 1,
+        "unsupported-weekly-review-cadence": 1,
+        "unsupported_monthly_frequency": 1,
+        "unsupported_half_year_horizon": 1,
+        "unsupported_four_week_horizon": 1,
+        "unsupported_daily_single_task_rule": 1,
+        "own_capacity_underdeveloped": 1,
+        "counterparty_capacity_checked_only_after_deadline": 1,
+        "power_asymmetry_underdeveloped": 1,
+        "appeal_mechanism_only_implicit": 1
+      }
+    },
+    {
+      "candidate": "codex_luna_max",
+      "totalPoints": 2625,
+      "maxPoints": 2700,
+      "average25": 24.306,
+      "firstPlaceVotes": 19,
+      "averageRank": 2.87,
+      "hardFailReviews": 2,
+      "hardFailFlags": 2,
+      "dimensions": {
+        "passageFidelity": 4.926,
+        "queryRelevance": 4.972,
+        "dualDirection": 4.944,
+        "interpretiveDepth": 4.713,
+        "semanticPrecision": 4.75
+      },
+      "rounds": {
+        "1": 24.222,
+        "2": 24.167,
+        "3": 24.528
+      },
+      "failureTags": {
+        "recipient_actual_need_only_implicit": 2,
+        "missing_probability_or_reversibility": 1,
+        "semantic-reversal-of-near-worry": 1,
+        "unsupported-one-to-three-risk-cap": 1,
+        "unsupported-single-reminder-rule": 1,
+        "explicit_common_floor_versus_preference_distinction_underdeveloped": 1,
+        "unsupported_numeric_risk_range": 1,
+        "reversibility_only_implicit": 1,
+        "unsupported_weekly_review_frequency": 1,
+        "power_asymmetry_only_implicit": 1,
+        "system_bottleneck_underdeveloped": 1,
+        "underdeveloped_probability_buffer_or_reversibility": 1,
+        "underdeveloped_cross_context_support_check": 1,
+        "unsupported-two-support-task-cap": 1,
+        "unsupported-single-follow-up-cap": 1,
+        "common_floor_versus_personal_preference_distinction_underdeveloped": 1,
+        "reasonable_refusal_standard_ambiguous": 1,
+        "probability_buffer_and_reversibility_underdeveloped": 1,
+        "unsupported_two_support_task_count": 1,
+        "unsupported_weekly_frequency": 1,
+        "do_not_list_only_implicit": 1,
+        "cross_context_reliability_only_implicit": 1,
+        "unsupported_maximum_one_followup_threshold": 1,
+        "system_bottleneck_only_implicit": 1,
+        "violates_non_price_relationship_constraint": 1,
+        "missing_coercion_boundary": 1,
+        "unsupported_daily_single_task_rule": 1,
+        "support_sustainability_and_cross_context_reliability_underdeveloped": 1,
+        "unsupported_single_confirmation_limit": 1,
+        "power_asymmetry_underdeveloped": 1
+      }
+    },
+    {
+      "candidate": "codex_terra_max",
+      "totalPoints": 2600,
+      "maxPoints": 2700,
+      "average25": 24.074,
+      "firstPlaceVotes": 3,
+      "averageRank": 3.759,
+      "hardFailReviews": 0,
+      "hardFailFlags": 0,
+      "dimensions": {
+        "passageFidelity": 4.991,
+        "queryRelevance": 5,
+        "dualDirection": 4.972,
+        "interpretiveDepth": 4.63,
+        "semanticPrecision": 4.481
+      },
+      "rounds": {
+        "1": 24,
+        "2": 24.389,
+        "3": 23.833
+      },
+      "failureTags": {
+        "power_asymmetry_underdeveloped": 4,
+        "unsupported_weekly_frequency": 3,
+        "unsupported_fixed_observation_count": 2,
+        "system_reform_voice_morally_conditioned_on_self_assumption": 2,
+        "underdeveloped_probability_or_reversible_decision": 1,
+        "unsupported_fixed_review_frequency": 1,
+        "unsupported_fixed_round_count": 1,
+        "compensation-permission-boundary-needs-more-definition": 1,
+        "unsupported-weekly-cadence": 1,
+        "unsupported-one-to-two-risk-cap": 1,
+        "unsupported-three-task-cap": 1,
+        "unsupported-quarterly-review-cadence": 1,
+        "unsupported-two-to-three-nonresponse-threshold": 1,
+        "unsupported-two-rounds-threshold": 1,
+        "compensation_may_appear_sufficient_to_justify_harm": 1,
+        "unsupported_numeric_risk_count": 1,
+        "unsupported_daily_item_count": 1,
+        "unsupported_multiweek_validation_horizon": 1,
+        "unsupported_quarterly_frequency": 1,
+        "unsupported_metric_cadence": 1,
+        "unsupported_two_to_three_missed_response_threshold": 1,
+        "unsupported_two_round_threshold": 1,
+        "unsupported_frequency_proxy": 1,
+        "underdeveloped_probability_buffer_or_reversibility": 1,
+        "underdeveloped_support_sustainability_check": 1,
+        "unsupported-three-risk-cap": 1,
+        "unsupported-one-action-per-risk-rule": 1,
+        "unsupported_exact_three_risk_count": 1,
+        "reversible_decision_underdeveloped": 1,
+        "unsupported_daily_check_frequency": 1,
+        "complex_judgment_after_attention_stabilization_only_implicit": 1,
+        "oversequences_process_before_personal_analysis": 1,
+        "unsupported_fixed_time_threshold": 1,
+        "underdeveloped_feedback_cycle": 1,
+        "underdeveloped_source_and_knowledge_check": 1,
+        "underdeveloped_capacity_caveat": 1,
+        "unsupported-one-to-three-risk-cap": 1,
+        "rigid-system-before-individual-test-order": 1,
+        "unsupported-four-week-window": 1,
+        "unsupported-two-week-budget-test": 1,
+        "common_floor_versus_preference_distinction_only_implicit": 1,
+        "unsupported_one_to_three_risk_range": 1,
+        "unsupported_four_week_horizon": 1,
+        "unsupported_daily_single_task_rule": 1,
+        "unsupported_two_week_threshold": 1,
+        "incentive_alignment_underdeveloped": 1,
+        "recipient_actual_need_underdeveloped": 1,
+        "unsupported_multiple_cycle_threshold": 1,
+        "proportionality_only_implicit": 1,
+        "system_bottleneck_only_implicit": 1
+      }
+    },
+    {
+      "candidate": "kimi_k3",
+      "totalPoints": 2464,
+      "maxPoints": 2700,
+      "average25": 22.815,
+      "firstPlaceVotes": 3,
+      "averageRank": 5.241,
+      "hardFailReviews": 5,
+      "hardFailFlags": 6,
+      "dimensions": {
+        "passageFidelity": 4.722,
+        "queryRelevance": 4.87,
+        "dualDirection": 4.639,
+        "interpretiveDepth": 4.602,
+        "semanticPrecision": 3.981
+      },
+      "rounds": {
+        "1": 22.556,
+        "2": 23.278,
+        "3": 22.611
+      },
+      "failureTags": {
+        "unsupported-cosmological-rhythm-reading": 3,
+        "unsupported_fixed_observation_count": 2,
+        "environment-design-and-feedback-underdeveloped": 2,
+        "missing_review_point": 2,
+        "overly_binary_action_test": 2,
+        "unsupported_two_to_three_attempt_threshold": 2,
+        "does_not_explicitly_ask_affected_members_in_six_to_me": 1,
+        "missing_review_boundary": 1,
+        "overstates_actionability_of_all_worry": 1,
+        "unsupported_fixed_count": 1,
+        "long_term_endpoint_over_stage_goal": 1,
+        "automatic_result_claim": 1,
+        "underdeveloped_power_and_refusal_boundary": 1,
+        "underdeveloped_capacity_caveat": 1,
+        "unsupported_claim_of_thorough_change": 1,
+        "misstates_source_nature": 1,
+        "affected-person-inquiry-deferred-to-reverse-direction": 1,
+        "all-long-range-thought-must-yield-immediate-action": 1,
+        "unsupported-three-item-minimum": 1,
+        "stage-goal-replaced-with-remote-endpoint": 1,
+        "unsupported-one-to-two-week-deadline": 1,
+        "support-used-as-final-certification": 1,
+        "price-escalation-leaning-reading": 1,
+        "needs-capacity-and-refusal-boundary-missing": 1,
+        "unsupported-two-to-three-investment-threshold": 1,
+        "temporary-capacity-and-power-differences-missing": 1,
+        "affected_people_consultation_only_explicit_in_reverse_direction": 1,
+        "buffer_and_reversible_decision_missing": 1,
+        "unsupported_mandatory_item_count": 1,
+        "long_term_endpoint_replaces_stage_goal": 1,
+        "do_not_list_only_implicit": 1,
+        "unsupported_one_to_two_week_threshold": 1,
+        "unsupported_months_threshold": 1,
+        "night_and_winter_read_into_tianxing": 1,
+        "literal_cycle_overextension": 1,
+        "support_signal_overdenied_in_initial_formulation": 1,
+        "modern_power_and_refusal_boundary_missing": 1,
+        "own_capacity_and_recipient_need_missing": 1,
+        "unsupported_two_to_three_investment_threshold": 1,
+        "counterparty_capacity_not_checked": 1,
+        "power_asymmetry_missing": 1,
+        "concrete_environment_and_feedback_design_missing": 1,
+        "appeal_and_review_mechanism_missing": 1,
+        "underdeveloped_direct_consent_check": 1,
+        "overclaims_action_eliminates_anxiety": 1,
+        "overattributes_failure_to_boundary_choice": 1,
+        "underdeveloped_feedback_cycle": 1,
+        "underdeveloped_incentive_and_resource_layer": 1,
+        "underdeveloped_proportionality_language": 1,
+        "direct-affected-person-inquiry-underdeveloped": 1,
+        "non-actionable-risk-treated-as-empty-thought": 1,
+        "anxiety-must-clear-after-action": 1,
+        "unsupported-lexical-extension-of-xi": 1,
+        "material-value-imagery-needs-boundary": 1,
+        "unsupported-two-to-three-contact-threshold": 1,
+        "textual-premise-overstatement": 1,
+        "environment-as-necessary-condition-overstatement": 1,
+        "predefined-auditable-exception-process-underdeveloped": 1,
+        "nonactionable_uncertainty_wrongly_dismissed_as_empty_thought": 1,
+        "anxiety_expected_to_clear_after_action": 1,
+        "review_and_buffer_missing": 1,
+        "stage_goal_replaced_by_absolute_life_anchor": 1,
+        "explicit_do_not_list_missing": 1,
+        "speculative_xi_etymology": 1,
+        "day_night_and_season_cycle_overextension": 1,
+        "dao_partly_overidentified_with_modern_public_procedure": 1,
+        "incentive_alignment_underdeveloped": 1,
+        "own_capacity_underdeveloped": 1,
+        "power_asymmetry_underdeveloped": 1,
+        "environment_as_necessary_condition_overclaim": 1,
+        "personal_environment_choice_overstated": 1,
+        "predefined_reviewable_exception_mechanism_missing": 1,
+        "modern_proportionality_extension_missing": 1,
+        "system_bottleneck_underdeveloped": 1,
+        "overprescribes_participation_or_veto": 1,
+        "unsupported_fixed_state_thresholds": 1,
+        "overly_mechanical_reciprocity": 1,
+        "unsupported_fixed_threshold": 1,
+        "omits_temporary_inability_exception": 1,
+        "underdeveloped_proportionality_and_review": 1,
+        "no-harm-alternative-overreach": 1,
+        "unsupported-one-to-two-action-cap": 1,
+        "action-only-anxiety-rule": 1,
+        "unsupported-weekly-three-day-and-load-reduction-thresholds": 1,
+        "material-asymmetry-leaning-language": 1,
+        "unsupported-two-to-three-contact-and-one-month-threshold": 1,
+        "transparent-reviewable-exception-process-underdeveloped": 1,
+        "veto_right_overgeneralized": 1,
+        "no_harm_alternative_overabsolute": 1,
+        "unsupported_one_to_two_action_count": 1,
+        "review_point_missing": 1,
+        "nonactionable_uncertainty_overdismissed": 1,
+        "team_process_analysis_underdeveloped": 1,
+        "unsupported_weekly_stage_and_daily_frequency": 1,
+        "unsupported_weekly_frequency": 1,
+        "unsupported_three_day_threshold": 1,
+        "unsupported_two_of_three_metric_rule": 1,
+        "unsupported_twenty_to_thirty_percent_reduction": 1,
+        "day_night_season_overextension": 1,
+        "independent_evidence_test_underdeveloped": 1,
+        "reliable_cross_context_collaboration_underdeveloped": 1,
+        "goodness_reduced_too_far_to_outcomes": 1,
+        "affected_party_objection_as_sole_restart_trigger": 1,
+        "higher_value_return_romanticized": 1,
+        "own_capacity_and_power_asymmetry_missing": 1,
+        "contrived_post_gift_request_rule": 1,
+        "unsupported_one_month_deadline": 1,
+        "immediate_reciprocity_overclaim": 1,
+        "counterparty_capacity_missing": 1,
+        "concrete_environment_design_missing": 1,
+        "feedback_loop_underdeveloped": 1,
+        "reasonable_need_risk_from_equating_public_sentiment_with_privilege": 1,
+        "proportionality_underdeveloped": 1,
+        "quantifiable_goal_overrequirement": 1,
+        "opportunity_cost_underdeveloped": 1
+      }
+    },
+    {
+      "candidate": "deepseek_v4_flash_v3",
+      "totalPoints": 2271,
+      "maxPoints": 2700,
+      "average25": 21.028,
+      "firstPlaceVotes": 5,
+      "averageRank": 5.565,
+      "hardFailReviews": 22,
+      "hardFailFlags": 23,
+      "dimensions": {
+        "passageFidelity": 4.037,
+        "queryRelevance": 4.704,
+        "dualDirection": 4.315,
+        "interpretiveDepth": 3.926,
+        "semanticPrecision": 4.046
+      },
+      "rounds": {
+        "1": 20.917,
+        "2": 20.722,
+        "3": 21.444
+      },
+      "failureTags": {
+        "generic-rights-and-refusal-boilerplate": 13,
+        "generic_safety_scaffold": 10,
+        "generic_rights_scaffold": 7,
+        "generic_boundary_insertion": 6,
+        "systemic_core_omission": 6,
+        "generic_safety_boundary": 5,
+        "generic-harm-boundary-framework": 4,
+        "generic_safety_and_reversibility_scaffold": 4,
+        "generic-consent-and-safety-boilerplate": 3,
+        "generic-method-failure-rule": 3,
+        "marginal-return-and-opportunity-cost-underdeveloped": 3,
+        "righteous_action_to_durable_support_link_underdeveloped": 3,
+        "generic-rights-and-safety-boilerplate": 3,
+        "underdeveloped_bottleneck_and_opportunity_cost": 2,
+        "weak_passage_anchor": 2,
+        "personal_preference_distinction_underdeveloped": 2,
+        "buffer_and_probability_underdeveloped": 2,
+        "required_do_not_list_missing": 2,
+        "irrelevant_relational_stop_boundary": 2,
+        "generic_evidence_scaffold": 2,
+        "overrestricts_context_to_execution": 2,
+        "generic_stop_condition": 2,
+        "environment-design-and-feedback-missing": 2,
+        "contextual-facts-overly-limited-to-execution": 2,
+        "human_execution_half_missing": 2,
+        "persistent_record_underdeveloped": 2,
+        "environment_design_and_feedback_missing": 2,
+        "sustained_learning_process_underdeveloped": 2,
+        "generic-refusal-boundary": 2,
+        "substitutes_urgent_item_for_stage_goal": 1,
+        "generic_stop_condition_insertion": 1,
+        "direction_overlap": 1,
+        "generic_relational_boundary": 1,
+        "required_stage_primary_goal_missing": 1,
+        "institution_and_execution_half_missing": 1,
+        "power_asymmetry_underdeveloped": 1,
+        "generic_method_failure_scaffold": 1,
+        "learning_training_process_underdeveloped": 1,
+        "agency_environment_interaction_underdeveloped": 1,
+        "overstates_overuse_as_irreversible": 1,
+        "opportunity_cost_underdeveloped": 1,
+        "substitutes_generic_safety_boundary_for_main_goal": 1,
+        "generic_method_failure_insertion": 1,
+        "underdeveloped_bottleneck_and_side_effect_analysis": 1,
+        "generic-rights-framework": 1,
+        "review-point-underdeveloped": 1,
+        "unsupported-pre-set-period-test": 1,
+        "expectation-and-capacity-clarification-underdeveloped": 1,
+        "affected_people_consultation_missing": 1,
+        "review_point_missing": 1,
+        "small_risk_set_only_implicit": 1,
+        "collaboration_mechanism_underdeveloped": 1,
+        "required_stage_goal_missing": 1,
+        "regression_to_invalidated_goal": 1,
+        "support_sustainability_underdeveloped": 1,
+        "expectation_clarification_underdeveloped": 1,
+        "context_cannot_change_classification_overclaim": 1,
+        "reviewable_exception_mechanism_missing": 1,
+        "opportunity_cost_and_system_bottleneck_underdeveloped": 1,
+        "overrestrictive_reasonableness_test": 1,
+        "underdeveloped_support_sustainability_check": 1,
+        "generic_rights_and_evidence_insertion": 1,
+        "potentially_overweights_valuable_return": 1,
+        "generic_rights_and_method_boundary": 1,
+        "preference-treated-as-absolute-veto": 1,
+        "reasonable_objection_filter_can_undermine_consent": 1,
+        "explicit_refusal_overgeneralized_as_absolute_boundary": 1,
+        "system_structure_only_in_reverse_direction": 1,
+        "required_do_not_list_only_implicit": 1,
+        "attention_sequence_incomplete": 1,
+        "cross_context_collaboration_missing": 1,
+        "power_asymmetry_missing": 1,
+        "context_limited_to_execution_form": 1,
+        "predefined_exception_mechanism_underdeveloped": 1,
+        "opportunity_cost_and_system_bottleneck_missing": 1
+      }
+    },
+    {
+      "candidate": "kimi_for_coding",
+      "totalPoints": 2266,
+      "maxPoints": 2700,
+      "average25": 20.981,
+      "firstPlaceVotes": 0,
+      "averageRank": 5.972,
+      "hardFailReviews": 20,
+      "hardFailFlags": 21,
+      "dimensions": {
+        "passageFidelity": 4.37,
+        "queryRelevance": 4.676,
+        "dualDirection": 4.278,
+        "interpretiveDepth": 4.037,
+        "semanticPrecision": 3.62
+      },
+      "rounds": {
+        "1": 20.194,
+        "2": 22,
+        "3": 20.75
+      },
+      "failureTags": {
+        "system_bottleneck_underdeveloped": 3,
+        "missing_coercion_boundary": 2,
+        "omits_capacity_caveat": 2,
+        "process-sequence-underdeveloped": 2,
+        "no-do-list-missing": 2,
+        "rules-need-human-practice-underdeveloped": 2,
+        "do_not_list_missing": 2,
+        "reverse_direction_overly_poetic": 2,
+        "coercive_reciprocity_risk": 2,
+        "violates_non_price_relationship_constraint": 2,
+        "unsupported_fixed_observation_count": 2,
+        "gift-value-escalation-framing": 2,
+        "temporary-capacity-and-power-differences-missing": 2,
+        "environment-design-and-feedback-underdeveloped": 2,
+        "independent_evidence_test_underdeveloped": 2,
+        "incentive_alignment_underdeveloped": 2,
+        "expensive_gift_deeper_affection": 2,
+        "counterparty_capacity_not_checked": 2,
+        "delayed_response_and_power_asymmetry_missing": 2,
+        "overexpands_nonconsent_into_universal_violation": 1,
+        "overclaims_anxiety_resolution": 1,
+        "missing_review_boundary": 1,
+        "unsupported_repetition_threshold": 1,
+        "delays_system_attribution": 1,
+        "underdeveloped_completion_boundary": 1,
+        "overextends道_into_rational_consensus": 1,
+        "system_structure_without_practice_layer": 1,
+        "unsupported_cost_escalation": 1,
+        "debt_framing": 1,
+        "overly_mechanical_reciprocity": 1,
+        "unsupported_fixed_threshold": 1,
+        "underdeveloped_environment_design": 1,
+        "unsupported_lower_upper_bound": 1,
+        "missing_exception_transparency_and_review": 1,
+        "over-broad-consent-redefinition": 1,
+        "misreads-near-worry-as-overplanning": 1,
+        "unsupported-one-action-cap": 1,
+        "unsupported-three-item-demand": 1,
+        "unwarranted-repeat-others-test-for-system-cause": 1,
+        "unsupported-cosmological-rest-cycle-reading": 1,
+        "modern-consensus-overstatement": 1,
+        "relationship-credit-debt-framing": 1,
+        "unsupported-two-contact-and-one-month-threshold": 1,
+        "environment-design-and-feedback-missing": 1,
+        "agency-overstated-as-personality-ceiling": 1,
+        "predefined-auditable-exceptions-underdeveloped": 1,
+        "consent_overgeneralized_as_absolute_condition": 1,
+        "unsupported_daily_single_action_rule": 1,
+        "missing_review_point": 1,
+        "risk_preparation_underdeveloped": 1,
+        "unsupported_mandatory_item_count": 1,
+        "system_attribution_delayed_by_overstrict_counterfactual": 1,
+        "exhaustive_goal_listing_overclaim": 1,
+        "speculative_astronomical_cycle_claim": 1,
+        "literal_cycle_overextension": 1,
+        "dao_overidentified_with_modern_rational_consensus": 1,
+        "one_sided_goodwill_to_institution_analysis": 1,
+        "unsupported_value_ratio": 1,
+        "transactional_relationship_credit": 1,
+        "temporary_incapacity_not_distinguished": 1,
+        "unsupported_exact_count_and_month": 1,
+        "immediate_reciprocity_overclaim": 1,
+        "required_environment_and_feedback_design_missing": 1,
+        "external_lower_limit_internal_upper_limit_overclaim": 1,
+        "modern_proportionality_and_review_extension_missing": 1,
+        "exception_transparency_underdeveloped": 1,
+        "measurable_goal_overrequirement": 1,
+        "overrelies_on_self_swap_test": 1,
+        "unsupported_fixed_worry_threshold": 1,
+        "missing_reversible_decision": 1,
+        "long_term_endpoint_over_stage_goal": 1,
+        "automatic_result_claim": 1,
+        "underdeveloped_independent_evidence_check": 1,
+        "underdeveloped_feedback_design": 1,
+        "underdeveloped_proportionality_review": 1,
+        "unsupported-three-countermeasure-threshold": 1,
+        "automatic-calm-to-result-causality": 1,
+        "unsupported-cosmological-rhythm-reading": 1,
+        "unsupported-three-contact-threshold": 1,
+        "transparent-reviewable-exception-process-underdeveloped": 1,
+        "affected_person_veto_overgeneralized_as_absolute": 1,
+        "unsupported_numeric_threshold": 1,
+        "false_anxiety_diagnostic": 1,
+        "system_attribution_rhetorically_near_external_blame": 1,
+        "stage_goal_missing": 1,
+        "ordered_process_treated_as_automatic": 1,
+        "ordered_cosmic_rhythm_read_into_passage_without_support": 1,
+        "cross_context_collaboration_underdeveloped": 1,
+        "modern_power_and_refusal_boundary_missing": 1,
+        "unsupported_three_attempt_threshold": 1,
+        "concrete_environment_and_feedback_design_underdeveloped": 1,
+        "exception_transparency_and_review_underdeveloped": 1,
+        "proportionality_only_implicit": 1,
+        "key_metric_upper_limit_underspecified": 1,
+        "relies_on_self_projection": 1,
+        "underdeveloped_consent_and_listening": 1,
+        "underdeveloped_probability_or_reversible_decision": 1,
+        "unsupported_fixed_three_hour_threshold": 1,
+        "underdeveloped_modern_interpretation": 1,
+        "overreads_yin_rest_doctrine": 1,
+        "unsupported_demand_for_supporter_evidence": 1,
+        "underdeveloped_cross_context_support": 1,
+        "missing_power_boundary": 1,
+        "underdeveloped_proportionality_and_process": 1,
+        "affected-person-inquiry-and-remedy-missing": 1,
+        "unsupported-nightly-review-cadence": 1,
+        "non-actionable-risk-dismissal": 1,
+        "unsupported-three-hour-focus-threshold": 1,
+        "unsupported-yin-yang-rest-foundation-reading": 1,
+        "rest-as-possible-avoidance-test": 1,
+        "unsupported-two-to-three-contact-threshold": 1,
+        "appeal-and-review-process-underdeveloped": 1,
+        "affected_people_consultation_missing": 1,
+        "self_projection_still_primary_test": 1,
+        "procedural_consent_missing": 1,
+        "unsupported_nightly_frequency": 1,
+        "nonactionable_risk_overdismissed": 1,
+        "review_and_reversible_decision_missing": 1,
+        "collaboration_mechanism_underdeveloped": 1,
+        "system_claims_held_to_asymmetric_evidence_bar": 1,
+        "required_stage_goal_missing": 1,
+        "required_do_not_list_missing": 1,
+        "unsupported_three_hour_threshold": 1,
+        "misreads_zhi_as_daily_finish_point": 1,
+        "yin_stillness_read_into_qian_hexagram": 1,
+        "next_day_progress_test_unsupported": 1,
+        "modern_manipulation_mechanisms_underdeveloped": 1,
+        "rule_itself_will_harm_overstatement": 1,
+        "modern_power_boundary_missing": 1,
+        "own_capacity_missing": 1,
+        "unsupported_two_to_three_attempt_threshold": 1,
+        "concrete_environment_and_feedback_design_missing": 1,
+        "reviewable_exception_mechanism_missing": 1,
+        "modern_proportionality_extension_missing": 1,
+        "explicit_stop_rule_and_opportunity_cost_underdeveloped": 1
+      }
+    }
+  ],
+  "generatorConsensusAverage25": 23.545,
+  "gapToGeneratorConsensus": 2.517,
+  "pairwise": [
+    {
+      "generator": "codex_luna_max",
+      "deepseekWins": 3,
+      "generatorWins": 32,
+      "ties": 1,
+      "exactTwoSidedP": 0
+    },
+    {
+      "generator": "codex_terra_max",
+      "deepseekWins": 4,
+      "generatorWins": 30,
+      "ties": 2,
+      "exactTwoSidedP": 0.000006
+    },
+    {
+      "generator": "codex_sol_xhigh",
+      "deepseekWins": 2,
+      "generatorWins": 34,
+      "ties": 0,
+      "exactTwoSidedP": 0
+    },
+    {
+      "generator": "codex_sol_max",
+      "deepseekWins": 1,
+      "generatorWins": 34,
+      "ties": 1,
+      "exactTwoSidedP": 0
+    },
+    {
+      "generator": "kimi_for_coding",
+      "deepseekWins": 15,
+      "generatorWins": 20,
+      "ties": 1,
+      "exactTwoSidedP": 0.49956
+    },
+    {
+      "generator": "kimi_k3",
+      "deepseekWins": 12,
+      "generatorWins": 24,
+      "ties": 0,
+      "exactTwoSidedP": 0.065245
+    }
+  ],
+  "cases": [
+    {
+      "case": 2,
+      "id": "annotation-golden-v1-02",
+      "source": "论语",
+      "scenario": "偏好投射",
+      "candidates": {
+        "deepseek_v4_flash_v3": {
+          "average25": 21.778,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 22,
+            "2": 21.333,
+            "3": 22
+          }
+        },
+        "codex_luna_max": {
+          "average25": 24.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 23.667,
+            "3": 25
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.556,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 25,
+            "3": 24.333
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 25,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 24.778,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "kimi_for_coding": {
+          "average25": 21.111,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 22.333,
+            "2": 23,
+            "3": 18
+          }
+        },
+        "kimi_k3": {
+          "average25": 23.556,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23,
+            "2": 23.667,
+            "3": 24
+          }
+        }
+      }
+    },
+    {
+      "case": 3,
+      "id": "annotation-golden-v1-03",
+      "source": "论语",
+      "scenario": "远虑与焦虑",
+      "candidates": {
+        "deepseek_v4_flash_v3": {
+          "average25": 22.444,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 22.333,
+            "2": 22.333,
+            "3": 22.667
+          }
+        },
+        "codex_luna_max": {
+          "average25": 23.333,
+          "hardFailReviews": 1,
+          "rounds": {
+            "1": 21.333,
+            "2": 23.667,
+            "3": 25
+          }
+        },
+        "codex_terra_max": {
+          "average25": 22.444,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 22.667,
+            "2": 21.667,
+            "3": 23
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 22.556,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 21.667,
+            "2": 23.667,
+            "3": 22.333
+          }
+        },
+        "codex_sol_max": {
+          "average25": 23.889,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 24,
+            "3": 23.333
+          }
+        },
+        "kimi_for_coding": {
+          "average25": 19.222,
+          "hardFailReviews": 3,
+          "rounds": {
+            "1": 16.333,
+            "2": 21,
+            "3": 20.333
+          }
+        },
+        "kimi_k3": {
+          "average25": 20.222,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 21.667,
+            "2": 19,
+            "3": 20
+          }
+        }
+      }
+    },
+    {
+      "case": 4,
+      "id": "annotation-golden-v1-04",
+      "source": "论语",
+      "scenario": "责任归因",
+      "candidates": {
+        "deepseek_v4_flash_v3": {
+          "average25": 22.444,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 22,
+            "2": 22.667,
+            "3": 22.667
+          }
+        },
+        "codex_luna_max": {
+          "average25": 24.778,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.111,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 24.667,
+            "3": 23
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 24.333,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 24.778,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.333,
+            "3": 25
+          }
+        },
+        "kimi_for_coding": {
+          "average25": 22.111,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 19,
+            "2": 23.667,
+            "3": 23.667
+          }
+        },
+        "kimi_k3": {
+          "average25": 24.111,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23,
+            "2": 24.667,
+            "3": 24.667
+          }
+        }
+      }
+    },
+    {
+      "case": 6,
+      "id": "annotation-golden-v1-06",
+      "source": "大学",
+      "scenario": "目标过载",
+      "candidates": {
+        "deepseek_v4_flash_v3": {
+          "average25": 17.889,
+          "hardFailReviews": 7,
+          "rounds": {
+            "1": 15.667,
+            "2": 15.667,
+            "3": 22.333
+          }
+        },
+        "codex_luna_max": {
+          "average25": 23.444,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 22,
+            "3": 23.667
+          }
+        },
+        "codex_terra_max": {
+          "average25": 23,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23.333,
+            "2": 24,
+            "3": 21.667
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 24.333,
+            "3": 23
+          }
+        },
+        "codex_sol_max": {
+          "average25": 23.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23.667,
+            "2": 24.333,
+            "3": 23
+          }
+        },
+        "kimi_for_coding": {
+          "average25": 18.222,
+          "hardFailReviews": 3,
+          "rounds": {
+            "1": 21,
+            "2": 20,
+            "3": 13.667
+          }
+        },
+        "kimi_k3": {
+          "average25": 22.778,
+          "hardFailReviews": 1,
+          "rounds": {
+            "1": 20,
+            "2": 24,
+            "3": 24.333
+          }
+        }
+      }
+    },
+    {
+      "case": 8,
+      "id": "annotation-golden-v1-08",
+      "source": "周易",
+      "scenario": "自强与休息",
+      "candidates": {
+        "deepseek_v4_flash_v3": {
+          "average25": 23.111,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23,
+            "2": 23.333,
+            "3": 23
+          }
+        },
+        "codex_luna_max": {
+          "average25": 24.444,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 24.333,
+            "3": 24.667
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.111,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 24.333,
+            "3": 23.333
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.778,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.333,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 24.778,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "kimi_for_coding": {
+          "average25": 22.444,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23,
+            "2": 23,
+            "3": 21.333
+          }
+        },
+        "kimi_k3": {
+          "average25": 20.889,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 21.333,
+            "2": 21,
+            "3": 20.333
+          }
+        }
+      }
+    },
+    {
+      "case": 10,
+      "id": "annotation-golden-v1-10",
+      "source": "孟子",
+      "scenario": "支持与正确",
+      "candidates": {
+        "deepseek_v4_flash_v3": {
+          "average25": 22.778,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23,
+            "2": 22.667,
+            "3": 22.667
+          }
+        },
+        "codex_luna_max": {
+          "average25": 24.556,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24,
+            "3": 24.667
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.444,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 24.333,
+            "3": 24.333
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.889,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 24.667
+          }
+        },
+        "codex_sol_max": {
+          "average25": 25,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "kimi_for_coding": {
+          "average25": 23.222,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23.333,
+            "2": 23.333,
+            "3": 23
+          }
+        },
+        "kimi_k3": {
+          "average25": 24.222,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23.667,
+            "2": 24.667,
+            "3": 24.333
+          }
+        }
+      }
+    },
+    {
+      "case": 11,
+      "id": "annotation-golden-v1-11",
+      "source": "孟子",
+      "scenario": "善意与制度",
+      "candidates": {
+        "deepseek_v4_flash_v3": {
+          "average25": 17.444,
+          "hardFailReviews": 9,
+          "rounds": {
+            "1": 17,
+            "2": 17.667,
+            "3": 17.667
+          }
+        },
+        "codex_luna_max": {
+          "average25": 25,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23.333,
+            "2": 25,
+            "3": 24.667
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 25,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 25,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "kimi_for_coding": {
+          "average25": 22.889,
+          "hardFailReviews": 2,
+          "rounds": {
+            "1": 19.667,
+            "2": 25,
+            "3": 24
+          }
+        },
+        "kimi_k3": {
+          "average25": 24.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.667,
+            "3": 24.333
+          }
+        }
+      }
+    },
+    {
+      "case": 12,
+      "id": "annotation-golden-v1-12",
+      "source": "诗经",
+      "scenario": "回报与关系",
+      "candidates": {
+        "deepseek_v4_flash_v3": {
+          "average25": 23.889,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23.333,
+            "2": 24.333,
+            "3": 24
+          }
+        },
+        "codex_luna_max": {
+          "average25": 23.667,
+          "hardFailReviews": 1,
+          "rounds": {
+            "1": 24.333,
+            "2": 24.667,
+            "3": 22
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24,
+            "3": 24
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.778,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 25,
+            "3": 24.667
+          }
+        },
+        "codex_sol_max": {
+          "average25": 24.778,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.333,
+            "3": 25
+          }
+        },
+        "kimi_for_coding": {
+          "average25": 15.444,
+          "hardFailReviews": 9,
+          "rounds": {
+            "1": 16,
+            "2": 15.333,
+            "3": 15
+          }
+        },
+        "kimi_k3": {
+          "average25": 22.778,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 21.333,
+            "2": 24,
+            "3": 23
+          }
+        }
+      }
+    },
+    {
+      "case": 13,
+      "id": "annotation-golden-v1-13",
+      "source": "礼记",
+      "scenario": "互惠边界",
+      "candidates": {
+        "deepseek_v4_flash_v3": {
+          "average25": 23.444,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 23,
+            "3": 23
+          }
+        },
+        "codex_luna_max": {
+          "average25": 23.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23.667,
+            "2": 23,
+            "3": 24.333
+          }
+        },
+        "codex_terra_max": {
+          "average25": 23.556,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 22.667,
+            "2": 25,
+            "3": 23
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 24.889,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 24.667
+          }
+        },
+        "codex_sol_max": {
+          "average25": 23.889,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 21.667,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "kimi_for_coding": {
+          "average25": 17.333,
+          "hardFailReviews": 3,
+          "rounds": {
+            "1": 15,
+            "2": 18,
+            "3": 19
+          }
+        },
+        "kimi_k3": {
+          "average25": 19,
+          "hardFailReviews": 3,
+          "rounds": {
+            "1": 19.667,
+            "2": 22.667,
+            "3": 14.667
+          }
+        }
+      }
+    },
+    {
+      "case": 14,
+      "id": "annotation-golden-v1-14",
+      "source": "荀子",
+      "scenario": "环境塑造",
+      "candidates": {
+        "deepseek_v4_flash_v3": {
+          "average25": 15.889,
+          "hardFailReviews": 6,
+          "rounds": {
+            "1": 15.333,
+            "2": 16.333,
+            "3": 16
+          }
+        },
+        "codex_luna_max": {
+          "average25": 24.778,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.889,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 24.667,
+            "3": 25
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 23.889,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 22.667,
+            "3": 24
+          }
+        },
+        "codex_sol_max": {
+          "average25": 24.222,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 22.667
+          }
+        },
+        "kimi_for_coding": {
+          "average25": 22.556,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 20.333,
+            "2": 23.667,
+            "3": 23.667
+          }
+        },
+        "kimi_k3": {
+          "average25": 23.333,
+          "hardFailReviews": 1,
+          "rounds": {
+            "1": 22.667,
+            "2": 23.333,
+            "3": 24
+          }
+        }
+      }
+    },
+    {
+      "case": 15,
+      "id": "annotation-golden-v1-15",
+      "source": "韩非子",
+      "scenario": "规则与情境",
+      "candidates": {
+        "deepseek_v4_flash_v3": {
+          "average25": 21.333,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23.333,
+            "2": 19.333,
+            "3": 21.333
+          }
+        },
+        "codex_luna_max": {
+          "average25": 25,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_terra_max": {
+          "average25": 25,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 25,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 25,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "kimi_for_coding": {
+          "average25": 23,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 22.667,
+            "2": 23.333,
+            "3": 23
+          }
+        },
+        "kimi_k3": {
+          "average25": 23.556,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 23,
+            "3": 23
+          }
+        }
+      }
+    },
+    {
+      "case": 16,
+      "id": "annotation-golden-v1-16",
+      "source": "论语",
+      "scenario": "极致与适度",
+      "candidates": {
+        "deepseek_v4_flash_v3": {
+          "average25": 19.889,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 19.667,
+            "2": 20,
+            "3": 20
+          }
+        },
+        "codex_luna_max": {
+          "average25": 24.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.333,
+            "2": 24.667,
+            "3": 25
+          }
+        },
+        "codex_terra_max": {
+          "average25": 24.111,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 22.667,
+            "2": 25,
+            "3": 24.667
+          }
+        },
+        "codex_sol_xhigh": {
+          "average25": 25,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 25
+          }
+        },
+        "codex_sol_max": {
+          "average25": 24.889,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 25,
+            "2": 25,
+            "3": 24.667
+          }
+        },
+        "kimi_for_coding": {
+          "average25": 24.222,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 23.667,
+            "2": 24.667,
+            "3": 24.333
+          }
+        },
+        "kimi_k3": {
+          "average25": 24.667,
+          "hardFailReviews": 0,
+          "rounds": {
+            "1": 24.667,
+            "2": 24.667,
+            "3": 24.667
+          }
+        }
+      }
+    }
+  ],
+  "gates": {
+    "validJsonRate": {
+      "actual": 1,
+      "target": 1,
+      "pass": true
+    },
+    "average25": {
+      "actual": 21.028,
+      "targetMinimum": 24.2,
+      "pass": false
+    },
+    "passageFidelity": {
+      "actual": 4.037,
+      "targetMinimum": 4.7,
+      "pass": false
+    },
+    "semanticPrecision": {
+      "actual": 4.046,
+      "targetMinimum": 4.7,
+      "pass": false
+    },
+    "hardFailReviews": {
+      "actual": 22,
+      "targetMaximum": 0,
+      "pass": false
+    },
+    "gapToGeneratorConsensus": {
+      "actual": 2.517,
+      "targetMaximum": 0.75,
+      "pass": false
+    }
+  },
+  "promotionPassed": false,
+  "metrics": {
+    "samples": 36,
+    "streaming": true,
+    "thinking": "disabled",
+    "temperature": 0.35,
+    "maxTokens": 240,
+    "headersMs": {
+      "mean": 108.194,
+      "p50": 84.5,
+      "p95": 206.5,
+      "min": 69,
+      "max": 271
+    },
+    "firstEventMs": {
+      "mean": 109.667,
+      "p50": 86,
+      "p95": 206.5,
+      "min": 72,
+      "max": 273
+    },
+    "firstContentMs": {
+      "mean": 471.861,
+      "p50": 459,
+      "p95": 691.5,
+      "min": 208,
+      "max": 793
+    },
+    "totalMs": {
+      "mean": 2969.389,
+      "p50": 2982,
+      "p95": 3574.25,
+      "min": 2348,
+      "max": 3659
+    },
+    "promptTokens": {
+      "mean": 512.833,
+      "p50": 511,
+      "p95": 528,
+      "min": 501,
+      "max": 528
+    },
+    "completionTokens": {
+      "mean": 195.778,
+      "p50": 198.5,
+      "p95": 231,
+      "min": 143,
+      "max": 239
+    },
+    "reasoningTokens": {
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "min": 0,
+      "max": 0
+    },
+    "totalTokens": {
+      "mean": 708.611,
+      "p50": 709.5,
+      "p95": 741.75,
+      "min": 654,
+      "max": 749
+    },
+    "visibleCharacters": {
+      "mean": 284.528,
+      "p50": 286,
+      "p95": 342.75,
+      "min": 206,
+      "max": 363
+    }
+  },
+  "limitations": [
+    "Codex-family judges also evaluate Codex-generated references, so family/style bias remains possible.",
+    "Golden cases were used only after prompt freeze, but they are a curated 12-case benchmark rather than a broad production distribution.",
+    "Generator consensus is the pooled mean of six Codex/Kimi generator candidates across three runs and three judges."
+  ]
+}
