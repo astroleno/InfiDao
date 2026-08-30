@@ -83,8 +83,8 @@ describe("annotation eval aggregation", () => {
       const rows = normalizeJudgmentRows([judgmentShape(shape)]);
 
       expect(rows).toHaveLength(1);
-      expect(rows[0].scores.A).toEqual(perfectScore);
-      expect(rows[0].scores.B).toEqual(referenceScore);
+      expect(rows[0]!.scores.A).toEqual(perfectScore);
+      expect(rows[0]!.scores.B).toEqual(referenceScore);
     },
   );
 
@@ -122,6 +122,20 @@ describe("annotation eval aggregation", () => {
         knownGoldenRegression: 0.5,
       }).promotionPassed,
     ).toBe(false);
+    const unknownRegression = decidePromotion({
+      validJsonRate: 1,
+      average25: 25,
+      passageFidelity: 5,
+      semanticPrecision: 5,
+      hardFailReviews: 0,
+      gapToGeneratorConsensus: 0,
+      knownGoldenRegression: null,
+    });
+    expect(unknownRegression.promotionPassed).toBe(false);
+    expect(unknownRegression.gates.knownGoldenRegression).toMatchObject({
+      actual: null,
+      pass: false,
+    });
   });
 
   it("calculates interpolated distributions", () => {
@@ -151,16 +165,23 @@ describe("annotation eval aggregation", () => {
         { round: 1, caseId: "case-1", label: "A", candidate: "deepseek_v4" },
         { round: 1, caseId: "case-1", label: "B", candidate: "codex_sol" },
       ],
-      judgeBatches: [
-        { judge: "sol", round: 1, rows: [judgmentShape("scores")] },
-      ],
+      judgeBatches: [{ judge: "sol", round: 1, rows: [judgmentShape("scores")] }],
       knownGoldenRegression: 0,
+      referenceOutputCount: 7,
     });
 
     expect(result.promotionPassed).toBe(true);
+    expect(result.protocol.generatedOutputs).toBe(9);
     expect(result.protocol.candidateReviews).toBe(2);
     expect(result.ranking[0]).toMatchObject({ candidate: "deepseek_v4", average25: 25 });
     expect(result.generatorConsensusAverage25).toBe(20);
-    expect(renderEvaluationReport(result)).toContain("Promotion: **pass**");
+    const report = renderEvaluationReport(result);
+    expect(report).toContain("Promotion: **pass**");
+    expect(report).toContain("## Ranking");
+    expect(report).toContain("| deepseek_v4 | 25.000 | 1 | 1.000 | 0 |");
+    expect(report).toContain("## Pairwise");
+    expect(report).toContain("codex_sol");
+    expect(report).toContain("## DeepSeek streaming metrics");
+    expect(report).toContain("| First content | 20.000 | 20.000 | 20.000 | 20.000 | 20.000 |");
   });
 });

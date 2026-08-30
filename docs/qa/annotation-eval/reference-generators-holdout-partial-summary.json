@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-08-31",
+  "partition": "holdout",
+  "fixtureSha256": "f2ad98c1e8a0bbce1338efc5edd47e1385a3b882ad8e737797704262777860fb",
+  "status": "stopped-at-user-request",
+  "validRows": 138,
+  "invalidRows": 0,
+  "candidates": [
+    {
+      "candidate": "codex-luna-max",
+      "model": "gpt-5.6-luna",
+      "effort": "max",
+      "validRows": 36,
+      "roundCoverage": { "1": 12, "2": 12, "3": 12 },
+      "totalMs": {
+        "mean": 16971.095,
+        "p50": 16508.995,
+        "p95": 21832.79,
+        "min": 12507.275,
+        "max": 26661.584
+      },
+      "visibleCharacters": {
+        "mean": 201.389,
+        "p50": 199,
+        "p95": 245.75,
+        "min": 149,
+        "max": 252
+      },
+      "firstContentMs": null,
+      "promptTokens": null,
+      "completionTokens": null,
+      "totalTokens": null
+    },
+    {
+      "candidate": "codex-terra-max",
+      "model": "gpt-5.6-terra",
+      "effort": "max",
+      "validRows": 36,
+      "roundCoverage": { "1": 12, "2": 12, "3": 12 },
+      "totalMs": {
+        "mean": 10051.77,
+        "p50": 9437.837,
+        "p95": 14271.595,
+        "min": 7949.574,
+        "max": 18434.831
+      },
+      "visibleCharacters": {
+        "mean": 199.25,
+        "p50": 195.5,
+        "p95": 238.25,
+        "min": 162,
+        "max": 280
+      },
+      "firstContentMs": null,
+      "promptTokens": null,
+      "completionTokens": null,
+      "totalTokens": null
+    },
+    {
+      "candidate": "codex-sol-xhigh",
+      "model": "gpt-5.6-sol",
+      "effort": "xhigh",
+      "validRows": 36,
+      "roundCoverage": { "1": 12, "2": 12, "3": 12 },
+      "totalMs": {
+        "mean": 13371.161,
+        "p50": 13756.429,
+        "p95": 16783.98,
+        "min": 9524.831,
+        "max": 18059.421
+      },
+      "visibleCharacters": {
+        "mean": 205.472,
+        "p50": 207.5,
+        "p95": 230.75,
+        "min": 160,
+        "max": 241
+      },
+      "firstContentMs": null,
+      "promptTokens": null,
+      "completionTokens": null,
+      "totalTokens": null
+    },
+    {
+      "candidate": "codex-sol-max",
+      "model": "gpt-5.6-sol",
+      "effort": "max",
+      "validRows": 30,
+      "roundCoverage": { "1": 12, "2": 12, "3": 6 },
+      "totalMs": {
+        "mean": 18036.624,
+        "p50": 17866.666,
+        "p95": 22835.335,
+        "min": 11409.579,
+        "max": 26476.897
+      },
+      "visibleCharacters": {
+        "mean": 205.3,
+        "p50": 206,
+        "p95": 249.4,
+        "min": 161,
+        "max": 268
+      },
+      "firstContentMs": null,
+      "promptTokens": null,
+      "completionTokens": null,
+      "totalTokens": null
+    }
+  ],
+  "limitations": [
+    "Codex exec exposes end-to-end command duration but not stream TTFT or token usage, so those fields are null rather than estimated.",
+    "Sol max stopped after 30 of 36 rows and was excluded from the formal holdout ranking.",
+    "Kimi candidates were not started before the user stopped further generation."
+  ]
+}

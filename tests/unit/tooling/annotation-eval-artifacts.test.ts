@@ -8,10 +8,7 @@ import {
   writeGenerationCheckpoint,
   writeTrackedSummary,
 } from "../../../scripts/annotation-eval/artifacts";
-import {
-  assertGenerationPolicy,
-  parseCliArgs,
-} from "../../../scripts/annotation-eval/cli";
+import { assertGenerationPolicy, parseCliArgs } from "../../../scripts/annotation-eval/cli";
 
 describe("annotation eval artifacts", () => {
   let root: string;
@@ -52,20 +49,13 @@ describe("annotation eval artifacts", () => {
   });
 
   it("writes tracked summaries only below docs/qa/annotation-eval", () => {
-    expect(() =>
-      writeTrackedSummary(root, "docs/other/result.json", { safe: true }, []),
-    ).toThrow("tracked summary path");
-
-    writeTrackedSummary(
-      root,
-      "docs/qa/annotation-eval/result.json",
-      { safe: true },
-      [],
+    expect(() => writeTrackedSummary(root, "docs/other/result.json", { safe: true }, [])).toThrow(
+      "tracked summary path",
     );
+
+    writeTrackedSummary(root, "docs/qa/annotation-eval/result.json", { safe: true }, []);
     expect(
-      JSON.parse(
-        fs.readFileSync(path.join(root, "docs/qa/annotation-eval/result.json"), "utf8"),
-      ),
+      JSON.parse(fs.readFileSync(path.join(root, "docs/qa/annotation-eval/result.json"), "utf8")),
     ).toEqual({ safe: true });
   });
 
@@ -120,6 +110,25 @@ describe("annotation eval artifacts", () => {
   it("parses supported CLI commands and rejects incomplete arguments", () => {
     expect(parseCliArgs(["validate"])).toEqual({ command: "validate" });
     expect(
+      parseCliArgs([
+        "references",
+        "--partition",
+        "holdout",
+        "--candidates",
+        "codex-luna-max,codex-terra-max",
+        "--rounds",
+        "3",
+      ]),
+    ).toEqual({
+      command: "references",
+      partition: "holdout",
+      candidates: ["codex-luna-max", "codex-terra-max"],
+      rounds: 3,
+    });
+    expect(() => parseCliArgs(["references", "--partition", "holdout"])).toThrow(
+      "missing --candidates",
+    );
+    expect(
       parseCliArgs(["generate", "--partition", "dev", "--variant", "v4", "--rounds", "2"]),
     ).toEqual({
       command: "generate",
@@ -129,32 +138,38 @@ describe("annotation eval artifacts", () => {
       retryInvalid: false,
     });
     expect(
-      parseCliArgs([
-        "generate",
-        "--partition",
-        "dev",
-        "--variant",
-        "v4",
-        "--retry-invalid",
-      ]),
+      parseCliArgs(["generate", "--partition", "dev", "--variant", "v4", "--retry-invalid"]),
     ).toMatchObject({ retryInvalid: true });
     expect(() =>
-      parseCliArgs([
-        "generate",
-        "--partition",
-        "holdout",
-        "--variant",
-        "v4",
-        "--retry-invalid",
-      ]),
+      parseCliArgs(["generate", "--partition", "holdout", "--variant", "v4", "--retry-invalid"]),
     ).toThrow("--retry-invalid is only allowed for dev");
     expect(() => parseCliArgs(["explode"])).toThrow("unknown command: explode");
-    expect(() => parseCliArgs(["generate", "--variant", "v4"])).toThrow(
-      "missing --partition",
-    );
-    expect(() => parseCliArgs(["generate", "--partition", "dev"])).toThrow(
-      "missing --variant",
-    );
+    expect(() => parseCliArgs(["generate", "--variant", "v4"])).toThrow("missing --partition");
+    expect(() => parseCliArgs(["generate", "--partition", "dev"])).toThrow("missing --variant");
+    expect(
+      parseCliArgs([
+        "aggregate",
+        "--partition",
+        "holdout",
+        "--target",
+        "selected",
+        "--references",
+        "codex-luna-max",
+        "--known-golden-regression",
+        "unknown",
+      ]),
+    ).toMatchObject({ command: "aggregate", knownGoldenRegression: null });
+    expect(() =>
+      parseCliArgs([
+        "aggregate",
+        "--partition",
+        "holdout",
+        "--target",
+        "selected",
+        "--references",
+        "codex-luna-max",
+      ]),
+    ).toThrow("missing --known-golden-regression");
   });
 
   it("blocks unfrozen or already completed holdout generations", () => {

@@ -10,6 +10,10 @@ describe("README release path", () => {
     expect(readme).toContain("npm run generate:release-artifacts");
     expect(readme).toContain("npm run test:stability");
     expect(readme).toContain("npm run test:search-quality");
+    expect(readme).toContain("npx playwright install chromium");
+    expect(readme).toContain("npm run test:e2e");
+    expect(readme).toContain("production standalone server");
+    expect(readme).toContain("cp -R data/. .next/standalone/data/");
     expect(readme).toContain("does not contact Daizhige at request time");
     expect(readme).not.toContain("npm run download-model");
     expect(readme).not.toContain("npm run init-db");

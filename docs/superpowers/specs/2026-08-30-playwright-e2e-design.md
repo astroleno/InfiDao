@@ -1,11 +1,11 @@
 # InfiDao Playwright E2E 设计
 
 日期：2026-08-30  
-状态：待用户复核
+状态：已确认
 
 ## 背景
 
-仓库已有 Jest 单元、集成和 UI 回归测试，以及针对生产 API 的 release smoke；但没有可在真实浏览器中重复执行、并可接入 CI 的正式端到端测试。当前 Reboot MVP 的公开主流程是：
+仓库已有 Jest 单元、集成和 UI 回归测试，以及针对生产 API 的 release smoke；但没有可在真实浏览器中重复执行的正式端到端测试。当前 Reboot MVP 的公开主流程是：
 
 ```text
 query -> search -> result -> annotate -> links -> explore -> back -> select new result reset -> leaf state
@@ -18,7 +18,7 @@ query -> search -> result -> annotate -> links -> explore -> back -> select new 
 - 使用官方 `@playwright/test` 运行器建立可重复执行的 E2E 测试。
 - 覆盖 Chromium 桌面视口 `1280x720` 和移动视口 `390x844`。
 - 本地执行时自动启动 Next.js 开发服务，保持快速反馈。
-- CI 中对已构建的 standalone production server 执行同一套测试。
+- 支持通过显式 `E2E_BASE_URL` 对已构建的 standalone production server 手动执行同一套测试。
 - 真实调用 `/api/search` 和 `/api/annotate`，不拦截或伪造主流程网络请求。
 - 捕获浏览器页面异常和 Console error，并在失败时保留截图与 trace。
 
@@ -29,18 +29,19 @@ query -> search -> result -> annotate -> links -> explore -> back -> select new 
 - 不在本轮加入 Firefox 或 WebKit。
 - 不依赖外部 LLM 凭据，也不验证第三方模型输出文案。
 - 不修改产品交互、搜索排序、API 契约或发布产物结构。
+- 不把浏览器 E2E 接入 GitHub Actions；现有 workflow 继续只运行 release smoke。
 - 不提交 Playwright 生成的截图、trace 或 HTML 报告。
 
 ## 方案选择
 
-### 采用：本地开发服务 + CI 生产服务
+### 采用：本地开发服务 + 手动生产服务
 
 Playwright 配置根据 `E2E_BASE_URL` 选择运行方式：
 
 - 未设置 `E2E_BASE_URL`：通过 Playwright `webServer` 自动运行 `next dev`，监听 `127.0.0.1:3100`。
-- 设置 `E2E_BASE_URL`：不启动额外服务，直接连接指定地址。CI 将其指向现有 standalone production server `http://127.0.0.1:3001`。
+- 设置 `E2E_BASE_URL`：不启动额外服务，直接连接指定地址。发布复核人员可将其指向 standalone production server `http://127.0.0.1:3001`。
 
-这样本地无需先构建，CI 又能验证真实发布构建；两种环境共享相同 spec，避免形成两套行为契约。
+这样日常本地执行无需先构建，发布复核时仍能手动验证真实发布构建；两种环境共享相同 spec，避免形成两套行为契约。
 
 ### 未采用：始终运行生产构建
 
@@ -55,7 +56,7 @@ Playwright 配置根据 `E2E_BASE_URL` 选择运行方式：
 ### `playwright.config.ts`
 
 - 定义统一 `baseURL`、超时、重试、worker 和失败证据策略。
-- CI 中使用单 worker 和一次重试，降低真实语料冷启动与共享服务造成的波动。
+- 设置标准 `CI` 环境变量时使用单 worker 和一次重试，便于任何外部自动化环境稳定调用，但仓库自身不接入 GitHub Actions。
 - 定义两个 Chromium project：desktop 和 mobile。
 - 默认启用 `trace: "retain-on-failure"`、`screenshot: "only-on-failure"`；不录制成功用例视频。
 - 本地模式通过 `webServer` 启动 `npm run dev -- --hostname 127.0.0.1 --port 3100`。
@@ -85,21 +86,20 @@ Playwright 配置根据 `E2E_BASE_URL` 选择运行方式：
 
 ### `.github/workflows/reboot-mvp-ci.yml`
 
-- `npm ci` 后安装 Playwright Chromium 及其 Linux 运行依赖。
-- 保留现有类型、Lint、Jest、质量、构建和 release smoke 门禁。
-- 在 standalone server 通过 release smoke 后，使用相同 server 执行 `E2E_BASE_URL=http://127.0.0.1:3001 npm run test:e2e`。
-- 失败时输出 server log，并通过 `actions/upload-artifact@v4` 上传 `test-results/` 与 `playwright-report/`。
+- 不修改现有 GitHub Actions 门禁。
+- Chromium 安装、浏览器 E2E 和失败报告上传均不进入仓库 workflow。
+- Workflow 继续保留原有类型、Lint、Jest、质量、构建和 release smoke 门禁。
 
 ### `README.md`
 
 - 在验证命令和 Active Commands 中加入 `npm run test:e2e`。
 - 说明首次本地执行需要安装 Chromium：`npx playwright install chromium`。
-- 说明 CI 对 production standalone 执行 E2E，本地默认使用开发服务。
+- 说明本地默认使用开发服务，并给出 production standalone 的显式手动执行方式。
 
 ## 数据与环境
 
 - 搜索使用仓库提交的本地 corpus、embeddings 和 graph artifact。
-- 注语使用项目现有 deterministic fallback。Playwright 启动的本地服务和 CI standalone 服务会显式清空受支持的 annotation API key 环境变量，避免开发者 `.env.local` 或 CI secret 改变测试路径。
+- 注语使用项目现有 deterministic fallback。Playwright 自动启动的本地服务会显式清空受支持的 annotation API key 环境变量，避免开发者 `.env.local` 改变测试路径。
 - E2E 不要求 `.env.local`，也不断言模型生成的完整文案。使用 `E2E_BASE_URL` 连接自管服务时，调用方负责保证该服务没有启用远程 annotation provider。
 - E2E 不访问外部网络，Playwright 浏览器安装除外。
 
@@ -108,7 +108,7 @@ Playwright 配置根据 `E2E_BASE_URL` 选择运行方式：
 - 使用可访问性定位器，避免基于视觉位置或 CSS class 点击。
 - 等待明确的页面状态，不使用固定长时间 sleep。
 - 搜索和注语使用较宽的 expect timeout，以容纳首次加载本地语料的冷启动。
-- CI 单 worker 执行两个 project，避免同时请求同一 standalone 服务造成不必要竞争。
+- 标准 `CI` 环境变量下单 worker 执行两个 project，避免同时请求同一外部服务造成不必要竞争。
 - 成功执行不产生仓库文件；失败证据落入已被 `.gitignore` 排除的 `test-results/` 和 `playwright-report/`。
 
 ## 验证标准
@@ -123,11 +123,11 @@ npm run test:e2e
 npm run build
 ```
 
-还需以 `E2E_BASE_URL` 模式对 standalone production server 运行一次 `npm run test:e2e`，证明 CI 路径可用。桌面和移动两个 project 均通过、无未解释 Console error、工作区无测试产物污染，才视为完成。
+还需以 `E2E_BASE_URL` 模式对 standalone production server 手动运行一次 `npm run test:e2e`，证明生产路径可用。桌面和移动两个 project 均通过、无未解释 Console error、工作区无测试产物污染，才视为完成。
 
 ## 风险与边界
 
 - 真实搜索排序是 E2E 契约的一部分；如果质量门禁有意调整“如何面对困境”的第一条结果，E2E 期望需随经过评审的新契约更新。
-- 两个真实浏览器 project 会增加 CI 时间和 Chromium 下载体积，但范围限制为单浏览器引擎和一条主流程。
+- 两个真实浏览器 project 会增加本地或手动发布复核时间和 Chromium 下载体积，但范围限制为单浏览器引擎和一条主流程。
 - E2E 无法替代独立 frozen holdout、Jest 细粒度回归或 release smoke；它们继续作为互补门禁存在。
 - Leaf state 不能在当前真实语料主路径中以有限步数稳定到达，因此仍由 `tests/ui/home-page.search.test.tsx` 的确定性 fixture 覆盖；本轮不会为追求浏览器覆盖而违背“真实接口、不 Mock”的数据策略。

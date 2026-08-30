@@ -16,11 +16,11 @@ export interface PromotionMetrics {
   semanticPrecision: number;
   hardFailReviews: number;
   gapToGeneratorConsensus: number;
-  knownGoldenRegression: number;
+  knownGoldenRegression: number | null;
 }
 
 export interface EvaluationGate {
-  actual: number;
+  actual: number | null;
   pass: boolean;
   target?: number;
   targetMinimum?: number;
@@ -42,7 +42,8 @@ export interface AggregateInput {
   generations: Generation[];
   mappings: BlindMapping[];
   judgeBatches: JudgeBatch[];
-  knownGoldenRegression: number;
+  knownGoldenRegression: number | null;
+  referenceOutputCount?: number;
 }
 
 interface CandidateReview extends CandidateScore {
@@ -195,7 +196,7 @@ export function decidePromotion(metrics: PromotionMetrics): {
     knownGoldenRegression: {
       actual: metrics.knownGoldenRegression,
       targetMaximum: 0.5,
-      pass: metrics.knownGoldenRegression <= 0.5,
+      pass: metrics.knownGoldenRegression !== null && metrics.knownGoldenRegression <= 0.5,
     },
   };
   return { gates, promotionPassed: Object.values(gates).every(gate => gate.pass) };
@@ -209,8 +210,8 @@ export function normalizeJudgmentRows(value: unknown): Judgment[] {
     }
     const raw = rawValue as Record<string, unknown>;
     const directScores = Object.fromEntries(
-      Object.entries(raw).filter(([key, score]) =>
-        /^[A-Z]$/u.test(key) && CandidateScoreSchema.safeParse(score).success,
+      Object.entries(raw).filter(
+        ([key, score]) => /^[A-Z]$/u.test(key) && CandidateScoreSchema.safeParse(score).success,
       ),
     );
     const scores = raw.scores ?? raw.candidates ?? directScores;
@@ -273,7 +274,8 @@ export function aggregateEvaluation(input: AggregateInput): EvaluationResult {
     for (const row of normalizeJudgmentRows(batch.rows)) {
       for (const [label, score] of Object.entries(row.scores)) {
         const candidate = mapping.get(`${batch.round}:${row.caseId}:${label}`);
-        if (!candidate) throw new Error(`missing blind mapping: ${batch.round}/${row.caseId}/${label}`);
+        if (!candidate)
+          throw new Error(`missing blind mapping: ${batch.round}/${row.caseId}/${label}`);
         reviews.push({
           judge: batch.judge,
           round: batch.round,
@@ -303,9 +305,7 @@ export function aggregateEvaluation(input: AggregateInput): EvaluationResult {
   const generatorConsensusAverage25 = roundNumber(
     mean(referenceReviews.map(review => review.total)),
   );
-  const gapToGeneratorConsensus = roundNumber(
-    generatorConsensusAverage25 - target.average25,
-  );
+  const gapToGeneratorConsensus = roundNumber(generatorConsensusAverage25 - target.average25);
   const targetGenerations = input.generations.filter(
     generation => generation.variant === input.targetCandidate,
   );
@@ -313,7 +313,8 @@ export function aggregateEvaluation(input: AggregateInput): EvaluationResult {
   const validTargetGenerations = targetGenerations.filter(
     generation => generation.valid && generation.metrics && generation.output,
   );
-  if (validTargetGenerations.length === 0) throw new Error("target candidate has no valid generations");
+  if (validTargetGenerations.length === 0)
+    throw new Error("target candidate has no valid generations");
   const decision = decidePromotion({
     validJsonRate: validTargetGenerations.length / targetGenerations.length,
     average25: target.average25,
@@ -333,7 +334,8 @@ export function aggregateEvaluation(input: AggregateInput): EvaluationResult {
       const score = (candidate: string): number =>
         reviews
           .filter(
-            review => `${review.round}:${review.caseId}` === roundCase && review.candidate === candidate,
+            review =>
+              `${review.round}:${review.caseId}` === roundCase && review.candidate === candidate,
           )
           .reduce((sum, review) => sum + review.total, 0);
       const targetScore = score(input.targetCandidate);
@@ -353,8 +355,7 @@ export function aggregateEvaluation(input: AggregateInput): EvaluationResult {
 
   const metricValues = validTargetGenerations.map(generation => ({
     metrics: generation.metrics!,
-    visibleCharacters:
-      generation.output!.sixToMe.length + generation.output!.meToSix.length,
+    visibleCharacters: generation.output!.sixToMe.length + generation.output!.meToSix.length,
   }));
   const numeric = (selector: (row: (typeof metricValues)[number]) => number | null): number[] =>
     metricValues.map(selector).filter((value): value is number => value !== null);
@@ -365,7 +366,7 @@ export function aggregateEvaluation(input: AggregateInput): EvaluationResult {
     promptHash: input.promptHash,
     targetCandidate: input.targetCandidate,
     protocol: {
-      generatedOutputs: input.generations.length,
+      generatedOutputs: input.generations.length + (input.referenceOutputCount ?? 0),
       candidateReviews: reviews.length,
       dimensionScores: reviews.length * SCORE_DIMENSIONS.length,
       judges: [...new Set(input.judgeBatches.map(batch => batch.judge))],
@@ -396,8 +397,30 @@ export function aggregateEvaluation(input: AggregateInput): EvaluationResult {
 export function renderEvaluationReport(result: EvaluationResult): string {
   const target = result.ranking.find(row => row.candidate === result.targetCandidate);
   if (!target) throw new Error("evaluation result has no target summary");
+  const fixed = (value: number): string => value.toFixed(3);
   const gateLines = Object.entries(result.gates).map(
-    ([name, gate]) => `- ${name}: ${gate.actual} — ${gate.pass ? "pass" : "fail"}`,
+    ([name, gate]) =>
+      `- ${name}: ${gate.actual === null ? "unknown" : gate.actual} — ${gate.pass ? "pass" : "fail"}`,
+  );
+  const rankingLines = result.ranking.map(
+    row =>
+      `| ${row.candidate} | ${fixed(row.average25)} | ${row.firstPlaceVotes} | ${fixed(row.averageRank)} | ${row.hardFailReviews} |`,
+  );
+  const pairwiseLines = result.pairwise.map(
+    row =>
+      `| ${row.generator} | ${row.targetWins} | ${row.generatorWins} | ${row.ties} | ${row.exactTwoSidedP.toFixed(6)} |`,
+  );
+  const metricRows: Array<[string, MetricDistribution]> = [
+    ["First content", result.metrics.firstContentMs],
+    ["Total duration", result.metrics.totalMs],
+    ["Prompt tokens", result.metrics.promptTokens],
+    ["Completion tokens", result.metrics.completionTokens],
+    ["Total tokens", result.metrics.totalTokens],
+    ["Visible characters", result.metrics.visibleCharacters],
+  ];
+  const metricLines = metricRows.map(
+    ([name, metric]) =>
+      `| ${name} | ${fixed(metric.mean)} | ${fixed(metric.p50)} | ${fixed(metric.p95)} | ${fixed(metric.min)} | ${fixed(metric.max)} |`,
   );
   return [
     `# ${result.evalId}`,
@@ -412,6 +435,26 @@ export function renderEvaluationReport(result: EvaluationResult): string {
     "## Gates",
     "",
     ...gateLines,
+    "",
+    "## Ranking",
+    "",
+    "| Candidate | Average /25 | First-place votes | Average rank | Hard-fail reviews |",
+    "| --- | ---: | ---: | ---: | ---: |",
+    ...rankingLines,
+    "",
+    "## Pairwise",
+    "",
+    "| Reference | Target wins | Reference wins | Ties | Exact two-sided p |",
+    "| --- | ---: | ---: | ---: | ---: |",
+    ...pairwiseLines,
+    "",
+    "## DeepSeek streaming metrics",
+    "",
+    `Samples: ${result.metrics.samples}`,
+    "",
+    "| Metric | Mean | P50 | P95 | Min | Max |",
+    "| --- | ---: | ---: | ---: | ---: | ---: |",
+    ...metricLines,
     "",
   ].join("\n");
 }

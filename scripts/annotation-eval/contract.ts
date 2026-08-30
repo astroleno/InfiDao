@@ -189,7 +189,7 @@ export const BlindPacketSchema = z.array(BlindCaseSchema).min(1);
 
 export const GateSchema = z
   .object({
-    actual: z.number().finite(),
+    actual: z.number().finite().nullable(),
     pass: z.boolean(),
     targetMinimum: z.number().finite().optional(),
     targetMaximum: z.number().finite().optional(),

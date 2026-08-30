@@ -39,7 +39,8 @@ describe("reboot MVP release readiness", () => {
     expect(document).toContain(".github/workflows/reboot-mvp-ci.yml");
     expect(document).toContain("npm run smoke:release");
     expect(document).toContain("npm run test:search-quality");
-    expect(document).toContain("cp -R .next/static .next/standalone/.next/static");
+    expect(document).toContain("cp -R data/. .next/standalone/data/");
+    expect(document).toContain("cp -R .next/static/. .next/standalone/.next/static/");
     expect(document).toContain("search response shape");
     expect(document).toContain("historical baseline");
     expect(document).toContain("如何面对困境");

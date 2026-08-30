@@ -53,6 +53,14 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) and try `如何面对困境`.
 
+Install Chromium once before the first local browser run, then execute the E2E
+suite. Playwright starts a development server on `127.0.0.1:3100` automatically.
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
 ## Verification
 
 Run the release gates in this order:
@@ -67,6 +75,7 @@ npm test -- --runInBand --no-cache
 npm run test:stability
 npm run test:stability
 npm run test:search-quality
+npm run test:e2e
 npm run build
 ```
 
@@ -81,11 +90,19 @@ After `npm run build`, run the standalone production smoke:
 mkdir -p .next/standalone/data
 cp -R data/. .next/standalone/data/
 rm -rf .next/standalone/.next/static
-cp -R .next/static .next/standalone/.next/static
-if [ -d public ]; then cp -R public .next/standalone/public; fi
+mkdir -p .next/standalone/data
+cp -R data/. .next/standalone/data/
+mkdir -p .next/standalone/.next/static
+cp -R .next/static/. .next/standalone/.next/static/
+if [ -d public ]; then mkdir -p .next/standalone/public && cp -R public/. .next/standalone/public/; fi
 PORT=3001 HOSTNAME=127.0.0.1 node .next/standalone/server.js
 SMOKE_BASE_URL=http://127.0.0.1:3001 npm run smoke:release
+E2E_BASE_URL=http://127.0.0.1:3001 npm run test:e2e
 ```
+
+Local E2E runs use the development server by default. The `E2E_BASE_URL` form
+above is the explicit manual check for a production standalone server; browser
+E2E is intentionally not part of the GitHub Actions workflow.
 
 For canonical annotation telemetry validation, use a fresh development or test
 server with credentials; the telemetry route is intentionally unavailable in
@@ -114,18 +131,19 @@ constraints.
 
 ## Active Commands
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Start the local development server. |
-| `npm run build` / `npm run start` | Build or run the Next.js production app. |
-| `npm run generate:release-artifacts` | Regenerate embeddings and the graph sidecar. |
-| `npm run type-check` | Type-check app, tests, and active TypeScript scripts. |
-| `npm run lint` | Lint `src`, `tests`, and active scripts with zero warnings. |
-| `npm test -- --runInBand --no-cache` | Run the full unit and integration suite deterministically. |
-| `npm run test:stability` | Run the cold-start-sensitive suites. |
-| `npm run test:search-quality` | Check search quality and artifact reproducibility. |
-| `npm run smoke:release` | Exercise a deployed or standalone production path. |
-| `npm run smoke:telemetry` | Validate dev/test annotation telemetry. |
+| Command                              | Purpose                                                     |
+| ------------------------------------ | ----------------------------------------------------------- |
+| `npm run dev`                        | Start the local development server.                         |
+| `npm run build` / `npm run start`    | Build or run the Next.js production app.                    |
+| `npm run generate:release-artifacts` | Regenerate embeddings and the graph sidecar.                |
+| `npm run type-check`                 | Type-check app, tests, and active TypeScript scripts.       |
+| `npm run lint`                       | Lint `src`, `tests`, and active scripts with zero warnings. |
+| `npm test -- --runInBand --no-cache` | Run the full unit and integration suite deterministically.  |
+| `npm run test:e2e`                   | Run the desktop and mobile Chromium Reboot MVP path.        |
+| `npm run test:stability`             | Run the cold-start-sensitive suites.                        |
+| `npm run test:search-quality`        | Check search quality and artifact reproducibility.          |
+| `npm run smoke:release`              | Exercise a deployed or standalone production path.          |
+| `npm run smoke:telemetry`            | Validate dev/test annotation telemetry.                     |
 
 ## Project Layout
 

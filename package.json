@@ -15,11 +15,13 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "jest",
+    "test:e2e": "playwright test",
     "test:search-quality": "tsx scripts/compare-search-embeddings.ts --gate --check-artifact",
     "validate:search-holdout": "tsx scripts/validate-search-holdout.ts",
     "evaluate:search-holdout": "tsx scripts/run-search-holdout.ts",
     "validate:annotation-eval": "tsx scripts/annotation-eval/cli.ts validate",
     "evaluate:annotation": "tsx scripts/annotation-eval/cli.ts generate",
+    "generate:annotation-references": "tsx scripts/annotation-eval/cli.ts references",
     "test:annotation-quality": "jest --runInBand tests/unit/tooling/annotation-eval-*.test.ts",
     "test:stability": "jest --runInBand --no-cache tests/unit/annotation/service.test.ts tests/integration/api/annotate.route.test.ts tests/unit/search/graph-store.test.ts tests/unit/search/graph-service.test.ts tests/unit/search/diagnostics.test.ts tests/unit/search/search-graph-generator.test.ts",
     "test:watch": "jest --watch",
@@ -66,6 +68,7 @@
     "zustand": "^5.0.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
@@ -95,7 +98,7 @@
     "typescript": "^5.6.3"
   },
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.0.0",
     "npm": ">=8.0.0"
   },
   "overrides": {

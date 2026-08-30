@@ -75,28 +75,24 @@ describe("annotation eval blind packets", () => {
 
     expect(round1.mapping).not.toEqual(round2.mapping);
     expect(round1.mapping).toHaveLength(4);
-    expect(round1.packet.every(testCase => Object.keys(testCase.candidates).sort().join("") === "AB")).toBe(
-      true,
-    );
+    expect(
+      round1.packet.every(testCase => Object.keys(testCase.candidates).sort().join("") === "AB"),
+    ).toBe(true);
   });
 
-  it.each([
-    "deepseek_v4",
-    "codex_",
-    "kimi_",
-    "promptHash",
-    "referenceAnswer",
-    "expectations",
-  ])("rejects %s identity leakage", marker => {
-    const { packet } = buildBlindPacket(buildInput());
-    packet[0].candidates.A.sixToMe = `泄漏 ${marker}`;
+  it.each(["deepseek_v4", "codex_", "kimi_", "promptHash", "referenceAnswer", "expectations"])(
+    "rejects %s identity leakage",
+    marker => {
+      const { packet } = buildBlindPacket(buildInput());
+      packet[0]!.candidates.A!.sixToMe = `泄漏 ${marker}`;
 
-    expect(() => assertBlindPacketHasNoIdentityLeaks(packet)).toThrow(marker);
-  });
+      expect(() => assertBlindPacketHasNoIdentityLeaks(packet)).toThrow(marker);
+    },
+  );
 
   it("rejects missing candidate output for any case", () => {
     const input = buildInput();
-    delete input.candidateOutputs.deepseek_v4["dev-2"];
+    delete input.candidateOutputs.deepseek_v4!["dev-2"];
 
     expect(() => buildBlindPacket(input)).toThrow("missing candidate output: deepseek_v4/dev-2");
   });

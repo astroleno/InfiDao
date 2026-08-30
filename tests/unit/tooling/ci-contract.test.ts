@@ -8,7 +8,11 @@ describe("reboot MVP CI release contract", () => {
   );
   const packageJson = JSON.parse(
     readFileSync(path.join(process.cwd(), "package.json"), "utf8"),
-  ) as { scripts: Record<string, string> };
+  ) as {
+    scripts: Record<string, string>;
+    devDependencies: Record<string, string>;
+    engines: Record<string, string>;
+  };
 
   it("regenerates and verifies release artifacts before static gates", () => {
     expect(packageJson.scripts["generate:release-artifacts"]).toBe(
@@ -18,6 +22,17 @@ describe("reboot MVP CI release contract", () => {
     expect(workflow).toContain(
       "git diff --exit-code -- data/embeddings.json data/search-graph.json",
     );
+  });
+
+  it("keeps Playwright E2E outside GitHub Actions", () => {
+    expect(packageJson.devDependencies["@playwright/test"]).toBeDefined();
+    expect(packageJson.scripts["test:e2e"]).toBe("playwright test");
+    expect(packageJson.engines.node).toBe(">=20.0.0");
+    expect(workflow).not.toContain("playwright");
+    expect(workflow).not.toContain("test:e2e");
+    expect(workflow).not.toContain("E2E_BASE_URL");
+    expect(workflow).not.toContain("test-results/");
+    expect(workflow).not.toContain("playwright-report/");
   });
 
   it("keeps release gates in their required order", () => {

@@ -15,12 +15,10 @@ const customJestConfig = {
     "<rootDir>/.next/",
     "<rootDir>/node_modules/",
     "<rootDir>/ref/",
+    "<rootDir>/tests/e2e/",
     "<rootDir>/web/",
   ],
-  modulePathIgnorePatterns: [
-    "<rootDir>/ref/",
-    "<rootDir>/web/",
-  ],
+  modulePathIgnorePatterns: ["<rootDir>/ref/", "<rootDir>/web/"],
 };
 
 module.exports = createJestConfig(customJestConfig);

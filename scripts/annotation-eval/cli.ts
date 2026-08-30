@@ -25,6 +25,12 @@ import {
 } from "./contract";
 import { generateAnnotation, type AnnotationProviderConfig } from "./provider";
 import { getPromptVariant } from "./prompt-registry";
+import {
+  REFERENCE_CANDIDATES,
+  generateReferences,
+  readReferenceCheckpoint,
+  type ReferenceGeneration,
+} from "./reference-generator";
 
 type Partition = "dev" | "holdout" | "golden";
 
@@ -37,6 +43,7 @@ export type CliCommand =
       rounds: number;
       retryInvalid: boolean;
     }
+  | { command: "references"; partition: Partition; candidates: string[]; rounds: number }
   | { command: "blind"; partition: Partition; candidates: string[]; rounds: number }
   | {
       command: "aggregate";
@@ -44,7 +51,7 @@ export type CliCommand =
       target: string;
       references: string[];
       rounds: number;
-      knownGoldenRegression: number;
+      knownGoldenRegression: number | null;
       select: boolean;
     };
 
@@ -63,7 +70,10 @@ const FIXTURE_FILES: Record<Partition, string> = {
   golden: "golden-v1.json",
 };
 
-function readOptions(argv: string[]): { positionals: string[]; options: Map<string, string | true> } {
+function readOptions(argv: string[]): {
+  positionals: string[];
+  options: Map<string, string | true>;
+} {
   const positionals: string[] = [];
   const options = new Map<string, string | true>();
   for (let index = 0; index < argv.length; index += 1) {
@@ -103,7 +113,11 @@ function parsePartition(options: Map<string, string | true>): Partition {
   return value;
 }
 
-function parsePositiveInteger(options: Map<string, string | true>, name: string, fallback: number): number {
+function parsePositiveInteger(
+  options: Map<string, string | true>,
+  name: string,
+  fallback: number,
+): number {
   const value = options.get(name);
   if (value === undefined) return fallback;
   const parsed = Number(value);
@@ -142,6 +156,14 @@ export function parseCliArgs(argv: string[]): CliCommand {
       retryInvalid,
     };
   }
+  if (command === "references") {
+    return {
+      command,
+      partition: parsePartition(options),
+      candidates: parseList(options, "candidates"),
+      rounds: parsePositiveInteger(options, "rounds", 1),
+    };
+  }
   if (command === "blind") {
     const candidates = parseList(options, "candidates");
     if (candidates.length < 2) throw new Error("--candidates requires at least two variants");
@@ -153,9 +175,9 @@ export function parseCliArgs(argv: string[]): CliCommand {
     };
   }
   if (command === "aggregate") {
-    const regressionValue = options.get("known-golden-regression") ?? "0";
-    const knownGoldenRegression = Number(regressionValue);
-    if (!Number.isFinite(knownGoldenRegression)) {
+    const regressionValue = requiredOption(options, "known-golden-regression");
+    const knownGoldenRegression = regressionValue === "unknown" ? null : Number(regressionValue);
+    if (knownGoldenRegression !== null && !Number.isFinite(knownGoldenRegression)) {
       throw new Error("invalid --known-golden-regression");
     }
     return {
@@ -185,8 +207,16 @@ export function assertGenerationPolicy(input: GenerationPolicyInput): void {
 }
 
 function readFixture(root: string, partition: Partition): EvalFixture {
-  const fixturePath = path.join(root, "tests", "fixtures", "annotation-eval", FIXTURE_FILES[partition]);
-  const fixture = EvalFixtureSchema.parse(JSON.parse(fs.readFileSync(fixturePath, "utf8")) as unknown);
+  const fixturePath = path.join(
+    root,
+    "tests",
+    "fixtures",
+    "annotation-eval",
+    FIXTURE_FILES[partition],
+  );
+  const fixture = EvalFixtureSchema.parse(
+    JSON.parse(fs.readFileSync(fixturePath, "utf8")) as unknown,
+  );
   assertFixtureHash(fixture);
   return fixture;
 }
@@ -221,8 +251,11 @@ function resolveVariant(root: string, requested: string) {
       if (value.partition !== "dev" || !value.selectedPrompt) return [];
       return [value.selectedPrompt];
     });
-  const unique = new Map(selections.map(selection => [`${selection.id}:${selection.sha256}`, selection]));
-  if (unique.size !== 1) throw new Error("selected alias requires exactly one tracked dev selection");
+  const unique = new Map(
+    selections.map(selection => [`${selection.id}:${selection.sha256}`, selection]),
+  );
+  if (unique.size !== 1)
+    throw new Error("selected alias requires exactly one tracked dev selection");
   const selection = [...unique.values()][0]!;
   if (typeof selection.id !== "string" || typeof selection.sha256 !== "string") {
     throw new Error("selected prompt summary is invalid");
@@ -234,7 +267,9 @@ function resolveVariant(root: string, requested: string) {
   return prompt;
 }
 
-function generationKey(row: Pick<Generation, "partition" | "variant" | "round" | "caseId">): string {
+function generationKey(
+  row: Pick<Generation, "partition" | "variant" | "round" | "caseId">,
+): string {
   return `${row.partition}:${row.variant}:${row.round}:${row.caseId}`;
 }
 
@@ -275,9 +310,7 @@ async function runValidate(root: string): Promise<Record<string, unknown>> {
     modelMatches: config.model === "deepseek-v4-flash",
     apiKeyPresent: Boolean(config.apiKey),
     baseUrlPresent: Boolean(config.baseUrl),
-    fixtures: Object.fromEntries(
-      fixtures.map(fixture => [fixture.evalId, fixture.fixtureSha256]),
-    ),
+    fixtures: Object.fromEntries(fixtures.map(fixture => [fixture.evalId, fixture.fixtureSha256])),
   };
 }
 
@@ -305,9 +338,7 @@ async function runGenerate(
       { archivedAt: new Date().toISOString(), rows: retryRows },
     ]);
   }
-  const rows = command.retryInvalid
-    ? checkpointRows.filter(row => row.valid)
-    : [...checkpointRows];
+  const rows = command.retryInvalid ? checkpointRows.filter(row => row.valid) : [...checkpointRows];
   const expectedRows = fixture.cases.length * command.rounds;
   assertGenerationPolicy({
     partition: command.partition,
@@ -321,10 +352,13 @@ async function runGenerate(
     throw new Error("generation checkpoint does not match the requested run contract");
   }
   const existingKeys = new Set(rows.map(generationKey));
-  if (existingKeys.size !== rows.length) throw new Error("generation checkpoint has duplicate keys");
+  if (existingKeys.size !== rows.length)
+    throw new Error("generation checkpoint has duplicate keys");
   const tasks = Array.from({ length: command.rounds }, (_, index) => index + 1).flatMap(round =>
     fixture.cases
-      .filter(testCase => !existingKeys.has(`${command.partition}:${prompt.id}:${round}:${testCase.id}`))
+      .filter(
+        testCase => !existingKeys.has(`${command.partition}:${prompt.id}:${round}:${testCase.id}`),
+      )
       .map(testCase => ({ round, testCase })),
   );
   const config = loadProviderConfig(root);
@@ -385,17 +419,85 @@ function comparisonIdentity(
   return { partition, variant: [...candidates].sort().join("-"), fixtureHash };
 }
 
+const REFERENCE_IDS = new Set<string>(REFERENCE_CANDIDATES.map(candidate => candidate.id));
+
+function selectReferenceCandidates(requested: string[]) {
+  if (requested.includes("all") && requested.length !== 1) {
+    throw new Error("all cannot be combined with explicit candidates");
+  }
+  const ids = requested[0] === "all" ? [...REFERENCE_IDS] : requested;
+  return ids.map(id => {
+    const candidate = REFERENCE_CANDIDATES.find(item => item.id === id);
+    if (!candidate) throw new Error(`unknown reference candidate: ${id}`);
+    return candidate;
+  });
+}
+
+function expandCandidates(root: string, requested: string[]): string[] {
+  if (requested.includes("all") && requested.length !== 1) {
+    throw new Error("all cannot be combined with explicit candidates");
+  }
+  const candidates =
+    requested[0] === "all"
+      ? REFERENCE_CANDIDATES.map(candidate => candidate.id)
+      : requested.map(candidate =>
+          REFERENCE_IDS.has(candidate) ? candidate : resolveVariant(root, candidate).id,
+        );
+  if (new Set(candidates).size !== candidates.length) throw new Error("duplicate candidates");
+  return candidates;
+}
+
+async function runReferences(
+  root: string,
+  command: Extract<CliCommand, { command: "references" }>,
+): Promise<Record<string, unknown>> {
+  const fixture = readFixture(root, command.partition);
+  const candidates = selectReferenceCandidates(command.candidates);
+  const rows = await generateReferences(root, fixture, command.rounds, candidates);
+  const caseIds = new Set(fixture.cases.map(testCase => testCase.id));
+  const candidateIds = new Set<string>(candidates.map(candidate => candidate.id));
+  const selected = rows.filter(
+    row =>
+      row.round <= command.rounds && caseIds.has(row.caseId) && candidateIds.has(row.candidate),
+  );
+  const expectedRows = fixture.cases.length * command.rounds * candidates.length;
+  const validRows = selected.filter(row => row.valid).length;
+  return {
+    partition: command.partition,
+    fixtureHash: fixture.fixtureSha256,
+    rounds: command.rounds,
+    candidates: candidates.map(candidate => candidate.id),
+    expectedRows,
+    totalRows: selected.length,
+    validRows,
+    invalidRows: selected.length - validRows,
+  };
+}
+
 function runBlind(
   root: string,
   command: Extract<CliCommand, { command: "blind" }>,
 ): Record<string, unknown> {
   const fixture = readFixture(root, command.partition);
   const fixtureHash = fixture.fixtureSha256!;
-  const candidates = command.candidates.map(candidate => resolveVariant(root, candidate).id);
+  const requested = command.candidates.includes("all")
+    ? [
+        ...command.candidates.filter(candidate => candidate !== "all"),
+        ...REFERENCE_CANDIDATES.map(candidate => candidate.id),
+      ]
+    : command.candidates;
+  const candidates = expandCandidates(root, requested);
+  const referenceRows = readReferenceCheckpoint(root, fixture);
   const candidateRows = Object.fromEntries(
     candidates.map(candidate => [
       candidate,
-      readGenerationCheckpoint(root, { partition: command.partition, variant: candidate, fixtureHash }),
+      REFERENCE_IDS.has(candidate)
+        ? referenceRows.filter(row => row.candidate === candidate)
+        : readGenerationCheckpoint(root, {
+            partition: command.partition,
+            variant: candidate,
+            fixtureHash,
+          }),
     ]),
   );
   const identity = comparisonIdentity(command.partition, candidates, fixtureHash);
@@ -403,7 +505,9 @@ function runBlind(
   for (let round = 1; round <= command.rounds; round += 1) {
     const candidateOutputs = Object.fromEntries(
       candidates.map(candidate => {
-        const rows = candidateRows[candidate]!.filter(row => row.round === round);
+        const rows = candidateRows[candidate]!.filter(
+          (row: Generation | ReferenceGeneration) => row.round === round,
+        );
         if (rows.length !== fixture.cases.length || rows.some(row => !row.valid || !row.output)) {
           throw new Error(`candidate round is incomplete or invalid: ${candidate}/round${round}`);
         }
@@ -434,7 +538,13 @@ function readJudgeBatches(root: string, identity: ArtifactIdentity, rounds: numb
     if (round > rounds) return [];
     const raw = readRawJson(root, identity, filename);
     const wrapped = raw as { rows?: unknown; judgments?: unknown };
-    return [{ judge: match[1]!, round, rows: Array.isArray(raw) ? raw : wrapped.rows ?? wrapped.judgments }];
+    return [
+      {
+        judge: match[1]!,
+        round,
+        rows: Array.isArray(raw) ? raw : (wrapped.rows ?? wrapped.judgments),
+      },
+    ];
   });
   if (batches.length === 0) throw new Error("no judge artifacts found for aggregation");
   return batches;
@@ -447,12 +557,22 @@ function runAggregate(
   const fixture = readFixture(root, command.partition);
   const fixtureHash = fixture.fixtureSha256!;
   const target = resolveVariant(root, command.target);
-  const references = command.references.map(reference => resolveVariant(root, reference).id);
+  const references = expandCandidates(root, command.references);
   const candidates = [...new Set([...references, target.id])];
   const identity = comparisonIdentity(command.partition, candidates, fixtureHash);
   const mappings = readRawJson(root, identity, "mapping.json") as BlindMapping[];
-  const generations = candidates.flatMap(candidate =>
-    readGenerationCheckpoint(root, { partition: command.partition, variant: candidate, fixtureHash }),
+  const generations = [
+    target.id,
+    ...references.filter(reference => !REFERENCE_IDS.has(reference)),
+  ].flatMap(candidate =>
+    readGenerationCheckpoint(root, {
+      partition: command.partition,
+      variant: candidate,
+      fixtureHash,
+    }),
+  );
+  const referenceRows = readReferenceCheckpoint(root, fixture).filter(
+    row => row.round <= command.rounds && references.includes(row.candidate),
   );
   const result = aggregateEvaluation({
     evalId: fixture.evalId,
@@ -464,19 +584,31 @@ function runAggregate(
     mappings,
     judgeBatches: readJudgeBatches(root, identity, command.rounds),
     knownGoldenRegression: command.knownGoldenRegression,
+    referenceOutputCount: referenceRows.length,
   });
+  if (command.partition === "holdout") {
+    const expectedOutputs = fixture.cases.length * command.rounds * candidates.length;
+    const expectedReviews = expectedOutputs * 3;
+    if (
+      result.protocol.generatedOutputs !== expectedOutputs ||
+      result.protocol.candidateReviews !== expectedReviews ||
+      result.protocol.dimensionScores !== expectedReviews * 5 ||
+      result.protocol.judges.length !== 3 ||
+      result.protocol.rounds.length !== command.rounds
+    ) {
+      throw new Error("holdout protocol counts do not match the frozen contract");
+    }
+  }
   writeRawJson(root, identity, "aggregate.json", result);
   const summary = command.select
     ? { ...result, selectedPrompt: { id: target.id, sha256: target.sha256 } }
     : result;
-  const baseName = `deepseek-v4-flash-${target.id}`;
+  const partitionSuffix = command.partition === "dev" ? "" : `-${command.partition}`;
+  const baseName = `deepseek-v4-flash-${target.id}${partitionSuffix}`;
   const config = loadProviderConfig(root);
-  writeTrackedSummary(
-    root,
-    `docs/qa/annotation-eval/${baseName}-summary.json`,
-    summary,
-    [config.apiKey],
-  );
+  writeTrackedSummary(root, `docs/qa/annotation-eval/${baseName}-summary.json`, summary, [
+    config.apiKey,
+  ]);
   writeTrackedText(
     root,
     `docs/qa/annotation-eval/${baseName}-report.md`,
@@ -501,11 +633,18 @@ async function main(): Promise<void> {
       ? await runValidate(root)
       : command.command === "generate"
         ? await runGenerate(root, command)
-        : command.command === "blind"
-          ? runBlind(root, command)
-          : runAggregate(root, command);
+        : command.command === "references"
+          ? await runReferences(root, command)
+          : command.command === "blind"
+            ? runBlind(root, command)
+            : runAggregate(root, command);
   console.log(JSON.stringify(result, null, 2));
-  if (command.command === "generate" && Number(result.invalidRows) > 0) process.exitCode = 1;
+  if (
+    (command.command === "generate" || command.command === "references") &&
+    Number(result.invalidRows) > 0
+  ) {
+    process.exitCode = 1;
+  }
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -71,9 +71,9 @@ describe("annotation eval provider", () => {
     );
 
     expect(result.output).toEqual({ sixToMe: "前向", meToSix: "反向" });
-    expect(result.metrics.firstContentMs).not.toBeNull();
-    expect(result.metrics.reasoningTokens).toBe(0);
-    expect(result.metrics.totalTokens).toBe(150);
+    expect(result.metrics!.firstContentMs).not.toBeNull();
+    expect(result.metrics!.reasoningTokens).toBe(0);
+    expect(result.metrics!.totalTokens).toBe(150);
     expect(requestBody).toMatchObject({
       model: "deepseek-v4-flash",
       thinking: { type: "disabled" },
