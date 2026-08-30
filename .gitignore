@@ -45,6 +45,7 @@ playwright/.cache
 
 # Local scratch artifacts
 .tmp/
+/artifacts/annotation-eval/
 .worktrees/
 .codex-review-screenshots/
 .planning/
