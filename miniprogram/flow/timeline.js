@@ -25,6 +25,7 @@ class FlowTimeline {
     this.speed = 1;
     this.lastTime = null;
     this.elapsed = 0;
+    this.ambientPhase = 0;
   }
 
   get index() {
@@ -62,7 +63,9 @@ class FlowTimeline {
     // A released flick keeps gliding with exponential decay, even while
     // paused; when it dies out we ask the page for a gentle detent settle.
     if (this.flinging) {
-      this.position = modulo(this.position + this.velocity * dt, this.count * CELL);
+      const step = this.velocity * dt;
+      this.position = modulo(this.position + step, this.count * CELL);
+      this.advanceAmbient(step, dt);
       this.velocity *= Math.exp(-FLING_DAMPING * dt);
       this.elapsed += dt;
       if (Math.abs(this.velocity) < FLING_STOP) {
@@ -81,9 +84,18 @@ class FlowTimeline {
     this.flow += (1 - this.flow) * (1 - Math.exp(-FLOW_RAMP * dt));
     const phase = modulo(this.position, CELL) / CELL;
     const reading = Math.exp(-Math.pow((phase - 0.42) / 0.22, 2));
-    this.position = modulo(this.position + dt * (44 - 22 * reading) * this.speed * this.flow, this.count * CELL);
+    const step = dt * (44 - 22 * reading) * this.speed * this.flow;
+    this.position = modulo(this.position + step, this.count * CELL);
+    this.advanceAmbient(step, dt);
     this.elapsed += dt;
     return true;
+  }
+
+  // Accumulate real travel instead of a separate decorative clock. The phase
+  // freezes on pause/background and survives renderer recreation. Cap its pace
+  // during a fast fling so a gesture can never turn the breathing into flicker.
+  advanceAmbient(distance, dt) {
+    this.ambientPhase = modulo(this.ambientPhase + Math.min(Math.abs(distance), 44 * dt) / (CELL * 1.5), 1);
   }
 
   setVisible(visible) {
@@ -99,6 +111,7 @@ class FlowTimeline {
     if (dtSeconds > 0.001 && dtSeconds < 0.5) {
       const instant = -deltaPixels * CELL / pitch / dtSeconds;
       this.velocity = Math.max(-FLING_CAP, Math.min(FLING_CAP, this.velocity * 0.7 + instant * 0.3));
+      if (this.visible) this.advanceAmbient(deltaPixels * CELL / pitch, Math.min(dtSeconds, 0.064));
     }
   }
 

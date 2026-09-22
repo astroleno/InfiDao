@@ -1,4 +1,5 @@
 <view class="experience">
+  <view id="motion-preference" class="motion-preference" aria-hidden="true" />
   <canvas type="webgl" id="ribbon" hidden="{{graphicsError || snapshotReady}}" class="ribbon" style="top: {{sceneTop}}px; height: {{sceneHeight}}px" catchtap="onCanvasTap" catchtouchstart="onTouchStart" catchtouchmove="onTouchMove" catchtouchend="onTouchEnd" catchtouchcancel="onTouchCancel" binderror="graphicsFailed" aria-label="流动经文，轻点停驻，拖动回看" />
   <canvas type="2d" id="glyph-atlas" class="glyph-atlas" aria-hidden="true" />
   <image wx:for="{{shots}}" wx:key="token" class="scene-shot {{item.visible ? 'scene-shot--visible' : ''}} {{item.blend ? 'scene-shot--blend' : ''}}" src="{{item.src}}" mode="scaleToFill" style="top: {{sceneTop}}px; height: {{sceneHeight}}px; transform: translateY({{-sceneShift}}px)" data-token="{{item.token}}" bindload="onSnapshotLoad" binderror="onSnapshotError" catchtap="onCanvasTap" catchtouchstart="onTouchStart" catchtouchmove="onTouchMove" catchtouchend="onTouchEnd" catchtouchcancel="onTouchCancel" aria-hidden="true" />

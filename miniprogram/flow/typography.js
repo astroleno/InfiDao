@@ -3,10 +3,10 @@ const FONT_DATA = require('../assets/fonts/serif-data');
 const SUPPLEMENT_DATA = require('../assets/fonts/supplement-data');
 const FACES = [{ family: FAMILY, data: FONT_DATA }, { family: SUPPLEMENT, data: SUPPLEMENT_DATA }];
 
-// Only native page text uses font registration. The optical canvas draws the
-// bundled outlines directly, so iPhone font fallback cannot change its glyphs.
+// Page text uses font registration. Canvas reads the same font files directly;
+// iPhone's native font matching cannot silently substitute a different typeface.
 function createTypography() {
-  const status = { webview: 'pending', canvas: 'bundled-outlines' };
+  const status = { webview: 'pending', canvas: 'font-file' };
   const registered = {};
   let pending;
   function prepare(api) {

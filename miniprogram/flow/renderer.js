@@ -1,6 +1,18 @@
 const { paintAtlas } = require('./atlas');
 const { CELL, modulo } = require('./timeline');
 const { CENTER_SCALE, sceneMetrics, wheelGeometry, quotationGeometry } = require('./scene');
+const { NOISE_SIZE, inkLight, grainPixels, INK_GLSL } = require('./atmosphere');
+
+const BACKGROUND_VERTEX = `
+attribute vec3 a_position;
+void main() { gl_Position = vec4(a_position, 1.0); }
+`;
+const BACKGROUND_FRAGMENT = `
+precision highp float;
+uniform vec2 u_resolution;
+${INK_GLSL}
+void main() { gl_FragColor = vec4(inkBackground(), 1.0); }
+`;
 
 const VERTEX = `
 precision highp float;
@@ -140,6 +152,7 @@ uniform float u_thickness;
 uniform float u_back;
 varying vec3 v_normal;
 ${FOCUS}
+${INK_GLSL}
 float random(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 vec3 transmitted(vec3 n, vec3 v, float ior, float thickness) {
   // Volume transmission: trace the wavelength's ray through the glass and
@@ -181,18 +194,22 @@ void main() {
   light *= 1.0 - readingFace * 0.86;
   // A barely visible neutral grazing reflection keeps the glass path connected.
   float rim = pow(1.0 - abs(dot(n, v)), 5.0) * 0.04;
-  gl_FragColor = vec4((light + vec3(rim)) * opacity(), 1.0);
+  vec3 color = (light + vec3(rim)) * opacity();
+  // Add atmosphere only in the final image, outside the refraction buffers.
+  // This keeps white glyphs and dispersion intact and grain in screen space.
+  if (u_final > 0.5) color += inkBackground();
+  gl_FragColor = vec4(color, 1.0);
 }
 `;
 
-function makeProgram(gl, fragment) {
+function makeProgram(gl, fragment, vertex = VERTEX) {
   const shaders = [];
   const program = gl.createProgram();
   try {
     [gl.VERTEX_SHADER, gl.FRAGMENT_SHADER].forEach((type, i) => {
       const shader = gl.createShader(type);
       shaders.push(shader);
-      gl.shaderSource(shader, i ? fragment : VERTEX);
+      gl.shaderSource(shader, i ? fragment : vertex);
       gl.compileShader(shader);
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(shader));
       gl.attachShader(program, shader);
@@ -202,7 +219,7 @@ function makeProgram(gl, fragment) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','count','radius','arc','curl','recede','pitch','final','reading','thickness','back'].forEach(name => {
+  ['resolution','texture','glyph','cursor','count','radius','arc','curl','recede','pitch','final','reading','thickness','back','noise','dpr','inkLight'].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   });
   return { program, uniforms, attributes: ['position','normal','uv'].map(name => gl.getAttribLocation(program, 'a_' + name)) };
@@ -234,6 +251,15 @@ class WheelRenderer {
     this.canvas.height = Math.round(this.height * this.dpr);
     this.textProgram = makeProgram(gl, TEXT_FRAGMENT); this.programs.push(this.textProgram);
     this.glassProgram = makeProgram(gl, GLASS_FRAGMENT); this.programs.push(this.glassProgram);
+    this.backgroundProgram = makeProgram(gl, BACKGROUND_FRAGMENT, BACKGROUND_VERTEX); this.programs.push(this.backgroundProgram);
+    this.backgroundQuad = this.geometry([[-1,-1], [1,-1], [-1,1], [1,-1], [1,1], [-1,1]]
+      .flatMap(([x,y]) => [x,y,0, 0,0,0, 0,0]));
+    this.noiseTexture = this.texture();
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, NOISE_SIZE, NOISE_SIZE, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, grainPixels());
     this.textTexture = this.texture();
     this.targets.push(this.target()); this.targets.push(this.target());
     this.glass = this.geometry(wheelGeometry(this.radius, this.pitch, this.turns));
@@ -284,7 +310,7 @@ class WheelRenderer {
   setFrames(frames) {
     if (this.destroyed) return;
     const glyphs = paintAtlas(this.atlasCanvas, frames, this.dpr), gl = this.gl;
-    this.glyphMode = 'bundled-outlines';
+    this.glyphMode = 'font-file';
     gl.bindTexture(gl.TEXTURE_2D, this.textTexture);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
@@ -314,6 +340,9 @@ class WheelRenderer {
     // chromatic fringes instead of readable duplicates on neighbouring rows.
     gl.uniform1f(u.thickness, this.radius * (pass === 1 ? 1.5 : 0.3));
     gl.uniform1i(u.texture, 0);
+    gl.uniform1i(u.noise, 1);
+    gl.uniform1f(u.dpr, this.dpr);
+    gl.uniform1f(u.inkLight, inkLight(this.timeline.ambientPhase, this.reducedMotion));
     gl.bindBuffer(gl.ARRAY_BUFFER, geometry.buffer);
     program.attributes.forEach((location, i) => {
       if (location < 0) return;
@@ -328,11 +357,20 @@ class WheelRenderer {
     const gl = this.gl;
     if (gl.isContextLost()) throw new Error('WebGL context lost');
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, this.noiseTexture);
     gl.activeTexture(gl.TEXTURE0);
     // 1: unobstructed scene. 2: rear glass + text. 3: front glass + text.
     for (let pass = 0; pass < 3; pass++) {
       gl.bindFramebuffer(gl.FRAMEBUFFER, pass < 2 ? this.targets[pass].buffer : null);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      if (pass === 2) {
+        gl.disable(gl.DEPTH_TEST);
+        gl.depthMask(false);
+        this.mesh(this.backgroundProgram, this.backgroundQuad, pass, false);
+        gl.depthMask(true);
+        gl.enable(gl.DEPTH_TEST);
+      }
       if (pass) {
         gl.bindTexture(gl.TEXTURE_2D, this.targets[pass - 1].texture);
         gl.cullFace(pass === 1 ? gl.FRONT : gl.BACK);
@@ -424,6 +462,7 @@ class WheelRenderer {
       gl.deleteFramebuffer(target.buffer); gl.deleteRenderbuffer(target.depth); gl.deleteTexture(target.texture);
     });
     if (this.textTexture) gl.deleteTexture(this.textTexture);
+    if (this.noiseTexture) gl.deleteTexture(this.noiseTexture);
   }
 }
 

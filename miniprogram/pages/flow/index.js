@@ -38,6 +38,7 @@ Page({
     this._timeline.setVisible(true);
     if (this._pendingSession) { this.enterSession(this._pendingSession); return; }
     if (!this._renderer || this.data.loading) return;
+    this.readMotionPreference();
     if (this.data.paused) {
       if (!this.data.snapshotReady) this.settleReading();
       else this.setData({ phase: 'reading', readingVisible: !this.data.overlay });
@@ -146,12 +147,14 @@ Page({
     this.createSelectorQuery()
       .select('#ribbon').fields({ node: true, size: true })
       .select('#glyph-atlas').fields({ node: true, size: true })
+      .select('#motion-preference').fields({ computedStyle: ['opacity'] })
       .exec(results => {
         if (!this.current(action)) return;
         try {
           if (!results[0] || !results[0].node || !results[1] || !results[1].node) throw new Error('Canvas unavailable');
           this._renderer = new WheelRenderer(results[0].node, results[1].node, {
             timeline: this._timeline, width: this._window.windowWidth, height: this.data.sceneHeight,
+            reducedMotion: !results[2] || Number(results[2].opacity) !== 1,
             dpr: this._window.pixelRatio, onFrame: () => this.onWheelFrame(), onError: error => this.graphicsFailed(error),
           });
           this._renderer.reading = this.data.paused ? 1 : 0;
@@ -170,6 +173,14 @@ Page({
           }, 9000);
         } catch (error) { this.graphicsFailed(error); }
       });
+  },
+
+  readMotionPreference() {
+    const renderer = this._renderer;
+    if (!renderer || !this.createSelectorQuery) return;
+    this.createSelectorQuery().select('#motion-preference').fields({ computedStyle: ['opacity'] }).exec(results => {
+      if (this._alive && renderer === this._renderer) renderer.reducedMotion = !results[0] || Number(results[0].opacity) !== 1;
+    });
   },
 
   graphicsFailed(error) {

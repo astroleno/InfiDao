@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { FlowTimeline, CELL } = require('../flow/timeline');
+const { inkLight } = require('../flow/atmosphere');
 const { createMockProvider, validateSession } = require('../flow/provider');
 const { passages, journeys } = require('../content/passages');
 
@@ -61,6 +62,35 @@ test('a stalled render frame does not skip a passage', () => {
   const position = flow.position;
   flow.tick(120000);
   assert.ok(flow.position - position < 3);
+});
+
+test('background light follows travel across a loop, freezes on pause, and resumes without a jump', () => {
+  const flow = new FlowTimeline(8);
+  flow.position = 8 * CELL - 1;
+  advance(flow, 0, 5000);
+  assert.ok(flow.position < CELL, 'the quotation loop has wrapped');
+  assert.ok(flow.ambientPhase > 0 && flow.ambientPhase < 0.3);
+  const phase = flow.ambientPhase, light = inkLight(phase);
+  flow.paused = true;
+  advance(flow, 5000, 5000);
+  assert.equal(flow.ambientPhase, phase);
+  assert.equal(inkLight(flow.ambientPhase), light);
+  flow.setVisible(false); flow.paused = false;
+  advance(flow, 10000, 5000);
+  assert.equal(flow.ambientPhase, phase);
+  flow.setVisible(true); flow.tick(600000);
+  assert.equal(flow.ambientPhase, phase);
+  flow.tick(600016);
+  assert.ok(flow.ambientPhase > phase && flow.ambientPhase - phase < 0.001);
+});
+
+test('a fast fling cannot make the light flicker, and reduced motion keeps a fixed light', () => {
+  const flow = new FlowTimeline(8);
+  flow.flinging = true; flow.velocity = CELL * 8;
+  flow.tick(0); flow.tick(32);
+  assert.ok(flow.position - CELL * 0.46 > 100);
+  assert.ok(flow.ambientPhase < 0.002, 'light stays slow even during a rapid fling');
+  for (const phase of [0, 0.25, 0.5, 0.75]) assert.equal(inkLight(phase, true), inkLight(0, true));
 });
 
 test('resume ramps after a real stopped render loop, without any paused ticks', () => {
