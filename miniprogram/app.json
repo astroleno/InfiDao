@@ -1,0 +1,13 @@
+{
+  "pages": ["pages/flow/index"],
+  "window": {
+    "navigationStyle": "custom",
+    "navigationBarTitleText": "六经注我",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#050709",
+    "backgroundTextStyle": "dark"
+  },
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,55 @@
+<view class="experience">
+  <canvas type="webgl" id="ribbon" hidden="{{staticMode || overlay !== ''}}" class="ribbon" style="top: {{sceneTop}}px; height: {{sceneHeight}}px" catchtap="onCanvasTap" catchtouchstart="onTouchStart" catchtouchmove="onTouchMove" catchtouchend="onTouchEnd" catchtouchcancel="onTouchCancel" binderror="graphicsFailed" aria-label="流动经文，轻点停驻，拖动回看" />
+  <canvas type="2d" id="glyph-atlas" class="glyph-atlas" aria-hidden="true" />
+
+
+  <view wx:if="{{!ready || loading}}" class="arrival" aria-role="status">
+    <text class="arrival-note">六经注我</text>
+  </view>
+
+  <view wx:if="{{error}}" class="arrival error-state" aria-role="alert">
+    <text class="arrival-note">{{error}}</text>
+    <button class="text-button retry" bindtap="retry">重新展开</button>
+  </view>
+
+  <view wx:if="{{staticMode && active}}" class="still-reader">
+    <view class="still-quote"><text wx:for="{{active.lines}}" wx:key="*this" class="still-line">{{item}}</text></view>
+    <button class="still-source" bindtap="openSource">《{{active.source}}》 · {{active.chapterLabel}}</button>
+    <view class="still-navigation">
+      <button bindtap="previous" aria-label="上一段经文">上一段</button>
+      <text>{{ordinal}} / {{total}}</text>
+      <button bindtap="next" aria-label="下一段经文">下一段</button>
+    </view>
+  </view>
+
+  <view wx:if="{{hintVisible && ready && !paused && !overlay && !staticMode}}" class="gesture-hint" style="bottom: {{bottomInset + 16}}px">轻点停驻</view>
+  <view wx:if="{{!overlay && (paused || staticMode)}}" class="footer" style="padding-bottom: {{bottomInset}}px">
+    <button class="text-button seed-control" bindtap="openSeed" aria-label="写下最初的一念">一念</button>
+    <button class="text-button source-control" bindtap="openSource">原文</button>
+    <button class="text-button pause-control" bindtap="onPauseControl" aria-label="继续流动">继续</button>
+  </view>
+
+  <view wx:if="{{overlay}}" class="backdrop" bindtap="closeOverlay" catchtouchmove="swallow" />
+  <view wx:if="{{overlay === 'seed'}}" class="sheet seed-sheet" style="bottom: {{keyboardHeight}}px" catchtap="swallow" catchtouchmove="swallow">
+    <view class="sheet-heading"><text class="eyebrow">从一念开始</text><button class="close-sheet" bindtap="closeOverlay" aria-label="关闭输入">收起</button></view>
+    <text class="sheet-title">此刻，什么萦绕着你？</text>
+    <textarea class="seed-input" value="{{draft}}" bindinput="onSeedInput" placeholder="写下心里的那一句…" placeholder-class="input-placeholder" maxlength="120" focus="{{inputFocus}}" adjust-position="{{false}}" show-confirm-bar="{{false}}" bindkeyboardheightchange="onKeyboardHeight" aria-label="最初的一念" />
+    <view class="suggestions">
+      <button data-seed="我想让心慢下来" bindtap="usePrompt">让心慢下来</button>
+      <button data-seed="如何与他人相处" bindtap="usePrompt">与他人相处</button>
+      <button data-seed="我想开始，却总在犹豫" bindtap="usePrompt">迈出第一步</button>
+    </view>
+    <button class="enter-flow" bindtap="submitSeed" disabled="{{!draft || loading}}">{{loading ? '正在展开' : '让它流动'}}</button>
+  </view>
+
+  <view wx:if="{{overlay === 'source' && active}}" class="sheet source-sheet" catchtap="swallow">
+    <view class="sheet-heading"><text class="eyebrow">回到原文 · {{ordinal}}</text><button class="close-sheet" bindtap="closeOverlay" aria-label="关闭原文">收起</button></view>
+    <scroll-view class="source-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+      <text class="source-title">《{{active.source}}》</text>
+      <text class="source-chapter">{{active.chapterLabel}}</text>
+      <text class="source-fulltext" user-select="{{true}}">{{active.fullText}}</text>
+      <view class="reflection-section"><text class="eyebrow">此刻的回响</text><text class="source-reflection">{{active.reflection}}</text><text class="source-note">示例解读，与经典原文分开呈现。</text></view>
+    </scroll-view>
+    <view class="source-actions"><button class="text-button" bindtap="toggleStatic">{{staticMode ? '回到流动' : '静静读一会儿'}}</button><button class="text-button" bindtap="closeOverlay">回到此刻</button></view>
+  </view>
+</view>

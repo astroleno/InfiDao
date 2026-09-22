@@ -1,0 +1,4 @@
+{
+  "desc": "本地阅读原型",
+  "rules": [{ "action": "disallow", "page": "*" }]
+}
