@@ -50,7 +50,7 @@ varying vec3 v_position;
 float focus() { float d = v_position.y / u_pitch; return exp(-d * d * 2.2); }
 float opacity() {
   float d = abs(v_position.y / u_pitch);
-  return (u_final > 0.5 ? exp(-d * d * 0.62) : 1.0) * (1.0 - smoothstep(2.1, 2.48, d));
+  return (u_final > 0.5 ? exp(-d * d * 0.42) : 1.0) * (1.0 - smoothstep(2.6, 3.2, d));
 }
 `;
 
@@ -60,12 +60,12 @@ uniform sampler2D u_texture;
 varying vec2 v_uv;
 ${FOCUS}
 void main() {
-  float blur = (1.0 - focus()) * 2.4 / 1024.0;
-  float a = texture2D(u_texture, v_uv).a * 0.28;
-  a += texture2D(u_texture, v_uv + vec2(blur, 0.0)).a * 0.18;
-  a += texture2D(u_texture, v_uv - vec2(blur, 0.0)).a * 0.18;
-  a += texture2D(u_texture, v_uv + vec2(0.0, blur)).a * 0.18;
-  a += texture2D(u_texture, v_uv - vec2(0.0, blur)).a * 0.18;
+  float blur = (1.0 - focus()) * 1.5 / 1024.0;
+  float a = texture2D(u_texture, v_uv).a * 0.36;
+  a += texture2D(u_texture, v_uv + vec2(blur, 0.0)).a * 0.16;
+  a += texture2D(u_texture, v_uv - vec2(blur, 0.0)).a * 0.16;
+  a += texture2D(u_texture, v_uv + vec2(0.0, blur)).a * 0.16;
+  a += texture2D(u_texture, v_uv - vec2(0.0, blur)).a * 0.16;
   if (a < 0.005 || opacity() < 0.001) discard;
   gl_FragColor = vec4(vec3(opacity()), a);
 }
@@ -100,7 +100,7 @@ void main() {
   for (int i = 0; i < 8; i++) {
     float phase = (float(i) + seed) / 8.0;
     float thickness = u_thickness * (1.0 + 0.1 * phase);
-    float blur = (1.0 - focus()) * 0.018;
+    float blur = (1.0 - focus()) * 0.012;
     vec3 normal = normalize(n + vec3(sin(float(i) * 2.4), cos(float(i) * 2.4), 0.0) * blur);
     light.r += transmitted(normal, v, 1.5, thickness).r;
     light.g += transmitted(normal, v, 1.5 * (1.0 + 0.05 * phase), thickness).g;
@@ -164,7 +164,7 @@ class WheelRenderer {
     this.glassProgram = makeProgram(gl, GLASS_FRAGMENT); this.programs.push(this.glassProgram);
     this.textTexture = this.texture();
     this.targets.push(this.target()); this.targets.push(this.target());
-    this.glass = this.geometry(wheelGeometry(this.radius, this.pitch));
+    this.glass = this.geometry(wheelGeometry(this.radius, this.pitch, this.turns));
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
     gl.cullFace(gl.BACK);

@@ -2,7 +2,7 @@ const TAU = Math.PI * 2;
 const { CELL, modulo } = require('./timeline');
 
 function sceneMetrics(width, height) {
-  return { radius: width * 0.29, pitch: height * 0.132, fontSize: Math.min(25, width * 0.06), turns: 5 };
+  return { radius: width * 0.32, pitch: height * 0.104, fontSize: Math.min(25, width * 0.06), turns: 7 };
 }
 
 function focusAt(y, pitch) {

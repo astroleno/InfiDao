@@ -35,7 +35,7 @@ class FlowTimeline {
     if (this.paused || !this.visible || this.dragging) return false;
     const phase = modulo(this.position, CELL) / CELL;
     const reading = Math.exp(-Math.pow((phase - 0.42) / 0.22, 2));
-    this.position = modulo(this.position + dt * (38 - 19 * reading) * this.speed, this.count * CELL);
+    this.position = modulo(this.position + dt * (44 - 22 * reading) * this.speed, this.count * CELL);
     this.elapsed += dt;
     return true;
   }

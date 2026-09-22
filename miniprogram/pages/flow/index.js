@@ -69,12 +69,15 @@ Page({
     this._window = info;
     const safe = info.safeArea;
     const bottomInset = Math.max(18, safe ? info.screenHeight - safe.bottom + 14 : 30);
-    const reserve = Math.max(88, bottomInset + 48);
+    // Native WebGL canvas covers any DOM above it, so the footer/hint strip
+    // stays outside the canvas; the wheel takes everything else.
+    const strip = Math.max(76, bottomInset + 52);
+    const sceneTop = Math.round(strip * 0.35);
     this.setData({
       headerTop: (info.statusBarHeight || 24) + 14,
       bottomInset,
-      sceneTop: reserve,
-      sceneHeight: info.windowHeight - reserve * 2,
+      sceneTop,
+      sceneHeight: info.windowHeight - strip - sceneTop,
     });
   },
 
@@ -176,7 +179,7 @@ Page({
   togglePause() {
     this.setData({ paused: !this.data.paused, hintVisible: false });
     this.syncMotion();
-    if (this.data.paused && this._renderer) this._renderer.center();
+    if (this.data.paused && this._renderer) { this.pulse(); this._renderer.center(); }
   },
 
   onPauseControl() {
@@ -235,11 +238,13 @@ Page({
     if (!this.data.active) return;
     this.updateActive(true);
     this.setData({ overlay: 'source', hintVisible: false });
+    this.pulse();
     this.syncMotion();
   },
 
   openSeed() {
     this.setData({ overlay: 'seed', draft: '', inputFocus: true, keyboardHeight: 0 });
+    this.pulse();
     this.syncMotion();
   },
 
@@ -276,10 +281,14 @@ Page({
     this.syncMotion();
   },
 
-  previous() { this._timeline.move(-1); this.updateActive(true); },
-  next() { this._timeline.move(1); this.updateActive(true); },
+  previous() { this.pulse(); this._timeline.move(-1); this.updateActive(true); },
+  next() { this.pulse(); this._timeline.move(1); this.updateActive(true); },
   retry() { this.loadSession(this.data.seed); },
   swallow() {},
+
+  pulse() {
+    if (wx.vibrateShort) wx.vibrateShort({ type: 'light' });
+  },
 
   getFlowState() {
     return {
