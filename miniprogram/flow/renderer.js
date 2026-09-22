@@ -12,6 +12,9 @@ uniform float u_glyph;
 uniform float u_cursor;
 uniform float u_count;
 uniform float u_radius;
+uniform float u_arc;
+uniform float u_curl;
+uniform float u_recede;
 uniform float u_pitch;
 varying vec3 v_position;
 varying vec3 v_normal;
@@ -23,13 +26,29 @@ void main() {
     float localY = (u_cursor - a_normal.x) * u_pitch;
     float period = u_count * u_pitch;
     localY = mod(localY + period * 0.5, period) - period * 0.5;
-    // All five bands turn together around the upright Y axis. A full phrase
+    // All five copies turn together around the upright Y axis. A full phrase
     // arrives facing the reader whenever the next line crosses the center.
-    float angle = a_position.x - u_cursor * 2.09439510239;
+    float angle = a_position.x - u_cursor * 1.2566370614;
+    // Screen-space ribbon: rows land on a sine profile — evenly spread at the
+    // center, compressed towards the edges, filling the canvas exactly top to
+    // bottom on any device. Each row's plane pitches around its own tangent,
+    // upright at the reading line, lying almost flat at the edge and always
+    // facing the reader; recession pushes distant rows back for the lens.
+    float d = localY / u_pitch;
+    float front = max(u_resolution.y * 0.5 - u_radius, u_pitch);
+    float edge = front / u_pitch;
+    float t = min(abs(d) / edge, 1.0);
+    float phi = sign(d) * u_arc * pow(max(t, 1e-4), u_curl);
+    float sp = sin(phi), cp = cos(phi);
+    float recession = u_recede * (1.0 - cp);
+    float cz = cos(angle) * (u_radius + 0.8) - sin(angle) * a_position.y;
+    float pz = cz - a_position.z * sp - recession;
+    float ndc = sign(d) * sin(t * 1.5396);
+    float w = u_resolution.y * 0.5 - pz;
     p = vec3(sin(angle) * (u_radius + 0.8) + cos(angle) * a_position.y,
-      localY + a_position.z,
-      cos(angle) * (u_radius + 0.8) - sin(angle) * a_position.y);
-    n = vec3(sin(angle), 0.0, cos(angle));
+      ndc * w + a_position.z * cp,
+      pz);
+    n = vec3(sin(angle) * cp, sp, cos(angle) * cp);
   }
   float camera = u_resolution.y * 0.5;
   float w = camera - p.z;
@@ -44,13 +63,30 @@ void main() {
 `;
 
 const FOCUS = `
+uniform vec2 u_resolution;
 uniform float u_pitch;
+uniform float u_radius;
 uniform float u_final;
 varying vec3 v_position;
-float focus() { float d = v_position.y / u_pitch; return exp(-d * d * 2.2); }
+// Edge fade lives in the fragment stage: the glass wall is one quad strip
+// with vertices only at ±height, so a vertex-level fade interpolates to zero
+// across the whole wall and the glass vanishes.
+float edgeFade() {
+  float camera = u_resolution.y * 0.5;
+  float ndcY = v_position.y / (camera - v_position.z);
+  return 1.0 - smoothstep(0.9, 0.995, abs(ndcY));
+}
+// Camera-lens depth of field: blur follows real distance from the focal
+// plane (the centered reading line), not line index.
+float depthBlur() {
+  float camera = u_resolution.y * 0.5;
+  float dist = camera - v_position.z;
+  float focal = camera - (u_radius + 0.8);
+  return clamp(abs(dist - focal) * 0.007, 0.0, 0.8);
+}
+float centerWeight() { float d = v_position.y / u_pitch; return exp(-d * d * 0.55); }
 float opacity() {
-  float d = abs(v_position.y / u_pitch);
-  return (u_final > 0.5 ? exp(-d * d * 0.42) : 1.0) * (1.0 - smoothstep(2.6, 3.2, d));
+  return (u_final > 0.5 ? 1.0 - depthBlur() * 0.4 : 1.0) * edgeFade();
 }
 `;
 
@@ -59,31 +95,45 @@ precision highp float;
 uniform sampler2D u_texture;
 varying vec2 v_uv;
 ${FOCUS}
+float glyphAlpha(vec2 uv, float blur) {
+  float a = texture2D(u_texture, uv).a * 0.36;
+  a += texture2D(u_texture, uv + vec2(blur, 0.0)).a * 0.16;
+  a += texture2D(u_texture, uv - vec2(blur, 0.0)).a * 0.16;
+  a += texture2D(u_texture, uv + vec2(0.0, blur)).a * 0.16;
+  a += texture2D(u_texture, uv - vec2(0.0, blur)).a * 0.16;
+  return a;
+}
 void main() {
-  float blur = (1.0 - focus()) * 1.5 / 1024.0;
-  float a = texture2D(u_texture, v_uv).a * 0.36;
-  a += texture2D(u_texture, v_uv + vec2(blur, 0.0)).a * 0.16;
-  a += texture2D(u_texture, v_uv - vec2(blur, 0.0)).a * 0.16;
-  a += texture2D(u_texture, v_uv + vec2(0.0, blur)).a * 0.16;
-  a += texture2D(u_texture, v_uv - vec2(0.0, blur)).a * 0.16;
+  float dof = depthBlur();
+  float blur = dof * 8.0 / 1024.0;
+  // Lens chromatic aberration grows with defocus: red/blue channels split
+  // along the glyph axis on out-of-focus rows.
+  float ca = dof * 3.0 / 1024.0;
+  vec3 rgb = vec3(
+    glyphAlpha(v_uv + vec2(ca, 0.0), blur),
+    glyphAlpha(v_uv, blur),
+    glyphAlpha(v_uv - vec2(ca, 0.0), blur));
+  float a = (rgb.r + rgb.g + rgb.b) * 0.3333;
   if (a < 0.005 || opacity() < 0.001) discard;
-  gl_FragColor = vec4(vec3(opacity()), a);
+  gl_FragColor = vec4(vec3(opacity()) * rgb / max(a, 0.001), a);
 }
 `;
 
-// Adapted from MeshTransmissionMaterial's volume transmission: trace different
-// wavelengths through rear/front surfaces, project the exit rays into scene FBOs.
-// Foreground glyphs stay white; the glass produces the dispersion.
+// Adapted from MeshTransmissionMaterial's transmission: sample the scene FBO
+// with a per-wavelength screen-space push, gated by fresnel. Foreground glyphs
+// stay white; the glass produces the dispersion.
 const GLASS_FRAGMENT = `
 precision highp float;
 uniform sampler2D u_texture;
-uniform vec2 u_resolution;
 uniform float u_thickness;
 uniform float u_back;
 varying vec3 v_normal;
 ${FOCUS}
 float random(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 vec3 transmitted(vec3 n, vec3 v, float ior, float thickness) {
+  // Volume transmission: trace the wavelength's ray through the glass and
+  // project the exit point into the scene buffer. At this radius the throw
+  // lands inside the dark bands between rows, so echoes stay visible.
   vec3 ray = normalize(refract(-v, n, 1.0 / ior)) * thickness;
   vec3 exitPoint = v_position + ray;
   float camera = u_resolution.y * 0.5;
@@ -100,17 +150,26 @@ void main() {
   for (int i = 0; i < 8; i++) {
     float phase = (float(i) + seed) / 8.0;
     float thickness = u_thickness * (1.0 + 0.1 * phase);
-    float blur = (1.0 - focus()) * 0.012;
+    // Roughness keeps the 8 taps diverging even at the focal plane, so echoes
+    // smear into soft halos of light instead of sharp duplicate glyphs.
+    float blur = 0.045 + depthBlur() * 0.09;
     vec3 normal = normalize(n + vec3(sin(float(i) * 2.4), cos(float(i) * 2.4), 0.0) * blur);
     light.r += transmitted(normal, v, 1.5, thickness).r;
-    light.g += transmitted(normal, v, 1.5 * (1.0 + 0.05 * phase), thickness).g;
-    light.b += transmitted(normal, v, 1.5 * (1.0 + 0.10 * phase), thickness).b;
+    light.g += transmitted(normal, v, 1.5 * (1.0 + 0.09 * phase), thickness).g;
+    light.b += transmitted(normal, v, 1.5 * (1.0 + 0.20 * phase), thickness).b;
   }
   light /= 8.0;
-  float readingFace = focus() * smoothstep(0.45, 0.92, n.z);
+  // Keep the dispersion calm: echoes stay under the text they came from.
+  light *= 0.5;
+  // The far wall throws its echoes half a screen away, doubling rows onto
+  // each other; keep it to a whisper so only the front fringe reads.
+  light *= u_back > 0.5 ? 0.25 : 1.0;
+  // Rear and off-axis refraction softens with depth, like a real lens.
+  light *= 1.0 - depthBlur() * 0.4;
+  float readingFace = centerWeight() * smoothstep(0.45, 0.92, n.z);
   light *= 1.0 - readingFace * 0.86;
   // A barely visible neutral grazing reflection keeps the glass path connected.
-  float rim = pow(1.0 - abs(dot(n, v)), 5.0) * 0.022;
+  float rim = pow(1.0 - abs(dot(n, v)), 5.0) * 0.04;
   gl_FragColor = vec4((light + vec3(rim)) * opacity(), 1.0);
 }
 `;
@@ -132,7 +191,7 @@ function makeProgram(gl, fragment) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','count','radius','pitch','final','thickness','back'].forEach(name => {
+  ['resolution','texture','glyph','cursor','count','radius','arc','curl','recede','pitch','final','thickness','back'].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   });
   return { program, uniforms, attributes: ['position','normal','uv'].map(name => gl.getAttribLocation(program, 'a_' + name)) };
@@ -211,7 +270,7 @@ class WheelRenderer {
 
   setFrames(frames) {
     if (this.destroyed) return;
-    const glyphs = paintAtlas(this.atlasCanvas, frames), gl = this.gl;
+    const glyphs = paintAtlas(this.atlasCanvas, frames, this.dpr), gl = this.gl;
     gl.bindTexture(gl.TEXTURE_2D, this.textTexture);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
@@ -229,11 +288,16 @@ class WheelRenderer {
     gl.uniform1f(u.cursor, this.timeline.position / CELL - 0.46);
     gl.uniform1f(u.count, this.count);
     gl.uniform1f(u.radius, this.radius);
+    gl.uniform1f(u.arc, this.arc);
+    gl.uniform1f(u.curl, this.curl);
+    gl.uniform1f(u.recede, this.recede);
     gl.uniform1f(u.pitch, this.pitch);
     gl.uniform1f(u.glyph, glyph ? 1 : 0);
     gl.uniform1f(u.final, pass === 2 ? 1 : 0);
     gl.uniform1f(u.back, pass === 1 ? 1 : 0);
-    gl.uniform1f(u.thickness, this.radius * (pass === 1 ? 2.5 : 1));
+    // Short throw keeps ghost echoes hugging their source glyphs as soft
+    // chromatic fringes instead of readable duplicates on neighbouring rows.
+    gl.uniform1f(u.thickness, this.radius * (pass === 1 ? 1.5 : 0.3));
     gl.uniform1i(u.texture, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, geometry.buffer);
     program.attributes.forEach((location, i) => {
@@ -257,7 +321,11 @@ class WheelRenderer {
       if (pass) {
         gl.bindTexture(gl.TEXTURE_2D, this.targets[pass - 1].texture);
         gl.cullFace(pass === 1 ? gl.FRONT : gl.BACK);
+        // The ribbon recedes past the front glass wall; the wall must not
+        // depth-occlude it, or off-center lines get sliced into strips.
+        if (pass === 2) gl.depthMask(false);
         this.mesh(this.glassProgram, this.glass, pass, false);
+        if (pass === 2) gl.depthMask(true);
       }
       gl.cullFace(gl.BACK);
       gl.bindTexture(gl.TEXTURE_2D, this.textTexture);

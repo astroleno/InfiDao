@@ -2,7 +2,7 @@ const TAU = Math.PI * 2;
 const { CELL, modulo } = require('./timeline');
 
 function sceneMetrics(width, height) {
-  return { radius: width * 0.32, pitch: height * 0.104, fontSize: Math.min(25, width * 0.06), turns: 7 };
+  return { radius: width * 0.5, arc: 1.45, curl: 1.5, recede: height * 0.28, pitch: height * 0.058, fontSize: Math.min(21, width * 0.056), turns: 11 };
 }
 
 function focusAt(y, pitch) {
@@ -43,23 +43,35 @@ function wheelGeometry(radius, pitch, turns = 5) {
   return vertices;
 }
 
+const PUNCTUATION = /[，。、；：？！""''「」『』《》〈〉（）—…·]/;
+
 function quotationGeometry(frames, glyphs, radius, fontSize) {
   const vertices = [];
   frames.forEach((frame, index) => {
     const chars = Array.from(frame.quote);
-    const angleStep = TAU / 3 / (chars.length + 2);
-    for (const rear of [0, TAU / 3, TAU * 2 / 3]) {
-      chars.forEach((char, i) => {
-        const angle = (i - (chars.length - 1) / 2) * angleStep + rear;
-        const size = fontSize * 1.5;
-        const uv = glyphs[char];
-        const corners = [[-.5,-.5,uv[0],uv[3]],[.5,-.5,uv[2],uv[3]],[-.5,.5,uv[0],uv[1]],[.5,.5,uv[2],uv[1]]];
+    // Fixed tracking: all lines share one character advance, and punctuation
+    // takes a half slot so 句读 marks hug the previous character instead of
+    // floating in a full-width gap. Long lines compress into one wheel slot.
+    const widths = chars.map(char => PUNCTUATION.test(char) ? 0.5 : 1);
+    const units = widths.reduce((sum, w) => sum + w, 0) || 1;
+    const step = Math.min(fontSize * 1.62 / radius, TAU / 5 * 0.92 / units);
+    let cursor = -units / 2;
+    chars.forEach((char, i) => {
+      const offset = (cursor + widths[i] / 2) * step;
+      cursor += widths[i];
+      const size = fontSize * 1.5;
+      const uv = glyphs[char];
+      const corners = [[-.5,-.5,uv[0],uv[3]],[.5,-.5,uv[2],uv[3]],[-.5,.5,uv[0],uv[1]],[.5,.5,uv[2],uv[1]]];
+      // Five copies around the wheel: mid-scroll rows sit at ±36°, always on the
+      // front arc — the center never opens up between detents.
+      for (const rear of [0, TAU / 5, TAU * 2 / 5, TAU * 3 / 5, TAU * 4 / 5]) {
+        const angle = offset + rear;
         for (const j of [0,1,2,1,3,2]) {
           const [x,y,u,v] = corners[j];
           vertices.push(angle, x * size, y * size, index, 0, 0, u, v);
         }
-      });
-    }
+      }
+    });
   });
   return vertices;
 }

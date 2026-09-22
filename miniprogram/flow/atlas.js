@@ -3,22 +3,26 @@ const TILE = 96;
 const COLUMNS = 10;
 
 // Only quotations enter the optical scene; all metadata stays in the reader.
-function paintAtlas(canvas, frames) {
+// dpr scales the canvas backing store so glyphs stay crisp when the wheel
+// magnifies them — logical layout and UVs are unchanged.
+function paintAtlas(canvas, frames, dpr = 1) {
+  const scale = Math.max(1, dpr);
+  const size = WIDTH * scale, tile = TILE * scale;
   const characters = Array.from(new Set(frames.flatMap(frame => Array.from(frame.quote))));
-  canvas.width = WIDTH;
-  canvas.height = WIDTH;
+  canvas.width = size;
+  canvas.height = size;
   const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, WIDTH, WIDTH);
+  ctx.clearRect(0, 0, size, size);
   ctx.fillStyle = '#ffffff';
-  ctx.font = '64px "Songti SC", "STSong", "Noto Serif CJK SC", serif';
+  ctx.font = `${64 * scale}px "Songti SC", "STSong", "Noto Serif CJK SC", serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   const glyphs = {};
   characters.forEach((char, i) => {
-    const x = i % COLUMNS * TILE, y = Math.floor(i / COLUMNS) * TILE;
-    if (y + TILE > WIDTH) throw new Error('Quotation atlas overflow');
-    ctx.fillText(char, x + TILE / 2, y + TILE / 2);
-    glyphs[char] = [x / WIDTH, y / WIDTH, (x + TILE) / WIDTH, (y + TILE) / WIDTH];
+    const x = i % COLUMNS * tile, y = Math.floor(i / COLUMNS) * tile;
+    if (y + tile > size) throw new Error('Quotation atlas overflow');
+    ctx.fillText(char, x + tile / 2, y + tile / 2);
+    glyphs[char] = [x / size, y / size, (x + tile) / size, (y + tile) / size];
   });
   return glyphs;
 }

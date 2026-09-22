@@ -70,8 +70,9 @@ Page({
     const safe = info.safeArea;
     const bottomInset = Math.max(18, safe ? info.screenHeight - safe.bottom + 14 : 30);
     // Native WebGL canvas covers any DOM above it, so the footer/hint strip
-    // stays outside the canvas; the wheel takes everything else.
-    const strip = Math.max(76, bottomInset + 52);
+    // stays outside the canvas; the wheel takes everything else. Keep the
+    // strip as thin as the controls allow.
+    const strip = Math.max(64, bottomInset + 40);
     const sceneTop = Math.round(strip * 0.35);
     this.setData({
       headerTop: (info.statusBarHeight || 24) + 14,
