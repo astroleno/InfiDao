@@ -20,7 +20,7 @@ class FlowTimeline {
     this.dragging = false;
     this.flinging = false;
     this.velocity = 0;
-    this.flow = 1;
+    this.flow = 0;
     this.needsSettle = false;
     this.speed = 1;
     this.lastTime = null;
@@ -29,6 +29,19 @@ class FlowTimeline {
 
   get index() {
     return modulo(Math.round(this.position / CELL - 0.46), this.count);
+  }
+
+  get paused() { return this._paused; }
+  set paused(value) {
+    this._paused = value;
+    // The render loop stops on pause: reset here, not in a tick that never runs.
+    if (value) this.flow = 0;
+  }
+
+  get dragging() { return this._dragging; }
+  set dragging(value) {
+    this._dragging = value;
+    if (value) this.flow = 0;
   }
 
   get offset() {
@@ -76,6 +89,7 @@ class FlowTimeline {
   setVisible(visible) {
     this.visible = visible;
     this.lastTime = null;
+    if (!visible) { this.flow = 0; this.cancelFling(); }
   }
 
   scrub(deltaPixels, screenPitch, dtSeconds) {
@@ -97,6 +111,7 @@ class FlowTimeline {
   cancelFling() {
     this.flinging = false;
     this.velocity = 0;
+    this.needsSettle = false;
   }
 
   move(direction) {

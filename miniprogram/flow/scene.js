@@ -17,6 +17,10 @@ function centeredIndex(position, count) {
 function readingLines(frames) {
   return frames.flatMap(frame => (frame.lines || [frame.quote]).map((line, index) => ({
     ...frame,
+    passageId: frame.id,
+    passageQuote: frame.quote,
+    passageLines: frame.lines || [frame.quote],
+    lineIndex: index,
     id: frame.id + '-line-' + index,
     quote: line.replace(/[，。！？；]$/, ''),
     lines: [line],

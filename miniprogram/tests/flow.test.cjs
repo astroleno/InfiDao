@@ -63,6 +63,24 @@ test('a stalled render frame does not skip a passage', () => {
   assert.ok(flow.position - position < 3);
 });
 
+test('resume ramps after a real stopped render loop, without any paused ticks', () => {
+  const flow = new FlowTimeline(8);
+  advance(flow, 0, 4000);
+  assert.ok(flow.flow > 0.99);
+  const position = flow.position;
+  flow.paused = true;
+  flow.lastTime = null;
+  assert.equal(flow.flow, 0);
+  flow.paused = false;
+  flow.tick(60000);
+  assert.equal(flow.position, position);
+  flow.tick(60016);
+  assert.ok(flow.flow > 0 && flow.flow < 0.05);
+  assert.ok(flow.position - position < 0.04);
+  flow.dragging = true;
+  assert.equal(flow.flow, 0);
+});
+
 test('a released flick glides with exponential decay and requests a settle', () => {
   const flow = new FlowTimeline(8);
   flow.tick(0);
@@ -127,6 +145,7 @@ test('every classic excerpt is backed by the exact local source, separate from m
     assert.equal(passage.fullText, source.text);
     assert.equal(passage.source, source.source);
     assert.ok(normalize(source.text).includes(normalize(passage.quote)));
+    assert.ok(passage.meaning && passage.meaning.length < 65);
   }
   for (const frames of Object.values(journeys)) {
     assert.ok(frames.every(frame => frame.reflection.length <= 46 && frame.bridge));

@@ -23,13 +23,32 @@ const selections = {
   finish: ['rysxguji-shijing-256-1', ['靡不有初，', '鲜克有终。'], '大雅 · 荡'],
 };
 
+// Plain-language glosses are curated commentary, never part of the quotation.
+const meanings = {
+  still: '知道应当达到、守住的目标，心志才有定向，进而能够安静。',
+  order: '事物有根本和枝末，事情有开始和结束；认清先后，才接近做事的道理。',
+  near: '道就在日常生活之中，一刻也不能离开。能被随意抛开的，就不是这里所说的道。',
+  self: '君子遇事先要求自己，小人却一味要求别人。',
+  time: '孔子望着流水，感叹流逝如水，昼夜不停。',
+  renewal: '如果能让自己更新，就应当日日更新，不断更新。',
+  haste: '做事不要一味求快，也不要只盯着眼前的小利。',
+  heart: '保存本心、涵养本性，是孟子所说的事奉天命之道。',
+  harmony: '君子能够与人和谐相处，同时保留不同的看法。',
+  reciprocity: '自己不愿承受的事，也不要施加给别人。',
+  respect: '以仁爱和敬意待人，也常会得到他人的爱与尊重。',
+  blame: '对自己多作反省，对别人少些苛责，怨恨便能减少。',
+  seen: '不必总担心别人不了解自己，更应留心自己是否了解别人。',
+  repair: '发现过错，就不要害怕改正。',
+  begin: '路再近，不走也到不了；事再小，不做也不能完成。',
+  finish: '事情大都有一个开始，却很少能坚持到最后。',
+};
 const passages = {};
 const normalize = value => value.replace(/[\s，。；：！？、“”‘’]/g, '');
 for (const [id, [sourceId, lines, chapterLabel]] of Object.entries(selections)) {
   const row = corpus.find(entry => entry.id === sourceId);
   const quote = lines.join('');
   if (!row || !normalize(row.text).includes(normalize(quote))) throw new Error('Invalid source: ' + id);
-  passages[id] = { sourceId, quote, lines, source: row.source, chapterLabel, fullText: row.text };
+  passages[id] = { sourceId, quote, lines, source: row.source, chapterLabel, fullText: row.text, meaning: meanings[id] };
 }
 
 const entry = (id, bridge, reflection) => ({ id, bridge, reflection });
@@ -41,7 +60,7 @@ const journeys = {
     entry('near', '答案，也在日常里', '安顿并不在生活之外。吃饭、行路、应答，都有重新开始的地方。'),
     entry('self', '把目光，收回可做处', '能改变的未必是所有境遇，却可能是自己今天的一次回应。'),
     entry('heart', '给内心，留一点位置', '照看自己的心，不急着压下每一种感受，也不急着随它走。'),
-    entry('time', '容许事情，慢慢经过', '水流没有催促。眼前这一刻，已经值得好好相处。'),
+    entry('time', '容许事情，慢慢经过', '若总被“来不及”催着走，可以先把注意放回眼前正在做的一件事。'),
     entry('renewal', '再回到，此刻的一念', '重新开始可以很轻。把散开的注意，温柔地带回来。'),
   ],
   relate: [

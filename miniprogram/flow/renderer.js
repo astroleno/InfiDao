@@ -67,6 +67,7 @@ uniform vec2 u_resolution;
 uniform float u_pitch;
 uniform float u_radius;
 uniform float u_final;
+uniform float u_reading;
 varying vec3 v_position;
 // Edge fade lives in the fragment stage: the glass wall is one quad strip
 // with vertices only at ±height, so a vertex-level fade interpolates to zero
@@ -86,7 +87,13 @@ float depthBlur() {
 }
 float centerWeight() { float d = v_position.y / u_pitch; return exp(-d * d * 0.55); }
 float opacity() {
-  return (u_final > 0.5 ? 1.0 - depthBlur() * 0.4 : 1.0) * edgeFade();
+  float camera = u_resolution.y * 0.5;
+  float y = v_position.y / (camera - v_position.z);
+  // Keep the centered quotation intact. The other rings recede, and the
+  // space below it clears for the native reading layer.
+  float quiet = (1.0 - 0.91 * smoothstep(0.10, 0.32, abs(y))) * smoothstep(-0.30, -0.12, y);
+  float reading = u_final > 0.5 ? mix(1.0, quiet, u_reading) : 1.0;
+  return (u_final > 0.5 ? 1.0 - depthBlur() * 0.4 : 1.0) * edgeFade() * reading;
 }
 `;
 
@@ -191,7 +198,7 @@ function makeProgram(gl, fragment) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','count','radius','arc','curl','recede','pitch','final','thickness','back'].forEach(name => {
+  ['resolution','texture','glyph','cursor','count','radius','arc','curl','recede','pitch','final','reading','thickness','back'].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   });
   return { program, uniforms, attributes: ['position','normal','uv'].map(name => gl.getAttribLocation(program, 'a_' + name)) };
@@ -207,6 +214,8 @@ class WheelRenderer {
     this.running = false;
     this.destroyed = false;
     this.frameId = null;
+    this.motionGeneration = 0;
+    this.reading = 0;
     this.buffers = [];
     this.targets = [];
     this.programs = [];
@@ -294,6 +303,7 @@ class WheelRenderer {
     gl.uniform1f(u.pitch, this.pitch);
     gl.uniform1f(u.glyph, glyph ? 1 : 0);
     gl.uniform1f(u.final, pass === 2 ? 1 : 0);
+    gl.uniform1f(u.reading, this.reading);
     gl.uniform1f(u.back, pass === 1 ? 1 : 0);
     // Short throw keeps ghost echoes hugging their source glyphs as soft
     // chromatic fringes instead of readable duplicates on neighbouring rows.
@@ -337,44 +347,62 @@ class WheelRenderer {
     if (this.running || this.destroyed) return;
     this.stop();
     this.running = true;
+    const generation = this.motionGeneration;
     this.timeline.lastTime = null;
     let lastDraw = null;
     const loop = timestamp => {
-      if (!this.running || this.destroyed) return;
+      if (!this.running || this.destroyed || generation !== this.motionGeneration) return;
       try {
         if (lastDraw === null || timestamp - lastDraw >= 32) {
           this.timeline.tick(timestamp); this.draw();
           if (this.onFrame) this.onFrame();
           lastDraw = timestamp;
         }
-        this.frameId = this.canvas.requestAnimationFrame(loop);
+        if (this.running && generation === this.motionGeneration) this.frameId = this.canvas.requestAnimationFrame(loop);
       } catch (error) { this.stop(); if (this.onError) this.onError(error); }
     };
     this.frameId = this.canvas.requestAnimationFrame(loop);
   }
 
-  center() {
+  center(onComplete) {
+    const target = (Math.round(this.timeline.position / CELL - 0.46) + 0.46) * CELL;
+    this.animateTo({ position: target, reading: 1, duration: 420 }, onComplete);
+  }
+
+  restore(onComplete) {
+    this.animateTo({ reading: 0, duration: 240 }, onComplete);
+  }
+
+  animateTo(options, onComplete) {
     if (this.destroyed) return;
     this.stop();
     const from = this.timeline.position;
-    const target = (Math.round(from / CELL - 0.46) + 0.46) * CELL;
+    const period = this.count * CELL;
+    const delta = options.position === undefined ? 0 : modulo(options.position - from + period / 2, period) - period / 2;
+    const fromReading = this.reading;
+    const toReading = options.reading === undefined ? fromReading : options.reading;
+    const generation = this.motionGeneration;
     let began = null;
     const settle = now => {
-      if (this.destroyed) return;
+      if (this.destroyed || generation !== this.motionGeneration) return;
       if (began === null) began = now;
-      const progress = Math.min((now - began) / 420, 1);
+      const progress = Math.min((now - began) / (options.duration || 1), 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      this.timeline.position = modulo(from + (target - from) * eased, this.count * CELL);
+      this.timeline.position = modulo(from + delta * eased, period);
+      this.reading = fromReading + (toReading - fromReading) * (progress * progress * (3 - 2 * progress));
       try {
         this.draw();
         if (this.onFrame) this.onFrame();
       } catch (error) { this.stop(); if (this.onError) this.onError(error); return; }
+      if (generation !== this.motionGeneration) return;
       this.frameId = progress < 1 ? this.canvas.requestAnimationFrame(settle) : null;
+      if (progress === 1 && onComplete) onComplete();
     };
     this.frameId = this.canvas.requestAnimationFrame(settle);
   }
 
   stop() {
+    this.motionGeneration++;
     this.running = false;
     if (this.frameId !== null) this.canvas.cancelAnimationFrame(this.frameId);
     this.frameId = null;

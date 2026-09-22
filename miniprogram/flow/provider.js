@@ -36,7 +36,7 @@ function validateSession(session) {
     throw new Error('经文暂未到来，请稍后再试。');
   }
   session.frames.forEach(frame => {
-    if (!frame.id || !frame.quote || !frame.source || !frame.fullText || !frame.reflection || !frame.sourceId) {
+    if (!frame.id || !frame.quote || !frame.source || !frame.fullText || !frame.meaning || !frame.reflection || !frame.sourceId) {
       throw new Error('这段经文还不完整，请稍后再试。');
     }
   });
