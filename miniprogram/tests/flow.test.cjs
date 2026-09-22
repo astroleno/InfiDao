@@ -63,6 +63,45 @@ test('a stalled render frame does not skip a passage', () => {
   assert.ok(flow.position - position < 3);
 });
 
+test('a released flick glides with exponential decay and requests a settle', () => {
+  const flow = new FlowTimeline(8);
+  flow.tick(0);
+  flow.dragging = true;
+  flow.scrub(-20, 128, 0.016);
+  flow.scrub(-20, 128, 0.016);
+  flow.dragging = false;
+  assert.equal(flow.release(), true);
+  const position = flow.position;
+  flow.tick(16);
+  assert.ok(flow.position > position, 'fling glides forward');
+  const v1 = flow.velocity;
+  flow.tick(32);
+  assert.ok(Math.abs(flow.velocity) < Math.abs(v1), 'velocity decays');
+  for (let t = 64; t <= 4000; t += 32) flow.tick(t);
+  assert.equal(flow.flinging, false);
+  assert.equal(flow.needsSettle, true);
+});
+
+test('a slow drag release rests instead of flinging, and resume ramps up', () => {
+  const flow = new FlowTimeline(8);
+  flow.tick(0);
+  flow.dragging = true;
+  flow.scrub(2, 128, 0.05);
+  flow.dragging = false;
+  assert.equal(flow.release(), false);
+  assert.equal(flow.flinging, false);
+  // Auto-flow ramps from zero instead of snapping to full speed.
+  flow.tick(16);
+  flow.tick(32);
+  const early = flow.position;
+  flow.tick(48);
+  const firstStep = flow.position - early;
+  for (let t = 64; t <= 3000; t += 16) flow.tick(t);
+  const late = flow.position;
+  flow.tick(3016);
+  assert.ok(flow.position - late > firstStep * 2, 'later steps are larger after ramp');
+});
+
 test('initial thought selects a coherent mock journey without a network dependency', async () => {
   const provider = createMockProvider();
   for (const [seed, expected] of [['心很乱', 'settle'], ['如何与同事相处', 'relate'], ['想开始学习', 'act']]) {

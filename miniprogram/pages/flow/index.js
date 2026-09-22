@@ -135,7 +135,7 @@ Page({
             width: results[0].width || this._window.windowWidth,
             height: results[0].height || this.data.sceneHeight,
             dpr: this._window.pixelRatio,
-            onFrame: () => this.updateActive(),
+            onFrame: () => this.onWheelFrame(),
             onError: error => this.graphicsFailed(error),
           });
           this._renderer.setFrames(this._readingLines);
@@ -165,8 +165,18 @@ Page({
     if (!this._timeline) return;
     this._timeline.paused = this.data.paused || this.data.overlay !== '' || this.data.loading || this.data.staticMode || !!this.data.error;
     if (!this._renderer) return;
-    if (this._visible && !this._timeline.paused && !this._timeline.dragging) this._renderer.start();
+    // A fling keeps the render loop alive even while paused, so the glide is
+    // visible before the detent settle takes over.
+    const gliding = this._timeline.flinging;
+    if (this._visible && (!this._timeline.paused || gliding) && !this._timeline.dragging) this._renderer.start();
     else this._renderer.stop();
+  },
+
+  onWheelFrame() {
+    this.updateActive();
+    if (!this._timeline || !this._timeline.needsSettle) return;
+    this._timeline.needsSettle = false;
+    if (this.data.paused && this._renderer) this._renderer.center();
   },
 
   updateActive(force) {
@@ -178,6 +188,7 @@ Page({
   },
 
   togglePause() {
+    if (this._timeline) this._timeline.cancelFling();
     this.setData({ paused: !this.data.paused, hintVisible: false });
     this.syncMotion();
     if (this.data.paused && this._renderer) { this.pulse(); this._renderer.center(); }
@@ -194,7 +205,9 @@ Page({
     const touch = event.touches[0];
     if (!touch) return;
     this._suppressTap = false;
-    this._touch = { x: touch.clientX, y: touch.clientY, lastY: touch.clientY, moved: false };
+    // Grabbing a gliding wheel catches it in place.
+    this._timeline.cancelFling();
+    this._touch = { x: touch.clientX, y: touch.clientY, lastY: touch.clientY, lastT: event.timeStamp, moved: false };
     this._timeline.dragging = true;
     this.syncMotion();
   },
@@ -205,12 +218,14 @@ Page({
     if (!touch) return;
     const distance = Math.hypot(touch.clientX - this._touch.x, touch.clientY - this._touch.y);
     if (distance > 7) this._touch.moved = true;
+    const now = event.timeStamp;
     if (this._touch.moved) {
-      this._timeline.scrub(touch.clientY - this._touch.lastY, this._renderer.scrollPitch);
+      this._timeline.scrub(touch.clientY - this._touch.lastY, this._renderer.scrollPitch, (now - this._touch.lastT) / 1000);
       try { this._renderer.draw(); } catch (error) { this.graphicsFailed(error); }
       this.updateActive();
     }
     this._touch.lastY = touch.clientY;
+    this._touch.lastT = now;
   },
 
   onTouchEnd() {
@@ -218,9 +233,12 @@ Page({
     this._suppressTap = this._touch.moved;
     this._suppressTapUntil = this._suppressTap ? Date.now() + 200 : 0;
     this._touch = null;
+    // A fast release glides on (fling); a slow one rests. When the glide dies
+    // out, onWheelFrame hands over to the detent settle.
+    const flung = this._timeline.release();
     this._timeline.dragging = false;
     this.syncMotion();
-    if (this._suppressTap && this.data.paused && this._renderer) this._renderer.center();
+    if (this._suppressTap && this.data.paused && this._renderer && !flung) this._renderer.center();
   },
 
   onCanvasTap() {
@@ -231,6 +249,7 @@ Page({
 
   onTouchCancel() {
     this._touch = null;
+    this._timeline.cancelFling();
     this._timeline.dragging = false;
     this.syncMotion();
   },
