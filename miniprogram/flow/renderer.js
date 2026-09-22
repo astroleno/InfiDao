@@ -1,6 +1,6 @@
 const { paintAtlas } = require('./atlas');
 const { CELL, modulo } = require('./timeline');
-const { sceneMetrics, wheelGeometry, quotationGeometry } = require('./scene');
+const { CENTER_SCALE, sceneMetrics, wheelGeometry, quotationGeometry } = require('./scene');
 
 const VERTEX = `
 precision highp float;
@@ -35,6 +35,10 @@ void main() {
     // upright at the reading line, lying almost flat at the edge and always
     // facing the reader; recession pushes distant rows back for the lens.
     float d = localY / u_pitch;
+    // Scale each whole row around its own baseline, continuously and
+    // symmetrically. The focused line grows; its upper/lower neighbours recede.
+    float rowScale = 0.62 + (${CENTER_SCALE} - 0.62) * exp(-d * d * 0.55);
+    float glyphY = a_position.z * rowScale;
     float front = max(u_resolution.y * 0.5 - u_radius, u_pitch);
     float edge = front / u_pitch;
     float t = min(abs(d) / edge, 1.0);
@@ -42,11 +46,11 @@ void main() {
     float sp = sin(phi), cp = cos(phi);
     float recession = u_recede * (1.0 - cp);
     float cz = cos(angle) * (u_radius + 0.8) - sin(angle) * a_position.y;
-    float pz = cz - a_position.z * sp - recession;
+    float pz = cz - glyphY * sp - recession;
     float ndc = sign(d) * sin(t * 1.5396);
     float w = u_resolution.y * 0.5 - pz;
-    p = vec3(sin(angle) * (u_radius + 0.8) + cos(angle) * a_position.y,
-      ndc * w + a_position.z * cp,
+    p = vec3((sin(angle) * (u_radius + 0.8) + cos(angle) * a_position.y) * rowScale,
+      ndc * w + glyphY * cp,
       pz);
     n = vec3(sin(angle) * cp, sp, cos(angle) * cp);
   }
@@ -285,7 +289,7 @@ class WheelRenderer {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.atlasCanvas);
     if (gl.getError() !== gl.NO_ERROR) throw new Error('Glyph upload failed');
-    this.quotations = this.geometry(quotationGeometry(frames, glyphs, this.radius, this.fontSize));
+    this.quotations = this.geometry(quotationGeometry(frames, glyphs, this.radius, this.fontSize, this.height * 0.5));
     this.count = frames.length;
     this.draw();
   }

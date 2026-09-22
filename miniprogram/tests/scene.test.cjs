@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { sceneMetrics, focusAt, wheelGeometry, readingLines } = require('../flow/scene');
+const { CENTER_SCALE, sceneMetrics, focusAt, wheelGeometry, quotationGeometry, readingLines } = require('../flow/scene');
 const { paintAtlas } = require('../flow/atlas');
 const { createMockProvider } = require('../flow/provider');
 
@@ -33,6 +33,27 @@ test('focus is symmetric, centered, and decreases towards both ends of the five 
   assert.ok(center.focus > near.focus && near.focus > far.focus);
   assert.deepEqual(near, focusAt(-100, 100));
   assert.deepEqual(far, focusAt(-200, 100));
+});
+
+test('magnified centered quotations keep every glyph inside narrow and wide phone screens', () => {
+  for (const [width, height] of [[320, 408], [390, 725], [430, 748]]) {
+    const { radius, fontSize } = sceneMetrics(width, height);
+    const camera = height / 2;
+    for (const quote of ['物有本末', '知止而后有定', '存其心，养其性', '一二三四五六七八九十']) {
+      const glyphs = Object.fromEntries(Array.from(quote).map(char => [char, [0, 0, 1, 1]]));
+      const vertices = quotationGeometry([{ quote }], glyphs, radius, fontSize, camera);
+      // First copy is the front-facing quotation when this row is centered.
+      for (let char = 0; char < quote.length; char++) {
+        for (let corner = 0; corner < 6; corner++) {
+          const offset = (char * 30 + corner) * 8;
+          const [angle, tangent] = vertices.slice(offset, offset + 2);
+          const x = (Math.sin(angle) * (radius + 0.8) + Math.cos(angle) * tangent) * CENTER_SCALE;
+          const z = Math.cos(angle) * (radius + 0.8) - Math.sin(angle) * tangent;
+          assert.ok(Math.abs(x * camera / (camera - z)) < width / 2, `${width}px: ${quote}`);
+        }
+      }
+    }
+  }
 });
 
 test('the moving scene contains only short quotations, while source and reflection remain available on demand', async () => {

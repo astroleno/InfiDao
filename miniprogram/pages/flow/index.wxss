@@ -6,21 +6,21 @@
 .scene-shot--visible { opacity: 1; }
 .scene-shot--blend { transition: opacity 260ms ease-out, transform 340ms cubic-bezier(0.32, 0.72, 0, 1); }
 .fallback-anchor { position: absolute; left: 22px; right: 22px; text-align: center; z-index: 1; transition: transform 340ms cubic-bezier(0.32, 0.72, 0, 1); }
-.fallback-anchor text { display: block; transform: translateY(-50%); font: 30px/1.5 "Songti SC", "STSong", serif; color: #edf3f3; }
+.fallback-anchor text { display: block; transform: translateY(-50%); font-size: 32px; line-height: 1.5; color: #edf3f3; }
 
 .reading-layer { position: absolute; z-index: 2; left: 32px; right: 32px; opacity: 0; pointer-events: none; transition: opacity 220ms ease-out, transform 340ms cubic-bezier(0.32, 0.72, 0, 1); }
 .reading-layer--visible { opacity: 1; pointer-events: auto; }
 .reading-scroll { width: 100%; }
-.reading-context { display: block; margin-bottom: 18px; color: #8c999b; font: 13px/1.7 "Songti SC", "STSong", serif; letter-spacing: 0.4px; }
+.reading-context { display: block; margin-bottom: 18px; color: #8c999b; font-size: 13px; line-height: 1.7; letter-spacing: 0.4px; }
 .eyebrow { display: block; font-size: 10px; line-height: 1.6; letter-spacing: 1.5px; color: #879699; }
-.reading-meaning { display: block; margin-top: 5px; font: 14px/1.8 "Songti SC", "STSong", serif; color: #b3bdbe; }
-.reading-reflection { display: block; margin-top: 5px; font: 16px/1.8 "Songti SC", "STSong", serif; color: #e0e6e5; }
+.reading-meaning { display: block; margin-top: 5px; font-size: 14px; line-height: 1.8; color: #b3bdbe; }
+.reading-reflection { display: block; margin-top: 5px; font-size: 16px; line-height: 1.8; color: #e0e6e5; }
 .reflection { margin-top: 17px; padding-bottom: 14px; }
 .source-details { opacity: 0; transition: opacity 220ms ease-out; margin-top: 20px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.09); }
 .source-details--visible { opacity: 1; }
-.source-heading { display: flex; align-items: baseline; gap: 12px; color: #c5d0d1; font: 17px/1.8 "Songti SC", "STSong", serif; }
+.source-heading { display: flex; align-items: baseline; gap: 12px; color: #c5d0d1; font-size: 17px; line-height: 1.8; }
 .source-chapter { font-size: 12px; color: #849598; }
-.source-fulltext { display: block; margin-top: 16px; color: #8f9a9c; font: 17px/2 "Songti SC", "STSong", serif; }
+.source-fulltext { display: block; margin-top: 16px; color: #8f9a9c; font-size: 17px; line-height: 2; }
 .source-selected { color: #edf3f3; }
 .source-note { display: block; margin-top: 20px; font-size: 10px; line-height: 1.8; color: #7e8c8e; }
 .passage-navigation { display: flex; justify-content: space-between; align-items: center; padding: 24px 0 14px; font-size: 11px; color: #98a7a9; }
@@ -45,8 +45,8 @@
 .sheet--visible { opacity: 1; }
 .sheet-heading { display: flex; justify-content: space-between; align-items: center; }
 .close-sheet { font-size: 11px; min-height: 44px; min-width: 44px; line-height: 44px; text-align: right; color: #b4c6cf; }
-.sheet-title { display: block; margin-top: 18px; font-family: "Songti SC", "STSong", serif; font-size: 23px; letter-spacing: 1px; }
-.seed-input { width: 100%; height: 94px; margin-top: 23px; color: #dbe7ed; font-size: 16px; line-height: 1.8; font-family: "Songti SC", serif; }
+.sheet-title { display: block; margin-top: 18px; font-size: 23px; letter-spacing: 1px; }
+.seed-input { width: 100%; height: 94px; margin-top: 23px; color: #dbe7ed; font-size: 16px; line-height: 1.8; }
 .input-placeholder { color: #7b929d; }
 .suggestions { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 22px; }
 .suggestions button { flex: 0 0 auto; width: auto; min-height: 38px; margin: 0; padding: 0 18px; font-size: 12px; line-height: 38px; color: #b9cdd6; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; }

@@ -2,6 +2,7 @@ const { createMockProvider, validateSession, DEFAULT_SEED } = require('../../flo
 const { FlowTimeline, CELL, modulo } = require('../../flow/timeline');
 const { WheelRenderer } = require('../../flow/renderer');
 const { readingLines } = require('../../flow/scene');
+const { typography } = require('../../flow/typography');
 
 Page({
   data: {
@@ -26,7 +27,10 @@ Page({
     this._timeline = new FlowTimeline(8);
     this.readWindow();
   },
-  onReady() { this.loadSession(DEFAULT_SEED); },
+  async onReady() {
+    await typography.prepare(wx);
+    if (this._alive) this.loadSession(DEFAULT_SEED);
+  },
 
   onShow() {
     this._visible = true;

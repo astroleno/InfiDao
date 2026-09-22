@@ -1,6 +1,7 @@
 const WIDTH = 1024;
 const TILE = 96;
 const COLUMNS = 10;
+const { typography } = require('./typography');
 
 // Only quotations enter the optical scene; all metadata stays in the reader.
 // dpr scales the canvas backing store so glyphs stay crisp when the wheel
@@ -14,13 +15,13 @@ function paintAtlas(canvas, frames, dpr = 1) {
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, size, size);
   ctx.fillStyle = '#ffffff';
-  ctx.font = `${64 * scale}px "Songti SC", "STSong", "Noto Serif CJK SC", serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   const glyphs = {};
   characters.forEach((char, i) => {
     const x = i % COLUMNS * tile, y = Math.floor(i / COLUMNS) * tile;
     if (y + tile > size) throw new Error('Quotation atlas overflow');
+    ctx.font = `${64 * scale}px ${typography.canvasFamily(char)}`;
     ctx.fillText(char, x + tile / 2, y + tile / 2);
     glyphs[char] = [x / size, y / size, (x + tile) / size, (y + tile) / size];
   });

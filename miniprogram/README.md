@@ -22,6 +22,14 @@ mock 包含三组各八段的阅读路径，按组回环。经典摘录来自仓
 
 `flow/provider.js` 是唯一的内容入口，返回结构化经文帧。未来 DeepSeek 接入放在自己的服务端/云函数，小程序不携带凭证。V4.1 Flash 的官方 API 模型名为 `deepseek-flash`；配置与接口设计见 [DESIGN.md](docs/DESIGN.md)。本轮没有接入或调用 DeepSeek。
 
+## 字体
+
+流动经文按距中心的连续距离缩放：中间最大，上下逐渐缩小，并按实际手机透视限制字距，避免放大后裁字。原生阅读层、输入和 Canvas 字形统一使用用户指定的 CoScroll 默认字体「润植家康熙字典美化体」（400 字重），不请求 CDN。两份字形子集的 WOFF 共约 214 KiB，内嵌数据约 286 KiB，覆盖当前 mock 内容与界面文案；任意新输入中未收录的字仍按系统衬线字体回退。
+
+主字体来自相邻 CoScroll 项目实际使用的 `public/fonts/润植家康熙字典美化体.ttf`；原文件缺少的「慥殀烝脩蹞」五个古字以 [Noto Serif SC](https://github.com/google/fonts/tree/main/ofl/notoserifsc) 补齐。来源与版权记录见 `assets/fonts/NOTICE.txt`、`manifest.js`；`OFL.txt` 仅适用于补字字体。修改文案或选文后，用 fonttools 运行 `python scripts/build-font.py /path/to/润植家康熙字典美化体.ttf /path/to/NotoSerifSC[wght].ttf` 重建字形。正式构建无需安装 fonttools，也不依赖 CoScroll 工作区。
+
+[微信 `wx.loadFontFace`](https://developers.weixin.qq.com/miniprogram/dev/api/ui/font/wx.loadFontFace.html) 支持 HTTPS 和 Data URL，后者要求基础库 3.7.9 起。页面与原生画布分别注册作用域，注册结束后才绘制经文，失败不阻塞进入。自定义字体并非只能走 CDN：固定内容可随包放子集；完整字库或未来动态内容可由自己的 HTTPS 静态服务、对象存储或 CDN 提供，并按官方要求配置 CORS 与字体 Content-Type。后续替换字体必须同时验证 webview 和 native，不能只看开发者工具里的系统字体。
+
 ## 验证
 
 ```bash

@@ -1,4 +1,5 @@
 const TAU = Math.PI * 2;
+const CENTER_SCALE = 1.12;
 const { CELL, modulo } = require('./timeline');
 
 function sceneMetrics(width, height) {
@@ -49,8 +50,19 @@ function wheelGeometry(radius, pitch, turns = 5) {
 
 const PUNCTUATION = /[，。、；：？！""''「」『』《》〈〉（）—…·]/;
 
-function quotationGeometry(frames, glyphs, radius, fontSize) {
+function quotationGeometry(frames, glyphs, radius, fontSize, camera = radius * 2) {
   const vertices = [];
+  // Fit the enlarged row to the actual phone's perspective. Only tracking
+  // changes: all quotations retain the same focused glyph size and baseline.
+  const halfGlyph = fontSize * 0.75;
+  let low = 0, high = TAU / 10;
+  for (let i = 0; i < 18; i++) {
+    const angle = (low + high) / 2;
+    const x = Math.sin(angle) * (radius + 0.8) + Math.cos(angle) * halfGlyph;
+    const z = Math.cos(angle) * (radius + 0.8) - Math.sin(angle) * halfGlyph;
+    if (x * camera / (camera - z) * CENTER_SCALE <= radius * 0.94) low = angle;
+    else high = angle;
+  }
   frames.forEach((frame, index) => {
     const chars = Array.from(frame.quote);
     // Fixed tracking: all lines share one character advance, and punctuation
@@ -58,7 +70,9 @@ function quotationGeometry(frames, glyphs, radius, fontSize) {
     // floating in a full-width gap. Long lines compress into one wheel slot.
     const widths = chars.map(char => PUNCTUATION.test(char) ? 0.5 : 1);
     const units = widths.reduce((sum, w) => sum + w, 0) || 1;
-    const step = Math.min(fontSize * 1.62 / radius, TAU / 5 * 0.92 / units);
+    // Leave room for the focused row's 1.12x magnification, including long
+    // quotations. Grow the glyphs without pushing the first/last one offscreen.
+    const step = Math.min(fontSize * 1.4 / radius, low * 2 / Math.max(1, units - 1));
     let cursor = -units / 2;
     chars.forEach((char, i) => {
       const offset = (cursor + widths[i] / 2) * step;
@@ -80,4 +94,4 @@ function quotationGeometry(frames, glyphs, radius, fontSize) {
   return vertices;
 }
 
-module.exports = { TAU, sceneMetrics, centeredIndex, focusAt, wheelGeometry, quotationGeometry, readingLines };
+module.exports = { TAU, CENTER_SCALE, sceneMetrics, centeredIndex, focusAt, wheelGeometry, quotationGeometry, readingLines };

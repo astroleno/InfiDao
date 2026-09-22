@@ -2,10 +2,12 @@ page {
   height: 100%;
   color: #e4e9e9;
   background: #000000;
-  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+  font-family: "RunZhiJiaKangXiZidian", "InfiDaoSerifSupplement", "Songti SC", "STSong", "Noto Serif CJK SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", serif;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
 }
 button { margin: 0; padding: 0; color: inherit; font: inherit; background: transparent; border-radius: 0; line-height: inherit; }
 button::after { border: 0; }
 button[disabled] { color: #647071; background: transparent; }
 view, button, text, textarea, scroll-view { box-sizing: border-box; }
+text, textarea, input { font-family: inherit; font-weight: 400; }

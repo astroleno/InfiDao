@@ -1,0 +1,13 @@
+润植家康熙字典美化体
+
+用户指定复用 CoScroll/public/fonts/润植家康熙字典美化体.ttf。
+CoScroll 的 DEFAULT_FONT_FAMILY 为 RunZhiJiaKangXiZidian。
+serif-data.js 是该文件的当前经文与界面用字子集，保留源字体名称与版权元数据。
+
+源文件版权记录（原样）：
+copyrighy By 润植家艺术工作室 2012,http://www.runzhijia.art
+copyrighy By nzgr 2012,http://www.runzhijia.art
+
+supplement-data.js 仅为源字体缺少的古字提供 Noto Serif SC 字形。
+OFL.txt 仅适用于这份 Noto Serif SC 补字子集，不适用于康熙字体。
+完整来源、源文件 SHA-256 和补字清单见 manifest.js。
