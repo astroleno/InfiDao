@@ -7,13 +7,15 @@
 ## 设计与模块
 
 - `pages/flow`：单屏阅读、一次输入、轻触停驻/继续、拖动回看、原文抽屉；原生 WXML/WXSS，没有网页嵌套。
-- `flow/scene`：竖直封闭圆柱、水平环绕文字、五层空间焦点；每段经文拆为短句，每圈只呈现一句。
-- `flow/renderer`：原生 Canvas WebGL 1；白色字形图集、两个带深度缓冲的离屏场景，分别计算背面和正面的体积折射；不同波长使用不同折射率。前景文字保持白色，色散由玻璃产生。固定竖轴、整体同向旋转并上升；中段减弱折射叠影，保留文字可读性。绘制频率上限约 30 fps，DPR 上限 2。
+- `flow/scene`：横轴「布带」结构——经文短句绕一根水平轴（X 轴）依次倾斜排布，位置曲率平缓、逐行倾斜更强，远离中心的行自然透视压缩；每段经文拆为短句，一屏约五到七行连续可见。
+- `flow/renderer`：原生 Canvas WebGL 1；白色字形图集、两个带深度缓冲的离屏场景，分别计算背面和正面的体积折射；不同波长使用不同折射率。逐行倾斜由顶点着色器按行位置计算（angle ∝ y），色散主要由字形着色器的色差采样携带，阅读行清晰、远离行彩虹边渐强。绘制频率上限约 30 fps，DPR 上限 2。
 - `flow/timeline`：独立时钟；按时间推进，触摸暂停推进、隐藏停止、恢复不快进。
 - `flow/provider`：mock provider；`open(seed)` 返回 `{kind, seed, journey, frames, cursor}`，展示层不依赖模型、凭证或网络协议。
 - `content/passages`：从项目本地语料选取并保留 sourceId/fullText；三个主题各八段，解读为明确的人工示例。mock 按整组自然回环，不声称无限生成。
 
-视觉：纯黑空间、白色宋体经文、玻璃折射中的青/蓝/暖红色散。画面不显示标题、品牌副标题、念头摘要、桥接语或解读。首次提示「轻点停驻」自动消失；停驻后只出现「一念 / 原文 / 继续」。轻点停驻时当前短句用 420 ms 回到画面正中。输入和原文、示例解读仅按需展开。
+视觉：纯黑空间、白色宋体经文、字面色差（chromatic fringe）与玻璃折射。经文如一条竖直布带持续向上流过一根水平轴：中心行水平清晰，上下行逐行向深度倾斜、透视压缩、渐隐。画面不显示标题、品牌副标题、念头摘要、桥接语或解读。首次提示「轻点停驻」自动消失；停驻后只出现「一念 / 原文 / 继续」。轻点停驻时当前短句用 420 ms 回到画面正中。输入和原文、示例解读仅按需展开。
+
+结构沿革：初版为竖直转经筒（五层水平环带共竖轴），参考 [Met 藏品](https://www.metmuseum.org/art/collection/search/32640)；本版改为 Simon Rogers 式的横轴 ribbon——逐行向 +Z 深度倾斜（[参考](https://loadmo.re/posts/simon-rogers)），行间构成连续曲面而非独立环带，解决环带结构的稀疏离散感。原生 WebGL canvas 会遮盖同区域 DOM，页脚与提示条位于画布下方的 DOM 带，抽屉打开时隐藏画布。
 
 实际参考来源：用户提供的 `src/ring.tsx`（圆柱、白字、MeshTransmissionMaterial，thickness=2/backsideThickness=5），[Simon Rogers 原站](https://www.simonrogers.info/) 的逐行 rotateY + translateY 动画，以及用户新指定的转经筒结构；结构核对参考 [Met 藏品](https://www.metmuseum.org/art/collection/search/32640)。最终按用户要求取消斜向/螺旋升角，采用水平文字带和固定竖轴。
 

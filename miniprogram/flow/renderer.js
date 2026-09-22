@@ -12,24 +12,32 @@ uniform float u_glyph;
 uniform float u_cursor;
 uniform float u_count;
 uniform float u_radius;
+uniform float u_tilt;
 uniform float u_pitch;
 varying vec3 v_position;
 varying vec3 v_normal;
 varying vec2 v_uv;
+varying float v_coord;
 void main() {
   vec3 p = a_position;
   vec3 n = a_normal;
+  v_coord = a_position.y;
   if (u_glyph > 0.5) {
-    float localY = (u_cursor - a_normal.x) * u_pitch;
+    // Ribbon: positional curvature stays gentle (u_radius) so lines span the
+    // screen, while the per-line tilt (u_tilt times stronger) recedes into
+    // depth — the Rogers-style progressive lean without bunching at center.
+    float s = (u_cursor - a_normal.x) * u_pitch;
     float period = u_count * u_pitch;
-    localY = mod(localY + period * 0.5, period) - period * 0.5;
-    // All five bands turn together around the upright Y axis. A full phrase
-    // arrives facing the reader whenever the next line crosses the center.
-    float angle = a_position.x - u_cursor * 2.09439510239;
-    p = vec3(sin(angle) * (u_radius + 0.8) + cos(angle) * a_position.y,
-      localY + a_position.z,
-      cos(angle) * (u_radius + 0.8) - sin(angle) * a_position.y);
-    n = vec3(sin(angle), 0.0, cos(angle));
+    s = mod(s + period * 0.5, period) - period * 0.5;
+    float sr = s / u_radius;
+    float theta = sr * u_tilt;
+    float cs = cos(sr), ss = sin(sr);
+    float ct = cos(theta), st = sin(theta);
+    p = vec3(a_position.x + a_position.y,
+      u_radius * ss + a_position.z * ct,
+      u_radius * (cs - 1.0) - a_position.z * st);
+    n = vec3(0.0, st, ct);
+    v_coord = s;
   }
   float camera = u_resolution.y * 0.5;
   float w = camera - p.z;
@@ -47,10 +55,11 @@ const FOCUS = `
 uniform float u_pitch;
 uniform float u_final;
 varying vec3 v_position;
-float focus() { float d = v_position.y / u_pitch; return exp(-d * d * 2.2); }
+varying float v_coord;
+float focus() { float d = v_coord / u_pitch; return exp(-d * d * 2.2); }
 float opacity() {
-  float d = abs(v_position.y / u_pitch);
-  return (u_final > 0.5 ? exp(-d * d * 0.42) : 1.0) * (1.0 - smoothstep(2.6, 3.2, d));
+  float d = abs(v_coord / u_pitch);
+  return (u_final > 0.5 ? exp(-d * d * 0.14) : 1.0) * (1.0 - smoothstep(5.0, 6.0, d));
 }
 `;
 
@@ -66,8 +75,15 @@ void main() {
   a += texture2D(u_texture, v_uv - vec2(blur, 0.0)).a * 0.16;
   a += texture2D(u_texture, v_uv + vec2(0.0, blur)).a * 0.16;
   a += texture2D(u_texture, v_uv - vec2(0.0, blur)).a * 0.16;
-  if (a < 0.005 || opacity() < 0.001) discard;
-  gl_FragColor = vec4(vec3(opacity()), a);
+  // Chromatic fringe carried by the glyphs themselves: red/blue shifted
+  // samples bloom at the edges, stronger away from the reading line.
+  float fringe = (0.8 + (1.0 - focus()) * 1.6) / 1024.0;
+  float aR = texture2D(u_texture, v_uv + vec2(fringe, 0.0)).a;
+  float aB = texture2D(u_texture, v_uv - vec2(fringe, 0.0)).a;
+  float alpha = max(a, max(aR, aB) * 0.85);
+  if (alpha < 0.005 || opacity() < 0.001) discard;
+  vec3 col = vec3(max(a, aR * 0.8), a, max(a, aB * 0.8));
+  gl_FragColor = vec4(col * opacity(), alpha);
 }
 `;
 
@@ -103,12 +119,12 @@ void main() {
     float blur = (1.0 - focus()) * 0.012;
     vec3 normal = normalize(n + vec3(sin(float(i) * 2.4), cos(float(i) * 2.4), 0.0) * blur);
     light.r += transmitted(normal, v, 1.5, thickness).r;
-    light.g += transmitted(normal, v, 1.5 * (1.0 + 0.05 * phase), thickness).g;
-    light.b += transmitted(normal, v, 1.5 * (1.0 + 0.10 * phase), thickness).b;
+    light.g += transmitted(normal, v, 1.5 * (1.0 + 0.15 * phase), thickness).g;
+    light.b += transmitted(normal, v, 1.5 * (1.0 + 0.30 * phase), thickness).b;
   }
   light /= 8.0;
-  float readingFace = focus() * smoothstep(0.45, 0.92, n.z);
-  light *= 1.0 - readingFace * 0.86;
+  float readingFace = focus() * smoothstep(0.3, 0.85, n.z);
+  light *= 1.0 - readingFace * 0.92;
   // A barely visible neutral grazing reflection keeps the glass path connected.
   float rim = pow(1.0 - abs(dot(n, v)), 5.0) * 0.022;
   gl_FragColor = vec4((light + vec3(rim)) * opacity(), 1.0);
@@ -132,7 +148,7 @@ function makeProgram(gl, fragment) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','count','radius','pitch','final','thickness','back'].forEach(name => {
+  ['resolution','texture','glyph','cursor','count','radius','tilt','pitch','final','thickness','back'].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   });
   return { program, uniforms, attributes: ['position','normal','uv'].map(name => gl.getAttribLocation(program, 'a_' + name)) };
@@ -144,7 +160,7 @@ class WheelRenderer {
     this.canvas = canvas;
     this.atlasCanvas = atlasCanvas;
     this.dpr = Math.min(options.dpr || 1, 2);
-    this.scrollPitch = this.pitch * (this.height * 0.5) / (this.height * 0.5 - this.radius);
+    this.scrollPitch = this.pitch;
     this.running = false;
     this.destroyed = false;
     this.frameId = null;
@@ -164,7 +180,7 @@ class WheelRenderer {
     this.glassProgram = makeProgram(gl, GLASS_FRAGMENT); this.programs.push(this.glassProgram);
     this.textTexture = this.texture();
     this.targets.push(this.target()); this.targets.push(this.target());
-    this.glass = this.geometry(wheelGeometry(this.radius, this.pitch, this.turns));
+    this.glass = this.geometry(wheelGeometry(this.radius, this.width));
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
     gl.cullFace(gl.BACK);
@@ -217,7 +233,7 @@ class WheelRenderer {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.atlasCanvas);
     if (gl.getError() !== gl.NO_ERROR) throw new Error('Glyph upload failed');
-    this.quotations = this.geometry(quotationGeometry(frames, glyphs, this.radius, this.fontSize));
+    this.quotations = this.geometry(quotationGeometry(frames, glyphs, this.radius, this.fontSize, this.width));
     this.count = frames.length;
     this.draw();
   }
@@ -229,11 +245,12 @@ class WheelRenderer {
     gl.uniform1f(u.cursor, this.timeline.position / CELL - 0.46);
     gl.uniform1f(u.count, this.count);
     gl.uniform1f(u.radius, this.radius);
+    gl.uniform1f(u.tilt, this.tilt);
     gl.uniform1f(u.pitch, this.pitch);
     gl.uniform1f(u.glyph, glyph ? 1 : 0);
     gl.uniform1f(u.final, pass === 2 ? 1 : 0);
     gl.uniform1f(u.back, pass === 1 ? 1 : 0);
-    gl.uniform1f(u.thickness, this.radius * (pass === 1 ? 2.5 : 1));
+    gl.uniform1f(u.thickness, this.pitch * (pass === 1 ? 0.22 : 0.09));
     gl.uniform1i(u.texture, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, geometry.buffer);
     program.attributes.forEach((location, i) => {
