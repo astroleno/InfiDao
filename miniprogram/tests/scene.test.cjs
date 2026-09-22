@@ -4,25 +4,24 @@ const { sceneMetrics, focusAt, wheelGeometry, readingLines } = require('../flow/
 const { paintAtlas } = require('../flow/atlas');
 const { createMockProvider } = require('../flow/provider');
 
-test('the glass volume is a closed horizontal roller at different phone sizes', () => {
+test('the glass volume has a single upright axis and level end planes at different phone sizes', () => {
   for (const [width, height] of [[320, 408], [390, 652], [430, 748]]) {
-    const { radius } = sceneMetrics(width, height);
-    const geometry = wheelGeometry(radius, width);
-    const half = width * 0.56;
-    let sides = 0, caps = 0;
+    const { radius, pitch } = sceneMetrics(width, height);
+    const geometry = wheelGeometry(radius, pitch);
+    const top = [], bottom = [];
     for (let i = 0; i < geometry.length; i += 8) {
-      const [x, y, z, nx, ny, nz] = geometry.slice(i, i + 6);
-      assert.ok(Math.abs(Math.abs(x) - half) < 1e-8);
-      if (nx === 0) {
-        sides++;
-        assert.ok(Math.abs(Math.hypot(y, z + radius) - radius) < 1e-8);
-        assert.ok(Math.abs(y * ny + (z + radius) * nz - radius) < 1e-6);
-      } else {
-        caps++;
-        assert.ok(Math.abs(nx) === 1 && ny === 0 && nz === 0);
+      const [x,y,z,nx,ny,nz] = geometry.slice(i, i + 6);
+      assert.ok(Math.abs(Math.abs(y) - pitch * 2.5) < 1e-8);
+      if (ny === 0) {
+        assert.ok(Math.abs(Math.hypot(x,z) - radius) < 1e-8);
+        assert.ok(x * nx + z * nz > 0);
       }
+      (y > 0 ? top : bottom).push([x,z]);
     }
-    assert.ok(sides > 0 && caps > 0);
+    for (const plane of [top, bottom]) {
+      assert.ok(Math.abs(plane.reduce((sum,p) => sum + p[0], 0) / plane.length) < 1e-8);
+      assert.ok(Math.abs(plane.reduce((sum,p) => sum + p[1], 0) / plane.length) < 1e-8);
+    }
   }
 });
 

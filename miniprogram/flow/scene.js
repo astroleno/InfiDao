@@ -2,8 +2,7 @@ const TAU = Math.PI * 2;
 const { CELL, modulo } = require('./timeline');
 
 function sceneMetrics(width, height) {
-  // Horizontal roller: radius controls ribbon curvature, pitch is line spacing.
-  return { radius: height * 1.2, tilt: 3.7, pitch: height * 0.104, fontSize: Math.min(25, width * 0.06), turns: 7 };
+  return { radius: width * 0.32, pitch: height * 0.104, fontSize: Math.min(25, width * 0.06), turns: 7 };
 }
 
 function focusAt(y, pitch) {
@@ -24,45 +23,43 @@ function readingLines(frames) {
   })));
 }
 
-// Horizontal glass roller: a closed cylinder around the X axis. The front
-// surface sits at z = 0 where the reading line is, and curves back into depth.
-function wheelGeometry(radius, width) {
+// Upright prayer-wheel volume. All horizontal text bands share the same Y axis.
+// The cylinder is closed, so front and back refraction use the same real volume.
+function wheelGeometry(radius, pitch, turns = 5) {
   const vertices = [];
-  const segments = 64, half = width * 0.56;
-  const point = (x, a) => vertices.push(x, Math.sin(a) * radius, Math.cos(a) * radius - radius,
-    0, Math.sin(a), Math.cos(a), 0, 0);
+  const segments = 64, height = pitch * turns / 2;
+  const point = (a, y) => vertices.push(Math.sin(a) * radius, y, Math.cos(a) * radius, Math.sin(a), 0, Math.cos(a), 0, 0);
   for (let i = 0; i < segments; i++) {
     const a = i / segments * TAU, b = (i + 1) / segments * TAU;
-    point(-half, a); point(half, a); point(-half, b);
-    point(half, a); point(half, b); point(-half, b);
+    point(a, -height); point(b, -height); point(a, height);
+    point(b, -height); point(b, height); point(a, height);
     for (const sign of [-1, 1]) {
-      const capX = half * sign;
-      vertices.push(capX, 0, -radius, sign, 0, 0, 0, 0);
+      vertices.push(0, height * sign, 0, 0, sign, 0, 0, 0);
       for (const angle of sign === 1 ? [a, b] : [b, a]) {
-        vertices.push(capX, Math.sin(angle) * radius, Math.cos(angle) * radius - radius, sign, 0, 0, 0, 0);
+        vertices.push(Math.sin(angle) * radius, height * sign, Math.cos(angle) * radius, 0, sign, 0, 0, 0);
       }
     }
   }
   return vertices;
 }
 
-// Each quotation is one straight line of glyphs. The vertex shader wraps the
-// line around the roller: a_position = (charX, cornerX, cornerY).
-function quotationGeometry(frames, glyphs, radius, fontSize, width) {
+function quotationGeometry(frames, glyphs, radius, fontSize) {
   const vertices = [];
   frames.forEach((frame, index) => {
     const chars = Array.from(frame.quote);
-    const size = fontSize * 1.5;
-    const advance = Math.min(size * 0.96, (width * 0.92) / Math.max(chars.length, 1));
-    chars.forEach((char, i) => {
-      const x = (i - (chars.length - 1) / 2) * advance;
-      const uv = glyphs[char];
-      const corners = [[-.5,-.5,uv[0],uv[3]],[.5,-.5,uv[2],uv[3]],[-.5,.5,uv[0],uv[1]],[.5,.5,uv[2],uv[1]]];
-      for (const j of [0,1,2,1,3,2]) {
-        const [cx, cy, u, v] = corners[j];
-        vertices.push(x, cx * size, cy * size, index, 0, 0, u, v);
-      }
-    });
+    const angleStep = TAU / 3 / (chars.length + 2);
+    for (const rear of [0, TAU / 3, TAU * 2 / 3]) {
+      chars.forEach((char, i) => {
+        const angle = (i - (chars.length - 1) / 2) * angleStep + rear;
+        const size = fontSize * 1.5;
+        const uv = glyphs[char];
+        const corners = [[-.5,-.5,uv[0],uv[3]],[.5,-.5,uv[2],uv[3]],[-.5,.5,uv[0],uv[1]],[.5,.5,uv[2],uv[1]]];
+        for (const j of [0,1,2,1,3,2]) {
+          const [x,y,u,v] = corners[j];
+          vertices.push(angle, x * size, y * size, index, 0, 0, u, v);
+        }
+      });
+    }
   });
   return vertices;
 }
