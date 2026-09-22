@@ -33,6 +33,7 @@ function createGlyphSource(sources) {
       const font = fonts[i], index = font.charToGlyphIndex(char);
       if (!index) continue;
       const glyph = font.glyphs.get(index);
+      if (char.trim() && !glyph.path.commands.length) continue;
       const outline = {
         advance: glyph.advanceWidth, baseline: (font.ascender + font.descender) / 2,
         units: font.unitsPerEm, commands: glyph.path.commands,

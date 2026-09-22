@@ -1,19 +1,21 @@
 const { createMockProvider, validateSession, DEFAULT_SEED } = require('../../flow/provider');
-const { FlowTimeline, CELL, modulo } = require('../../flow/timeline');
+const { FlowTimeline, CELL, CENTER_PHASE, modulo } = require('../../flow/timeline');
 const { WheelRenderer } = require('../../flow/renderer');
 const { readingLines } = require('../../flow/scene');
 const { typography } = require('../../flow/typography');
+const { createNoteStore } = require('../../flow/notes');
 
 Page({
   data: {
     ready: false, loading: true, error: '', graphicsError: false,
     paused: false, phase: 'flow', overlay: '', overlayVisible: false,
-    seed: DEFAULT_SEED, draft: '', active: null, ordinal: '01', total: '08',
+    seed: DEFAULT_SEED, personalSeed: false, draft: '', active: null, ordinal: '01', total: '08',
     sceneTop: 31, sceneHeight: 725, centerY: 393, bottomInset: 48,
     readerTop: 455, readerHeight: 265, detailShift: 160, sceneShift: 0,
     readingVisible: false, sourceOpen: false, sourceMounted: false, sourceParts: [],
     shots: [], snapshotReady: false, keyboardHeight: 0, inputFocus: false,
-    hintVisible: true, readingScroll: 0,
+    hintVisible: true, readingScroll: 0, sourceTarget: '',
+    notes: [], noteDraft: '', noteQuote: '', noteError: '', canUndo: false,
   },
 
   onLoad() {
@@ -24,12 +26,17 @@ Page({
     this._shotId = 0;
     this._timers = new Set();
     this._provider = createMockProvider();
+    this._noteStore = createNoteStore(wx);
+    this._noteDrafts = {};
+    this._readingPositions = {};
+    this.refreshNotes();
+    try { if (wx.getStorageSync('infidao-hint-learned')) this.setData({ hintVisible: false }); } catch (_) {}
     this._timeline = new FlowTimeline(8);
     this.readWindow();
   },
   async onReady() {
     await typography.prepare(wx);
-    if (this._alive) this.loadSession(DEFAULT_SEED);
+    if (this._alive) this.loadSession('');
   },
 
   onShow() {
@@ -60,7 +67,6 @@ Page({
     this._alive = false;
     this._request++;
     this.beginAction();
-    clearTimeout(this._hintTimer);
     if (this._renderer) this._renderer.destroy();
   },
 
@@ -82,7 +88,7 @@ Page({
     this._timers.add(timer);
   },
   onResize() {
-    if (this.data.overlay === 'seed') return;
+    if (this.data.overlay) return;
     this.readWindow();
     if (this.data.loading) return;
     if (this._session && !this.data.graphicsError) this.initRenderer();
@@ -95,9 +101,11 @@ Page({
     const sceneTop = Math.round(strip * 0.35);
     const sceneHeight = info.windowHeight - strip - sceneTop;
     const centerY = sceneTop + sceneHeight / 2;
-    const readerTop = centerY + (info.windowHeight < 650 ? 45 : 62);
-    const readerHeight = Math.max(130, info.windowHeight - bottomInset - 65 - readerTop);
-    const detailShift = Math.min(160, Math.max(80, centerY - (info.statusBarHeight || 24) - 120));
+    const readerTop = centerY + (info.windowHeight < 650 ? 38 : 48);
+    const readerHeight = Math.max(60, info.windowHeight - bottomInset - 65 - readerTop);
+    const menu = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null;
+    const safeTop = menu && menu.bottom ? menu.bottom : (info.statusBarHeight || 24) + 44;
+    const detailShift = Math.min(160, Math.max(0, centerY - safeTop - 60));
     this.setData({ bottomInset, sceneTop, sceneHeight, centerY, readerTop, readerHeight, detailShift,
       sceneShift: this.data.sourceOpen ? detailShift : 0 });
   },
@@ -128,10 +136,11 @@ Page({
     this._pendingSession = null;
     const session = pending.session;
     this._session = session;
+    this._readingPositions = {};
     this._readingLines = readingLines(session.frames);
     this._timeline = new FlowTimeline(this._readingLines.length);
     this._timeline.setVisible(this._visible);
-    this.setData({ seed: session.seed, overlay: '', paused: false, keyboardHeight: 0,
+    this.setData({ seed: session.seed, personalSeed: session.seedOrigin === 'user', overlay: '', paused: false, keyboardHeight: 0,
       sourceOpen: false, sourceMounted: false, sceneShift: 0, loading: false, phase: 'entering',
       total: String(session.frames.length).padStart(2, '0') });
     this.updateActive(true);
@@ -152,6 +161,8 @@ Page({
         if (!this.current(action)) return;
         try {
           if (!results[0] || !results[0].node || !results[1] || !results[1].node) throw new Error('Canvas unavailable');
+          this._reducedMotion = !!results[2] && Number(results[2].opacity) === 0;
+          if (this._reducedMotion && !this._motionOptIn) this.setData({ paused: true });
           this._renderer = new WheelRenderer(results[0].node, results[1].node, {
             timeline: this._timeline, width: this._window.windowWidth, height: this.data.sceneHeight,
             reducedMotion: !results[2] || Number(results[2].opacity) !== 1,
@@ -167,10 +178,6 @@ Page({
               this.setData({ phase: 'flow' }); this.syncMotion();
             }));
           } else { this.setData({ phase: 'flow' }); this.syncMotion(); }
-          clearTimeout(this._hintTimer);
-          this._hintTimer = setTimeout(() => {
-            if (this._alive) this.setData({ hintVisible: false });
-          }, 9000);
         } catch (error) { this.graphicsFailed(error); }
       });
   },
@@ -179,7 +186,12 @@ Page({
     const renderer = this._renderer;
     if (!renderer || !this.createSelectorQuery) return;
     this.createSelectorQuery().select('#motion-preference').fields({ computedStyle: ['opacity'] }).exec(results => {
-      if (this._alive && renderer === this._renderer) renderer.reducedMotion = !results[0] || Number(results[0].opacity) !== 1;
+      if (!this._alive || renderer !== this._renderer) return;
+      renderer.reducedMotion = !results[0] || Number(results[0].opacity) !== 1;
+      const reduced = results[0] && Number(results[0].opacity) === 0;
+      if (reduced !== this._reducedMotion) this._motionOptIn = false;
+      this._reducedMotion = reduced;
+      if (reduced && !this._motionOptIn && this.data.ready && !this.data.paused && !this.data.loading) this.settleReading();
     });
   },
 
@@ -226,24 +238,28 @@ Page({
     this.setData({ active, ordinal: String(active.ordinal).padStart(2, '0'), sourceParts });
   },
 
-  settleReading() {
+  settleReading(index) {
     if (!this._renderer) return;
     const action = this.beginAction();
     this._timeline.cancelFling();
     this.setData({ paused: true, phase: 'settling', readingVisible: false, hintVisible: false });
     this.syncMotion();
-    this._renderer.center(() => {
+    const complete = () => {
       if (!this.current(action)) return;
       this.updateActive(true);
       this.captureScene(action, () => {
         this.setData({ phase: 'reading', readingVisible: !this.data.overlay, readingScroll: 0 });
+        this._readingScrollTop = 0;
+        try { wx.setStorageSync('infidao-hint-learned', true); } catch (_) {}
         if (this._pulseOnSettle) { this.pulse(); this._pulseOnSettle = false; }
         const next = this._afterReading;
         this._afterReading = null;
         if (next === 'source') this.openSource();
         if (next === 'seed') this.openSeed();
       });
-    });
+    };
+    if (Number.isInteger(index)) this._renderer.animateTo({ position: (index + CENTER_PHASE) * CELL, reading: 1, duration: 420 }, complete);
+    else this._renderer.center(complete);
   },
   captureScene(action, complete) {
     if (!this.current(action) || !this._renderer || !this._visible) return;
@@ -291,13 +307,14 @@ Page({
     }));
   },
   resumeFlow() {
+    this._motionOptIn = true;
     const action = this.beginAction();
     this._afterReading = null;
     this._pulseOnSettle = false;
     this._timeline.cancelFling();
     const delay = Math.max(this.data.sourceOpen ? 340 : this.data.readingVisible ? 220 : 0,
       (this._sceneResetAt || 0) - Date.now());
-    this.setData({ paused: false, readingVisible: false, sourceOpen: false, sceneShift: 0, phase: 'resuming' });
+    this.setData({ paused: false, readingVisible: false, sourceOpen: false, sourceTarget: '', sceneShift: 0, phase: 'resuming' });
     this.syncMotion();
     this.later(action, delay, () => {
       this.setData({ sourceMounted: false });
@@ -331,18 +348,20 @@ Page({
     this._timeline.dragging = true;
     this._touch = { x: touch.clientX, y: touch.clientY, lastY: touch.clientY, lastT: event.timeStamp,
       moved: false, reading: this._renderer.reading };
-    // Keep the touched image mounted until touchend; removing its DOM node can
-    // lose the rest of the native touch sequence.
-    this.setData({ readingVisible: false, snapshotReady: false, phase: 'dragging' });
-    this.syncMotion();
-    try { this._renderer.draw(); } catch (error) { this.graphicsFailed(error); }
+    // A finger landing is not yet a drag. Keep the same reading image and copy
+    // visible until movement establishes intent.
+    this._renderer.stop();
   },
   onTouchMove(event) {
     if (!this._touch || !this._renderer) return;
     const touch = event.touches[0];
     if (!touch) return;
     const distance = Math.hypot(touch.clientX - this._touch.x, touch.clientY - this._touch.y);
-    if (distance > 7) this._touch.moved = true;
+    if (distance > 7 && !this._touch.moved) {
+      this._touch.moved = true;
+      // Keep the image node mounted until touchend so native events survive.
+      this.setData({ readingVisible: false, snapshotReady: false, phase: 'dragging' });
+    }
     if (this._touch.moved) {
       this._renderer.reading = this._touch.reading * Math.max(0, 1 - distance / 45);
       this._timeline.scrub(touch.clientY - this._touch.lastY, this._renderer.scrollPitch, (event.timeStamp - this._touch.lastT) / 1000);
@@ -356,6 +375,7 @@ Page({
     if (!this._touch) return;
     this._suppressTap = this._touch.moved;
     this._suppressTapUntil = this._suppressTap ? Date.now() + 250 : 0;
+    const touch = this._touch;
     this._touch = null;
     const flung = this._timeline.release();
     this._timeline.dragging = false;
@@ -363,24 +383,36 @@ Page({
       // Native WebGL canvases can emit touchend without a synthetic tap.
       // Handle it here and ignore the duplicate tap emitted by image surfaces.
       this._handledTouchTapUntil = Date.now() + 350;
-      this.togglePause();
+      this.selectAt(touch.x, touch.y);
       return;
     }
     if (this.data.paused && !flung) this.settleReading();
     else { this.setData({ phase: flung ? 'gliding' : 'flow' }); this.syncMotion(); }
   },
-  onCanvasTap() {
+  selectAt(x, y) {
+    const hit = Number.isFinite(x) && this._renderer.hitTest ? this._renderer.hitTest(x, y - this.data.sceneTop + this.data.sceneShift) : null;
+    if (hit && !this.data.paused) {
+      this._pulseOnSettle = true;
+      this.settleReading(hit.index);
+    } else this.togglePause();
+  },
+  onCanvasTap(event) {
     if (Date.now() < (this._handledTouchTapUntil || 0)) { this._handledTouchTapUntil = 0; return; }
     if (this._suppressTap && Date.now() < this._suppressTapUntil) { this._suppressTap = false; return; }
     this._suppressTap = false;
     if (this.data.sourceOpen) { this.closeSource(); return; }
-    if (this._renderer && !this.data.loading && !this.data.overlay) this.togglePause();
+    if (this._renderer && !this.data.loading && !this.data.overlay) {
+      const point = event && event.detail || {};
+      this.selectAt(point.x, point.y);
+    }
   },
   onTouchCancel() {
+    const moved = this._touch && this._touch.moved;
     this._touch = null;
     this._timeline.cancelFling();
     this._timeline.dragging = false;
-    if (this.data.paused) this.settleReading();
+    if (this.data.paused && !moved && this.data.snapshotReady) this.syncMotion();
+    else if (this.data.paused) this.settleReading();
     else { this.setData({ phase: 'flow' }); this.syncMotion(); }
   },
 
@@ -392,15 +424,21 @@ Page({
       if (this.data.phase !== 'settling') this.settleReading();
       return;
     }
-    this.beginAction();
-    this.setData({ sourceMounted: true, sourceOpen: true, sceneShift: this.data.detailShift, readingScroll: 0 });
-    this.resetReadingScroll();
+    const action = this.beginAction();
+    const positions = this.readerPositions();
+    positions.reading = this._readingScrollTop || 0;
+    this.setData({ sourceMounted: true, sourceOpen: true, sceneShift: this.data.detailShift }, () => {
+      wx.nextTick(() => {
+        if (this.current(action)) this.scrollReader(positions.source || 0, positions.source === undefined ? 'source-heading' : '');
+      });
+    });
   },
   closeSource() {
     const action = this.beginAction();
     this._sceneResetAt = Date.now() + 340;
-    this.setData({ sourceOpen: false, sceneShift: 0, readingScroll: 0 });
-    this.resetReadingScroll();
+    this.readerPositions().source = this._readingScrollTop || 0;
+    this.setData({ sourceOpen: false, sourceTarget: '', sceneShift: 0 });
+    this.scrollReader(this.readerPositions().reading || 0);
     this.later(action, 340, () => this.setData({ sourceMounted: false }));
   },
   openSeed() {
@@ -411,7 +449,7 @@ Page({
       return;
     }
     const action = this.beginAction();
-    this.setData({ overlay: 'seed', overlayVisible: false, readingVisible: false, draft: '', inputFocus: false, keyboardHeight: 0 }, () => {
+    this.setData({ overlay: 'seed', overlayVisible: false, readingVisible: false, draft: this.data.personalSeed ? this.data.seed : '', inputFocus: false, keyboardHeight: 0 }, () => {
       wx.nextTick(() => {
         if (!this.current(action)) return;
         this.setData({ overlayVisible: true });
@@ -448,9 +486,11 @@ Page({
     this.setData({ sourceOpen: false, sceneShift: 0, readingVisible: false, phase: 'settling' });
     this.later(action, delay, () => {
       this.setData({ sourceMounted: false, readingScroll: 0 });
-      const target = (index + 0.46) * CELL;
+      const target = (index + CENTER_PHASE) * CELL;
       if (this.data.graphicsError) {
-        this._timeline.position = target; this.updateActive(true);
+        const period = this._readingLines.length * CELL;
+        this._timeline.advancePosition(modulo(target - this._timeline.position + period / 2, period) - period / 2);
+        this.updateActive(true);
         this.setData({ phase: 'reading', readingVisible: true });
         return;
       }
@@ -463,12 +503,83 @@ Page({
   },
   previous() { this.changePassage(-1); },
   next() { this.changePassage(1); },
-  onReadingScroll(event) { this._readingScrollTop = event.detail.scrollTop; },
-  resetReadingScroll() {
-    this.setData({ readingScroll: this._readingScrollTop || 1 }, () => this.setData({ readingScroll: 0 }));
-    this._readingScrollTop = 0;
+  readerPositions() {
+    const id = this.data.active.passageId;
+    return this._readingPositions[id] || (this._readingPositions[id] = { reading: 0 });
   },
-  retry() { this.loadSession(this.data.seed); },
+  onReadingScroll(event) { this._readingScrollTop = event.detail.scrollTop; },
+  scrollReader(top, anchor = '') {
+    const action = this._action;
+    this.setData({ sourceTarget: '', readingScroll: top + 1 }, () => {
+      this.setData({ readingScroll: top });
+      // Native scrollTop can overwrite scroll-into-view when both arrive in
+      // the same layout. Let the mounted section and scroll reset commit first.
+      if (anchor) this.later(action, 48, () => this.setData({ sourceTarget: anchor }));
+    });
+    this._readingScrollTop = top;
+  },
+  resetReadingScroll() {
+    this.scrollReader(0);
+  },
+  refreshNotes() {
+    try {
+      const notes = this._noteStore.list().map(note => {
+        const date = new Date(note.createdAt);
+        return { ...note, dateLabel: [date.getFullYear(), date.getMonth() + 1, date.getDate()].map(value => String(value).padStart(2, '0')).join('.') };
+      });
+      this.setData({ notes, noteError: '' });
+    }
+    catch (_) { this.setData({ noteError: '暂时无法读取本机注脚，请稍后再试。' }); }
+  },
+  showNoteSheet(overlay) {
+    const action = this.beginAction();
+    this.setData({ overlay, overlayVisible: false, readingVisible: false, inputFocus: false, keyboardHeight: 0 }, () => {
+      wx.nextTick(() => {
+        if (!this.current(action)) return;
+        this.setData({ overlayVisible: true });
+        if (overlay === 'note') this.later(action, 320, () => this.setData({ inputFocus: true }));
+      });
+    });
+    this.syncMotion();
+  },
+  openNote() {
+    const active = this.data.active;
+    if (!active || !this.data.paused) return;
+    this._noteContext = { passageId: active.passageId, sourceId: active.sourceId, quote: active.passageQuote,
+      source: active.source, chapterLabel: active.chapterLabel, seed: this.data.personalSeed ? this.data.seed : '' };
+    this.setData({ noteQuote: active.passageQuote, noteDraft: this._noteDrafts[active.passageId] || '', noteError: '' });
+    this.showNoteSheet('note');
+  },
+  onNoteInput(event) {
+    this.setData({ noteDraft: event.detail.value, noteError: '' });
+    this._noteDrafts[this._noteContext.passageId] = event.detail.value;
+  },
+  saveNote() {
+    if (!this.data.noteDraft.trim()) return;
+    try {
+      const notes = this._noteStore.add(this._noteContext, this.data.noteDraft);
+      delete this._noteDrafts[this._noteContext.passageId];
+      this.setData({ notes, noteDraft: '', noteError: '' });
+      this.pulse(); this.closeOverlay();
+    } catch (error) {
+      this.setData({ noteError: error.message === 'Notes full' ? '本机已留下 100 条注脚，整理后可以继续留句。' : '这句还没有保存，文字已保留，请再试一次。' });
+    }
+  },
+  openNotes() { this.refreshNotes(); this.showNoteSheet('notes'); },
+  removeNote(event) {
+    try {
+      this._removedNote = this._noteStore.remove(event.currentTarget.dataset.id);
+      this.refreshNotes(); this.setData({ canUndo: !!this._removedNote });
+    } catch (_) { this.setData({ noteError: '未能删除，这条注脚仍保留在本机。' }); }
+  },
+  undoRemove() {
+    try {
+      this._noteStore.restore(this._removedNote);
+      this._removedNote = null;
+      this.refreshNotes(); this.setData({ canUndo: false });
+    } catch (_) { this.setData({ noteError: '暂时未能恢复，请再试一次。' }); }
+  },
+  retry() { this.loadSession(this.data.personalSeed ? this.data.seed : ''); },
   swallow() {},
   pulse() { if (wx.vibrateShort) wx.vibrateShort({ type: 'light', fail() {} }); },
   getFlowState() {

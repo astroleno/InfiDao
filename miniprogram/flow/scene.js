@@ -1,9 +1,14 @@
 const TAU = Math.PI * 2;
 const CENTER_SCALE = 1.12;
-const { CELL, modulo } = require('./timeline');
+const ROW_TURN_MIN = 0.14;
+const ROW_TURN_STEP = 0.02;
+const COPIES = 5;
+const { CELL, CENTER_PHASE, modulo } = require('./timeline');
 
 function sceneMetrics(width, height) {
-  return { radius: width * 0.5, arc: 1.45, curl: 1.5, recede: height * 0.28, pitch: height * 0.058, fontSize: Math.min(21, width * 0.056), turns: 11 };
+  const radius = Math.min(width * 0.5, height * 0.34), pitch = height * 0.058;
+  return { radius, arc: 1.45, curl: 1.5, recede: height * 0.28, pitch, fontSize: Math.min(21, width * 0.056, height * 0.06), turns: 11,
+    scrollPitch: height * 0.5 * 1.5396 * pitch / Math.max(height * 0.5 - radius, pitch) };
 }
 
 function focusAt(y, pitch) {
@@ -12,15 +17,45 @@ function focusAt(y, pitch) {
 }
 
 function centeredIndex(position, count) {
-  return modulo(Math.round(position / CELL - 0.46), count);
+  return modulo(Math.round(position / CELL - CENTER_PHASE), count);
+}
+
+function rowTurn(ordinal) {
+  const direction = modulo(ordinal, 2) === 0 ? 1 : -1;
+  return direction * (ROW_TURN_MIN + modulo(ordinal * 3, 5) * ROW_TURN_STEP);
+}
+
+function rowMotion(index, cursor, count, rowOffset = 0) {
+  const distance = modulo(cursor - index + count / 2, count) - count / 2;
+  // The row keeps its direction and pace while passing through the viewport,
+  // including an odd-length content loop. It faces front exactly at focus.
+  const ordinal = Math.round(cursor - distance) + rowOffset;
+  const turn = rowTurn(ordinal);
+  return { distance, ordinal, turn, angle: -distance * turn };
+}
+
+function splitLines(frame) {
+  // Keep the source verbatim. Prefer clause boundaries, then bounded grapheme
+  // groups for a long unpunctuated clause; the full quotation stays attached.
+  return (frame.lines || [frame.quote]).flatMap(line => {
+    if (Array.from(line).length <= 10) return [line];
+    return (line.match(/[^，。！？；]+[，。！？；]?/g) || [line]).flatMap(clause => {
+      const chars = Array.from(clause), groups = [];
+      while (chars.length) {
+        const take = chars.length === 10 && /[，。！？；]/.test(chars[9]) ? 10 : 9;
+        groups.push(chars.splice(0, take).join(''));
+      }
+      return groups;
+    });
+  });
 }
 
 function readingLines(frames) {
-  return frames.flatMap(frame => (frame.lines || [frame.quote]).map((line, index) => ({
+  return frames.flatMap(frame => splitLines(frame).map((line, index) => ({
     ...frame,
     passageId: frame.id,
     passageQuote: frame.quote,
-    passageLines: frame.lines || [frame.quote],
+    passageLines: splitLines(frame),
     lineIndex: index,
     id: frame.id + '-line-' + index,
     quote: line.replace(/[，。！？；]$/, ''),
@@ -60,7 +95,7 @@ function quotationGeometry(frames, glyphs, radius, fontSize, camera = radius * 2
     const angle = (low + high) / 2;
     const x = Math.sin(angle) * (radius + 0.8) + Math.cos(angle) * halfGlyph;
     const z = Math.cos(angle) * (radius + 0.8) - Math.sin(angle) * halfGlyph;
-    if (x * camera / (camera - z) * CENTER_SCALE <= radius * 0.94) low = angle;
+    if (x * camera / (camera - z) * CENTER_SCALE <= radius * 0.82) low = angle;
     else high = angle;
   }
   frames.forEach((frame, index) => {
@@ -80,9 +115,8 @@ function quotationGeometry(frames, glyphs, radius, fontSize, camera = radius * 2
       const size = fontSize * 1.5;
       const uv = glyphs[char];
       const corners = [[-.5,-.5,uv[0],uv[3]],[.5,-.5,uv[2],uv[3]],[-.5,.5,uv[0],uv[1]],[.5,.5,uv[2],uv[1]]];
-      // Five copies around the wheel: mid-scroll rows sit at ±36°, always on the
-      // front arc — the center never opens up between detents.
-      for (const rear of [0, TAU / 5, TAU * 2 / 5, TAU * 3 / 5, TAU * 4 / 5]) {
+      for (let copy = 0; copy < COPIES; copy++) {
+        const rear = copy * TAU / COPIES;
         const angle = offset + rear;
         for (const j of [0,1,2,1,3,2]) {
           const [x,y,u,v] = corners[j];
@@ -94,4 +128,32 @@ function quotationGeometry(frames, glyphs, radius, fontSize, camera = radius * 2
   return vertices;
 }
 
-module.exports = { TAU, CENTER_SCALE, sceneMetrics, centeredIndex, focusAt, wheelGeometry, quotationGeometry, readingLines };
+// Mirror the vertex projection for selectable front-facing rows. This is used
+// on touch, not on every animation frame, and never makes blurred rear copies
+// into invisible tap targets.
+function projectedRows(vertices, cursor, count, width, height, reading = 0, rowOffset = 0) {
+  const m = sceneMetrics(width, height), camera = height / 2, rows = new Map();
+  for (let i = 0; i < vertices.length; i += 8) {
+    if ((i / 8) % (6 * COPIES) >= 6) continue;
+    const index = vertices[i + 3];
+    const motion = rowMotion(index, cursor, count, rowOffset), d = motion.distance;
+    if (Math.abs(d) > (reading > 0.5 ? 0.35 : 1.25)) continue;
+    const angle = vertices[i] + motion.angle;
+    const scale = 0.62 + (CENTER_SCALE - 0.62) * Math.exp(-d * d * 0.55);
+    const gy = vertices[i + 2] * scale;
+    const edge = Math.max(camera - m.radius, m.pitch) / m.pitch;
+    const t = Math.min(Math.abs(d) / edge, 1);
+    const phi = Math.sign(d) * m.arc * Math.pow(Math.max(t, 1e-4), m.curl);
+    const z = Math.cos(angle) * (m.radius + 0.8) - Math.sin(angle) * vertices[i + 1] - gy * Math.sin(phi) - m.recede * (1 - Math.cos(phi));
+    const w = camera - z;
+    const x = width / 2 + (Math.sin(angle) * (m.radius + 0.8) + Math.cos(angle) * vertices[i + 1]) * scale * camera / w;
+    const y = height / 2 - (Math.sign(d) * Math.sin(t * 1.5396) * w + gy * Math.cos(phi)) * camera / w;
+    const row = rows.get(index) || { index, distance: d, left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity };
+    row.left = Math.min(row.left, x); row.right = Math.max(row.right, x);
+    row.top = Math.min(row.top, y); row.bottom = Math.max(row.bottom, y);
+    rows.set(index, row);
+  }
+  return Array.from(rows.values());
+}
+
+module.exports = { TAU, CENTER_SCALE, ROW_TURN_MIN, ROW_TURN_STEP, COPIES, rowTurn, rowMotion, sceneMetrics, centeredIndex, focusAt, wheelGeometry, quotationGeometry, readingLines, projectedRows };

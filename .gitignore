@@ -48,6 +48,7 @@ playwright/.cache
 /artifacts/annotation-eval/
 .worktrees/
 .codex-review-screenshots/
+miniprogram/.shots/
 .planning/
 CLAUDE.md
 graphify-out/

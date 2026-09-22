@@ -1,4 +1,4 @@
-const { passages, journeys } = require('../content/passages');
+const { passages, journeys, examples = [] } = require('../content/passages');
 
 const DEFAULT_SEED = '我想让心慢下来';
 
@@ -17,16 +17,22 @@ function createMockProvider() {
   return {
     async open(input) {
       const seed = String(input || '').trim().slice(0, 120) || DEFAULT_SEED;
-      const journey = chooseJourney(seed);
-      const frames = journeys[journey].map((entry, index) => ({
+      const example = examples.find(item => item.seed === seed);
+      const journey = example ? example.journey : chooseJourney(seed);
+      const entries = journeys[journey].slice();
+      if (example) {
+        const first = entries.findIndex(entry => entry.id === example.firstId);
+        entries.unshift(...entries.splice(first, 1));
+      }
+      const frames = entries.map((entry, index) => ({
         ...passages[entry.id],
         id: entry.id,
         ordinal: index + 1,
-        reflection: entry.reflection,
+        reflection: example && index === 0 ? example.reflection : entry.reflection,
         bridge: entry.bridge,
         provenance: 'curated-mock',
       }));
-      return { kind: 'mock', seed, journey, frames, cursor: null };
+      return { kind: 'mock', seed, seedOrigin: String(input || '').trim() ? 'user' : 'example', journey, frames, cursor: null };
     },
   };
 }

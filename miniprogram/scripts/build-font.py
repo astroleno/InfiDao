@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 from fontTools import subset
+from fontTools.pens.boundsPen import BoundsPen
 from fontTools.ttLib import TTFont
 from fontTools.varLib.instancer import instantiateVariableFont
 
@@ -26,7 +27,18 @@ characters = "".join(sorted(characters))
 
 source = Path(sys.argv[1])
 font = TTFont(source, recalcTimestamp=False)
-missing = set(characters) - {chr(code) for code in font.getBestCmap()}
+cmap = font.getBestCmap()
+missing = set(characters) - {chr(code) for code in cmap}
+# Kangxi maps digits, Latin and some punctuation to empty glyphs. A cmap entry
+# alone blocks native fallback, leaving dates and paragraph numbers invisible.
+glyphs = font.getGlyphSet()
+for char in set(characters) - missing:
+    if not char.strip():
+        continue
+    pen = BoundsPen(glyphs)
+    glyphs[cmap[ord(char)]].draw(pen)
+    if pen.bounds is None:
+        missing.add(char)
 output = root / "assets/fonts"
 output.mkdir(parents=True, exist_ok=True)
 

@@ -9,11 +9,14 @@
   <view wx:if="{{graphicsError && active}}" class="fallback-anchor" style="top: {{centerY}}px; transform: translateY({{-sceneShift}}px)"><text>{{active.quote}}</text></view>
 
   <view wx:if="{{active}}" class="reading-layer {{readingVisible ? 'reading-layer--visible' : ''}}" style="top: {{readerTop}}px; transform: translateY({{-sceneShift}}px)" aria-hidden="{{!readingVisible}}">
-    <scroll-view class="reading-scroll" style="height: {{readerHeight + sceneShift}}px" scroll-y="{{true}}" scroll-top="{{readingScroll}}" bindscroll="onReadingScroll" enhanced="{{true}}" show-scrollbar="{{false}}" catchtap="swallow">
-      <text class="reading-context" user-select="{{true}}">{{active.passageQuote}}</text>
+    <scroll-view class="reading-scroll" style="height: {{readerHeight + sceneShift}}px" scroll-y="{{true}}" scroll-top="{{readingScroll}}" scroll-into-view="{{sourceTarget}}" bindscroll="onReadingScroll" enhanced="{{true}}" show-scrollbar="{{false}}" catchtap="swallow">
+      <button wx:if="{{personalSeed}}" class="current-seed" bindtap="openSeed" aria-label="修改当前一念"><text class="eyebrow">你的一念</text><text class="current-seed-text">{{seed}}</text></button>
+      <text wx:if="{{active.passageLines.length > 1 && (active.lineIndex > 0 || active.quote.length < 5)}}" class="reading-context" user-select="{{true}}">{{active.passageQuote}}</text>
       <view class="reading-block"><text class="eyebrow">句意</text><text class="reading-meaning">{{active.meaning}}</text></view>
-      <view class="reading-block reflection"><text class="eyebrow">此刻 · 示例解读</text><text class="reading-reflection">{{active.reflection}}</text></view>
-      <view wx:if="{{sourceMounted}}" class="source-details {{sourceOpen ? 'source-details--visible' : ''}}">
+      <view class="reading-block reflection"><text class="eyebrow">此刻 · 示例联系</text><text class="reading-reflection">{{active.reflection}}</text></view>
+      <button wx:if="{{!personalSeed}}" class="thought-invitation" bindtap="openSeed">带着此刻的一件事，再读这一句</button>
+      <view class="note-actions"><button bindtap="openNote">留下我的一句</button><button wx:if="{{notes.length}}" bindtap="openNotes">回看注脚 · {{notes.length}}</button></view>
+      <view id="source-heading" wx:if="{{sourceMounted}}" class="source-details {{sourceOpen ? 'source-details--visible' : ''}}" style="min-height: {{readerHeight + detailShift - 80}}px">
         <view class="source-heading"><text>《{{active.source}}》</text><text class="source-chapter">{{active.chapterLabel}}</text></view>
         <text class="source-fulltext" user-select="{{true}}"><text wx:for="{{sourceParts}}" wx:key="index" class="{{item.selected ? 'source-selected' : ''}}">{{item.text}}</text></text>
         <text class="source-note">以上为经典原文；句意与此刻解读为人工整理的示例。</text>
@@ -34,7 +37,31 @@
     <view class="sheet-heading"><text class="eyebrow">从一念开始</text><button class="close-sheet" bindtap="closeOverlay" aria-label="关闭输入">收起</button></view>
     <text class="sheet-title">此刻，什么萦绕着你？</text>
     <textarea class="seed-input" value="{{draft}}" bindinput="onSeedInput" placeholder="写下心里的那一句…" placeholder-class="input-placeholder" maxlength="120" focus="{{inputFocus}}" adjust-position="{{false}}" show-confirm-bar="{{false}}" bindkeyboardheightchange="onKeyboardHeight" aria-label="最初的一念" />
-    <view class="suggestions"><button data-seed="我想让心慢下来" bindtap="usePrompt">让心慢下来</button><button data-seed="如何与他人相处" bindtap="usePrompt">与他人相处</button><button data-seed="我想开始，却总在犹豫" bindtap="usePrompt">迈出第一步</button></view>
-    <button class="enter-flow" bindtap="submitSeed" disabled="{{!draft || loading}}">{{loading ? '正在展开' : '让它流动'}}</button>
+    <view class="suggestions"><button data-seed="我接了太多工作，每一件都放不下。" bindtap="usePrompt">放不下太多事</button><button data-seed="我和朋友意见不同，担心说出来会伤害关系。" bindtap="usePrompt">与人意见不同</button><button data-seed="我一直准备，却迟迟没有开始。" bindtap="usePrompt">迟迟没有开始</button></view>
+    <button class="enter-flow {{!draft || loading ? 'enter-flow--disabled' : ''}}" bindtap="submitSeed" disabled="{{!draft || loading}}">{{loading ? '正在展开' : '让它流动'}}</button>
+  </view>
+
+  <view wx:if="{{overlay === 'note'}}" class="sheet {{overlayVisible ? 'sheet--visible' : ''}}" style="transform: translateY({{(overlayVisible ? 0 : 36) - keyboardHeight}}px)" catchtap="swallow" catchtouchmove="swallow">
+    <view class="sheet-heading"><text class="eyebrow">留下我的一句</text><button class="close-sheet" bindtap="closeOverlay">收起</button></view>
+    <text class="note-quote">{{noteQuote}}</text>
+    <textarea class="seed-input" value="{{noteDraft}}" bindinput="onNoteInput" placeholder="这句经文，让你想到了什么？" placeholder-class="input-placeholder" maxlength="300" focus="{{inputFocus}}" adjust-position="{{false}}" show-confirm-bar="{{false}}" bindkeyboardheightchange="onKeyboardHeight" aria-label="自己的注脚" />
+    <text class="note-caption">只保存在这台设备上</text>
+    <text wx:if="{{noteError}}" class="note-error" aria-role="alert">{{noteError}}</text>
+    <button class="enter-flow {{!noteDraft ? 'enter-flow--disabled' : ''}}" bindtap="saveNote" disabled="{{!noteDraft}}">留下</button>
+  </view>
+  <view wx:if="{{overlay === 'notes'}}" class="sheet notes-sheet {{overlayVisible ? 'sheet--visible' : ''}}" catchtap="swallow">
+    <view class="sheet-heading"><text class="eyebrow">我的注脚 · 本机</text><button class="close-sheet" bindtap="closeOverlay">收起</button></view>
+    <scroll-view class="notes-scroll" scroll-y="{{true}}" show-scrollbar="{{false}}">
+      <view wx:for="{{notes}}" wx:key="id" class="saved-note">
+        <text wx:if="{{item.seed}}" class="note-seed">{{item.seed}}</text>
+        <text class="note-quote" user-select="{{true}}">{{item.quote}}</text>
+        <text class="note-caption">《{{item.source}}》 · {{item.chapterLabel}} · {{item.dateLabel}}</text>
+        <text class="note-body" user-select="{{true}}">{{item.text}}</text>
+        <button class="remove-note" data-id="{{item.id}}" bindtap="removeNote">删除</button>
+      </view>
+      <text wx:if="{{!notes.length}}" class="note-caption">还没有留下的注脚</text>
+    </scroll-view>
+    <button wx:if="{{canUndo}}" class="undo-note" bindtap="undoRemove">已删除一条 · 撤销</button>
+    <text wx:if="{{noteError}}" class="note-error" aria-role="alert">{{noteError}}</text>
   </view>
 </view>

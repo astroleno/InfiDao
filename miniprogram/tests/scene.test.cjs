@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { CENTER_SCALE, sceneMetrics, focusAt, wheelGeometry, quotationGeometry, readingLines } = require('../flow/scene');
+const { CENTER_SCALE, rowMotion, sceneMetrics, focusAt, wheelGeometry, quotationGeometry, readingLines, projectedRows } = require('../flow/scene');
+const { FlowTimeline, CELL, CENTER_PHASE } = require('../flow/timeline');
 const { paintAtlas } = require('../flow/atlas');
 const { createMockProvider } = require('../flow/provider');
 
@@ -23,6 +24,74 @@ test('the glass volume has a single upright axis and level end planes at differe
       assert.ok(Math.abs(plane.reduce((sum,p) => sum + p[1], 0) / plane.length) < 1e-8);
     }
   }
+});
+
+test('front quotations cross every phase without an empty middle or clipped glyphs, including wide canvases', () => {
+  for (const [width, height] of [[320, 408], [390, 725], [430, 748], [768, 899], [1024, 631], [844, 271]]) {
+    const metrics = sceneMetrics(width, height);
+    assert.ok(Number.isFinite(metrics.scrollPitch) && metrics.scrollPitch > 0);
+    const frames = Array.from({ length: 8 }, (_, i) => ({ quote: ['道也者', '知止而后有定', '存其心，养其性', '一二三四五六七八九'][i % 4] }));
+    const glyphs = Object.fromEntries(frames.flatMap(frame => Array.from(frame.quote)).map(char => [char, [0, 0, 1, 1]]));
+    const vertices = quotationGeometry(frames, glyphs, metrics.radius, metrics.fontSize, height / 2);
+    for (let offset = 0; offset < 10; offset++) for (let step = 0; step < 320; step++) {
+      const rows = projectedRows(vertices, step / 40, frames.length, width, height, 0, offset).filter(row => Math.abs(row.distance) <= 0.501);
+      assert.ok(rows.some(row => row.left < width / 2 && row.right > width / 2), `${width}: empty phase ${step / 40}`);
+      for (const row of rows) assert.ok(row.left >= 0 && row.right <= width, `${width}: clipped phase ${step / 40}`);
+    }
+  }
+});
+
+test('neighbouring rows turn in opposite directions at different slow paces and face front when settled', () => {
+  for (const offset of [0, 15, 30]) {
+    const speeds = [];
+    for (let index = 2; index < 7; index++) {
+      const from = rowMotion(index, 4.2, 15, offset), to = rowMotion(index, 4.21, 15, offset);
+      const speed = (to.angle - from.angle) / 0.01;
+      assert.ok(Math.abs(speed) >= 0.139 && Math.abs(speed) <= 0.221);
+      assert.equal(Math.abs(rowMotion(index, index, 15, offset).angle), 0);
+      speeds.push(speed);
+    }
+    for (let i = 1; i < speeds.length; i++) {
+      assert.ok(speeds[i] * speeds[i - 1] < 0);
+      assert.ok(Math.abs(Math.abs(speeds[i]) - Math.abs(speeds[i - 1])) > 0.01);
+    }
+    assert.equal(new Set(speeds.map(speed => Math.abs(speed).toFixed(3))).size, 5);
+  }
+});
+
+test('row direction and rotation stay continuous across odd and even loops, reverse scrubbing and background', () => {
+  for (const count of [15, 16]) {
+    const timeline = new FlowTimeline(count);
+    timeline.position = count * CELL - 0.1;
+    const motion = index => rowMotion(index, timeline.position / CELL - CENTER_PHASE, count, timeline.rowOffset);
+    const before = [count - 1, 0, 1].map(motion);
+    timeline.advancePosition(0.2);
+    assert.equal(timeline.rowOffset, count);
+    const after = [count - 1, 0, 1].map(motion);
+    before.forEach((row, i) => {
+      assert.equal(row.ordinal, after[i].ordinal);
+      assert.equal(row.turn, after[i].turn);
+      assert.ok(Math.abs(row.angle - after[i].angle) < 0.0001);
+    });
+    timeline.scrub(0.2, CELL);
+    assert.equal(timeline.rowOffset, 0);
+    assert.ok(Math.abs(motion(0).angle - before[1].angle) < 1e-10);
+    timeline.setVisible(false);
+    timeline.tick(0); timeline.tick(120000);
+    assert.ok(Math.abs(motion(0).angle - before[1].angle) < 1e-10);
+  }
+});
+
+test('long dynamic quotations split into bounded rows without losing their original context', () => {
+  const quote = '知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。';
+  const frame = { id: 'dynamic', quote, fullText: quote };
+  const rows = readingLines([frame]);
+  assert.ok(rows.length > 1);
+  assert.ok(rows.every(row => Array.from(row.quote).length <= 9 && row.passageQuote === quote && row.passageId === 'dynamic'));
+  assert.equal(rows[0].passageLines.join(''), quote);
+  const boundary = readingLines([{ id: 'boundary', quote: '一二三四五六七八九，知止而后有定。' }]);
+  assert.ok(boundary.every(row => row.quote.length > 0));
+  assert.equal(boundary[0].passageLines.join(''), '一二三四五六七八九，知止而后有定。');
 });
 
 test('focus is symmetric, centered, and decreases towards both ends of the five bands', () => {

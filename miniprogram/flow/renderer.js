@@ -1,6 +1,6 @@
-const { paintAtlas } = require('./atlas');
-const { CELL, modulo } = require('./timeline');
-const { CENTER_SCALE, sceneMetrics, wheelGeometry, quotationGeometry } = require('./scene');
+const { atlasLayout, paintAtlas } = require('./atlas');
+const { CELL, CENTER_PHASE, modulo } = require('./timeline');
+const { CENTER_SCALE, ROW_TURN_MIN, ROW_TURN_STEP, sceneMetrics, wheelGeometry, quotationGeometry, projectedRows } = require('./scene');
 const { NOISE_SIZE, inkLight, grainPixels, INK_GLSL } = require('./atmosphere');
 
 const BACKGROUND_VERTEX = `
@@ -22,6 +22,7 @@ attribute vec2 a_uv;
 uniform vec2 u_resolution;
 uniform float u_glyph;
 uniform float u_cursor;
+uniform float u_rowOffset;
 uniform float u_count;
 uniform float u_radius;
 uniform float u_arc;
@@ -38,15 +39,19 @@ void main() {
     float localY = (u_cursor - a_normal.x) * u_pitch;
     float period = u_count * u_pitch;
     localY = mod(localY + period * 0.5, period) - period * 0.5;
-    // All five copies turn together around the upright Y axis. A full phrase
-    // arrives facing the reader whenever the next line crosses the center.
-    float angle = a_position.x - u_cursor * 1.2566370614;
+    // Adjacent horizontal rings turn in opposite directions at five quiet
+    // paces. A row retains its identity across the content loop, and arrives
+    // facing the reader rather than exposing a gap between repeated phrases.
+    float d = localY / u_pitch;
+    float ordinal = floor(u_cursor - d + 0.5) + u_rowOffset;
+    float turn = (1.0 - 2.0 * mod(ordinal, 2.0)) *
+      (${ROW_TURN_MIN} + mod(ordinal * 3.0, 5.0) * ${ROW_TURN_STEP});
+    float angle = a_position.x - d * turn;
     // Screen-space ribbon: rows land on a sine profile — evenly spread at the
     // center, compressed towards the edges, filling the canvas exactly top to
     // bottom on any device. Each row's plane pitches around its own tangent,
     // upright at the reading line, lying almost flat at the edge and always
     // facing the reader; recession pushes distant rows back for the lens.
-    float d = localY / u_pitch;
     // Scale each whole row around its own baseline, continuously and
     // symmetrically. The focused line grows; its upper/lower neighbours recede.
     float rowScale = 0.62 + (${CENTER_SCALE} - 0.62) * exp(-d * d * 0.55);
@@ -107,7 +112,7 @@ float opacity() {
   float y = v_position.y / (camera - v_position.z);
   // Keep the centered quotation intact. The other rings recede, and the
   // space below it clears for the native reading layer.
-  float quiet = (1.0 - 0.91 * smoothstep(0.10, 0.32, abs(y))) * smoothstep(-0.30, -0.12, y);
+  float quiet = (1.0 - 0.97 * smoothstep(0.10, 0.32, abs(y))) * smoothstep(-0.30, -0.12, y);
   float reading = u_final > 0.5 ? mix(1.0, quiet, u_reading) : 1.0;
   return (u_final > 0.5 ? 1.0 - depthBlur() * 0.4 : 1.0) * edgeFade() * reading;
 }
@@ -116,6 +121,7 @@ float opacity() {
 const TEXT_FRAGMENT = `
 precision highp float;
 uniform sampler2D u_texture;
+uniform float u_atlasSize;
 varying vec2 v_uv;
 ${FOCUS}
 float glyphAlpha(vec2 uv, float blur) {
@@ -128,10 +134,10 @@ float glyphAlpha(vec2 uv, float blur) {
 }
 void main() {
   float dof = depthBlur();
-  float blur = dof * 8.0 / 1024.0;
+  float blur = dof * 8.0 / u_atlasSize;
   // Lens chromatic aberration grows with defocus: red/blue channels split
   // along the glyph axis on out-of-focus rows.
-  float ca = dof * 3.0 / 1024.0;
+  float ca = dof * 3.0 / u_atlasSize;
   vec3 rgb = vec3(
     glyphAlpha(v_uv + vec2(ca, 0.0), blur),
     glyphAlpha(v_uv, blur),
@@ -219,7 +225,7 @@ function makeProgram(gl, fragment, vertex = VERTEX) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','count','radius','arc','curl','recede','pitch','final','reading','thickness','back','noise','dpr','inkLight'].forEach(name => {
+  ['resolution','texture','glyph','cursor','rowOffset','count','radius','arc','curl','recede','pitch','final','reading','thickness','back','noise','dpr','inkLight','atlasSize'].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   });
   return { program, uniforms, attributes: ['position','normal','uv'].map(name => gl.getAttribLocation(program, 'a_' + name)) };
@@ -231,7 +237,6 @@ class WheelRenderer {
     this.canvas = canvas;
     this.atlasCanvas = atlasCanvas;
     this.dpr = Math.min(options.dpr || 1, 2);
-    this.scrollPitch = this.pitch * (this.height * 0.5) / (this.height * 0.5 - this.radius);
     this.running = false;
     this.destroyed = false;
     this.frameId = null;
@@ -309,23 +314,41 @@ class WheelRenderer {
 
   setFrames(frames) {
     if (this.destroyed) return;
-    const glyphs = paintAtlas(this.atlasCanvas, frames, this.dpr), gl = this.gl;
+    const gl = this.gl, limit = Math.min(4096, gl.getParameter(gl.MAX_TEXTURE_SIZE));
+    const glyphs = paintAtlas(this.atlasCanvas, frames, this.dpr, limit);
     this.glyphMode = 'font-file';
-    gl.bindTexture(gl.TEXTURE_2D, this.textTexture);
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.atlasCanvas);
-    if (gl.getError() !== gl.NO_ERROR) throw new Error('Glyph upload failed');
-    this.quotations = this.geometry(quotationGeometry(frames, glyphs, this.radius, this.fontSize, this.height * 0.5));
+    this.atlasSize = atlasLayout(Object.keys(glyphs).length, this.dpr, limit).side;
+    if (this.atlasGlyphs !== glyphs) {
+      gl.bindTexture(gl.TEXTURE_2D, this.textTexture);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.atlasCanvas);
+      if (gl.getError() !== gl.NO_ERROR) throw new Error('Glyph upload failed');
+      this.atlasGlyphs = glyphs;
+    }
+    if (this.quotations) {
+      gl.deleteBuffer(this.quotations.buffer);
+      this.buffers = this.buffers.filter(buffer => buffer !== this.quotations.buffer);
+    }
+    this.vertices = quotationGeometry(frames, glyphs, this.radius, this.fontSize, this.height * 0.5);
+    this.quotations = this.geometry(this.vertices);
     this.count = frames.length;
     this.draw();
+  }
+
+  hitTest(x, y) {
+    const rows = projectedRows(this.vertices, this.timeline.position / CELL - CENTER_PHASE, this.count, this.width, this.height, this.reading, this.timeline.rowOffset);
+    return rows.filter(row => x >= row.left - 10 && x <= row.right + 10 &&
+      Math.abs(y - (row.top + row.bottom) / 2) <= Math.max(22, (row.bottom - row.top) / 2))
+      .sort((a, b) => Math.abs(y - (a.top + a.bottom) / 2) - Math.abs(y - (b.top + b.bottom) / 2))[0];
   }
 
   mesh(program, geometry, pass, glyph) {
     const gl = this.gl, u = program.uniforms;
     gl.useProgram(program.program);
     gl.uniform2f(u.resolution, this.width, this.height);
-    gl.uniform1f(u.cursor, this.timeline.position / CELL - 0.46);
+    gl.uniform1f(u.cursor, this.timeline.position / CELL - CENTER_PHASE);
+    gl.uniform1f(u.rowOffset, modulo(this.timeline.rowOffset, 10));
     gl.uniform1f(u.count, this.count);
     gl.uniform1f(u.radius, this.radius);
     gl.uniform1f(u.arc, this.arc);
@@ -340,6 +363,7 @@ class WheelRenderer {
     // chromatic fringes instead of readable duplicates on neighbouring rows.
     gl.uniform1f(u.thickness, this.radius * (pass === 1 ? 1.5 : 0.3));
     gl.uniform1i(u.texture, 0);
+    gl.uniform1f(u.atlasSize, this.atlasSize || 1024);
     gl.uniform1i(u.noise, 1);
     gl.uniform1f(u.dpr, this.dpr);
     gl.uniform1f(u.inkLight, inkLight(this.timeline.ambientPhase, this.reducedMotion));
@@ -408,7 +432,7 @@ class WheelRenderer {
   }
 
   center(onComplete) {
-    const target = (Math.round(this.timeline.position / CELL - 0.46) + 0.46) * CELL;
+    const target = (Math.round(this.timeline.position / CELL - CENTER_PHASE) + CENTER_PHASE) * CELL;
     this.animateTo({ position: target, reading: 1, duration: 420 }, onComplete);
   }
 
@@ -426,12 +450,15 @@ class WheelRenderer {
     const toReading = options.reading === undefined ? fromReading : options.reading;
     const generation = this.motionGeneration;
     let began = null;
+    let moved = 0;
     const settle = now => {
       if (this.destroyed || generation !== this.motionGeneration) return;
       if (began === null) began = now;
-      const progress = Math.min((now - began) / (options.duration || 1), 1);
+      const progress = this.reducedMotion ? 1 : Math.min((now - began) / (options.duration || 1), 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      this.timeline.position = modulo(from + delta * eased, period);
+      const travel = delta * eased;
+      this.timeline.advancePosition(travel - moved);
+      moved = travel;
       this.reading = fromReading + (toReading - fromReading) * (progress * progress * (3 - 2 * progress));
       try {
         this.draw();

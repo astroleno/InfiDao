@@ -8,7 +8,7 @@ serif-data.js 是该文件的当前经文与界面用字子集，保留源字体
 copyrighy By 润植家艺术工作室 2012,http://www.runzhijia.art
 copyrighy By nzgr 2012,http://www.runzhijia.art
 
-supplement-data.js 仅为源字体缺少的古字提供 Noto Serif SC 字形。
+supplement-data.js 为源字体缺少的古字，以及有编码却没有笔画的数字、拉丁字母和部分标点，提供 Noto Serif SC 字形。空白字形从主字体子集的 cmap 中移除，以允许原生文字正确回退到补字字体。
 OFL.txt 仅适用于这份 Noto Serif SC 补字子集，不适用于康熙字体。
 完整来源、源文件 SHA-256 和补字清单见 manifest.js。
 

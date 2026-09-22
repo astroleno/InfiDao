@@ -3,12 +3,12 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { createTypography, FAMILY, SUPPLEMENT } = require('../flow/typography');
-const { paintAtlas } = require('../flow/atlas');
+const { paintAtlas, atlasLayout } = require('../flow/atlas');
 const { createGlyphSource, glyphOutline } = require('../flow/glyph-outline');
 const opentype = require('../flow/vendor/opentype');
 const { createMockProvider } = require('../flow/provider');
 const { readingLines } = require('../flow/scene');
-const { passages, journeys } = require('../content/passages');
+const { passages, journeys, examples } = require('../content/passages');
 
 function host() {
   const calls = [];
@@ -23,7 +23,7 @@ function host() {
 test('bundled font covers all mock quotations, sources, interpretations and interface copy', () => {
   const manifest = require('../assets/fonts/manifest');
   const supported = new Set(manifest.characters);
-  const content = JSON.stringify({ passages, journeys });
+  const content = JSON.stringify({ passages, journeys, examples });
   const page = fs.readFileSync(path.resolve(__dirname, '../pages/flow/index.wxml'), 'utf8');
   for (const char of content + page) {
     if (/[^\x00-\x7f\s]/.test(char)) assert.ok(supported.has(char), `Missing ${char}`);
@@ -99,6 +99,15 @@ test('Chinese font contours retain closed strokes and fit inside their atlas cel
   assert.throws(() => glyphOutline('🫧'), /Missing font glyph/);
 });
 
+test('digits and punctuation are visible in both the page font stack and the optical source', () => {
+  const data = Buffer.from(require('../assets/fonts/serif-data'), 'base64');
+  const primary = opentype.parse(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
+  for (const char of '0123456789/.·“”') {
+    assert.equal(primary.charToGlyphIndex(char), 0, `${char}: an empty primary glyph would suppress native fallback`);
+    assert.ok(glyphOutline(char).commands.length > 0, `${char}: must have visible strokes`);
+  }
+});
+
 test('new quotation characters use the existing font without a quotation rebuild', () => {
   const quoted = new Set(Object.values(passages).flatMap(p => Array.from(p.quote)));
   const quote = '三慥殀烝脩蹞';
@@ -113,6 +122,26 @@ test('new quotation characters use the existing font without a quotation rebuild
   assert.equal(fills, 6);
   assert.equal(glyphOutline('三').units, 256, 'the primary font is used first');
   assert.equal(glyphOutline('慥').units, 1000, 'missing Kangxi characters use the actual supplement font');
+});
+
+test('a batch with more than 100 unique glyphs fits its device and reuses a matching atlas', () => {
+  const quote = Array.from(require('../assets/fonts/manifest').characters).filter(char => /[\u3400-\u9fff]/.test(char)).slice(0, 180).join('');
+  let fills = 0;
+  const ctx = { clearRect() {}, save() {}, restore() {}, translate() {}, scale() {}, beginPath() {},
+    moveTo() {}, lineTo() {}, quadraticCurveTo() {}, bezierCurveTo() {}, closePath() {}, fill() { fills++; } };
+  const canvas = { getContext: () => ctx };
+  const first = paintAtlas(canvas, [{ quote }], 2, 2048);
+  assert.equal(Object.keys(first).length, 180);
+  assert.equal(fills, 180);
+  assert.ok(canvas.width <= 2048);
+  for (const uv of Object.values(first)) assert.ok(uv.every(value => value >= 0 && value <= 1));
+  assert.equal(paintAtlas(canvas, [{ quote: Array.from(quote).reverse().join('') }], 2, 2048), first);
+  assert.equal(fills, 180, 'matching glyphs must not be rasterized again');
+  assert.throws(() => paintAtlas(canvas, [{ quote: '心🫧' }], 2, 2048), /Missing font glyph/);
+  const before = fills;
+  paintAtlas(canvas, [{ quote }], 2, 2048);
+  assert.equal(fills - before, 180, 'a failed partial rebuild must not poison the previous atlas cache');
+  assert.throws(() => atlasLayout(180, 2, 1024), /device capacity/);
 });
 
 test('font files and glyphs are decoded once and reused across atlas rebuilds', () => {

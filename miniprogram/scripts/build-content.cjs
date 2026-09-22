@@ -54,7 +54,7 @@ for (const [id, [sourceId, lines, chapterLabel]] of Object.entries(selections)) 
 const entry = (id, bridge, reflection) => ({ id, bridge, reflection });
 const journeys = {
   settle: [
-    entry('still', '一念 · 安顿', '先容自己停一停。心有了落处，眼前的事才渐渐清楚。'),
+    entry('still', '一念 · 安顿', '这里的“止”，是应当安止的方向。事情纷繁时，先辨认什么值得守住，什么可以放下。'),
     entry('order', '从纷繁，回到先后', '不必同时安顿所有事。先看此刻真正需要照料的那一件。'),
     entry('haste', '让脚步，跟上自己', '急着抵达时，容易错过脚下。慢一点，也可以是在向前。'),
     entry('near', '答案，也在日常里', '安顿并不在生活之外。吃饭、行路、应答，都有重新开始的地方。'),
@@ -81,9 +81,22 @@ const journeys = {
     entry('finish', '让开始，有一个着落', '开头的心意值得珍惜，也值得用一次次小小的坚持接住。'),
     entry('self', '回到自己能做的', '把比较暂时放下。此刻能落实的一步，比别人的进度更近。'),
     entry('renewal', '每一天，都可更新', '昨天的迟疑，不必决定今天。再做一点，就有新的可能。'),
-    entry('still', '停一停，再辨方向', '行动也需要停顿。记起最初为何出发，再让脚步继续。'),
+    entry('still', '停一停，再辨方向', '有定向，才知道下一步为何而行。可以重新辨认最初想守住的事，再决定如何继续。'),
   ],
 };
 
-fs.writeFileSync(path.join(root, 'content/passages.js'), '// Generated from the local corpus by scripts/build-content.cjs.\nmodule.exports = ' + JSON.stringify({ passages, journeys }, null, 2) + ';\n');
+// Exact, explicitly curated examples. Keyword routing for any other thought
+// remains thematic mock content, never a claim to understand an individual.
+const examples = [
+  { seed: '我接了太多工作，每一件都放不下。', journey: 'settle', firstId: 'still',
+    reflection: '每件事都放不下时，先辨认方向：在这些工作里，你最不愿牺牲的是什么？以此为准，再看哪些值得守住、哪些可以放下。' },
+  { seed: '我一直准备，却迟迟没有开始。', journey: 'act', firstId: 'still',
+    reflection: '知止，是知道要往哪里去。若方向已经清楚，可以先走出能验证它的一步；若还不清楚，先问“为什么做”，再看需要什么准备。' },
+  { seed: '我和朋友意见不同，担心说出来会伤害关系。', journey: 'relate', firstId: 'harmony',
+    reflection: '和，容得下不同的意见。先分清想守住的关系，与这次不同的判断：怎样表达你的看法，也让对方听见尊重？' },
+  { seed: '同事总把责任推给我，我不知道该不该拒绝。', journey: 'relate', firstId: 'self',
+    reflection: '求诸己，可以先看自己能怎样回应。分清双方各自的责任，再决定如何表达边界；自省也可以包含拒绝。' },
+];
+
+fs.writeFileSync(path.join(root, 'content/passages.js'), '// Generated from the local corpus by scripts/build-content.cjs.\nmodule.exports = ' + JSON.stringify({ passages, journeys, examples }, null, 2) + ';\n');
 console.log('Verified and generated ' + Object.keys(passages).length + ' passages; 3 journeys.');

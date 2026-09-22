@@ -31,6 +31,10 @@
   "packOptions": {
     "ignore": [
       {
+        "value": ".shots",
+        "type": "folder"
+      },
+      {
         "value": "tests",
         "type": "folder"
       },

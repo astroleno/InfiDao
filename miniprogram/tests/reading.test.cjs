@@ -127,6 +127,91 @@ test('source expands around the same quotation and waits for its exit before unm
   assert.equal(page.data.sourceMounted, false);
 });
 
+test('a stationary finger and a cancelled touch preserve the reading layer and snapshot', async () => {
+  const { page, pause } = await setup();
+  pause();
+  const shot = page.data.shots[0].src;
+  page.onTouchStart({ touches: [{ clientX: 190, clientY: 390 }], timeStamp: 100 });
+  page.onTouchMove({ touches: [{ clientX: 192, clientY: 392 }], timeStamp: 116 });
+  assert.equal(page.data.readingVisible, true);
+  assert.equal(page.data.snapshotReady, true);
+  assert.equal(page.data.phase, 'reading');
+  page.onTouchCancel();
+  assert.equal(page.data.shots[0].src, shot);
+  assert.equal(page.data.readingVisible, true);
+  assert.equal(page._timeline.dragging, false);
+});
+
+test('only a confirmed drag hides the reading layer and moves the wheel', async () => {
+  const { page, pause } = await setup();
+  pause();
+  const position = page._timeline.position;
+  page.onTouchStart({ touches: [{ clientX: 190, clientY: 390 }], timeStamp: 100 });
+  page.onTouchMove({ touches: [{ clientX: 190, clientY: 430 }], timeStamp: 120 });
+  assert.equal(page.data.readingVisible, false);
+  assert.equal(page.data.snapshotReady, false);
+  assert.notEqual(page._timeline.position, position);
+});
+
+test('a tapped neighbouring row becomes the settled quotation and duplicate tap is ignored', async () => {
+  const { page, renderer, time, decode } = await setup();
+  renderer.hitTest = () => ({ index: 2 });
+  page.onTouchStart({ touches: [{ clientX: 190, clientY: 530 }], timeStamp: 100 });
+  page.onTouchEnd();
+  page.onCanvasTap();
+  time.advance(440); decode();
+  assert.equal(page._timeline.index, 2);
+  assert.equal(page.data.active.quote, '物有本末');
+  assert.equal(page.data.paused, true);
+});
+
+test('source opens at its heading and keeps a separate scroll position from short reading', async () => {
+  const { page, pause, time } = await setup();
+  pause();
+  page.onReadingScroll({ detail: { scrollTop: 48 } });
+  page.openSource();
+  time.advance(50);
+  assert.equal(page.data.sourceTarget, 'source-heading');
+  page.onReadingScroll({ detail: { scrollTop: 380 } });
+  page.closeSource();
+  assert.equal(page.data.readingScroll, 48);
+  page.openSource();
+  time.advance(0);
+  assert.equal(page.data.readingScroll, 380);
+  assert.equal(page.data.sourceTarget, '');
+});
+
+test('closing the source cancels a pending native anchor scroll', async () => {
+  const { page, pause, time } = await setup();
+  pause(); page.openSource(); time.advance(1); page.closeSource(); time.advance(60);
+  assert.equal(page.data.sourceTarget, '');
+  assert.equal(page.data.readingScroll, 0);
+});
+
+test('editing preserves an actual thought and never attributes the default example to the user', async () => {
+  const { page, pause, time } = await setup();
+  pause(); page.openSeed();
+  assert.equal(page.data.draft, '');
+  page.closeOverlay(); time.advance(250);
+  page.setData({ personalSeed: true, seed: '我想重新开始' });
+  page.openSeed();
+  assert.equal(page.data.draft, '我想重新开始');
+});
+
+test('a reduced-motion preference settles the wheel while an explicit continue remains available', async () => {
+  const { page, time, decode } = await setup();
+  const query = { select() { return this; }, fields() { return this; }, exec(callback) { callback([{ opacity: '0' }]); } };
+  page.createSelectorQuery = () => query;
+  page.readMotionPreference();
+  assert.equal(page.data.paused, true);
+  assert.equal(page._renderer.reducedMotion, true);
+  time.advance(440); decode();
+  page.resumeFlow(); time.advance(500);
+  page.readMotionPreference();
+  assert.equal(page.data.paused, false);
+  assert.equal(page.data.phase, 'flow');
+});
+
 test('native touchend pauses without a synthetic tap, while a duplicate tap never resumes it', async () => {
   const { page, time, decode } = await setup();
   page.onTouchStart({ touches: [{ clientX: 190, clientY: 350 }], timeStamp: 10 });

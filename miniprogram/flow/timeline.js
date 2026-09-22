@@ -1,4 +1,5 @@
 const CELL = 512;
+const CENTER_PHASE = 0.46;
 // Fling tuning: Lenis-like glide — exponential decay, gentle settle handoff.
 const FLING_START = CELL * 0.3;
 const FLING_STOP = CELL * 0.03;
@@ -14,7 +15,8 @@ function modulo(value, size) {
 class FlowTimeline {
   constructor(count) {
     this.count = count;
-    this.position = CELL * 0.46;
+    this.position = CELL * CENTER_PHASE;
+    this.rowOffset = 0;
     this.paused = false;
     this.visible = true;
     this.dragging = false;
@@ -29,7 +31,7 @@ class FlowTimeline {
   }
 
   get index() {
-    return modulo(Math.round(this.position / CELL - 0.46), this.count);
+    return modulo(Math.round(this.position / CELL - CENTER_PHASE), this.count);
   }
 
   get paused() { return this._paused; }
@@ -64,7 +66,7 @@ class FlowTimeline {
     // paused; when it dies out we ask the page for a gentle detent settle.
     if (this.flinging) {
       const step = this.velocity * dt;
-      this.position = modulo(this.position + step, this.count * CELL);
+      this.advancePosition(step);
       this.advanceAmbient(step, dt);
       this.velocity *= Math.exp(-FLING_DAMPING * dt);
       this.elapsed += dt;
@@ -85,7 +87,7 @@ class FlowTimeline {
     const phase = modulo(this.position, CELL) / CELL;
     const reading = Math.exp(-Math.pow((phase - 0.42) / 0.22, 2));
     const step = dt * (44 - 22 * reading) * this.speed * this.flow;
-    this.position = modulo(this.position + step, this.count * CELL);
+    this.advancePosition(step);
     this.advanceAmbient(step, dt);
     this.elapsed += dt;
     return true;
@@ -98,6 +100,12 @@ class FlowTimeline {
     this.ambientPhase = modulo(this.ambientPhase + Math.min(Math.abs(distance), 44 * dt) / (CELL * 1.5), 1);
   }
 
+  advancePosition(distance) {
+    const period = this.count * CELL, next = this.position + distance;
+    this.rowOffset += Math.floor(next / period) * this.count;
+    this.position = modulo(next, period);
+  }
+
   setVisible(visible) {
     this.visible = visible;
     this.lastTime = null;
@@ -106,7 +114,7 @@ class FlowTimeline {
 
   scrub(deltaPixels, screenPitch, dtSeconds) {
     const pitch = Math.max(screenPitch, 1);
-    this.position = modulo(this.position - deltaPixels * CELL / pitch, this.count * CELL);
+    this.advancePosition(-deltaPixels * CELL / pitch);
     // Low-passed finger velocity, for the release fling.
     if (dtSeconds > 0.001 && dtSeconds < 0.5) {
       const instant = -deltaPixels * CELL / pitch / dtSeconds;
@@ -128,8 +136,9 @@ class FlowTimeline {
   }
 
   move(direction) {
-    this.position = modulo((Math.round(this.position / CELL - 0.46) + direction + 0.46) * CELL, this.count * CELL);
+    const target = (Math.round(this.position / CELL - CENTER_PHASE) + direction + CENTER_PHASE) * CELL;
+    this.advancePosition(target - this.position);
   }
 }
 
-module.exports = { CELL, FlowTimeline, modulo };
+module.exports = { CELL, CENTER_PHASE, FlowTimeline, modulo };
