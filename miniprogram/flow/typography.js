@@ -1,14 +1,13 @@
-const { family: FAMILY, supplementFamily: SUPPLEMENT, supplementCharacters } = require('../assets/fonts/manifest');
-const FALLBACK = '"Songti SC", "STSong", "Noto Serif CJK SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", serif';
+const { family: FAMILY, supplementFamily: SUPPLEMENT } = require('../assets/fonts/manifest');
 const FONT_DATA = require('../assets/fonts/serif-data');
 const SUPPLEMENT_DATA = require('../assets/fonts/supplement-data');
 const FACES = [{ family: FAMILY, data: FONT_DATA }, { family: SUPPLEMENT, data: SUPPLEMENT_DATA }];
 
-// Keep the page and native atlas registrations independent: one scope failing
-// must not discard the other. No network request or device-installed font needed.
+// Only native page text uses font registration. The optical canvas draws the
+// bundled outlines directly, so iPhone font fallback cannot change its glyphs.
 function createTypography() {
-  const status = { webview: 'pending', native: 'pending' };
-  const registered = { webview: {}, native: {} };
+  const status = { webview: 'pending', canvas: 'bundled-outlines' };
+  const registered = {};
   let pending;
   function prepare(api) {
     if (pending) return pending;
@@ -18,44 +17,37 @@ function createTypography() {
         if (finished) return;
         finished = true;
         clearTimeout(timeout);
-        for (const scope of ['webview', 'native']) {
-          if (status[scope] === 'pending') status[scope] = 'fallback';
-        }
+        if (status.webview === 'pending') status.webview = 'fallback';
         resolve({ ...status });
       };
       // A font failure must not leave the opening scene waiting indefinitely.
       const timeout = setTimeout(finish, 1800);
       try {
         if (!api || !api.loadFontFace) { finish(); return; }
-        for (const scope of ['webview', 'native']) {
-          for (const face of FACES) {
-            const done = loaded => {
-              if (finished) return;
-              registered[scope][face.family] = loaded;
-              if (Object.keys(registered[scope]).length === FACES.length) {
-                status[scope] = Object.values(registered[scope]).every(Boolean) ? 'loaded' : 'fallback';
-              }
-              if (Object.values(status).every(value => value !== 'pending')) finish();
-            };
-            try {
-              api.loadFontFace({
-                global: true, family: face.family, scopes: [scope],
-                source: `url("data:font/woff;base64,${face.data}")`,
-                desc: { style: 'normal', weight: '400' },
-                success: () => done(true), fail: () => done(false),
-              });
-            } catch (_) { done(false); }
-          }
+        for (const face of FACES) {
+          const done = loaded => {
+            if (finished) return;
+            registered[face.family] = loaded;
+            if (Object.keys(registered).length === FACES.length) {
+              status.webview = Object.values(registered).every(Boolean) ? 'loaded' : 'fallback';
+              finish();
+            }
+          };
+          try {
+            api.loadFontFace({
+              global: true, family: face.family, scopes: ['webview'],
+              source: `url("data:font/woff;base64,${face.data}")`,
+              desc: { style: 'normal', weight: '400' },
+              success: () => done(true), fail: () => done(false),
+            });
+          } catch (_) { done(false); }
         }
       } catch (_) { finish(); }
     });
     return pending;
   }
-  return { prepare, status: () => ({ ...status }), canvasFamily: char => {
-    const family = char && supplementCharacters.includes(char) ? SUPPLEMENT : FAMILY;
-    return registered.native[family] ? family : FALLBACK;
-  } };
+  return { prepare, status: () => ({ ...status }) };
 }
 
 const typography = createTypography();
-module.exports = { FAMILY, SUPPLEMENT, FALLBACK, createTypography, typography };
+module.exports = { FAMILY, SUPPLEMENT, createTypography, typography };

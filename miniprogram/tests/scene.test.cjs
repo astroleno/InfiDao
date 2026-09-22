@@ -63,9 +63,13 @@ test('the moving scene contains only short quotations, while source and reflecti
   assert.equal(new Set(lines.map(line => line.id)).size, lines.length);
   assert.ok(lines.every(line => line.quote.length <= 10));
   assert.ok(lines.every(line => line.fullText.includes(line.quote) && line.sourceId && line.reflection));
-  const drawn = [];
-  const canvas = { getContext: () => ({ clearRect() {}, fillText(text) { drawn.push(text); } }) };
-  paintAtlas(canvas, lines);
-  assert.deepEqual(new Set(drawn), new Set(lines.flatMap(line => Array.from(line.quote))));
-  assert.ok(drawn.every(text => Array.from(text).length === 1));
+  let drawn = 0;
+  const ctx = { clearRect() {}, save() {}, restore() {}, translate() {}, scale() {}, beginPath() {},
+    moveTo() {}, lineTo() {}, quadraticCurveTo() {}, bezierCurveTo() {}, closePath() {}, fill() { drawn++; },
+    fillText() { throw new Error('Native font fallback must not be used'); },
+  };
+  const canvas = { getContext: () => ctx };
+  const glyphs = paintAtlas(canvas, lines);
+  assert.deepEqual(new Set(Object.keys(glyphs)), new Set(lines.flatMap(line => Array.from(line.quote))));
+  assert.equal(drawn, Object.keys(glyphs).length);
 });

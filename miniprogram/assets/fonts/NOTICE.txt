@@ -11,3 +11,6 @@ copyrighy By nzgr 2012,http://www.runzhijia.art
 supplement-data.js 仅为源字体缺少的古字提供 Noto Serif SC 字形。
 OFL.txt 仅适用于这份 Noto Serif SC 补字子集，不适用于康熙字体。
 完整来源、源文件 SHA-256 和补字清单见 manifest.js。
+
+flow-outlines.js 从同一源字体子集导出流动经文所需的笔画轮廓，
+沿用对应字形的来源与版权，供原生画布直接绘制。

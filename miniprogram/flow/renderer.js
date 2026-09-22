@@ -284,6 +284,7 @@ class WheelRenderer {
   setFrames(frames) {
     if (this.destroyed) return;
     const glyphs = paintAtlas(this.atlasCanvas, frames, this.dpr), gl = this.gl;
+    this.glyphMode = 'bundled-outlines';
     gl.bindTexture(gl.TEXTURE_2D, this.textTexture);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);

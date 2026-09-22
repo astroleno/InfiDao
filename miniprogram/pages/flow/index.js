@@ -465,6 +465,7 @@ Page({
       running: !!this._renderer && this._renderer.running, visible: this._visible,
       paused: this.data.paused, phase: this.data.phase, snapshotReady: this.data.snapshotReady,
       mode: this.data.graphicsError ? 'static' : 'webgl', journey: this._session && this._session.journey,
+      glyphMode: this._renderer ? this._renderer.glyphMode : null,
       graphicsError: this.data.graphicsError, graphicsFailure: this._graphicsFailure || null,
       glError: this._renderer ? this._renderer.gl.getError() : null };
   },

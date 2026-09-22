@@ -24,11 +24,13 @@ mock 包含三组各八段的阅读路径，按组回环。经典摘录来自仓
 
 ## 字体
 
-流动经文按距中心的连续距离缩放：中间最大，上下逐渐缩小，并按实际手机透视限制字距，避免放大后裁字。原生阅读层、输入和 Canvas 字形统一使用用户指定的 CoScroll 默认字体「润植家康熙字典美化体」（400 字重），不请求 CDN。两份字形子集的 WOFF 共约 214 KiB，内嵌数据约 286 KiB，覆盖当前 mock 内容与界面文案；任意新输入中未收录的字仍按系统衬线字体回退。
+流动经文按距中心的连续距离缩放：中间最大，上下逐渐缩小，并按实际手机透视限制字距，避免放大后裁字。原生阅读层、输入和 Canvas 字形统一使用用户指定的 CoScroll 默认字体「润植家康熙字典美化体」（400 字重），不请求 CDN。页面字体的 WOFF 共约 214 KiB，内嵌数据约 286 KiB，覆盖当前 mock 内容与界面文案；任意新输入中未收录的字仍按系统衬线字体回退。
+
+流动经文直接按源字体轮廓生成字形图集，不调用 `fillText`、不查询 Canvas 的字体名称，也不依赖 `wx.loadFontFace` 的 native 作用域，解决 iPhone 流动段仍回退黑体的问题。随包轮廓约 271 KiB，覆盖当前全部 91 个流动用字；只在建立或更换图集时绘制，动画逐帧继续使用原有 WebGL 纹理。图集缺字会进入现有原生阅读降级，不会悄悄改用黑体。修改经文后需重建轮廓。
 
 主字体来自相邻 CoScroll 项目实际使用的 `public/fonts/润植家康熙字典美化体.ttf`；原文件缺少的「慥殀烝脩蹞」五个古字以 [Noto Serif SC](https://github.com/google/fonts/tree/main/ofl/notoserifsc) 补齐。来源与版权记录见 `assets/fonts/NOTICE.txt`、`manifest.js`；`OFL.txt` 仅适用于补字字体。修改文案或选文后，用 fonttools 运行 `python scripts/build-font.py /path/to/润植家康熙字典美化体.ttf /path/to/NotoSerifSC[wght].ttf` 重建字形。正式构建无需安装 fonttools，也不依赖 CoScroll 工作区。
 
-[微信 `wx.loadFontFace`](https://developers.weixin.qq.com/miniprogram/dev/api/ui/font/wx.loadFontFace.html) 支持 HTTPS 和 Data URL，后者要求基础库 3.7.9 起。页面与原生画布分别注册作用域，注册结束后才绘制经文，失败不阻塞进入。自定义字体并非只能走 CDN：固定内容可随包放子集；完整字库或未来动态内容可由自己的 HTTPS 静态服务、对象存储或 CDN 提供，并按官方要求配置 CORS 与字体 Content-Type。后续替换字体必须同时验证 webview 和 native，不能只看开发者工具里的系统字体。
+[微信 `wx.loadFontFace`](https://developers.weixin.qq.com/miniprogram/dev/api/ui/font/wx.loadFontFace.html) 支持 HTTPS 和 Data URL，后者要求基础库 3.7.9 起。目前只为原生页面文字注册 webview 字体，流动图集使用上述轮廓。自定义字体并非只能走 CDN：固定内容可随包放子集；完整字库或未来动态内容可由自己的 HTTPS 静态服务、对象存储或 CDN 提供，并按官方要求配置 CORS 与字体 Content-Type。接入动态内容时，也必须为新增流动用字提供对应轮廓，并验证真机画面；字体注册成功不能证明画布实际用了该字体。
 
 ## 验证
 
