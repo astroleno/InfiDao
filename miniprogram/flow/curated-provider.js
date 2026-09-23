@@ -1,5 +1,6 @@
 const { passages } = require('../content/passages');
 const links = require('../content/branches');
+const entryWords = require('../content/entry-words');
 const { createMockProvider } = require('./provider');
 const { requestId } = require('./remote-provider');
 
@@ -9,7 +10,8 @@ function createCuratedProvider() {
     const passage = passages[id], definition = links[id];
     const quote = passage.fullText.includes(passage.quote) ? passage.quote : passage.quote.replace(/[，。！？；]$/, '');
     if (!passage.fullText.includes(quote)) throw new Error('Unverified curated quotation');
-    const anchors = definition[1].map(([label, targetId], index) => ({ id: `${chainId}:${id}:${index}`, label,
+    const anchors = definition[1].map(([label, targetId], index) => ({ id: `${chainId}:${id}:${index}`, label, surface: 'reflection',
+      start: definition[0].indexOf(label), end: definition[0].indexOf(label) + label.length,
       sense: definition[0], direction: label, terms: [label], target: { sourceId: passages[targetId].sourceId, quote: passages[targetId].quote, meaning: passages[targetId].meaning }, targetId }));
     const spans = []; let cursor = 0;
     for (const anchor of anchors.slice().sort((a, b) => definition[0].indexOf(a.label) - definition[0].indexOf(b.label))) {
@@ -19,13 +21,21 @@ function createCuratedProvider() {
       spans.push({ text: anchor.label, anchorId: anchor.id }); cursor = at + anchor.label.length;
     }
     if (cursor < definition[0].length) spans.push({ text: definition[0].slice(cursor) });
+    entryWords[id].forEach(([label, targetId], index) => {
+      const surface = index === 0 ? 'quote' : 'meaning', text = surface === 'quote' ? quote : passage.meaning;
+      const start = text.indexOf(label);
+      if (start < 0) throw new Error('Unverified curated entry');
+      anchors.push({ id: `${chainId}:${id}:${surface}`, surface, label, start, end: start + label.length,
+        sense: passage.meaning, direction: links[targetId][0], terms: [label], targetId,
+        target: { sourceId: passages[targetId].sourceId, quote: passages[targetId].quote, meaning: passages[targetId].meaning } });
+    });
     return { ...passage, lines: undefined, id: chainId + ':' + id, quote, ordinal,
       quoteStart: passage.fullText.indexOf(quote), quoteEnd: passage.fullText.indexOf(quote) + quote.length,
       reflection: definition[0], reflectionSpans: spans, anchors, provenance: 'curated', ready: true, corpusVersion: 'guji-core-v1' };
   }
   function create(ids, seed, parent, entry) {
     const chainId = 'curated-' + requestId();
-    const chain = { chainId, version: 'curated-branches-v1', kind: 'curated', seed, seedOrigin: seed ? 'user' : 'example',
+    const chain = { chainId, version: 'curated-branches-v2', kind: 'curated', seed, seedOrigin: seed ? 'user' : 'example',
       sequence: ids, journey: 'branch', focus: entry ? entry.label : '此刻的一念', parentChainId: parent || null, entry: entry || null,
       frames: ids.map((id, index) => frame(id, chainId, index + 1)), cursor: null, exhausted: false };
     chains.set(chainId, chain);

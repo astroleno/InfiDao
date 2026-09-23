@@ -6,7 +6,7 @@ const COPIES = 5;
 const { CELL, CENTER_PHASE, modulo } = require('./timeline');
 
 function sceneMetrics(width, height) {
-  const radius = Math.min(width * 0.5, height * 0.34), pitch = height * 0.058;
+  const radius = Math.min(width * 0.5, height * 0.34), pitch = height * 0.058 * 0.9;
   return { radius, arc: 1.45, curl: 1.5, recede: height * 0.28, pitch, fontSize: Math.min(21, width * 0.056, height * 0.06), turns: 11,
     scrollPitch: height * 0.5 * 1.5396 * pitch / Math.max(height * 0.5 - radius, pitch) };
 }
@@ -25,11 +25,12 @@ function rowTurn(ordinal) {
   return direction * (ROW_TURN_MIN + modulo(ordinal * 3, 5) * ROW_TURN_STEP);
 }
 
-function rowMotion(index, cursor, count, rowOffset = 0, loop = true) {
-  const distance = loop ? modulo(cursor - index + count / 2, count) - count / 2 : cursor - index;
+function rowMotion(index, cursor, count, rowOffset = 0, loop = true, offset = 0) {
+  const raw = loop ? modulo(cursor - index + count / 2, count) - count / 2 : cursor - index;
+  const distance = raw - offset;
   // The row keeps its direction and pace while passing through the viewport,
   // including an odd-length content loop. It faces front exactly at focus.
-  const ordinal = Math.round(cursor - distance) + rowOffset;
+  const ordinal = Math.round(cursor - raw) + rowOffset;
   const turn = rowTurn(ordinal);
   return { distance, ordinal, turn, angle: -distance * turn };
 }
@@ -57,6 +58,7 @@ function readingLines(frames) {
     passageQuote: frame.quote,
     passageLines: splitLines(frame),
     lineIndex: index,
+    centerOffset: 0.12 * Math.tanh((splitLines(frame).length - 1) / 2 - index),
     id: frame.id + '-line-' + index,
     quote: line.replace(/[，。！？；]$/, ''),
     lines: [line],
@@ -120,7 +122,7 @@ function quotationGeometry(frames, glyphs, radius, fontSize, camera = radius * 2
         const angle = offset + rear;
         for (const j of [0,1,2,1,3,2]) {
           const [x,y,u,v] = corners[j];
-          vertices.push(angle, x * size, y * size, index, 0, 0, u, v);
+          vertices.push(angle, x * size, y * size, index, frame.centerOffset || 0, 0, u, v);
         }
       }
     });
@@ -136,7 +138,7 @@ function projectedRows(vertices, cursor, count, width, height, reading = 0, rowO
   for (let i = 0; i < vertices.length; i += 8) {
     if ((i / 8) % (6 * COPIES) >= 6) continue;
     const index = vertices[i + 3];
-    const motion = rowMotion(index, cursor, count, rowOffset, loop), d = motion.distance;
+    const motion = rowMotion(index, cursor, count, rowOffset, loop, vertices[i + 4]), d = motion.distance;
     if (Math.abs(d) > (reading > 0.5 ? 0.35 : 1.25)) continue;
     const angle = vertices[i] + motion.angle;
     const scale = 0.62 + (CENTER_SCALE - 0.62) * Math.exp(-d * d * 0.55);

@@ -12,6 +12,8 @@
 .scene-shot { z-index: 1; opacity: 0; transition: transform 340ms cubic-bezier(0.32, 0.72, 0, 1); }
 .scene-shot--visible { opacity: 1; }
 .scene-shot--blend { transition: opacity 260ms ease-out, transform 340ms cubic-bezier(0.32, 0.72, 0, 1); }
+.scene-shot--departing { opacity: 0; }
+.branch-origin { position: absolute; z-index: 3; left: 32px; right: 32px; text-align: center; color: #aeb7b3; font-size: 13px; pointer-events: none; }
 .fallback-anchor { position: absolute; left: 22px; right: 22px; text-align: center; z-index: 1; transition: transform 340ms cubic-bezier(0.32, 0.72, 0, 1); }
 .fallback-anchor text { display: block; transform: translateY(-50%); font-size: 32px; line-height: 1.5; color: #edf3f3; }
 

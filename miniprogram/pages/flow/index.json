@@ -2,5 +2,5 @@
   "navigationStyle": "custom",
   "disableScroll": true,
   "backgroundColor": "#050709",
-  "usingComponents": { "flow-notes": "../../components/flow-notes/index" }
+  "usingComponents": { "flow-notes": "../../components/flow-notes/index", "linked-text": "../../components/linked-text/index" }
 }

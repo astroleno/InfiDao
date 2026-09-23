@@ -1,4 +1,4 @@
 <view class="flow-notes {{busy ? 'flow-notes--waiting' : ''}}">
   <text class="notes-origin">{{frame.ready === false ? '联系正在展开' : frame.provenance === 'curated' ? '此刻 · 精选联系' : '此刻 · 生成联系'}}</text>
-  <view wx:if="{{frame.ready !== false}}" class="notes-text"><text wx:for="{{frame.reflectionSpans}}" wx:key="index" class="{{item.anchorId ? 'linked-word' : ''}}" data-anchor="{{item.anchorId}}" bindtap="choose" aria-role="{{item.anchorId ? 'button' : 'text'}}" aria-label="{{item.anchorId ? '沿' + item.text + '展开经文' : item.text}}">{{item.text}}</text></view>
+  <view wx:if="{{frame.ready !== false}}" class="notes-text"><linked-text parts="{{frame.reflectionSpans}}" frame-id="{{frame.id}}" busy="{{busy}}" pressed="{{pressed}}" bind:branch="choose" /></view>
 </view>

@@ -32,6 +32,15 @@ class FlowTimeline {
   }
 
   get index() {
+    if (this.centers) {
+      const cursor = this.position / CELL - CENTER_PHASE, base = Math.floor(cursor);
+      let best = 0, distance = Infinity;
+      for (let candidate = base - 1; candidate <= base + 2; candidate++) {
+        const index = modulo(candidate, this.count), d = Math.abs(cursor - candidate - (this.centers[index] || 0));
+        if (d < distance) { distance = d; best = index; }
+      }
+      return best;
+    }
     const index = Math.round(this.position / CELL - CENTER_PHASE);
     return this.loop ? modulo(index, this.count) : Math.max(0, Math.min(this.count - 1, index));
   }
@@ -52,6 +61,8 @@ class FlowTimeline {
   get offset() {
     return modulo(this.position, this.count * CELL);
   }
+
+  targetFor(index) { return (index + CENTER_PHASE + (this.centers?.[index] || 0)) * CELL; }
 
   tick(now) {
     if (this.lastTime === null) {

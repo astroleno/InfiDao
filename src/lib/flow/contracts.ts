@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const FLOW_VERSION = "flow-v1";
-export const FLOW_PROMPT_VERSION = "contextual-links-v1";
+export const FLOW_PROMPT_VERSION = "contextual-links-v2";
 export const flowRequestSchema = z.object({
   op: z.enum(["open", "branch", "next"]),
   requestId: z.string().min(1).max(80),
@@ -21,6 +21,9 @@ export interface FlowTarget {
 export interface FlowAnchor {
   id: string;
   label: string;
+  surface?: "quote" | "meaning" | "reflection";
+  start?: number;
+  end?: number;
   sense: string;
   direction: string;
   terms: string[];
@@ -75,6 +78,7 @@ export const generatedBatchSchema = z.object({
     relevance: z.number().min(0).max(1),
     anchors: z.array(z.object({
       label: z.string().min(1).max(12), sense: z.string().min(2).max(100),
+      surface: z.enum(["quote", "meaning", "reflection"]).optional(),
       direction: z.string().min(2).max(80), terms: z.array(z.string().min(1).max(20)).min(1).max(6),
       target: targetSchema,
     })).max(3),

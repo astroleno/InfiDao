@@ -1,11 +1,9 @@
 Component({
   options: { styleIsolation: 'apply-shared' },
-  properties: { frame: Object, busy: Boolean },
+  properties: { frame: Object, busy: Boolean, pressed: String },
   methods: {
     choose(event) {
-      const anchorId = event.currentTarget.dataset.anchor;
-      if (!anchorId || this.data.busy) return;
-      this.triggerEvent('branch', { frameId: this.data.frame.id, anchorId });
+      if (!this.data.busy) this.triggerEvent('branch', event.detail);
     },
   },
 });

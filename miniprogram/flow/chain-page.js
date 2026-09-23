@@ -3,7 +3,8 @@ const { createChainStore } = require('./chain-store');
 const { createContinuation } = require('./continuation');
 const { createChainFonts } = require('./chain-fonts');
 const { FlowTimeline, CELL, CENTER_PHASE } = require('./timeline');
-const { readingLines } = require('./scene');
+const { readingLines, sceneMetrics } = require('./scene');
+const { RibbonWindow, SLOT_COUNT } = require('./ribbon-window');
 const { createRequestBudget } = require('./request-budget');
 
 const chainActions = {
@@ -21,7 +22,8 @@ const chainActions = {
     return { position: this._timeline.position, rowOffset: this._timeline.rowOffset,
       ambientPhase: this._timeline.ambientPhase, paused: this.data.paused,
       sourceOpen: this.data.sourceOpen, readingScroll: this._readingScrollTop || 0,
-      readingPositions: Object.fromEntries(Object.entries(this._readingPositions || {}).filter(([id]) => visible.has(id))), windowStart: this._windowStart || 0 };
+      readingPositions: Object.fromEntries(Object.entries(this._readingPositions || {}).filter(([id]) => visible.has(id))), windowStart: this._windowStart || 0,
+      ribbon: this._ribbon?.snapshot() };
   },
   saveChain() {
     if (!this._session?.chainId) return;
@@ -29,13 +31,14 @@ const chainActions = {
     this._chainStore.put(this._session, this.chainSnapshot());
   },
   async openChainSession(seed) {
+    this._spatialTransition = null;
     const token = ++this._chainRequest;
     this._resumeSeed = seed;
     this._retryOperation = { type: 'open', seed };
     this._nextRequest = null;
     this._nextBatch = null;
     try { this.saveChain(); } catch (_) { this.setData({ chainError: '当前阅读未能保存，请整理本机空间后再试。' }); return; }
-    this.setData({ loading: !this._session, chainBusy: true, chainError: '', error: '', inputFocus: false, overlayVisible: false });
+    this.setData({ loading: !this._session, chainBusy: true, chainError: '', error: '', branchLabel: '', pressedAnchor: '', transitionWord: '', inputFocus: false, overlayVisible: false });
     this.syncMotion();
     let headTransition;
     try {
@@ -57,7 +60,8 @@ const chainActions = {
     if (!this.chainCurrent(token) || error.cancelled) return;
     const message = error.message === 'CHAIN_STORAGE_FULL' ? '本机阅读记录已满，原句仍在。' :
       error.message && !/^[A-Z_]+$/.test(error.message) ? error.message : '这条联系暂未展开，原句仍可阅读。';
-    this.setData({ chainBusy: false, loading: false, chainError: this._session ? message : '', error: this._session ? '' : message });
+    this._spatialTransition = null;
+    this.setData({ chainBusy: false, loading: false, pressedAnchor: '', transitionWord: '', chainError: this._session ? message : '', error: this._session ? '' : message });
     this._resumeSeed = undefined;
     this.syncMotion();
   },
@@ -75,7 +79,9 @@ const chainActions = {
     this._lastBranch = input;
     this._retryOperation = { type: 'branch', input };
     this._branchPressedAt = Date.now();
-    this.setData({ chainBusy: true, chainError: '', branchLabel: frame.anchors.find(anchor => anchor.id === anchorId).label });
+    const label = frame.anchors.find(anchor => anchor.id === anchorId).label;
+    this._spatialTransition = { direction: 1, label };
+    this.setData({ chainBusy: true, chainError: '', pressedAnchor: anchorId, branchLabel: label });
     this.syncMotion(); this.pulse();
     let headTransition;
     try {
@@ -101,13 +107,19 @@ const chainActions = {
       if (!this.chainCurrent(token)) return;
     }
     this._continuation.cancelUnrelated(chain.chainId);
+    if (this._spatialTransition && this.data.shots?.length) {
+      this.setData({ shots: this.data.shots.map(shot => ({ ...shot, locked: true, shift: this.data.sceneShift || 0 })) });
+    }
     if (this._provider.restore) this._provider.restore(chain);
     this._session = chain;
-    this._readingLines = readingLines(chain.frames);
-    this._timeline = new FlowTimeline(this._readingLines.length);
+    this._timeline = new FlowTimeline(SLOT_COUNT);
     this._timeline.loop = true;
     this._windowStart = snapshot?.windowStart || 0;
     if (snapshot) for (const key of ['position', 'rowOffset', 'ambientPhase']) this._timeline[key] = snapshot[key] || 0;
+    this._ribbon = new RibbonWindow(readingLines(chain.frames), this.ribbonCursor(), snapshot?.ribbon, this._timeline.rowOffset);
+    this._readingLines = this._ribbon.frames(this.ribbonCursor());
+    this._timeline.centers = this._readingLines.map(line => line.centerOffset || 0);
+    if (!snapshot) this._timeline.position = this._timeline.targetFor(0);
     this._timeline.setVisible(this._visible);
     this._readingPositions = snapshot?.readingPositions || {};
     this._readingScrollTop = snapshot?.readingScroll || 0;
@@ -124,6 +136,8 @@ const chainActions = {
       if (!this.chainCurrent(token)) return;
       this._branchReadableMs = this._branchPressedAt ? Date.now() - this._branchPressedAt : null;
       this._branchPressedAt = null;
+      this._spatialTransition = null;
+      this.setData({ pressedAnchor: '', transitionWord: '', branchLabel: '' });
       if (paused) {
         this.setData({ phase: 'reading', readingVisible: true });
         this.scrollReader(this._readingScrollTop);
@@ -133,8 +147,8 @@ const chainActions = {
       }
       this.refreshChainLinks();
     };
-    if (chain.fontUnavailable) { this.graphicsFailed(new Error('Font unavailable')); return; }
-    if (!this._renderer || this.data.graphicsError) { this.setData({ graphicsError: false }); this.initRenderer(); return; }
+    if (chain.fontUnavailable) { this.graphicsFailed(new Error('Font unavailable')); finish(); return; }
+    if (!this._renderer || this.data.graphicsError) { this._spatialTransition = null; this.setData({ graphicsError: false, pressedAnchor: '', transitionWord: '', branchLabel: '' }); this.initRenderer(); return; }
     const action = this.beginAction();
     this._renderer.stop(); this._renderer.timeline = this._timeline;
     this._renderer.reading = paused ? 1 : 0;
@@ -146,32 +160,46 @@ const chainActions = {
   },
   replaceChainBatch(batch) {
     if (this._session.chainId !== batch.chainId) return;
-    const existing = new Map(this._session.frames.map(frame => [frame.id, frame]));
+    const previous = this._session;
+    const existing = new Map(previous.frames.map(frame => [frame.id, frame]));
     for (const frame of batch.frames) existing.set(frame.id, frame);
     this._session = { ...batch, frames: Array.from(existing.values()) };
-    this._readingLines = readingLines(this._session.frames);
-    this._timeline.count = this._readingLines.length;
-    this.setData({ chainBusy: false, chainError: '', total: batch.exhausted ? String(this._session.frames[this._session.frames.length - 1].ordinal).padStart(2, '0') : '…' });
+    if (batch.frames.length && Math.max(...batch.frames.map(frame => frame.ordinal)) < Math.max(...previous.frames.map(frame => frame.ordinal))) {
+      // Reopening a cached head can update its explanation, but cannot rewind
+      // an already advanced continuation cursor or mark the chain unfinished.
+      this._session.cursor = previous.cursor; this._session.exhausted = previous.exhausted;
+    }
+    const metrics = sceneMetrics(this._window?.windowWidth || 390, this.data.sceneHeight || 725);
+    const guard = Math.ceil(Math.max((this.data.sceneHeight || 725) / 2 - metrics.radius, metrics.pitch) / metrics.pitch) + 1;
+    this._ribbon.update(readingLines(this._session.frames), this.ribbonCursor(), guard);
+    this.setData({ chainBusy: false, chainError: '', total: this._session.exhausted ? String(this._session.frames[this._session.frames.length - 1].ordinal).padStart(2, '0') : '…' });
     if (batch.fontUnavailable) { this.graphicsFailed(new Error('Font unavailable')); return; }
-    if (this._renderer) this._renderer.setFrames(this._readingLines);
+    this.syncRibbon(true);
     this.updateActive(true); this.syncMotion();
+  },
+  ribbonCursor() { return this._timeline.position / CELL - CENTER_PHASE + this._timeline.rowOffset; },
+  syncRibbon(force = false) {
+    if (!this._ribbon) return;
+    const changed = this._ribbon.refresh(this.ribbonCursor());
+    if (!changed && !force) return;
+    this._readingLines = this._ribbon.frames(this.ribbonCursor());
+    this._timeline.centers = this._readingLines.map(line => line.centerOffset || 0);
+    if (this._renderer) this._renderer.setFrames(this._readingLines);
   },
   refreshChainLinks() {
     if (!this._session?.chainId || !this.data.active) return;
     const frame = this._session.frames.find(item => item.id === this.data.active.passageId);
     this.setData({ chainFrame: frame });
-    if (!this.data.chainBusy && frame?.ready) this._continuation.prefetch(this._session, frame);
+    if (!this.data.chainBusy && frame?.ready) {
+      const priority = this.data.sourceOpen ? ['quote', 'meaning', 'reflection'] : ['meaning', 'reflection', 'quote'];
+      const anchors = frame.anchors.slice().sort((a, b) => priority.indexOf(a.surface || 'reflection') - priority.indexOf(b.surface || 'reflection'));
+      this._continuation.prefetch(this._session, { ...frame, anchors });
+    }
   },
   checkChainEnd() {
     if (!this._session?.chainId || this.data.chainBusy || this.data.paused) return;
-    // New content joins near the forward edge. A slow response never stops
-    // the wheel, nor replaces the neighbouring rows just after a wrap.
-    if (this._timeline.index >= this._readingLines.length - 3) {
-      if (this._nextBatch) {
-        const batch = this._nextBatch; this._nextBatch = null;
-        this.replaceChainBatch(batch); this.trimChainWindow(); this.refreshChainLinks();
-      } else this.fetchNextChain();
-    }
+    const last = this._session.frames[this._session.frames.length - 1];
+    if (this.data.active?.ordinal >= last.ordinal - 1) this.fetchNextChain();
     this.trimChainWindow();
   },
   async fetchNextChain() {
@@ -182,9 +210,7 @@ const chainActions = {
     try {
       const batch = await this._continuation.next({ chainId: chain.chainId, cursor: chain.cursor });
       if (!this.chainCurrent(token) || this._session.chainId !== chain.chainId) return;
-      if (this.data.paused || this._timeline.index >= this._readingLines.length - 3) {
-        this.replaceChainBatch(batch); this.trimChainWindow(); this.refreshChainLinks();
-      } else this._nextBatch = batch;
+      this.replaceChainBatch(batch); this.trimChainWindow(); this.refreshChainLinks();
     } catch (error) {
       if (!error.cancelled && this.chainCurrent(token)) {
         this._nextFailedCursor = chain.cursor;
@@ -195,19 +221,16 @@ const chainActions = {
   },
   trimChainWindow() {
     if (this._session.frames.length <= 12) return;
-    const activeIndex = this._session.frames.findIndex(frame => frame.id === this.data.active.passageId);
-    const remove = Math.min(this._session.frames.length - 12, activeIndex - 2);
-    if (remove <= 0) return;
+    const pinned = this._ribbon.usedPassages();
+    const remove = this._session.frames.filter((frame, index) => index < this._session.frames.length - 12 &&
+      frame.ordinal < this.data.active.ordinal - 2 && !pinned.has(frame.id));
+    if (!remove.length) return;
     try { this._chainStore.saveWindow(this._session, this.chainSnapshot()); }
     catch (_) { this.setData({ chainError: '本机记录空间不足，先留在这一段。' }); this.setData({ paused: true }); this.syncMotion(); return; }
-    const removedLines = readingLines(this._session.frames.slice(0, remove)).length;
-    this._session.frames = this._session.frames.slice(remove);
+    const removedLines = readingLines(remove).length, ids = new Set(remove.map(frame => frame.id));
+    this._session.frames = this._session.frames.filter(frame => !ids.has(frame.id));
     this._windowStart += removedLines;
-    this._timeline.position -= removedLines * CELL;
-    this._timeline.rowOffset += removedLines;
-    this._readingLines = readingLines(this._session.frames);
-    this._timeline.count = this._readingLines.length;
-    if (this._renderer) this._renderer.setFrames(this._readingLines);
+    this._ribbon.update(readingLines(this._session.frames), this.ribbonCursor());
   },
   async previousChainWindow() {
     const saved = this._chainStore.previousWindow(this._session.chainId, this._session.frames[0].ordinal);
@@ -219,6 +242,8 @@ const chainActions = {
     const lines = readingLines(saved.chain.frames), first = this._session.frames[0].ordinal;
     const target = lines.findIndex(line => line.ordinal === first - 1);
     saved.snapshot.position = (Math.max(0, target) + CENTER_PHASE) * CELL;
+    saved.snapshot.ribbon = null;
+    saved.snapshot.rowOffset = 0;
     saved.snapshot.paused = true;
     await this.presentChain(await this._chainFonts.prepare(saved.chain), saved.snapshot, token);
   },
@@ -232,8 +257,9 @@ const chainActions = {
       this.saveChain();
       const saved = this._chainStore.get(id);
       if (!saved) throw new Error('未找到这次阅读的位置，当前经文仍在。');
+      this._spatialTransition = { direction: -1, label: this._session.entry?.label || saved.chain.entry?.label || '' };
       this._continuation.setVisible(false); this._continuation.setVisible(true);
-      this.setData({ chainBusy: true, chainError: '', overlay: '', overlayVisible: false });
+      this.setData({ chainBusy: true, chainError: '', branchLabel: '', overlay: '', overlayVisible: false });
       this.syncMotion();
       await this.presentChain(await this._chainFonts.prepare(saved.chain), saved.snapshot, token);
     } catch (error) { this.chainFailure(error, token); }
@@ -262,8 +288,11 @@ const chainActions = {
     this._retryOperation = null;
     if (this._session?.frames.some(frame => !frame.ready) && this._session.parentChainId) { this.returnToChain(); return; }
     this._chainRequest++;
+    this.beginAction();
+    this._spatialTransition = null;
     this._continuation.setVisible(false); this._continuation.setVisible(true);
-    this.setData({ chainBusy: false, loading: false, chainError: '' });
+    this.setData({ chainBusy: false, loading: false, chainError: '', transitionWord: '', pressedAnchor: '', branchLabel: '',
+      shots: this.data.shots.map(shot => ({ ...shot, locked: false, offset: 0, scale: 1, departing: false })) });
     this.syncMotion();
   },
 };

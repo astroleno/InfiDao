@@ -42,6 +42,20 @@ test('relevance rejection does not fabricate a branch and prepared heads cannot 
   expect(verifyGenerated({ frames: [item('s1', '知止而后有定')] }, rows, 1, head)[0]!.quote).toBe(head.quote);
   expect(verifyGenerated({ frames: [item('s2', rows[1]!.text)] }, rows, 1, head)[0]!.id).toBe(head.id);
 });
+test('generated entries bind only to their declared surface and preserve exact ranges', () => {
+  const base = item('s1', rows[0]!.text);
+  const generated: GeneratedBatch = { frames: [{ ...base, anchors: [
+    { ...base.anchors[0]!, surface: 'quote', label: '知止' },
+    { ...base.anchors[0]!, surface: 'meaning', label: '方向' },
+    { ...base.anchors[0]!, surface: 'reflection', label: '本末' },
+  ] }] };
+  const [frame] = verifyGenerated(generated, rows, 1);
+  expect(frame!.anchors.map(anchor => anchor.surface)).toEqual(['quote', 'meaning', 'reflection']);
+  for (const anchor of frame!.anchors) expect(frame![anchor.surface!].slice(anchor.start, anchor.end)).toBe(anchor.label);
+  expect(frame!.reflectionSpans.filter(span => span.anchorId).map(span => span.text)).toEqual(['本末']);
+  generated.frames[0]!.anchors[0]!.label = '本末';
+  expect(verifyGenerated(generated, rows, 1)[0]!.anchors.map(anchor => anchor.surface)).toEqual(['meaning', 'reflection']);
+});
 test('a branch streams its canonical head before the model and is isolated by owner and parent anchor', async () => {
   jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s1', rows[0]!.text)] });
   const events: FlowEvent[] = [];

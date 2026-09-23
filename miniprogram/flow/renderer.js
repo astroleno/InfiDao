@@ -43,8 +43,9 @@ void main() {
     // Adjacent horizontal rings turn in opposite directions at five quiet
     // paces. A row retains its identity across the content loop, and arrives
     // facing the reader rather than exposing a gap between repeated phrases.
-    float d = localY / u_pitch;
-    float ordinal = floor(u_cursor - d + 0.5) + u_rowOffset;
+    float raw = localY / u_pitch;
+    float d = raw - a_normal.y;
+    float ordinal = floor(u_cursor - raw + 0.5) + u_rowOffset;
     float turn = (1.0 - 2.0 * mod(ordinal, 2.0)) *
       (${ROW_TURN_MIN} + mod(ordinal * 3.0, 5.0) * ${ROW_TURN_STEP});
     float angle = a_position.x - d * turn;
@@ -423,8 +424,9 @@ class WheelRenderer {
       if (!this.running || this.destroyed || generation !== this.motionGeneration) return;
       try {
         if (lastDraw === null || timestamp - lastDraw >= 32) {
-          this.timeline.tick(timestamp); this.draw();
+          this.timeline.tick(timestamp);
           if (this.onFrame) this.onFrame();
+          this.draw();
           lastDraw = timestamp;
         }
         if (this.running && generation === this.motionGeneration) this.frameId = this.canvas.requestAnimationFrame(loop);
@@ -434,7 +436,7 @@ class WheelRenderer {
   }
 
   center(onComplete) {
-    const target = (Math.round(this.timeline.position / CELL - CENTER_PHASE) + CENTER_PHASE) * CELL;
+    const target = this.timeline.targetFor(this.timeline.index);
     this.animateTo({ position: target, reading: 1, duration: 420 }, onComplete);
   }
 
@@ -463,8 +465,8 @@ class WheelRenderer {
       moved = travel;
       this.reading = fromReading + (toReading - fromReading) * (progress * progress * (3 - 2 * progress));
       try {
-        this.draw();
         if (this.onFrame) this.onFrame();
+        this.draw();
       } catch (error) { this.stop(); if (this.onError) this.onError(error); return; }
       if (generation !== this.motionGeneration) return;
       this.frameId = progress < 1 ? this.canvas.requestAnimationFrame(settle) : null;

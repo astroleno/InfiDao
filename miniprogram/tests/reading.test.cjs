@@ -344,3 +344,56 @@ test('a renderer settle cancels the old loop without losing its own animation fr
   time.advance(50); renderer.stop(); time.advance(500);
   assert.equal(settled, 1, 'cancelled animation must not complete');
 });
+
+test('branch capture keeps its source position until decode, then joins forward or backward without a black gap', async () => {
+  for (const direction of [1, -1]) {
+    const { page, time, pause, decode } = await setup();
+    pause();
+    page.data.shots[0].locked = true; page.data.shots[0].shift = 160;
+    page._spatialTransition = { direction, label: '本末' };
+    let done = false;
+    page.captureScene(page._action, () => { done = true; });
+    time.advance(16);
+    assert.equal(page.data.shots.length, 2);
+    assert.equal(page.data.shots[0].visible, true);
+    assert.equal(page.data.shots[0].shift, 160);
+    assert.equal(page.data.shots[1].offset, direction * 28);
+    decode();
+    assert.equal(page.data.transitionWord, '本末');
+    assert.equal(page.data.shots[0].offset, -direction * 28);
+    assert.equal(page.data.shots[1].offset, 0);
+    assert.equal(page.data.shots[1].visible, true);
+    time.advance(340);
+    assert.equal(done, true);
+    assert.equal(page.data.shots.length, 1);
+  }
+});
+
+test('reduced motion never translates or scales a branch, and cancelled image loads cannot complete it', async () => {
+  const { page, time, pause, decode } = await setup();
+  pause(); page._reducedMotion = true;
+  page._spatialTransition = { direction: 1, label: '本末' };
+  page.captureScene(page._action, () => {}); time.advance(16);
+  assert.equal(page.data.shots[1].offset, 0);
+  decode();
+  assert.ok(page.data.shots.every(shot => shot.offset === 0 && shot.scale === 1));
+  let done = false;
+  page.captureScene(page._action, () => { done = true; }); time.advance(16);
+  page.beginAction(); decode(); time.advance(3000);
+  assert.equal(done, false);
+});
+
+test('backgrounding before a replacement image decodes cannot show the parent image as the new chain', async () => {
+  const { page, time, pause, decode } = await setup();
+  pause(); page.setData({ phase: 'entering' });
+  page._spatialTransition = { direction: 1, label: '本末' };
+  page.captureScene(page._action, () => {}); time.advance(16);
+  assert.equal(page.data.shots.length, 2);
+  page.onHide(); time.advance(1000);
+  assert.equal(page.data.snapshotReady, false);
+  assert.equal(page.data.shots.length, 0);
+  page.onShow(); time.advance(440); decode();
+  assert.equal(page.data.phase, 'reading');
+  assert.equal(page.data.readingVisible, true);
+  assert.equal(page.data.shots.length, 1);
+});

@@ -14,8 +14,23 @@ test('review cannot introduce targets or change a verified quotation', async () 
   jest.mocked(flowJson).mockResolvedValueOnce({ frames: [{ id: 'f', relevant: true, reflection: '可以从先后辨别轻重。', anchorIds: ['a', 'invented'] }] });
   const result = await reviewRelations([frame], '', '本末', [], new AbortController().signal);
   expect(result[0]!.quote).toBe(frame.quote);
-  expect(result[0]!.anchors).toEqual(frame.anchors);
+  expect(result[0]!.anchors).toEqual([{ ...frame.anchors[0], surface: 'reflection', start: 3, end: 5 }]);
   expect(result[0]!.reflectionSpans.map(span => span.text).join('')).toBe(result[0]!.reflection);
+});
+test('review preserves valid original and meaning links even when their labels are absent from reflection', async () => {
+  const expanded: FlowFrame = { ...frame, anchors: [
+    { ...frame.anchors[0]!, id: 'q', surface: 'quote', label: '本末' },
+    { ...frame.anchors[0]!, id: 'm', surface: 'meaning', label: '根本' },
+    ...frame.anchors,
+  ] };
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [{ id: 'f', relevant: true, reflection: '可以从先后辨别轻重。', anchorIds: ['q', 'm', 'a'] }] });
+  const [result] = await reviewRelations([expanded], '', '本末', [], new AbortController().signal);
+  expect(result!.anchors.map(anchor => [anchor.id, anchor.surface])).toEqual([['q', 'quote'], ['m', 'meaning'], ['a', 'reflection']]);
+  for (const anchor of result!.anchors) {
+    expect(result![anchor.surface!].slice(anchor.start, anchor.end)).toBe(anchor.label);
+    expect(anchor.target).toEqual(frame.anchors[0]!.target);
+  }
+  expect(result!.reflectionSpans.filter(span => span.anchorId).map(span => span.anchorId)).toEqual(['a']);
 });
 test('unrelated nodes and ungrounded links disappear instead of being made clickable', async () => {
   jest.mocked(flowJson).mockResolvedValueOnce({ frames: [{ id: 'f', relevant: false, reflection: '未找到合适联系。', anchorIds: [] }] });

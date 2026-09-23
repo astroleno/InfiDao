@@ -5,6 +5,7 @@ const { readingLines } = require('../../flow/scene');
 const { typography } = require('../../flow/typography');
 const { createNoteStore } = require('../../flow/notes');
 const { chainActions } = require('../../flow/chain-page');
+const { textSpans } = require('../../flow/text-spans');
 
 Page({
   ...chainActions,
@@ -19,7 +20,7 @@ Page({
     hintVisible: true, readingScroll: 0, sourceTarget: '',
     notes: [], noteDraft: '', noteQuote: '', noteError: '', canUndo: false,
     chainId: '', chainParent: '', chainLabel: '', chainPath: [], chainKind: '', chainFrame: null,
-    chainBusy: false, chainError: '', branchLabel: '',
+    chainBusy: false, chainError: '', branchLabel: '', pressedAnchor: '', transitionWord: '', meaningParts: [], quoteParts: [],
   },
 
   onLoad() {
@@ -69,7 +70,11 @@ Page({
     if (this._continuation) this._continuation.setVisible(false);
     if (this._networkBudget) this._networkBudget.abortPending();
     this.setData({ chainBusy: false });
+    this._spatialTransition = null;
+    this.setData({ pressedAnchor: '', transitionWord: '' });
+    const interruptedCapture = !!this._pendingShot || this.data.phase === 'entering';
     this.beginAction();
+    if (interruptedCapture) this.setData({ shots: [], snapshotReady: false });
     this._touch = null;
     this._timeline.dragging = false;
     this._timeline.setVisible(false);
@@ -236,6 +241,7 @@ Page({
     else this._renderer.stop();
   },
   onWheelFrame() {
+    this.syncRibbon();
     this.updateActive();
     this.checkChainEnd();
     if (!this._timeline.needsSettle) return;
@@ -255,7 +261,10 @@ Page({
       { text: quote, selected: true },
       { text: active.fullText.slice(at + quote.length), selected: false },
     ].filter(part => part.text);
-    this.setData({ active, ordinal: String(active.ordinal).padStart(2, '0'), sourceParts });
+    const frame = this._session.chainId && this._session.frames.find(item => item.id === active.passageId);
+    this.setData({ active, ordinal: String(active.ordinal).padStart(2, '0'), sourceParts: frame ? textSpans(frame, 'fullText') : sourceParts,
+      meaningParts: frame ? textSpans(frame, 'meaning') : [{ text: active.meaning }],
+      quoteParts: frame ? textSpans(frame, 'quote') : [{ text: active.passageQuote }] });
     this.refreshChainLinks();
   },
 
@@ -280,7 +289,7 @@ Page({
         if (next === 'path') this.showNoteSheet('path');
       });
     };
-    if (Number.isInteger(index)) this._renderer.animateTo({ position: (index + CENTER_PHASE) * CELL, reading: 1, duration: 420 }, complete);
+    if (Number.isInteger(index)) this._renderer.animateTo({ position: this._timeline.targetFor(index), reading: 1, duration: 420 }, complete);
     else this._renderer.center(complete);
   },
   captureScene(action, complete) {
@@ -292,7 +301,10 @@ Page({
       success: result => {
         if (!this.current(action)) return;
         const previous = this.data.snapshotReady ? this.data.shots.slice(-1) : [];
-        this.setData({ shots: previous.concat({ src: result.tempFilePath, token, visible: false, blend: previous.length > 0 }) });
+        const spatial = previous.length && this._spatialTransition;
+        const direction = spatial && !this._reducedMotion ? spatial.direction : 0;
+        this.setData({ shots: previous.concat({ src: result.tempFilePath, token, visible: false, blend: previous.length > 0,
+          offset: direction * 28, spatial: !!spatial }) });
       },
       fail: error => { if (this.current(action)) this.graphicsFailed(error); },
     }, this);
@@ -303,15 +315,19 @@ Page({
   onSnapshotLoad(event) {
     const pending = this._pendingShot;
     if (!pending || Number(event.currentTarget.dataset.token) !== pending.token || !this.current(pending.action)) return;
-    const shots = this.data.shots.map(shot => ({ ...shot, visible: true }));
+    const spatial = this.data.shots.length > 1 && this._spatialTransition;
+    const direction = spatial && !this._reducedMotion ? spatial.direction : 0;
+    const shots = this.data.shots.map((shot, index, all) => ({ ...shot, visible: true,
+      departing: !!spatial && index < all.length - 1, scale: direction && index < all.length - 1 ? 0.985 : 1,
+      offset: spatial && index < all.length - 1 ? -direction * 28 : 0 }));
     this._pendingShot = null;
-    this.setData({ shots, snapshotReady: true }, () => {
+    this.setData({ shots, snapshotReady: true, transitionWord: spatial ? spatial.label : '', transitionReturning: !!spatial && spatial.direction < 0 }, () => {
       const finish = () => {
         if (!this.current(pending.action)) return;
         this.setData({ shots: shots.slice(-1) });
         pending.complete();
       };
-      if (shots.length > 1) this.later(pending.action, 260, finish); else wx.nextTick(finish);
+      if (shots.length > 1) this.later(pending.action, this._reducedMotion ? 0 : spatial ? 340 : 260, finish); else wx.nextTick(finish);
     });
   },
   onSnapshotError(event) {
@@ -398,6 +414,7 @@ Page({
     if (this._touch.moved) {
       this._renderer.reading = this._touch.reading * Math.max(0, 1 - distance / 45);
       this._timeline.scrub(touch.clientY - this._touch.lastY, this._renderer.scrollPitch, (event.timeStamp - this._touch.lastT) / 1000);
+      this.syncRibbon();
       try { this._renderer.draw(); } catch (error) { this.graphicsFailed(error); return; }
       this.updateActive();
     }
@@ -466,12 +483,14 @@ Page({
         if (this.current(action)) this.scrollReader(positions.source || 0, positions.source === undefined ? 'source-heading' : '');
       });
     });
+    this.refreshChainLinks();
   },
   closeSource() {
     const action = this.beginAction();
     this._sceneResetAt = Date.now() + 340;
     this.readerPositions().source = this._readingScrollTop || 0;
     this.setData({ sourceOpen: false, sourceTarget: '', sceneShift: 0 });
+    this.refreshChainLinks();
     this.scrollReader(this.readerPositions().reading || 0);
     this.later(action, 340, () => this.setData({ sourceMounted: false }));
   },
@@ -520,13 +539,25 @@ Page({
       if (current + direction >= this._session.frames.length && !this._session.exhausted) this.fetchNextChain();
       ordinal = modulo(current + direction, this._session.frames.length);
     }
-    const index = this._readingLines.findIndex(line => line.passageId === this._session.frames[ordinal].id);
+    const passageId = this._session.frames[ordinal].id;
+    const candidates = this._readingLines.map((line, index) => ({ line, index }))
+      .filter(item => item.line.passageId === passageId && item.line.lineIndex === 0);
+    const period = this._readingLines.length * CELL;
+    const travel = index => Math.abs(modulo(this._timeline.targetFor(index) - this._timeline.position + period / 2, period) - period / 2);
+    // A fixed display window can contain several occurrences of one passage.
+    // Choose the nearby occurrence instead of flying to the first GPU slot.
+    candidates.sort((a, b) => travel(a.index) - travel(b.index));
+    let index = candidates.length ? candidates[0].index : -1;
+    if (index < 0 && this._ribbon) {
+      this._ribbon.seek(passageId, this.ribbonCursor()); this.syncRibbon(true);
+      index = this._timeline.index;
+    }
     const action = this.beginAction();
     const delay = this.data.sourceOpen ? 340 : 180;
     this.setData({ sourceOpen: false, sceneShift: 0, readingVisible: false, phase: 'settling' });
     this.later(action, delay, () => {
       this.setData({ sourceMounted: false, readingScroll: 0 });
-      const target = (index + CENTER_PHASE) * CELL;
+      const target = this._timeline.targetFor(index);
       if (this.data.graphicsError) {
         const period = this._readingLines.length * CELL;
         this._timeline.advancePosition(modulo(target - this._timeline.position + period / 2, period) - period / 2);

@@ -3,6 +3,8 @@ import type { PassageRecord } from "@/types";
 import { candidatesFor, checkedQuote, flowCorpus, planFocus, rememberSemantics } from "./candidates";
 import { flowJson, flowModelConfig } from "./model";
 import { reviewRelations } from "./relations";
+import { linkSurfaces } from "./anchors";
+export { anchoredSpans } from "./anchors";
 import { FLOW_PROMPT_VERSION, FLOW_VERSION, FlowError, generatedBatchSchema,
   type FlowAnchor, type FlowChain, type FlowEvent, type FlowFrame, type FlowRequest, type GeneratedBatch } from "./contracts";
 
@@ -36,22 +38,6 @@ function frameFrom(passage: PassageRecord, quote: string, meaning: string, ordin
     fullText: passage.text, meaning, reflection: meaning, reflectionSpans: [{ text: meaning }], anchors: [], provenance: "model", ready: false };
 }
 
-export function anchoredSpans(text: string, anchors: FlowAnchor[]) {
-  const ranges = anchors.map(anchor => ({ anchor, at: text.indexOf(anchor.label) }))
-    .filter(item => item.at >= 0).sort((a, b) => a.at - b.at);
-  const spans: FlowFrame["reflectionSpans"] = [];
-  const accepted: FlowAnchor[] = [];
-  let cursor = 0;
-  for (const { anchor, at } of ranges) {
-    if (at < cursor) continue;
-    if (at > cursor) spans.push({ text: text.slice(cursor, at) });
-    spans.push({ text: anchor.label, anchorId: anchor.id }); accepted.push(anchor);
-    cursor = at + anchor.label.length;
-  }
-  if (cursor < text.length) spans.push({ text: text.slice(cursor) });
-  return { spans, anchors: accepted };
-}
-
 export function verifyGenerated(batch: GeneratedBatch, candidates: PassageRecord[], start: number, head?: FlowFrame) {
   const sources = new Map(candidates.map(row => [row.id, row])), seen = new Set<string>();
   const frames: FlowFrame[] = [];
@@ -68,14 +54,16 @@ export function verifyGenerated(batch: GeneratedBatch, candidates: PassageRecord
     const anchors: FlowAnchor[] = [];
     for (const anchor of item.anchors) {
       const target = sources.get(anchor.target.sourceId);
-      if (!target || target.id === passage!.id || !item.reflection.includes(anchor.label)) continue;
+      const surface = anchor.surface || 'reflection';
+      const text = surface === 'quote' ? frame.quote : surface === 'meaning' ? frame.meaning : item.reflection;
+      if (!target || target.id === passage!.id || !text.includes(anchor.label)) continue;
       const bare = (text: string) => text.replace(/[\p{P}\p{Z}\s]/gu, "");
       if (bare(quote).includes(bare(anchor.target.quote)) || bare(anchor.target.quote).includes(bare(quote))) continue;
       try { checkedQuote(target, anchor.target.quote); } catch { continue; }
-      anchors.push({ ...anchor, id: randomUUID() });
+      anchors.push({ ...anchor, surface, id: randomUUID() });
     }
-    const linked = anchoredSpans(item.reflection, anchors);
-    Object.assign(frame, { reflection: item.reflection, reflectionSpans: linked.spans, anchors: linked.anchors, ready: true });
+    frame.reflection = item.reflection;
+    Object.assign(frame, linkSurfaces(frame, anchors), { ready: true });
     frames.push(frame); seen.add(item.sourceId);
   }
   if (head) {
@@ -89,10 +77,10 @@ const NODE_PROMPT = `你为“六经注我”准备一小批经文节点。候�
 只从 candidates 选择与 focus 紧密相关的 1–3 段。不能为了凑数选择无关原文；没有合适内容时 frames=[]。
 quote 必须是候选 text 的逐字连续子串（含原标点），2–80 字；不能改字、补字、拼接或虚构出处。
 meaning 为 20–50 字原义；reflection 为 25–60 字与此刻联系，避免泛化安慰和诊断，不把联系冒充古义。提供一个可选择的理解角度，不能用“你正因…才…”“你正是…”替用户断定原因，不能假定输入之外的处境。
-每段 reflection 自然包含 1–3 个可点词（单字需有完整义项）。anchors.label 必须原样出现在 reflection 中；每个 target 选择另一个真实候选 sourceId 和原文子串，并给出其简短原义。
+每段分别从 quote、meaning、reflection 挑选一个有真实联系的词，最多3个入口。不要把3个入口全部取自 quote；meaning 是原义中的概念，reflection 是联系中的概念，也应能继续探索。某处确实没有合适关联时，省略该处，不能用另一处的多个词凑数。anchor.surface 必须标明词所在的位置，label 必须原样出现在该位置的文字中。单字须有完整实义，不选“必也”“而”等虚词。正文与短解不要写“点击”“入口”等界面说明。每个 target 选择另一个真实候选 sourceId 和原文子串，并给出其简短原义。
 联系可以相近或形成对照，但不能凭同一个字牵强联系，不能声称没有证据的思想传承。同一句话的另一个出处或截取不构成新分支。用户面对被冒犯的边界时不能把入口全部导向责己；倾听讨论不能曲解为审判对方是否言行一致。terms 是能检索该方向的古典概念和短语，1–6项且各不超过20字，方向必须具体。
 若给出 head，第一段必须严格保留 head.sourceId 和 head.quote。后续尽量提供不同典籍、不同观察角度。
-返回 JSON {"frames":[{"sourceId":"候选ID","quote":"原文子串","meaning":"原义","reflection":"含入口的短解","relevance":0.9,"anchors":[{"label":"入口词","sense":"此语境中的义项","direction":"新链讨论的具体方向","terms":["古典检索词"],"target":{"sourceId":"另一个候选ID","quote":"其原文子串","meaning":"其原义"}}]}]}。`;
+返回 JSON {"frames":[{"sourceId":"候选ID","quote":"原文子串","meaning":"原义","reflection":"短解","relevance":0.9,"anchors":[{"surface":"quote","label":"原文里的实义词","sense":"此语境中的义项","direction":"新链讨论的具体方向","terms":["古典检索词"],"target":{"sourceId":"另一个候选ID","quote":"其原文子串","meaning":"其原义"}},{"surface":"meaning","label":"原义里原样出现的词","sense":"此处义项","direction":"具体关联","terms":["古典检索词"],"target":{"sourceId":"另一个候选ID","quote":"其原文子串","meaning":"其原义"}},{"surface":"reflection","label":"短解里原样出现的词","sense":"此处义项","direction":"具体关联","terms":["古典检索词"],"target":{"sourceId":"另一个候选ID","quote":"其原文子串","meaning":"其原义"}}]}]}。`;
 
 export async function runFlow(request: FlowRequest, owner: string, signal: AbortSignal, emit: (event: FlowEvent) => void) {
   signal.throwIfAborted();
