@@ -3,6 +3,8 @@ const links = require('../content/branches');
 const entryWords = require('../content/entry-words');
 const { createMockProvider } = require('./provider');
 const { requestId } = require('./remote-provider');
+const breaks = require('../content/lexical-breaks');
+const { resolveSelection } = require('./classic-text');
 
 function createCuratedProvider() {
   const chains = new Map(), branches = new Map();
@@ -29,7 +31,7 @@ function createCuratedProvider() {
         sense: passage.meaning, direction: links[targetId][0], terms: [label], targetId,
         target: { sourceId: passages[targetId].sourceId, quote: passages[targetId].quote, meaning: passages[targetId].meaning } });
     });
-    return { ...passage, lines: undefined, id: chainId + ':' + id, quote, ordinal,
+    return { ...passage, lexicalBreaks: breaks[id].ends, textHash: breaks[id].textHash, lines: undefined, id: chainId + ':' + id, quote, ordinal,
       quoteStart: passage.fullText.indexOf(quote), quoteEnd: passage.fullText.indexOf(quote) + quote.length,
       reflection: definition[0], reflectionSpans: spans, anchors, provenance: 'curated', ready: true, corpusVersion: 'guji-core-v1' };
   }
@@ -57,11 +59,20 @@ function createCuratedProvider() {
       const mock = await createMockProvider().open(seed);
       return create(mock.frames.map(item => item.id), String(seed || '').trim(), null, null);
     },
-    async branch({ chainId, fromFrameId, anchorId }) {
+    async branch({ chainId, fromFrameId, anchorId, selection }) {
       const parent = chains.get(chainId), node = parent?.frames.find(item => item.id === fromFrameId);
-      const anchor = node?.anchors.find(item => item.id === anchorId);
+      let anchor = node?.anchors.find(item => item.id === anchorId);
+      if (node && selection) {
+        const token = resolveSelection(node, selection);
+        if (!token) throw new Error('这个字词的位置已经变化，请重新选择。');
+        const prepared = node.anchors.find(item => item.surface === 'quote' && node.quoteStart + item.start === token.start && node.quoteStart + item.end === token.end);
+        const targetId = prepared?.targetId;
+        if (!targetId) throw Object.assign(new Error('这个字词还没有离线接续。连接 DS 后，可按原文语境展开。'), { code: 'CONNECTION_REQUIRED' });
+        anchor = { label: token.text, targetId };
+        anchorId = token.id;
+      }
       if (!anchor) throw new Error('这个入口已经变化，请重新选择。');
-      const key = chainId + ':' + anchorId;
+      const key = chainId + ':' + fromFrameId + ':' + anchorId;
       if (branches.has(key) && chains.has(branches.get(key))) return batch(chains.get(branches.get(key)), 0);
       const ids = [anchor.targetId], queue = [anchor.targetId];
       while (queue.length && ids.length < Object.keys(passages).length) {

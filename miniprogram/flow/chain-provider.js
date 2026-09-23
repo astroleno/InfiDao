@@ -1,8 +1,11 @@
 const { createCuratedProvider } = require('./curated-provider');
 const { createRemoteProvider } = require('./remote-provider');
 const { serviceOrigin } = require('./config');
+const { readPreviewKey } = require('./native-settings');
 
 function createChainProvider(api) {
+  const previewKey = readPreviewKey(api);
+  if (previewKey) return require('./native-provider').createNativeProvider(api, previewKey);
   let origin = serviceOrigin;
   try {
     if (api.getDeviceInfo && api.getDeviceInfo().platform === 'devtools') origin = api.getStorageSync('infidao-flow-service') || origin;
@@ -20,7 +23,7 @@ function createChainProvider(api) {
     }, fail: reject });
   }).then(token => createRemoteProvider(api, origin, token));
   const provider = { kind: 'remote', origin };
-  for (const method of ['open', 'branch', 'next']) provider[method] = (input, options) => {
+  for (const method of ['open', 'branch', 'next', 'resume']) provider[method] = (input, options) => {
     let inner, cancelled = false;
     const promise = ready.then(remote => {
       if (cancelled) throw Object.assign(new Error('CANCELLED'), { cancelled: true });

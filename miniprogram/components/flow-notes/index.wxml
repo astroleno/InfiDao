@@ -1,4 +1,4 @@
 <view class="flow-notes {{busy ? 'flow-notes--waiting' : ''}}">
-  <text class="notes-origin">{{frame.ready === false ? '联系正在展开' : frame.provenance === 'curated' ? '此刻 · 精选联系' : '此刻 · 生成联系'}}</text>
+  <text class="notes-origin">{{frame.ready === false ? '此刻' : frame.provenance === 'curated' ? '此刻 · 精选联系' : '此刻 · 生成联系'}}</text>
   <view wx:if="{{frame.ready !== false}}" class="notes-text"><linked-text parts="{{frame.reflectionSpans}}" frame-id="{{frame.id}}" busy="{{busy}}" pressed="{{pressed}}" bind:branch="choose" /></view>
 </view>

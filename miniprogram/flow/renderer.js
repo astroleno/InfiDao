@@ -1,6 +1,7 @@
 const { atlasLayout, paintAtlas } = require('./atlas');
 const { CELL, CENTER_PHASE, modulo } = require('./timeline');
-const { CENTER_SCALE, ROW_TURN_MIN, ROW_TURN_STEP, sceneMetrics, wheelGeometry, quotationGeometry, projectedRows } = require('./scene');
+const { CENTER_SCALE, ROW_TURN_MIN, ROW_TURN_STEP, sceneMetrics, wheelGeometry, quotationGeometry, projectedRows, projectedGlyphs } = require('./scene');
+const { ranges, selectionFor } = require('./classic-text');
 const { NOISE_SIZE, inkLight, grainPixels, INK_GLSL } = require('./atmosphere');
 
 const BACKGROUND_VERTEX = `
@@ -332,6 +333,7 @@ class WheelRenderer {
       gl.deleteBuffer(this.quotations.buffer);
       this.buffers = this.buffers.filter(buffer => buffer !== this.quotations.buffer);
     }
+    this.frames = frames;
     this.vertices = quotationGeometry(frames, glyphs, this.radius, this.fontSize, this.height * 0.5);
     this.quotations = this.geometry(this.vertices);
     this.count = frames.length;
@@ -343,6 +345,25 @@ class WheelRenderer {
     return rows.filter(row => x >= row.left - 10 && x <= row.right + 10 &&
       Math.abs(y - (row.top + row.bottom) / 2) <= Math.max(22, (row.bottom - row.top) / 2))
       .sort((a, b) => Math.abs(y - (a.top + a.bottom) / 2) - Math.abs(y - (b.top + b.bottom) / 2))[0];
+  }
+
+  hitText(x, y) {
+    const glyphs = projectedGlyphs(this.vertices, this.timeline.position / CELL - CENTER_PHASE, this.count,
+      this.width, this.height, this.reading, this.timeline.rowOffset, this.timeline.loop);
+    const hits = glyphs.filter(g => x >= g.left && x <= g.right &&
+      Math.abs(y - (g.top + g.bottom) / 2) <= Math.max(22, (g.bottom - g.top) / 2))
+      .sort((a, b) => Math.hypot(x - (a.left + a.right) / 2, y - (a.top + a.bottom) / 2) -
+        Math.hypot(x - (b.left + b.right) / 2, y - (b.top + b.bottom) / 2));
+    const hit = hits[0], frame = hit && this.frames[hit.index];
+    if (!frame || frame.lineStart < 0) return null;
+    const offsets = []; let cursor = frame.lineStart;
+    for (const char of Array.from(frame.quote)) { offsets.push(cursor); cursor += char.length; }
+    const token = ranges(frame).find(range => offsets[hit.charIndex] >= range.start && offsets[hit.charIndex] < range.end);
+    if (!token) return null;
+    const boxes = glyphs.filter(g => g.index === hit.index && offsets[g.charIndex] >= token.start && offsets[g.charIndex] < token.end);
+    return { frameId: frame.passageId, anchorId: `text:${token.start}:${token.end}`, selection: selectionFor(frame, token), label: token.text,
+      left: Math.min(...boxes.map(g => g.left)), right: Math.max(...boxes.map(g => g.right)),
+      top: Math.min(...boxes.map(g => g.top)), bottom: Math.max(...boxes.map(g => g.bottom)) };
   }
 
   mesh(program, geometry, pass, glyph) {

@@ -27,6 +27,84 @@ function clock() {
   };
 }
 
+test('one tap selects the exact word locked on touchstart; drag and duplicate tap never branch twice', async () => {
+  const { page, renderer } = await setup();
+  page._session.chainId = 'word-chain';
+  const calls = [], word = { frameId: 'frame', anchorId: 'text:1:2', selection: { start: 1, end: 2 }, label: '止' };
+  renderer.hitText = () => word;
+  page.branchFromWord = event => calls.push(event.detail);
+  const start = { touches: [{ clientX: 120, clientY: 310 }], timeStamp: 10 };
+  page.onTouchStart(start);
+  assert.equal(page.data.wordHit.label, '止');
+  renderer.hitText = () => ({ ...word, label: '不同的词' });
+  page.onTouchEnd(); page.onCanvasTap({ detail: { x: 120, y: 310 } });
+  assert.equal(calls.length, 1); assert.equal(calls[0].label, '止');
+  page.onTouchStart(start);
+  page.onTouchMove({ touches: [{ clientX: 120, clientY: 345 }], timeStamp: 30 });
+  page.onTouchEnd();
+  assert.equal(calls.length, 1); assert.equal(page.data.wordHit, null);
+});
+
+test('word projection accounts for both scene top and the translated original-text reading position', async () => {
+  const { page, renderer } = await setup();
+  page._session.chainId = 'chain'; page.data.sceneTop = 80; page.data.sceneShift = 150;
+  let point;
+  renderer.hitText = (x, y) => { point = [x, y]; return null; };
+  page.wordAt(100, 300);
+  assert.deepEqual(point, [100, 370]);
+});
+
+test('real CanvasTouch x/y branches once just like a WebView touch, and a canvas drag never branches', async () => {
+  const { page, renderer } = await setup();
+  page._session.chainId = 'native-word-chain';
+  page.data.sceneTop = 31;
+  const calls = [], word = { frameId: 'frame', anchorId: 'text:1:2', label: '止' };
+  renderer.hitText = (x, y) => { assert.equal(x, 120); assert.equal(y, 280); return word; };
+  page.branchFromWord = event => calls.push(event.detail);
+  const touch = { touches: [{ identifier: 0, x: 120, y: 280 }], timeStamp: 10 };
+  page.onTouchStart(touch);
+  assert.equal(page.data.wordHit.label, '止');
+  page.onTouchEnd();
+  page.onCanvasTap({ detail: { x: 120, y: 311 } });
+  assert.equal(calls.length, 1);
+  assert.equal(page._timeline.dragging, false);
+  page.onTouchStart(touch);
+  page.onTouchMove({ touches: [{ identifier: 0, x: 120, y: 310 }], timeStamp: 35 });
+  page.onTouchEnd();
+  assert.equal(calls.length, 1);
+  assert.equal(page.data.wordHit, null);
+  assert.ok(Number.isFinite(page._timeline.position));
+});
+
+test('missing touch coordinates cannot freeze the wheel or poison its timeline', async () => {
+  const { page, renderer } = await setup();
+  page.onTouchStart({ touches: [{ identifier: 0 }], timeStamp: 1 });
+  assert.equal(page._touch, undefined);
+  assert.equal(renderer.running, true);
+  assert.equal(page._timeline.dragging, false);
+});
+
+test('backgrounding clears a pressed word without changing its reading position', async () => {
+  const { page } = await setup();
+  page.setData({ wordHit: { label: '止' } });
+  const position = page._timeline.position;
+  page.onHide();
+  assert.equal(page.data.wordHit, null);
+  assert.equal(page._timeline.position, position);
+});
+
+test('dragging the wheel out of an expanded original unmounts the hidden source and preserves its scroll coordinate', async () => {
+  const { page, pause } = await setup(); pause();
+  page.setData({ sourceOpen: true, sourceMounted: true, sourceTarget: 'source-heading', sceneShift: 100 });
+  page._readingScrollTop = 180;
+  const previous = page.readerPositions();
+  page.onTouchStart({ touches: [{ clientX: 100, clientY: 200 }], timeStamp: 0 });
+  page.onTouchMove({ touches: [{ clientX: 100, clientY: 215 }], timeStamp: 100 });
+  assert.equal(previous.source, 180);
+  assert.equal(page.data.sourceMounted, false); assert.equal(page.data.sourceOpen, false);
+  assert.equal(page.data.sourceTarget, ''); assert.equal(page.data.sceneShift, 0);
+});
+
 async function setup() {
   const time = clock();
   let definition, pulses = 0;
@@ -291,6 +369,20 @@ test('graphics failure keeps full context, explanations and passage navigation',
   page.next(); time.advance(200);
   assert.equal(page.data.active.passageId, 'order');
   assert.ok(page.data.active.passageQuote && page.data.active.meaning);
+});
+
+test('waiting permits reading scroll but prevents passage and sheet actions from interrupting a handoff', async () => {
+  const { page, time, pause } = await setup();
+  pause();
+  const quote = page.data.active.quote, action = page._action;
+  page.setData({ chainBusy: true });
+  page.onReadingScroll({ detail: { scrollTop: 100 } });
+  page.next(); page.showNoteSheet('notes'); time.advance(1000);
+  assert.equal(page._readingScrollTop, 100);
+  assert.equal(page.data.active.quote, quote);
+  assert.equal(page.data.overlay, '');
+  assert.equal(page._action, action);
+  assert.equal(page.data.readingVisible, true);
 });
 
 test('a delayed provider reply after returning from background cannot strand the loading state', async () => {

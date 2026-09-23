@@ -1,34 +1,43 @@
-<view class="experience">
+<view class="experience system-text">
   <view id="motion-preference" class="motion-preference" aria-hidden="true" />
-  <canvas type="webgl" id="ribbon" hidden="{{graphicsError || snapshotReady}}" class="ribbon" style="top: {{sceneTop}}px; height: {{sceneHeight}}px" catchtap="onCanvasTap" catchtouchstart="onTouchStart" catchtouchmove="onTouchMove" catchtouchend="onTouchEnd" catchtouchcancel="onTouchCancel" binderror="graphicsFailed" aria-label="流动经文，轻点停驻，拖动回看" />
+  <canvas type="webgl" id="ribbon" hidden="{{graphicsError || snapshotReady}}" class="ribbon" style="top: {{sceneTop}}px; height: {{sceneHeight}}px" catchtap="onCanvasTap" catchtouchstart="onTouchStart" catchtouchmove="onTouchMove" catchtouchend="onTouchEnd" catchtouchcancel="onTouchCancel" binderror="graphicsFailed" aria-label="流动经文，点字词接续，点空白停驻，拖动回看" />
   <canvas type="2d" id="glyph-atlas" class="glyph-atlas" aria-hidden="true" />
   <image wx:for="{{shots}}" wx:key="token" class="scene-shot {{item.visible ? 'scene-shot--visible' : ''}} {{item.blend || item.departing ? 'scene-shot--blend' : ''}} {{item.departing ? 'scene-shot--departing' : ''}}" src="{{item.src}}" mode="scaleToFill" style="top: {{sceneTop}}px; height: {{sceneHeight}}px; transform: translateY({{-(item.locked ? item.shift : sceneShift) + (item.offset || 0)}}px) scale({{item.scale || 1}})" data-token="{{item.token}}" bindload="onSnapshotLoad" binderror="onSnapshotError" catchtap="onCanvasTap" catchtouchstart="onTouchStart" catchtouchmove="onTouchMove" catchtouchend="onTouchEnd" catchtouchcancel="onTouchCancel" aria-hidden="true" />
+  <view wx:if="{{wordHit}}" class="word-hit" style="left: {{wordHit.left}}px; top: {{wordHit.top + sceneTop - sceneShift}}px; width: {{wordHit.right - wordHit.left}}px; height: {{wordHit.bottom - wordHit.top}}px" aria-hidden="true" />
   <view wx:if="{{transitionWord}}" class="branch-origin" style="top: {{readerTop}}px" aria-role="status">{{transitionReturning ? '回到「' + transitionWord + '」的来处' : '沿「' + transitionWord + '」而来'}}</view>
 
   <view wx:if="{{!ready}}" class="arrival" aria-role="status"><text>六经注我</text></view>
-  <view wx:if="{{error}}" class="arrival error-state" aria-role="alert"><text>{{error}}</text><button class="text-button" bindtap="retry">重新展开</button></view>
-  <view wx:if="{{graphicsError && active}}" class="fallback-anchor" style="top: {{centerY}}px; transform: translateY({{-sceneShift}}px)"><text>{{active.quote}}</text></view>
+  <view wx:if="{{error}}" class="arrival error-state" aria-role="alert"><text>{{error}}</text><button class="text-button" bindtap="retry">重新展开</button><button wx:if="{{connectionAllowed}}" class="connection-control" bindtap="openConnection">{{connected ? '设置 DS 连接' : '连接 DS'}}</button></view>
+  <view wx:if="{{graphicsError && active}}" class="fallback-anchor" style="top: {{centerY}}px; transform: translateY({{-sceneShift}}px)"><view class="fallback-quote"><linked-text classic="{{true}}" parts="{{activeParts}}" frame-id="{{active.passageId}}" busy="{{chainBusy}}" pressed="{{pressedAnchor}}" bind:branch="branchFromWord" /></view></view>
 
-  <view wx:if="{{active}}" class="reading-layer {{readingVisible ? 'reading-layer--visible' : ''}} {{chainBusy ? 'reading-layer--waiting' : ''}}" style="top: {{readerTop}}px; transform: translateY({{-sceneShift}}px)" aria-hidden="{{!readingVisible}}">
+  <view wx:if="{{active}}" class="reading-layer {{readingVisible ? 'reading-layer--visible' : ''}}" style="top: {{readerTop}}px; transform: translateY({{-sceneShift}}px)" aria-hidden="{{!readingVisible}}">
     <scroll-view class="reading-scroll" style="height: {{readerHeight + sceneShift}}px" scroll-y="{{true}}" scroll-top="{{readingScroll}}" scroll-into-view="{{sourceTarget}}" bindscroll="onReadingScroll" enhanced="{{true}}" show-scrollbar="{{false}}" catchtap="swallow">
       <button wx:if="{{personalSeed}}" class="current-seed" bindtap="openSeed" aria-label="修改当前一念"><text class="eyebrow">你的一念</text><text class="current-seed-text">{{seed}}</text></button>
-      <view wx:if="{{active.passageLines.length > 1 && (active.lineIndex > 0 || active.quote.length < 5)}}" class="reading-context"><linked-text parts="{{quoteParts}}" frame-id="{{active.passageId}}" busy="{{chainBusy}}" pressed="{{pressedAnchor}}" bind:branch="branchFromWord" /></view>
+      <view wx:if="{{active.passageLines.length > 1 && (active.lineIndex > 0 || active.quote.length < 5)}}" class="reading-context"><linked-text classic="{{true}}" parts="{{quoteParts}}" frame-id="{{active.passageId}}" busy="{{chainBusy}}" pressed="{{pressedAnchor}}" bind:branch="branchFromWord" /></view>
       <view class="reading-block"><text class="eyebrow">句意</text><view class="reading-meaning"><linked-text parts="{{meaningParts}}" frame-id="{{active.passageId}}" busy="{{chainBusy}}" pressed="{{pressedAnchor}}" bind:branch="branchFromWord" /></view></view>
-      <view class="reading-block reflection"><flow-notes wx:if="{{chainFrame}}" frame="{{chainFrame}}" busy="{{chainBusy}}" pressed="{{pressedAnchor}}" bind:branch="branchFromWord" /><block wx:else><text class="eyebrow">此刻 · 示例联系</text><text class="reading-reflection">{{active.reflection}}</text></block></view>
+      <view class="reading-block reflection">
+        <flow-notes wx:if="{{chainFrame}}" frame="{{chainFrame}}" busy="{{chainBusy}}" pressed="{{pressedAnchor}}" bind:branch="branchFromWord" />
+        <block wx:else><text class="eyebrow">此刻 · 示例联系</text><text class="reading-reflection">{{active.reflection}}</text></block>
+        <view wx:if="{{chainBusy || chainPending || chainError}}" class="chain-status chain-status--inline" aria-role="status">
+          <text>{{chainBusy || chainPending ? (branchLabel ? '沿「' + branchLabel + '」展开…' : '联系正在展开，返回后会显示在这里。') : chainError}}</text>
+          <button wx:if="{{chainBusy || chainPending}}" bindtap="cancelBranch">停止等待</button>
+          <view wx:elif="{{chainError}}" class="chain-status-actions"><button wx:if="{{chainErrorAction === 'connect' && connectionAllowed}}" bindtap="openConnection">连接 DS</button><button wx:elif="{{chainErrorAction !== 'connect'}}" bindtap="retryChain">再试</button><button bindtap="dismissChainError">收起</button></view>
+        </view>
+      </view>
       <view wx:if="{{chainParent}}" class="chain-reading-nav"><button bindtap="returnToChain">返回上条经文链</button><button bindtap="openChainPath">来路 · {{chainPath.length}}</button></view>
       <button wx:if="{{!personalSeed}}" class="thought-invitation" bindtap="openSeed">带着此刻的一件事，再读这一句</button>
       <view class="note-actions"><button bindtap="openNote">留下我的一句</button><button wx:if="{{notes.length}}" bindtap="openNotes">回看注脚 · {{notes.length}}</button></view>
       <view id="source-heading" wx:if="{{sourceMounted}}" class="source-details {{sourceOpen ? 'source-details--visible' : ''}}" style="min-height: {{readerHeight + detailShift - 80}}px">
         <view class="source-heading"><text>《{{active.source}}》</text><text class="source-chapter">{{active.chapterLabel}}</text></view>
-        <view class="source-fulltext"><linked-text parts="{{sourceParts}}" frame-id="{{active.passageId}}" busy="{{chainBusy}}" pressed="{{pressedAnchor}}" bind:branch="branchFromWord" /></view>
+        <view class="source-fulltext classic-text"><linked-text id="source-links" classic="{{true}}" parts="{{sourceParts}}" frame-id="{{active.passageId}}" busy="{{chainBusy}}" pressed="{{pressedAnchor}}" bind:branch="branchFromWord" /></view>
         <text class="source-note">以上为核对过的经典原文；{{chainKind === 'remote' ? '句意与联系由模型生成，请结合原文辨读。' : '句意与联系为人工整理的示例。'}}</text>
       </view>
       <view wx:if="{{sourceOpen || graphicsError}}" class="passage-navigation"><button bindtap="previous" aria-label="上一段完整经文">上一段</button><text>{{ordinal}} / {{total}}</text><button bindtap="next" aria-label="下一段完整经文">下一段</button></view>
     </scroll-view>
   </view>
 
-  <view wx:if="{{chainBusy || (chainError && paused)}}" class="chain-status" style="bottom: {{bottomInset + 45}}px" aria-role="status"><text>{{chainBusy ? (branchLabel ? '沿「' + branchLabel + '」展开…' : '沿这一念，正在展开…') : chainError}}</text><button wx:if="{{chainBusy}}" bindtap="cancelBranch">留在此处</button><button wx:if="{{chainError}}" bindtap="retryChain">再试</button></view>
-  <view class="gesture-hint {{hintVisible && ready && !paused && !overlay && !chainBusy ? 'gesture-hint--visible' : ''}}" style="bottom: {{bottomInset + 16}}px">轻点停驻，读懂这一句</view>
+  <view wx:if="{{!readingVisible && !overlay && (chainBusy || chainPending || chainError)}}" class="chain-status chain-status--floating" style="bottom: {{bottomInset + 45}}px" aria-role="status"><text>{{chainBusy || chainPending ? (branchLabel ? '沿「' + branchLabel + '」展开…' : '联系正在展开…') : chainError}}</text><button wx:if="{{chainBusy || chainPending}}" bindtap="cancelBranch">停止等待</button><view wx:elif="{{chainError}}" class="chain-status-actions"><button wx:if="{{chainErrorAction === 'connect' && connectionAllowed}}" bindtap="openConnection">连接 DS</button><button wx:elif="{{chainErrorAction !== 'connect'}}" bindtap="retryChain">再试</button><button bindtap="dismissChainError">收起</button></view></view>
+  <view class="gesture-hint {{hintVisible && ready && !paused && !overlay && !chainBusy ? 'gesture-hint--visible' : ''}}" style="bottom: {{bottomInset + 16}}px">点字词接续，点空白停驻</view>
   <view class="footer {{!overlay && paused ? 'footer--visible' : ''}}" style="padding-bottom: {{bottomInset}}px" aria-hidden="{{!!overlay || !paused}}">
     <button class="text-button seed-control" bindtap="openSeed" disabled="{{loading || chainBusy}}" aria-label="写下一念">一念</button>
     <button class="text-button source-control" bindtap="openSource" disabled="{{loading || chainBusy}}">{{sourceOpen ? '收起原文' : '原文'}}</button>
@@ -46,11 +55,12 @@
     <textarea class="seed-input" value="{{draft}}" bindinput="onSeedInput" placeholder="写下心里的那一句…" placeholder-class="input-placeholder" maxlength="120" focus="{{inputFocus}}" adjust-position="{{false}}" show-confirm-bar="{{false}}" bindkeyboardheightchange="onKeyboardHeight" aria-label="最初的一念" />
     <view class="suggestions"><button data-seed="我接了太多工作，每一件都放不下。" bindtap="usePrompt">放不下太多事</button><button data-seed="我和朋友意见不同，担心说出来会伤害关系。" bindtap="usePrompt">与人意见不同</button><button data-seed="我一直准备，却迟迟没有开始。" bindtap="usePrompt">迟迟没有开始</button></view>
     <button class="enter-flow {{!draft || loading ? 'enter-flow--disabled' : ''}}" bindtap="submitSeed" disabled="{{!draft || loading}}">{{loading ? '正在展开' : '让它流动'}}</button>
+    <button wx:if="{{connectionAllowed}}" class="connection-control" bindtap="openConnection">{{connected ? '设置 DS 连接' : '连接 DS'}}<text class="connection-caption">{{connected ? '更换或清除 API Key' : '输入 API Key'}}</text></button>
   </view>
 
   <view wx:if="{{overlay === 'note'}}" class="sheet {{overlayVisible ? 'sheet--visible' : ''}}" style="transform: translateY({{(overlayVisible ? 0 : 36) - keyboardHeight}}px)" catchtap="swallow" catchtouchmove="swallow">
     <view class="sheet-heading"><text class="eyebrow">留下我的一句</text><button class="close-sheet" bindtap="closeOverlay">收起</button></view>
-    <text class="note-quote">{{noteQuote}}</text>
+    <text class="note-quote classic-text">{{noteQuote}}</text>
     <textarea class="seed-input" value="{{noteDraft}}" bindinput="onNoteInput" placeholder="这句经文，让你想到了什么？" placeholder-class="input-placeholder" maxlength="300" focus="{{inputFocus}}" adjust-position="{{false}}" show-confirm-bar="{{false}}" bindkeyboardheightchange="onKeyboardHeight" aria-label="自己的注脚" />
     <text class="note-caption">只保存在这台设备上</text>
     <text wx:if="{{noteError}}" class="note-error" aria-role="alert">{{noteError}}</text>
@@ -61,7 +71,7 @@
     <scroll-view class="notes-scroll" scroll-y="{{true}}" show-scrollbar="{{false}}">
       <view wx:for="{{notes}}" wx:key="id" class="saved-note">
         <text wx:if="{{item.seed}}" class="note-seed">{{item.seed}}</text>
-        <text class="note-quote" user-select="{{true}}">{{item.quote}}</text>
+        <text class="note-quote classic-text" user-select="{{true}}">{{item.quote}}</text>
         <text class="note-caption">《{{item.source}}》 · {{item.chapterLabel}} · {{item.dateLabel}}</text>
         <text class="note-body" user-select="{{true}}">{{item.text}}</text>
         <button class="remove-note" data-id="{{item.id}}" bindtap="removeNote">删除</button>

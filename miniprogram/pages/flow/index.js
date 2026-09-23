@@ -6,10 +6,14 @@ const { typography } = require('../../flow/typography');
 const { createNoteStore } = require('../../flow/notes');
 const { chainActions } = require('../../flow/chain-page');
 const { textSpans } = require('../../flow/text-spans');
+const { classicSpans } = require('../../flow/classic-text');
+const { touchPoint } = require('../../flow/touch-point');
+const { previewAllowed, readPreviewKey } = require('../../flow/native-settings');
 
 Page({
   ...chainActions,
   data: {
+    wordHit: null, activeParts: [],
     ready: false, loading: true, error: '', graphicsError: false,
     paused: false, phase: 'flow', overlay: '', overlayVisible: false,
     seed: DEFAULT_SEED, personalSeed: false, draft: '', active: null, ordinal: '01', total: '08',
@@ -19,8 +23,9 @@ Page({
     shots: [], snapshotReady: false, keyboardHeight: 0, inputFocus: false,
     hintVisible: true, readingScroll: 0, sourceTarget: '',
     notes: [], noteDraft: '', noteQuote: '', noteError: '', canUndo: false,
+    connectionAllowed: false, connected: false,
     chainId: '', chainParent: '', chainLabel: '', chainPath: [], chainKind: '', chainFrame: null,
-    chainBusy: false, chainError: '', branchLabel: '', pressedAnchor: '', transitionWord: '', meaningParts: [], quoteParts: [],
+    chainBusy: false, chainPending: false, chainError: '', chainErrorAction: 'retry', branchLabel: '', pressedAnchor: '', transitionWord: '', meaningParts: [], quoteParts: [],
   },
 
   onLoad() {
@@ -35,7 +40,7 @@ Page({
     this._noteDrafts = {};
     this._readingPositions = {};
     this.refreshNotes();
-    try { if (wx.getStorageSync('infidao-hint-learned')) this.setData({ hintVisible: false }); } catch (_) {}
+    try { if (wx.getStorageSync('infidao-word-links-learned-v1')) this.setData({ hintVisible: false }); } catch (_) {}
     this._timeline = new FlowTimeline(8);
     this.readWindow();
   },
@@ -46,6 +51,13 @@ Page({
 
   onShow() {
     this._visible = true;
+    const connected = !!readPreviewKey(wx);
+    this.setData({ connectionAllowed: previewAllowed(wx), connected });
+    // A native back gesture can bypass the connection page's return button.
+    if (this._provider?.kind === 'native' && !connected) {
+      wx.reLaunch({ url: '/pages/flow/index' });
+      return;
+    }
     if (this._networkBudget) this._networkBudget.resumeRequests();
     if (this._continuation) this._continuation.setVisible(true);
     if (!this._timeline) return;
@@ -69,9 +81,9 @@ Page({
     this._nextRequest = null;
     if (this._continuation) this._continuation.setVisible(false);
     if (this._networkBudget) this._networkBudget.abortPending();
-    this.setData({ chainBusy: false });
+    this.setData({ chainBusy: false, chainPending: false });
     this._spatialTransition = null;
-    this.setData({ pressedAnchor: '', transitionWord: '' });
+    this.setData({ wordHit: null, pressedAnchor: '', transitionWord: '' });
     const interruptedCapture = !!this._pendingShot || this.data.phase === 'entering';
     this.beginAction();
     if (interruptedCapture) this.setData({ shots: [], snapshotReady: false });
@@ -263,6 +275,7 @@ Page({
     ].filter(part => part.text);
     const frame = this._session.chainId && this._session.frames.find(item => item.id === active.passageId);
     this.setData({ active, ordinal: String(active.ordinal).padStart(2, '0'), sourceParts: frame ? textSpans(frame, 'fullText') : sourceParts,
+      activeParts: frame && active.lineStart >= 0 ? classicSpans(frame, 'quote', active.lineStart, active.lineStart + active.quote.length) : [{ text: active.quote }],
       meaningParts: frame ? textSpans(frame, 'meaning') : [{ text: active.meaning }],
       quoteParts: frame ? textSpans(frame, 'quote') : [{ text: active.passageQuote }] });
     this.refreshChainLinks();
@@ -386,8 +399,9 @@ Page({
   onPauseControl() { if (this.data.ready && !this.data.loading && !this.data.chainBusy) this.resumeFlow(); },
 
   onTouchStart(event) {
-    if (!this._renderer || this.data.overlay || this.data.loading || this.data.chainBusy || this.data.sourceOpen) return;
-    const touch = event.touches[0];
+    if (!this._renderer || this.data.overlay || this.data.loading || this.data.chainBusy) return;
+    const canvasTop = this.data.sceneTop - this.data.sceneShift;
+    const touch = touchPoint(event.touches?.[0], canvasTop);
     if (!touch) return;
     this.beginAction();
     this._afterReading = null;
@@ -395,30 +409,33 @@ Page({
     this._handledTouchTapUntil = 0;
     this._timeline.cancelFling();
     this._timeline.dragging = true;
-    this._touch = { x: touch.clientX, y: touch.clientY, lastY: touch.clientY, lastT: event.timeStamp,
-      moved: false, reading: this._renderer.reading };
+    this._touch = { x: touch.x, y: touch.y, lastY: touch.y, lastT: event.timeStamp, canvasTop,
+      moved: false, reading: this._renderer.reading, hit: this.wordAt(touch.x, touch.y) };
+    this.setData({ wordHit: this._touch.hit });
     // A finger landing is not yet a drag. Keep the same reading image and copy
     // visible until movement establishes intent.
     this._renderer.stop();
   },
   onTouchMove(event) {
     if (!this._touch || !this._renderer) return;
-    const touch = event.touches[0];
+    const touch = touchPoint(event.touches?.[0], this._touch.canvasTop);
     if (!touch) return;
-    const distance = Math.hypot(touch.clientX - this._touch.x, touch.clientY - this._touch.y);
+    const distance = Math.hypot(touch.x - this._touch.x, touch.y - this._touch.y);
     if (distance > 7 && !this._touch.moved) {
       this._touch.moved = true;
+      if (this.data.sourceOpen) this.readerPositions().source = this._readingScrollTop || 0;
       // Keep the image node mounted until touchend so native events survive.
-      this.setData({ readingVisible: false, snapshotReady: false, phase: 'dragging' });
+      this.setData({ wordHit: null, readingVisible: false, snapshotReady: false, sourceOpen: false, sourceMounted: false,
+        sourceTarget: '', sceneShift: 0, phase: 'dragging' });
     }
     if (this._touch.moved) {
       this._renderer.reading = this._touch.reading * Math.max(0, 1 - distance / 45);
-      this._timeline.scrub(touch.clientY - this._touch.lastY, this._renderer.scrollPitch, (event.timeStamp - this._touch.lastT) / 1000);
+      this._timeline.scrub(touch.y - this._touch.lastY, this._renderer.scrollPitch, (event.timeStamp - this._touch.lastT) / 1000);
       this.syncRibbon();
       try { this._renderer.draw(); } catch (error) { this.graphicsFailed(error); return; }
       this.updateActive();
     }
-    this._touch.lastY = touch.clientY;
+    this._touch.lastY = touch.y;
     this._touch.lastT = event.timeStamp;
   },
   onTouchEnd() {
@@ -433,13 +450,22 @@ Page({
       // Native WebGL canvases can emit touchend without a synthetic tap.
       // Handle it here and ignore the duplicate tap emitted by image surfaces.
       this._handledTouchTapUntil = Date.now() + 350;
-      this.selectAt(touch.x, touch.y);
+      this.selectAt(touch.x, touch.y, touch.hit);
       return;
     }
     if (this.data.paused && !flung) this.settleReading();
     else { this.setData({ phase: flung ? 'gliding' : 'flow' }); this.syncMotion(); }
   },
-  selectAt(x, y) {
+  wordAt(x, y) {
+    return Number.isFinite(x) && Number.isFinite(y) && this._session?.chainId && this._renderer?.hitText ?
+      this._renderer.hitText(x, y - this.data.sceneTop + this.data.sceneShift) : null;
+  },
+  selectAt(x, y, lockedWord) {
+    const word = lockedWord === undefined ? this.wordAt(x, y) : lockedWord;
+    if (word) { this.setData({ wordHit: word }); this.branchFromWord({ detail: word }); return; }
+    this.setData({ wordHit: null });
+    if (this.data.sourceOpen) { this.closeSource(); return; }
+    if (this._session?.chainId) { this.togglePause(); return; }
     const hit = Number.isFinite(x) && this._renderer.hitTest ? this._renderer.hitTest(x, y - this.data.sceneTop + this.data.sceneShift) : null;
     if (hit && !this.data.paused) {
       this._pulseOnSettle = true;
@@ -451,7 +477,6 @@ Page({
     if (Date.now() < (this._handledTouchTapUntil || 0)) { this._handledTouchTapUntil = 0; return; }
     if (this._suppressTap && Date.now() < this._suppressTapUntil) { this._suppressTap = false; return; }
     this._suppressTap = false;
-    if (this.data.sourceOpen) { this.closeSource(); return; }
     if (this._renderer && !this.data.loading && !this.data.overlay) {
       const point = event && event.detail || {};
       this.selectAt(point.x, point.y);
@@ -460,6 +485,7 @@ Page({
   onTouchCancel() {
     const moved = this._touch && this._touch.moved;
     this._touch = null;
+    this.setData({ wordHit: null });
     this._timeline.cancelFling();
     this._timeline.dragging = false;
     if (this.data.paused && !moved && this.data.snapshotReady) this.syncMotion();
@@ -521,6 +547,18 @@ Page({
       this.syncMotion();
     });
   },
+  openConnection() {
+    if (!previewAllowed(wx) || this._openingConnection) return;
+    this._openingConnection = true;
+    this.beginAction();
+    this.setData({ inputFocus: false, keyboardHeight: 0 });
+    wx.hideKeyboard();
+    wx.navigateTo({
+      url: '/pages/connect/index',
+      fail: () => wx.showToast({ title: '连接页暂未打开，请重试。', icon: 'none' }),
+      complete: () => { this._openingConnection = false; },
+    });
+  },
   onSeedInput(event) { this.setData({ draft: event.detail.value }); },
   onKeyboardHeight(event) { if (this.data.overlayVisible) this.setData({ keyboardHeight: event.detail.height || 0 }); },
   submitSeed() {
@@ -531,7 +569,7 @@ Page({
   usePrompt(event) { wx.hideKeyboard(); this.loadSession(event.currentTarget.dataset.seed); },
 
   changePassage(direction) {
-    if (!this._session || this.data.loading) return;
+    if (!this._session || this.data.loading || this.data.chainBusy) return;
     let ordinal = modulo(this.data.active.ordinal - 1 + direction, this._session.frames.length);
     if (this._session.chainId) {
       const current = this._session.frames.findIndex(frame => frame.id === this.data.active.passageId);
@@ -603,6 +641,7 @@ Page({
     catch (_) { this.setData({ noteError: '暂时无法读取本机注脚，请稍后再试。' }); }
   },
   showNoteSheet(overlay) {
+    if (this.data.loading || this.data.chainBusy) return;
     const action = this.beginAction();
     this.setData({ overlay, overlayVisible: false, readingVisible: false, inputFocus: false, keyboardHeight: 0 }, () => {
       wx.nextTick(() => {

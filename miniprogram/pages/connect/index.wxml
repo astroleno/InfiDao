@@ -1,0 +1,21 @@
+<view class="connection system-text" style="padding-top: {{top}}px;">
+  <text class="eyebrow">开发预览</text>
+  <text class="title">让经文回应此刻</text>
+  <view wx:if="{{allowed}}">
+    <text class="intro">经文、检索与来路在小程序内。
+DS 只为当下的一念展开解读。</text>
+    <text class="setup">{{debug ? '预览调试已开启。若仍提示微信拦截，请退出后重新进入预览。' : '测试号需要先开启预览调试，再连接 DS。'}}</text>
+    <button wx:if="{{!debug}}" class="quiet debug-toggle" bindtap="enablePreviewDebug" disabled="{{busy}}">开启预览调试</button>
+    <view class="key-field">
+      <input class="key-input" password maxlength="256" value="{{keyInput}}" bindinput="onKeyInput" placeholder="{{saved ? '已保存在本机，可粘贴新 Key 更换' : '粘贴你的 DS API Key'}}" placeholder-class="placeholder" disabled="{{busy}}" confirm-type="done" bindconfirm="connect" />
+    </view>
+    <text class="privacy">Key 仅保存在这台手机，并用于向 DS 请求解读。可随时清除；模型调用使用你的 DS 额度。</text>
+    <text wx:if="{{error}}" class="error">{{error}}</text>
+    <text wx:if="{{diagnosis}}" class="diagnosis" user-select="{{true}}">{{diagnosis}}</text>
+    <button class="enter" bindtap="connect" disabled="{{busy}}">{{busy ? status : saved ? '连接并继续' : '连接并进入'}}</button>
+    <button wx:if="{{saved}}" class="quiet" bindtap="clear" disabled="{{busy}}">清除本机 Key</button>
+  </view>
+  <text wx:else class="intro">此连接入口仅供开发预览使用。</text>
+  <button wx:if="{{canReturn}}" class="quiet return-flow" bindtap="returnToFlow" disabled="{{busy}}">返回经轮</button>
+  <button class="quiet offline" bindtap="readOffline" disabled="{{busy}}">{{saved ? '清除连接，读精选经文' : '先读精选经文'}}</button>
+</view>

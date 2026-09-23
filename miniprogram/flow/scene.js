@@ -52,17 +52,26 @@ function splitLines(frame) {
 }
 
 function readingLines(frames) {
-  return frames.flatMap(frame => splitLines(frame).map((line, index) => ({
-    ...frame,
-    passageId: frame.id,
-    passageQuote: frame.quote,
-    passageLines: splitLines(frame),
-    lineIndex: index,
-    centerOffset: 0.12 * Math.tanh((splitLines(frame).length - 1) / 2 - index),
-    id: frame.id + '-line-' + index,
-    quote: line.replace(/[，。！？；]$/, ''),
-    lines: [line],
-  })));
+  return frames.flatMap(frame => {
+    const lines = splitLines(frame); let cursor = 0;
+    return lines.map((line, index) => {
+      const visible = line.replace(/[，。！？；]$/, '');
+      const at = frame.quote.indexOf(visible, cursor);
+      if (at >= 0) cursor = at + visible.length;
+      return {
+        ...frame,
+        passageId: frame.id,
+        passageQuote: frame.quote,
+        passageLines: lines,
+        lineStart: at < 0 ? -1 : (frame.quoteStart || 0) + at,
+        lineIndex: index,
+        centerOffset: 0.12 * Math.tanh((lines.length - 1) / 2 - index),
+        id: frame.id + '-line-' + index,
+        quote: visible,
+        lines: [line],
+      };
+    });
+  });
 }
 
 // Upright prayer-wheel volume. All horizontal text bands share the same Y axis.
@@ -133,14 +142,20 @@ function quotationGeometry(frames, glyphs, radius, fontSize, camera = radius * 2
 // Mirror the vertex projection for selectable front-facing rows. This is used
 // on touch, not on every animation frame, and never makes blurred rear copies
 // into invisible tap targets.
-function projectedRows(vertices, cursor, count, width, height, reading = 0, rowOffset = 0, loop = true) {
-  const m = sceneMetrics(width, height), camera = height / 2, rows = new Map();
+function projectedGlyphs(vertices, cursor, count, width, height, reading = 0, rowOffset = 0, loop = true) {
+  const m = sceneMetrics(width, height), camera = height / 2, glyphs = new Map();
+  let previousIndex = -1, charIndex = -1;
   for (let i = 0; i < vertices.length; i += 8) {
     if ((i / 8) % (6 * COPIES) >= 6) continue;
     const index = vertices[i + 3];
+    if ((i / 8) % (6 * COPIES) === 0) {
+      charIndex = index === previousIndex ? charIndex + 1 : 0;
+      previousIndex = index;
+    }
     const motion = rowMotion(index, cursor, count, rowOffset, loop, vertices[i + 4]), d = motion.distance;
     if (Math.abs(d) > (reading > 0.5 ? 0.35 : 1.25)) continue;
     const angle = vertices[i] + motion.angle;
+    if (Math.cos(angle) < 0.65) continue;
     const scale = 0.62 + (CENTER_SCALE - 0.62) * Math.exp(-d * d * 0.55);
     const gy = vertices[i + 2] * scale;
     const edge = Math.max(camera - m.radius, m.pitch) / m.pitch;
@@ -150,12 +165,24 @@ function projectedRows(vertices, cursor, count, width, height, reading = 0, rowO
     const w = camera - z;
     const x = width / 2 + (Math.sin(angle) * (m.radius + 0.8) + Math.cos(angle) * vertices[i + 1]) * scale * camera / w;
     const y = height / 2 - (Math.sign(d) * Math.sin(t * 1.5396) * w + gy * Math.cos(phi)) * camera / w;
-    const row = rows.get(index) || { index, distance: d, left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity };
+    const key = index + ':' + charIndex;
+    const row = glyphs.get(key) || { index, charIndex, distance: d, left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity };
     row.left = Math.min(row.left, x); row.right = Math.max(row.right, x);
     row.top = Math.min(row.top, y); row.bottom = Math.max(row.bottom, y);
-    rows.set(index, row);
+    glyphs.set(key, row);
+  }
+  return Array.from(glyphs.values());
+}
+
+function projectedRows(...args) {
+  const rows = new Map();
+  for (const glyph of projectedGlyphs(...args)) {
+    const row = rows.get(glyph.index);
+    if (!row) rows.set(glyph.index, { ...glyph });
+    else { row.left = Math.min(row.left, glyph.left); row.right = Math.max(row.right, glyph.right);
+      row.top = Math.min(row.top, glyph.top); row.bottom = Math.max(row.bottom, glyph.bottom); }
   }
   return Array.from(rows.values());
 }
 
-module.exports = { TAU, CENTER_SCALE, ROW_TURN_MIN, ROW_TURN_STEP, COPIES, rowTurn, rowMotion, sceneMetrics, centeredIndex, focusAt, wheelGeometry, quotationGeometry, readingLines, projectedRows };
+module.exports = { TAU, CENTER_SCALE, ROW_TURN_MIN, ROW_TURN_STEP, COPIES, rowTurn, rowMotion, sceneMetrics, centeredIndex, focusAt, wheelGeometry, quotationGeometry, readingLines, projectedRows, projectedGlyphs };

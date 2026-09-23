@@ -8,6 +8,7 @@ const FACES = [{ family: FAMILY, data: FONT_DATA }, { family: SUPPLEMENT, data: 
 function createTypography() {
   const status = { webview: 'pending', canvas: 'font-file' };
   const registered = {};
+  const shards = new Map();
   let pending;
   function prepare(api) {
     if (pending) return pending;
@@ -46,7 +47,24 @@ function createTypography() {
     });
     return pending;
   }
-  return { prepare, status: () => ({ ...status }) };
+  function prepareShard(api, id, data) {
+    if (shards.has(id)) return shards.get(id);
+    const job = new Promise(resolve => {
+      if (!api?.loadFontFace) { resolve(false); return; }
+      let done = false;
+      const finish = value => { if (done) return; done = true; clearTimeout(timer); resolve(value); };
+      const timer = setTimeout(() => finish(false), 1800);
+      try {
+        api.loadFontFace({ global: true, family: 'InfiDao-' + id, scopes: ['webview'],
+          source: `url("data:font/woff;base64,${data}")`, desc: { style: 'normal', weight: '400' },
+          success: () => finish(true), fail: () => finish(false) });
+      } catch (_) { finish(false); }
+    });
+    shards.set(id, job);
+    job.then(loaded => { if (!loaded) shards.delete(id); });
+    return job;
+  }
+  return { prepare, prepareShard, status: () => ({ ...status, shards: shards.size }) };
 }
 
 const typography = createTypography();

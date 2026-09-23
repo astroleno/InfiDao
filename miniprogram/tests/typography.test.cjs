@@ -20,12 +20,11 @@ function host() {
   };
 }
 
-test('bundled font covers all mock quotations, sources, interpretations and interface copy', () => {
+test('bundled display font covers every offline classical quotation and original', () => {
   const manifest = require('../assets/fonts/manifest');
   const supported = new Set(manifest.characters);
-  const content = JSON.stringify({ passages, journeys, examples });
-  const page = fs.readFileSync(path.resolve(__dirname, '../pages/flow/index.wxml'), 'utf8');
-  for (const char of content + page) {
+  const content = Object.values(passages).map(frame => frame.quote + frame.fullText).join('');
+  for (const char of content) {
     if (/[^\x00-\x7f\s]/.test(char)) assert.ok(supported.has(char), `Missing ${char}`);
   }
   const font = Buffer.from(require('../assets/fonts/serif-data'), 'base64');
@@ -33,6 +32,30 @@ test('bundled font covers all mock quotations, sources, interpretations and inte
   assert.equal(font.toString('ascii', 0, 4), 'wOFF');
   assert.equal(supplement.toString('ascii', 0, 4), 'wOFF');
   assert.ok(font.length + supplement.length < 300 * 1024, 'the subsets must fit the offline first-screen budget');
+});
+
+test('classical text has its own font stack while explanations, inputs and controls inherit system typography', () => {
+  const app = fs.readFileSync(path.resolve(__dirname, '../app.wxss'), 'utf8');
+  assert.match(app, /font-family: -apple-system/);
+  assert.doesNotMatch(app, /font-family: "RunZhi/);
+  const classic = fs.readFileSync(path.resolve(__dirname, '../assets/fonts/classic.wxss'), 'utf8');
+  assert.match(classic, /\.classic-text[^}]+RunZhiJiaKangXiZidian/);
+  const page = fs.readFileSync(path.resolve(__dirname, '../pages/flow/index.wxml'), 'utf8');
+  for (const field of ['activeParts', 'quoteParts', 'sourceParts']) assert.ok(page.includes(`classic="{{true}}" parts="{{${field}}}"`));
+  assert.ok(!page.includes('classic="{{true}}" parts="{{meaningParts}}"'));
+  const component = fs.readFileSync(path.resolve(__dirname, '../components/linked-text/index.wxml'), 'utf8');
+  assert.match(component, /classic \? 'classic-text' : 'system-text'/);
+  const system = fs.readFileSync(path.resolve(__dirname, '../assets/fonts/system.wxss'), 'utf8');
+  assert.match(system, /PingFang SC/); assert.doesNotMatch(system, /KangXi|RunZhi/);
+});
+
+test('dynamic classical font shards register in the native text layer once and share their CSS identity', async () => {
+  const type = createTypography(), fake = host();
+  const first = type.prepareShard(fake.api, 'sample', 'AAAA');
+  assert.equal(first, type.prepareShard(fake.api, 'sample', 'AAAA'));
+  assert.equal(fake.calls[0].family, 'InfiDao-sample');
+  fake.calls[0].success();
+  assert.equal(await first, true);
 });
 
 test('only page fonts need registration; the optical scene reads the same font files', async () => {

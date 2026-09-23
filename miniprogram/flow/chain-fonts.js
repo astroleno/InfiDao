@@ -1,4 +1,5 @@
 const { hasGlyph, installFont } = require('./glyph-outline');
+const { typography } = require('./typography');
 
 // Sequential, deduplicated downloads. A prepared scene never depends on the
 // iPhone Canvas font registry; both bundled and remote glyphs use font paths.
@@ -12,7 +13,8 @@ function createChainFonts(api, origin) {
       success: result => result.statusCode === 200 ? resolve(result.data) : reject(new Error('FONT_UNAVAILABLE')), fail: reject }));
   }
   async function ensure(chain) {
-    const chars = Array.from(new Set(Array.from(chain.frames.map(frame => frame.quote).join('')))).filter(char => !hasGlyph(char));
+    const quotes = Array.from(new Set(Array.from(chain.frames.map(frame => frame.quote).join(''))));
+    const chars = Array.from(new Set(Array.from(chain.frames.map(frame => frame.fullText || frame.quote).join('')))).filter(char => !hasGlyph(char));
     if (!chars.length) return { ...chain, fontUnavailable: false };
     if (!origin) return { ...chain, fontUnavailable: true };
     try {
@@ -28,6 +30,7 @@ function createChainFonts(api, origin) {
             const buffer = await request(shard.file, true);
             if (!(buffer instanceof ArrayBuffer) || buffer.byteLength !== shard.bytes) throw new Error('FONT_INCOMPLETE');
             installFont(shard.id, shard.characters, buffer);
+            if (api.arrayBufferToBase64) await typography.prepareShard(api, shard.id, api.arrayBufferToBase64(buffer));
             downloads++; bytes += buffer.byteLength;
           });
           downloading.set(shard.id, job); queue = job;
@@ -35,7 +38,7 @@ function createChainFonts(api, origin) {
         }
         await downloading.get(shard.id);
       }
-      if (!chars.every(hasGlyph)) throw new Error('FONT_UNCOVERED');
+      if (!quotes.every(hasGlyph)) throw new Error('FONT_UNCOVERED');
       return { ...chain, fontUnavailable: false };
     } catch (_) { return { ...chain, fontUnavailable: true }; }
   }

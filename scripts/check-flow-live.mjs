@@ -13,7 +13,7 @@ async function request(payload) {
   const response = await fetch(origin + '/api/flow', { method: 'POST', headers: {
     'Content-Type': 'application/json', Accept: 'application/x-ndjson', 'x-flow-session': owner },
     body: JSON.stringify({ ...payload, requestId: crypto.randomUUID() }), signal: AbortSignal.timeout(45000) });
-  const events = [], decoder = new TextDecoder(); let text = '', firstHeadMs;
+  const events = [], decoder = new TextDecoder(); let text = '', firstHeadMs, firstReadyMs;
   for await (const chunk of response.body) {
     text += decoder.decode(chunk, { stream: true });
     let at;
@@ -22,9 +22,10 @@ async function request(payload) {
       if (!line) continue;
       const event = JSON.parse(line); events.push(event);
       if ((event.type === 'head' || event.type === 'frame') && firstHeadMs === undefined) firstHeadMs = Math.round(performance.now() - began);
+      if (event.chain?.frames.some(frame => frame.ready) && firstReadyMs === undefined) firstReadyMs = Math.round(performance.now() - began);
     }
   }
-  return { events, firstHeadMs, totalMs: Math.round(performance.now() - began) };
+  return { events, firstHeadMs, firstReadyMs, totalMs: Math.round(performance.now() - began) };
 }
 for (const item of cases) {
   try {

@@ -1,6 +1,8 @@
 // Native text and server anchors share UTF-16 offsets. A link is accepted only
 // when its explicit range still contains its label in this exact surface.
+const { classicSpans } = require('./classic-text');
 function textSpans(frame, surface) {
+  if (surface === 'quote' || surface === 'fullText') return classicSpans(frame, surface);
   const text = frame[surface] || '', source = surface === 'fullText';
   const field = source ? 'quote' : surface;
   const ranges = (frame.anchors || []).filter(anchor => (anchor.surface || 'reflection') === field).flatMap(anchor => {

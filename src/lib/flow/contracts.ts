@@ -1,7 +1,12 @@
 import { z } from "zod";
 
 export const FLOW_VERSION = "flow-v1";
-export const FLOW_PROMPT_VERSION = "contextual-links-v2";
+export const FLOW_PROMPT_VERSION = "lexical-entry-v4";
+export const flowSelectionSchema = z.object({
+  start: z.number().int().nonnegative(), end: z.number().int().positive(),
+  textHash: z.string().min(1).max(128), corpusVersion: z.string().min(1).max(100),
+}).strict();
+export type FlowSelection = z.infer<typeof flowSelectionSchema>;
 export const flowRequestSchema = z.object({
   op: z.enum(["open", "branch", "next"]),
   requestId: z.string().min(1).max(80),
@@ -9,6 +14,7 @@ export const flowRequestSchema = z.object({
   chainId: z.string().max(80).optional(),
   fromFrameId: z.string().max(80).optional(),
   anchorId: z.string().max(80).optional(),
+  selection: flowSelectionSchema.optional(),
   cursor: z.string().max(80).nullable().optional(),
 }).strict();
 export type FlowRequest = z.infer<typeof flowRequestSchema>;
@@ -41,6 +47,7 @@ export interface FlowFrame {
   source: string;
   chapterLabel: string;
   fullText: string;
+  lexicalBreaks?: number[];
   meaning: string;
   reflection: string;
   reflectionSpans: Array<{ text: string; anchorId?: string }>;

@@ -1,5 +1,8 @@
 {
-  "pages": ["pages/flow/index"],
+  "pages": [
+    "pages/flow/index",
+    "pages/connect/index"
+  ],
   "window": {
     "navigationStyle": "custom",
     "navigationBarTitleText": "六经注我",
@@ -9,5 +12,57 @@
   },
   "style": "v2",
   "lazyCodeLoading": "requiredComponents",
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "subPackages": [
+    {
+      "root": "packages/local-corpus-0",
+      "name": "local-corpus-0",
+      "pages": []
+    },
+    {
+      "root": "packages/local-corpus-1",
+      "name": "local-corpus-1",
+      "pages": []
+    },
+    {
+      "root": "packages/local-corpus-2",
+      "name": "local-corpus-2",
+      "pages": []
+    },
+    {
+      "root": "packages/local-corpus-3",
+      "name": "local-corpus-3",
+      "pages": []
+    },
+    {
+      "root": "packages/local-corpus-4",
+      "name": "local-corpus-4",
+      "pages": []
+    },
+    {
+      "root": "packages/local-corpus-5",
+      "name": "local-corpus-5",
+      "pages": []
+    },
+    {
+      "root": "packages/local-corpus-6",
+      "name": "local-corpus-6",
+      "pages": []
+    },
+    {
+      "root": "packages/local-fonts-0",
+      "name": "local-fonts-0",
+      "pages": []
+    },
+    {
+      "root": "packages/local-fonts-1",
+      "name": "local-fonts-1",
+      "pages": []
+    },
+    {
+      "root": "packages/local-fonts-2",
+      "name": "local-fonts-2",
+      "pages": []
+    }
+  ]
 }

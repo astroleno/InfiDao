@@ -1,8 +1,10 @@
+@import "assets/fonts/classic.wxss";
+@import "assets/fonts/system.wxss";
 page {
   height: 100%;
   color: #e4e9e9;
   background: #000000;
-  font-family: "RunZhiJiaKangXiZidian", "InfiDaoSerifSupplement", "Songti SC", "STSong", "Noto Serif CJK SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", serif;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
 }

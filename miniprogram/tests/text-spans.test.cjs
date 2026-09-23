@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { textSpans } = require('../flow/text-spans');
 const { createCuratedProvider } = require('../flow/curated-provider');
+const { resolveSelection } = require('../flow/classic-text');
 
 test('all curated original, meaning and reflection entries preserve their exact text and open the verified target', async () => {
   const provider = createCuratedProvider();
@@ -15,6 +16,12 @@ test('all curated original, meaning and reflection entries preserve their exact 
         assert.equal(spans.map(span => span.text).join(''), frame[surface]);
         assert.ok(spans.some(span => span.anchorId), surface + ' has an entry');
         for (const span of spans.filter(span => span.anchorId)) {
+          if (span.selection) {
+            const token = resolveSelection(frame, span.selection);
+            assert.ok(token && token.text.includes(span.text));
+            assert.equal(token.id, span.anchorId);
+            continue;
+          }
           const anchor = frame.anchors.find(item => item.id === span.anchorId);
           assert.equal(span.text, anchor.label);
           assert.equal(anchor.surface, surface === 'fullText' ? 'quote' : surface);
@@ -32,26 +39,26 @@ test('all curated original, meaning and reflection entries preserve their exact 
   assert.equal(seen.size, 16);
 });
 
-test('source links use the quotation range, not an earlier identical word in the chapter', () => {
+test('every occurrence in the source links independently, including words outside the displayed excerpt', () => {
   const frame = { quote: '知止而后有定', meaning: '', reflection: '', fullText: '止。知止而后有定。', quoteStart: 2, quoteEnd: 8,
     anchors: [{ id: 'q', surface: 'quote', label: '止', start: 1, end: 2 }] };
   const spans = textSpans(frame, 'fullText');
   assert.equal(spans.map(span => span.text).join(''), frame.fullText);
-  assert.equal(spans.filter(span => span.anchorId).length, 1);
-  assert.equal(spans.find(span => span.anchorId).selected, true);
-  assert.equal(spans[0].text, '止。');
-  assert.equal(spans[0].anchorId, '');
-  frame.anchors[0].start = 0;
-  assert.ok(textSpans(frame, 'fullText').every(span => !span.anchorId), 'stale ranges stay plain text');
+  const stops = spans.filter(span => span.text === '止');
+  assert.equal(stops.length, 2);
+  assert.notEqual(stops[0].anchorId, stops[1].anchorId);
+  assert.equal(stops[0].selected, false);
+  assert.equal(stops[1].selected, true);
+  assert.deepEqual(stops.map(part => part.selection.start), [0, 3]);
 });
 
-test('overlapping links, punctuation and supplementary Unicode characters retain exact text', () => {
-  const frame = { quote: '𠮷，本末。', anchors: [
-    { id: 'first', surface: 'quote', label: '本末', start: 3, end: 5 },
-    { id: 'overlap', surface: 'quote', label: '本', start: 3, end: 4 },
-    { id: 'invalid', surface: 'quote', label: '末', start: 2, end: 3 },
+test('overlapping explanation links, punctuation and supplementary Unicode characters retain exact text', () => {
+  const frame = { meaning: '𠮷，本末。', anchors: [
+    { id: 'first', surface: 'meaning', label: '本末', start: 3, end: 5 },
+    { id: 'overlap', surface: 'meaning', label: '本', start: 3, end: 4 },
+    { id: 'invalid', surface: 'meaning', label: '末', start: 2, end: 3 },
   ] };
-  const spans = textSpans(frame, 'quote');
-  assert.equal(spans.map(span => span.text).join(''), frame.quote);
+  const spans = textSpans(frame, 'meaning');
+  assert.equal(spans.map(span => span.text).join(''), frame.meaning);
   assert.deepEqual(spans.filter(span => span.anchorId).map(span => span.anchorId), ['first']);
 });

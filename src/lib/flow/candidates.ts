@@ -4,13 +4,15 @@ import type { PassageRecord } from "@/types";
 import { FlowError } from "./contracts";
 import { flowJson } from "./model";
 import { z } from "zod";
+import { lexicalBreaks } from "./lexemes";
 
 let corpusPromise: Promise<PassageRecord[]> | undefined;
 export function flowCorpus() { return corpusPromise ??= loadCorpus().then(rows => {
   const seen = new Set<string>();
   // Prefer stable IDs from the complete corpus over duplicate sample records.
   return rows.slice().sort((a, b) => Number(b.id.startsWith("rysxguji-")) - Number(a.id.startsWith("rysxguji-")))
-    .filter(row => { const key = row.source + row.text; if (seen.has(key) || /[\uE000-\uF8FF]/u.test(row.text)) return false; seen.add(key); return true; });
+    .filter(row => { const key = row.source + row.text; if (seen.has(key) || /[\uE000-\uF8FF]/u.test(row.text)) return false; seen.add(key); return true; })
+    .map(row => ({ ...row, lexicalBreaks: (row as PassageRecord & { lexicalBreaks?: number[] }).lexicalBreaks || lexicalBreaks(row.text) }));
 }); }
 
 export async function planFocus(seed: string, signal: AbortSignal) {

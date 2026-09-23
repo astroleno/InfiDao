@@ -86,6 +86,7 @@ function createRemoteProvider(api, origin, sessionId) {
   }
   return { kind: 'remote', origin,
     open: (seed, options) => request({ op: 'open', seed }, options),
+    resume: input => request({ op: 'open', chainId: input.chainId }),
     branch: (input, options) => request({ op: 'branch', ...input }, options),
     next: (input, options) => request({ op: 'next', ...input }, options),
   };

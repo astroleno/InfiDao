@@ -65,6 +65,7 @@ function createContinuation(provider, prepare = async chain => chain) {
   function background(method, input) { const promise = run(method, input, false); promise.catch(() => {}); return promise; }
   return {
     open: (seed, hooks) => run('open', seed, true, hooks), branch: (input, hooks) => run('branch', input, true, hooks), next: input => run('next', input),
+    resume: input => run('resume', input),
     prefetch: (chain, active) => {
       if (!visible || disposed) return;
       for (const job of jobs.values()) if (!job.foreground && job.state !== 'done' &&

@@ -1,0 +1,15 @@
+.connection { min-height: 100vh; padding: 0 30px 40px; background: #000; }
+.eyebrow { display: block; color: #8d9898; font-size: 12px; letter-spacing: 3px; }
+.title { display: block; margin-top: 20px; font-size: 27px; line-height: 1.7; letter-spacing: 2px; }
+.intro { display: block; margin-top: 24px; color: #b9c0bd; font-size: 16px; line-height: 2; white-space: pre-line; }
+.setup { display: block; margin-top: 30px; color: #b9c0bd; font-size: 14px; line-height: 1.9; }
+.key-field { margin-top: 24px; border-bottom: 1px solid rgba(255,255,255,.25); }
+.key-input { height: 52px; color: #e4e9e9; font-size: 15px; }
+.placeholder { color: #808d8d; font-size: 14px; }
+.privacy { display: block; margin-top: 16px; color: #8d9898; font-size: 12px; line-height: 1.9; }
+.error { display: block; margin-top: 16px; color: #d1b7ad; font-size: 14px; line-height: 1.9; }
+.diagnosis { display: block; margin-top: 10px; color: #8d9898; font-family: monospace; font-size: 12px; line-height: 1.8; overflow-wrap: anywhere; }
+.connection .debug-toggle { text-align: left; font-size: 14px; text-decoration: underline; margin-top: 6px; }
+.enter { min-height: 48px; margin-top: 30px; border: 1px solid rgba(255,255,255,.35); font-size: 16px; letter-spacing: 2px; line-height: 48px; }
+.quiet { min-height: 44px; margin-top: 12px; font-size: 13px; letter-spacing: 1px; line-height: 44px; color: #9ea9a8; }
+.offline { margin-top: 32px; }
