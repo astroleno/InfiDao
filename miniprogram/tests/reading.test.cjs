@@ -44,6 +44,10 @@ async function setup() {
   const page = { ...definition, data: JSON.parse(JSON.stringify(definition.data)) };
   page.setData = (patch, complete) => { Object.assign(page.data, patch); if (complete) complete(); };
   page.onLoad();
+  // These tests exercise the original reading/capture state machine in
+  // isolation. Chain scheduling and lifecycle cancellation have their own suite.
+  page._provider = createMockProvider();
+  page.readWindow();
   page._session = await createMockProvider().open('我想让心慢下来');
   page._readingLines = readingLines(page._session.frames);
   page._timeline = new FlowTimeline(page._readingLines.length);

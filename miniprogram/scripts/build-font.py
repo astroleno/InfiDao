@@ -17,7 +17,9 @@ from fontTools.ttLib import TTFont
 from fontTools.varLib.instancer import instantiateVariableFont
 
 root = Path(__file__).resolve().parents[1]
-inputs = [root / "content/passages.js", root / "flow/provider.js"]
+inputs = sorted((root / "content").rglob("*.js"))
+inputs += [p for p in (root / "flow").glob("*.js")]
+inputs += sorted((root / "components").rglob("*.wxml"))
 inputs += sorted((root / "pages").rglob("*.wxml"))
 inputs += sorted((root / "pages").rglob("*.js"))
 characters = set(chr(code) for code in range(32, 127))

@@ -24,6 +24,7 @@ uniform float u_glyph;
 uniform float u_cursor;
 uniform float u_rowOffset;
 uniform float u_count;
+uniform float u_loop;
 uniform float u_radius;
 uniform float u_arc;
 uniform float u_curl;
@@ -38,7 +39,7 @@ void main() {
   if (u_glyph > 0.5) {
     float localY = (u_cursor - a_normal.x) * u_pitch;
     float period = u_count * u_pitch;
-    localY = mod(localY + period * 0.5, period) - period * 0.5;
+    if (u_loop > 0.5) localY = mod(localY + period * 0.5, period) - period * 0.5;
     // Adjacent horizontal rings turn in opposite directions at five quiet
     // paces. A row retains its identity across the content loop, and arrives
     // facing the reader rather than exposing a gap between repeated phrases.
@@ -225,7 +226,7 @@ function makeProgram(gl, fragment, vertex = VERTEX) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','rowOffset','count','radius','arc','curl','recede','pitch','final','reading','thickness','back','noise','dpr','inkLight','atlasSize'].forEach(name => {
+  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','thickness','back','noise','dpr','inkLight','atlasSize'].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   });
   return { program, uniforms, attributes: ['position','normal','uv'].map(name => gl.getAttribLocation(program, 'a_' + name)) };
@@ -337,7 +338,7 @@ class WheelRenderer {
   }
 
   hitTest(x, y) {
-    const rows = projectedRows(this.vertices, this.timeline.position / CELL - CENTER_PHASE, this.count, this.width, this.height, this.reading, this.timeline.rowOffset);
+    const rows = projectedRows(this.vertices, this.timeline.position / CELL - CENTER_PHASE, this.count, this.width, this.height, this.reading, this.timeline.rowOffset, this.timeline.loop);
     return rows.filter(row => x >= row.left - 10 && x <= row.right + 10 &&
       Math.abs(y - (row.top + row.bottom) / 2) <= Math.max(22, (row.bottom - row.top) / 2))
       .sort((a, b) => Math.abs(y - (a.top + a.bottom) / 2) - Math.abs(y - (b.top + b.bottom) / 2))[0];
@@ -350,6 +351,7 @@ class WheelRenderer {
     gl.uniform1f(u.cursor, this.timeline.position / CELL - CENTER_PHASE);
     gl.uniform1f(u.rowOffset, modulo(this.timeline.rowOffset, 10));
     gl.uniform1f(u.count, this.count);
+    gl.uniform1f(u.loop, this.timeline.loop ? 1 : 0);
     gl.uniform1f(u.radius, this.radius);
     gl.uniform1f(u.arc, this.arc);
     gl.uniform1f(u.curl, this.curl);
@@ -445,7 +447,7 @@ class WheelRenderer {
     this.stop();
     const from = this.timeline.position;
     const period = this.count * CELL;
-    const delta = options.position === undefined ? 0 : modulo(options.position - from + period / 2, period) - period / 2;
+    const delta = options.position === undefined ? 0 : this.timeline.loop ? modulo(options.position - from + period / 2, period) - period / 2 : options.position - from;
     const fromReading = this.reading;
     const toReading = options.reading === undefined ? fromReading : options.reading;
     const generation = this.motionGeneration;

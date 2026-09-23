@@ -46,10 +46,28 @@ function createGlyphSource(sources) {
 }
 
 // These are exactly the font files registered for the native page text.
-const glyphOutline = createGlyphSource([
+const bundledOutline = createGlyphSource([
   () => require('../assets/fonts/serif-data'),
   () => require('../assets/fonts/supplement-data'),
 ]);
+const coverage = new Set(Array.from(require('../assets/fonts/manifest').characters));
+const dynamic = new Map();
+function installFont(id, characters, data) {
+  if (dynamic.has(id)) return;
+  dynamic.set(id, { characters: new Set(Array.from(characters)), outline: createGlyphSource([data]) });
+  while (dynamic.size > 24) dynamic.delete(dynamic.keys().next().value);
+}
+function hasGlyph(char) {
+  return coverage.has(char) || Array.from(dynamic.values()).some(font => font.characters.has(char));
+}
+function glyphOutline(char) {
+  if (coverage.has(char)) return bundledOutline(char);
+  for (const [id, font] of dynamic) if (font.characters.has(char)) {
+    dynamic.delete(id); dynamic.set(id, font);
+    return font.outline(char);
+  }
+  throw new Error('Missing font glyph: ' + char);
+}
 
 function paintGlyph(ctx, char, centerX, centerY, fontPixels) {
   const glyph = glyphOutline(char), scale = fontPixels / glyph.units;
@@ -70,4 +88,4 @@ function paintGlyph(ctx, char, centerX, centerY, fontPixels) {
   } finally { ctx.restore(); }
 }
 
-module.exports = { createGlyphSource, glyphOutline, paintGlyph };
+module.exports = { createGlyphSource, glyphOutline, paintGlyph, installFont, hasGlyph };

@@ -1,45 +1,56 @@
 # InfiDao · 六经注我
 
-原生微信小程序。黑底、玻璃折射与色散，采用用户指定的竖直转经筒结构，结合持续向上流动。五层水平经文共用一根竖轴：中心清晰，上下渐隐、渐模糊。WXML/WXSS + Canvas WebGL，字体解析器随包内置，无 web-view。
+原生微信小程序，WXML/WXSS + Canvas WebGL，无 web-view。测试 AppID：`wx5f0a423b84cafbef`。
 
-## 运行
+## 当前交互
 
-微信开发者工具导入本目录，项目类型「小程序」，已配置用户指定的测试 AppID `wx5f0a423b84cafbef`。不需要构建 npm、不需要云环境、不需要 API key，直接编译 `pages/flow/index`。
+- **流动时只见全屏经轮**。五层水平经文共用竖轴，邻行交错、以不同速度缓慢旋转；中心放大清晰，上下逐渐缩小、模糊、隐去。沿用康熙字形、黑场材质与玻璃色散。
+- **持续向上、无限环流**。内容批次不是流动终点；后续未到或没有合适新内容时，已加载的经文继续流动。新内容在向前阅读边界接入。后台、用户停驻和减少动态效果仍按既有规则暂停。
+- 点可读经句，让所选句归中；点空白停驻。短解随原有阅读层展开，其中带下划线的字词可进入新经文链。流动态没有底部短解区。
+- 点击入口即锁定当前句和词义。等待时保留原画面，可取消；新句与字体准备好后同场景承接，再继续流动。新链仍可停驻、分叉。
+- 停驻层提供「返回上条经文链」和「来路」；恢复原链的位置、行相位、停驻状态、原文展开状态与滚动位置。
+- 一念、原文、自己的注脚均沿用原有入口。注脚只保存在本机，可删除和撤销。原文与人工整理/模型生成的联系明确区分。
 
-## 体验
+上述布局与无限流动规则为用户 2026-09-23 的最新确认，覆盖早期提案中常驻短解和批次末尾等待的设想。
 
-- 打开即进入示例经文流；常态只显示经文，首次成功停驻后隐藏手势提示。
-- 可选写下一念，选择安顿/相处/起步中的一条 mock 路径，之后自动持续上升；默认示例不会被当成用户自己的话。
-- 点中心或邻近可读经句，让所选句平滑归中；点空白停驻。其他经句退暗，下方展开必要语境、句意与示例联系，底部出现「一念 / 原文 / 继续」。当前一念只在停驻显示，修改时保留原话。
-- 上下拖动回看；相邻经文行交错左右慢转，采用五档不同角速度，跨内容循环保持方向和节奏。所有文字绕同一竖轴旋转，中心短句保持水平。
-- 点「原文」，同一句经文连同解读一起向上移动，直接定位到出处和原文；分别记住短读与原文的滚动位置。原文末尾可切换前后完整段落。阅读和流动共用一个场景。
-- 可选「留下我的一句」，在本机保存自己的文字、当时的一念和出处；支持回看、删除和撤销，不写也能继续流动。
-- 「继续」先收回解读和原文，再逐渐恢复流速，保留原进度；输入抽屉有进入和退出过渡，弹出后才唤起键盘。
-- 后台和卸载停止动画与未完成的过渡。WebGL 或画面承接失败时保留原生静读、完整解读和前后段切换，支持恢复流动。
-- 黑场保留极淡的中心渐晕与静态墨颗粒，叠加亮度不超过约 3%。呼吸随经轮位移缓慢推进，停驻和后台冻结，继续时接续；检测到系统减少动态效果时直接停驻、缩短归中动画，背景只保留静态材质。用户仍可主动选择继续。
+## 运行和服务
 
-## 内容与接口
+开发者工具直接导入此目录、编译 `pages/flow/index`，无需构建 npm。`flow/config.js` 的 `serviceOrigin` 留空时使用本地精选内容，可直接体验分叉与返回；精选内容不是个性化模型输出。
 
-mock 包含三组各八段的阅读路径，按组回环。经典摘录来自仓库 `data/rysxguji/guji-core-v1.jsonl`；每段有 `sourceId`、原文与出处。`meaning` 是人工整理的句意，`reflection` 是主题相关的示例联系，均与原文分开。另有四组与具体一念对应的人工样本；仅全文匹配样本时使用对应联系，其余输入仍走主题 mock。长句优先按标点拆分，保留完整经句关系，阅读序号以段落计。mock 不根据用户全文生成个性化分析，不调用任何线上服务。
+在线模式使用仓库已有的 Next.js 服务端：`POST /api/flow`，操作为 `open / branch / next`。服务端默认模型为 `deepseek-flash`，显式关闭 thinking；密钥只从服务端环境读取，支持 `FLOW_API_KEY / FLOW_BASE_URL / FLOW_MODEL`，否则复用 `DEEPSEEK_API_KEY / DEEPSEEK_BASE_URL`。旧 `/api/search` 和 `/api/annotate` 接口保持原合同。
 
-`flow/provider.js` 是唯一的内容入口，返回结构化经文帧。未来 DeepSeek 接入放在自己的服务端/云函数，小程序不携带凭证。V4.1 Flash 的官方 API 模型名为 `deepseek-flash`；配置与接口设计见 [DESIGN.md](docs/DESIGN.md)。本轮没有接入或调用 DeepSeek。
+本机联调可在开发者工具中设置 `wx.setStorageSync('infidao-flow-service', 'http://127.0.0.1:3000')` 后重新进入页面；该覆盖只对 `platform === 'devtools'` 生效。用项目私有配置临时关闭 URL 校验，验证后恢复。移除该 storage key 即回到默认精选模式。手机端须在 `flow/config.js` 配置实际 HTTPS 服务，并配置微信合法域名；仓库不会自动发布服务。
 
-## 字体
+服务端从本地语料选择和逐字校验引文、原文范围、来源与版本。模型负责检索线索、短解和候选联系；另一次校验过滤牵强关系、重复引文分叉及替用户作判断的解读。技术预测等不适合用古文回答的请求明确拒绝。无合适联系时不伪造新经文；原有流动继续。
 
-流动经文按距中心的连续距离缩放：中间最大，上下逐渐缩小，并按实际手机透视限制字距，避免放大后裁字。原生阅读层、输入和 Canvas 字形统一使用用户指定的 CoScroll 默认字体「润植家康熙字典美化体」（400 字重），不请求 CDN。页面字体的 WOFF 共约 238 KiB，内嵌数据约 318 KiB，覆盖当前 mock 内容与界面文案；任意新输入中未收录的字仍按系统衬线字体回退。
+服务端会话目前保存在进程内，最多 256 条、6 小时过期；重启后本机已保存的阅读仍可恢复，新的在线请求会提示会话失效。多实例正式部署需要共享会话存储。客户端内容/字体总并发为 2，预取仅一层，缓存 24 个准备结果；后台和卸载取消请求。
 
-流动经文使用随包的 OpenType.js 2.0.0 解析同一份 WOFF 字体，按字符查找字形并缓存，只在建立或更换图集时绘制；动画逐帧继续使用原有 WebGL 纹理。不调用 `fillText`、不查询 Canvas 字体名称，不依赖 `wx.loadFontFace` 的 native 作用域，因此画布不能将字形替换成系统黑体。已移除单独的 91 字轮廓表；增加字体内已有的字不需要生成轮廓或调整渲染代码。实际 iPhone 显示仍待复验。
+## 字体和资源
 
-主字体来自相邻 CoScroll 项目实际使用的 `public/fonts/润植家康熙字典美化体.ttf`；原文件缺少的「慥殀烝脩蹞」五个古字，以及有编码却没有笔画的数字、拉丁字母和部分标点，以 [Noto Serif SC](https://github.com/google/fonts/tree/main/ofl/notoserifsc) 补齐。构建时排除主字体的空字形，使页面序号和日期也能正常回退。来源与版权记录见 `assets/fonts/NOTICE.txt`、`manifest.js`；`OFL.txt` 仅适用于补字字体。要扩充离线子集，可用 fonttools 运行 `python scripts/build-font.py /path/to/润植家康熙字典美化体.ttf /path/to/NotoSerifSC[wght].ttf`。正式构建无需安装 fonttools，也不依赖 CoScroll 工作区。
+页面和 Canvas 使用同源字体：「润植家康熙字典美化体」及 Noto Serif SC 补字。Canvas 直接解析字体轮廓，不依赖 iPhone 的 Canvas 字体匹配，不会静默切换黑体。随包子集覆盖精选内容与界面文案。
 
-[微信 `wx.loadFontFace`](https://developers.weixin.qq.com/miniprogram/dev/api/ui/font/wx.loadFontFace.html) 支持 HTTPS 和 Data URL，后者要求基础库 3.7.9 起。目前只为原生页面文字注册 webview 字体；画布解析同一字体文件的字形。`createGlyphSource(sources)` 可接收 WOFF/TTF/OTF 的 ArrayBuffer、字节视图或 base64，不依赖 mock 字表。自定义字体并非只能走 CDN：完整字库或分片可由自己的 HTTPS 服务、对象存储或 CDN 提供。当前随包字库仍限于 695 个用字（主字体 590，补字 105）；接入动态内容时需要提供足够覆盖的字体文件及其加载逻辑，不再需要逐句导出轮廓。图集按本批字符数量扩容、复用相同内容，并遵守设备纹理上限；缺字或超过容量会明确进入原生阅读降级，不会悄悄改用黑体。
+动态经文使用 `public/flow-fonts/` 的 13 个 WOFF 分片，约 2.42 MiB，共 6,165 个有效字符。分片按需下载、字形缓存，动画不逐帧绘字。语料另含 51 个无对应字形的私用区编码，服务端不选择含这些编码的段落，不能猜字替换。全部 6,165 字已验证存在有效轮廓。
+
+字体可由自己的 HTTPS 服务提供，**不要求 CDN**。分片文件名带内容哈希，与语料和字体版本一起记录。字体请求失败保留原生静读，不悄悄改换经轮字体。
+
+重建需 fonttools 和原字体源：
+
+```sh
+python miniprogram/scripts/build-font.py /path/to/康熙.ttf /path/to/NotoSerifSC.ttf
+python miniprogram/scripts/build-flow-fonts.py /path/to/康熙.ttf /path/to/NotoSerifSC.ttf
+```
+
+来源与许可记录保存在 `assets/fonts/NOTICE.txt`、`OFL.txt`、`manifest.js` 以及分片目录。正常运行和构建不依赖相邻 CoScroll 工作区。
 
 ## 验证
 
-```bash
-cd miniprogram
-npm run check
-npm test
+```sh
+npm run check --prefix miniprogram
+npm test --prefix miniprogram
+npm run type-check:app
+npx jest tests/unit/flow-service.test.ts tests/unit/flow-relations.test.ts --runInBand
 ```
 
-`node scripts/build-content.cjs` 从仓库本地语料重新生成 mock 选文，同时验证引文。原生编译、视觉和触摸交互必须在微信开发者工具验证，不能用浏览器预览替代。
+`node scripts/check-flow-live.mjs` 是手动真实模型验证，会调用已配置的本地服务；默认不在 CI 中运行。测试语境见 `tests/fixtures/flow-contexts-v1.json`，输出默认在 `/tmp/infidao-flow-live.json`。
+
+本轮验证记录及尚未完成的真机、网关、语义验收见 [BRANCHING-IMPLEMENTATION.md](docs/BRANCHING-IMPLEMENTATION.md)。模拟器成绩不能代替 iPhone/Android 真机结果。

@@ -8,31 +8,37 @@
   <view wx:if="{{error}}" class="arrival error-state" aria-role="alert"><text>{{error}}</text><button class="text-button" bindtap="retry">重新展开</button></view>
   <view wx:if="{{graphicsError && active}}" class="fallback-anchor" style="top: {{centerY}}px; transform: translateY({{-sceneShift}}px)"><text>{{active.quote}}</text></view>
 
-  <view wx:if="{{active}}" class="reading-layer {{readingVisible ? 'reading-layer--visible' : ''}}" style="top: {{readerTop}}px; transform: translateY({{-sceneShift}}px)" aria-hidden="{{!readingVisible}}">
+  <view wx:if="{{active}}" class="reading-layer {{readingVisible ? 'reading-layer--visible' : ''}} {{chainBusy ? 'reading-layer--waiting' : ''}}" style="top: {{readerTop}}px; transform: translateY({{-sceneShift}}px)" aria-hidden="{{!readingVisible}}">
     <scroll-view class="reading-scroll" style="height: {{readerHeight + sceneShift}}px" scroll-y="{{true}}" scroll-top="{{readingScroll}}" scroll-into-view="{{sourceTarget}}" bindscroll="onReadingScroll" enhanced="{{true}}" show-scrollbar="{{false}}" catchtap="swallow">
       <button wx:if="{{personalSeed}}" class="current-seed" bindtap="openSeed" aria-label="修改当前一念"><text class="eyebrow">你的一念</text><text class="current-seed-text">{{seed}}</text></button>
       <text wx:if="{{active.passageLines.length > 1 && (active.lineIndex > 0 || active.quote.length < 5)}}" class="reading-context" user-select="{{true}}">{{active.passageQuote}}</text>
       <view class="reading-block"><text class="eyebrow">句意</text><text class="reading-meaning">{{active.meaning}}</text></view>
-      <view class="reading-block reflection"><text class="eyebrow">此刻 · 示例联系</text><text class="reading-reflection">{{active.reflection}}</text></view>
+      <view class="reading-block reflection"><flow-notes wx:if="{{chainFrame}}" frame="{{chainFrame}}" busy="{{chainBusy}}" bind:branch="branchFromWord" /><block wx:else><text class="eyebrow">此刻 · 示例联系</text><text class="reading-reflection">{{active.reflection}}</text></block></view>
+      <view wx:if="{{chainParent}}" class="chain-reading-nav"><button bindtap="returnToChain">返回上条经文链</button><button bindtap="openChainPath">来路 · {{chainPath.length}}</button></view>
       <button wx:if="{{!personalSeed}}" class="thought-invitation" bindtap="openSeed">带着此刻的一件事，再读这一句</button>
       <view class="note-actions"><button bindtap="openNote">留下我的一句</button><button wx:if="{{notes.length}}" bindtap="openNotes">回看注脚 · {{notes.length}}</button></view>
       <view id="source-heading" wx:if="{{sourceMounted}}" class="source-details {{sourceOpen ? 'source-details--visible' : ''}}" style="min-height: {{readerHeight + detailShift - 80}}px">
         <view class="source-heading"><text>《{{active.source}}》</text><text class="source-chapter">{{active.chapterLabel}}</text></view>
         <text class="source-fulltext" user-select="{{true}}"><text wx:for="{{sourceParts}}" wx:key="index" class="{{item.selected ? 'source-selected' : ''}}">{{item.text}}</text></text>
-        <text class="source-note">以上为经典原文；句意与此刻解读为人工整理的示例。</text>
+        <text class="source-note">以上为核对过的经典原文；{{chainKind === 'remote' ? '句意与联系由模型生成，请结合原文辨读。' : '句意与联系为人工整理的示例。'}}</text>
       </view>
       <view wx:if="{{sourceOpen || graphicsError}}" class="passage-navigation"><button bindtap="previous" aria-label="上一段完整经文">上一段</button><text>{{ordinal}} / {{total}}</text><button bindtap="next" aria-label="下一段完整经文">下一段</button></view>
     </scroll-view>
   </view>
 
-  <view class="gesture-hint {{hintVisible && ready && !paused && !overlay ? 'gesture-hint--visible' : ''}}" style="bottom: {{bottomInset + 16}}px">轻点停驻，读懂这一句</view>
+  <view wx:if="{{chainBusy || (chainError && paused)}}" class="chain-status" style="bottom: {{bottomInset + 45}}px" aria-role="status"><text>{{chainBusy ? '沿这一念，正在展开…' : chainError}}</text><button wx:if="{{chainBusy}}" bindtap="cancelBranch">留在此处</button><button wx:if="{{chainError}}" bindtap="retryChain">再试</button></view>
+  <view class="gesture-hint {{hintVisible && ready && !paused && !overlay && !chainBusy ? 'gesture-hint--visible' : ''}}" style="bottom: {{bottomInset + 16}}px">轻点停驻，读懂这一句</view>
   <view class="footer {{!overlay && paused ? 'footer--visible' : ''}}" style="padding-bottom: {{bottomInset}}px" aria-hidden="{{!!overlay || !paused}}">
-    <button class="text-button seed-control" bindtap="openSeed" disabled="{{loading}}" aria-label="写下一念">一念</button>
-    <button class="text-button source-control" bindtap="openSource" disabled="{{loading}}">{{sourceOpen ? '收起原文' : '原文'}}</button>
-    <button class="text-button pause-control" bindtap="onPauseControl" disabled="{{loading}}">{{graphicsError ? '恢复流动' : '继续'}}</button>
+    <button class="text-button seed-control" bindtap="openSeed" disabled="{{loading || chainBusy}}" aria-label="写下一念">一念</button>
+    <button class="text-button source-control" bindtap="openSource" disabled="{{loading || chainBusy}}">{{sourceOpen ? '收起原文' : '原文'}}</button>
+    <button class="text-button pause-control" bindtap="onPauseControl" disabled="{{loading || chainBusy}}">{{graphicsError ? '恢复流动' : '继续'}}</button>
   </view>
 
   <view wx:if="{{overlay}}" class="backdrop {{overlayVisible ? 'backdrop--visible' : ''}}" bindtap="closeOverlay" catchtouchmove="swallow" />
+  <view wx:if="{{overlay === 'path'}}" class="sheet notes-sheet {{overlayVisible ? 'sheet--visible' : ''}}">
+    <view class="sheet-heading"><text class="eyebrow">沿念而来的经文</text><button class="close-sheet" bindtap="closeOverlay">收起</button></view>
+    <scroll-view class="notes-scroll" scroll-y="{{true}}"><button wx:for="{{chainPath}}" wx:key="chainId" class="path-step" data-chain="{{item.chainId}}" bindtap="returnToChain" disabled="{{item.chainId === chainId}}"><text>{{index + 1}} · {{item.label}}</text><text class="path-focus">{{item.focus}}</text></button></scroll-view>
+  </view>
   <view wx:if="{{overlay === 'seed'}}" class="sheet {{overlayVisible ? 'sheet--visible' : ''}}" style="transform: translateY({{(overlayVisible ? 0 : 36) - keyboardHeight}}px)" catchtap="swallow" catchtouchmove="swallow">
     <view class="sheet-heading"><text class="eyebrow">从一念开始</text><button class="close-sheet" bindtap="closeOverlay" aria-label="关闭输入">收起</button></view>
     <text class="sheet-title">此刻，什么萦绕着你？</text>

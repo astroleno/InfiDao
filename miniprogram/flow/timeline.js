@@ -15,6 +15,7 @@ function modulo(value, size) {
 class FlowTimeline {
   constructor(count) {
     this.count = count;
+    this.loop = true;
     this.position = CELL * CENTER_PHASE;
     this.rowOffset = 0;
     this.paused = false;
@@ -31,7 +32,8 @@ class FlowTimeline {
   }
 
   get index() {
-    return modulo(Math.round(this.position / CELL - CENTER_PHASE), this.count);
+    const index = Math.round(this.position / CELL - CENTER_PHASE);
+    return this.loop ? modulo(index, this.count) : Math.max(0, Math.min(this.count - 1, index));
   }
 
   get paused() { return this._paused; }
@@ -101,10 +103,16 @@ class FlowTimeline {
   }
 
   advancePosition(distance) {
+    if (!this.loop) {
+      this.position = Math.max(CELL * CENTER_PHASE, Math.min((this.count - 1 + CENTER_PHASE) * CELL, this.position + distance));
+      return;
+    }
     const period = this.count * CELL, next = this.position + distance;
     this.rowOffset += Math.floor(next / period) * this.count;
     this.position = modulo(next, period);
   }
+
+  get atEnd() { return !this.loop && this.position >= (this.count - 1 + CENTER_PHASE) * CELL - 0.01; }
 
   setVisible(visible) {
     this.visible = visible;

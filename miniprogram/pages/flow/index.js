@@ -1,11 +1,13 @@
-const { createMockProvider, validateSession, DEFAULT_SEED } = require('../../flow/provider');
+const { validateSession, DEFAULT_SEED } = require('../../flow/provider');
 const { FlowTimeline, CELL, CENTER_PHASE, modulo } = require('../../flow/timeline');
 const { WheelRenderer } = require('../../flow/renderer');
 const { readingLines } = require('../../flow/scene');
 const { typography } = require('../../flow/typography');
 const { createNoteStore } = require('../../flow/notes');
+const { chainActions } = require('../../flow/chain-page');
 
 Page({
+  ...chainActions,
   data: {
     ready: false, loading: true, error: '', graphicsError: false,
     paused: false, phase: 'flow', overlay: '', overlayVisible: false,
@@ -16,6 +18,8 @@ Page({
     shots: [], snapshotReady: false, keyboardHeight: 0, inputFocus: false,
     hintVisible: true, readingScroll: 0, sourceTarget: '',
     notes: [], noteDraft: '', noteQuote: '', noteError: '', canUndo: false,
+    chainId: '', chainParent: '', chainLabel: '', chainPath: [], chainKind: '', chainFrame: null,
+    chainBusy: false, chainError: '', branchLabel: '',
   },
 
   onLoad() {
@@ -25,7 +29,7 @@ Page({
     this._action = 0;
     this._shotId = 0;
     this._timers = new Set();
-    this._provider = createMockProvider();
+    this.initChains(wx);
     this._noteStore = createNoteStore(wx);
     this._noteDrafts = {};
     this._readingPositions = {};
@@ -41,11 +45,16 @@ Page({
 
   onShow() {
     this._visible = true;
+    if (this._networkBudget) this._networkBudget.resumeRequests();
+    if (this._continuation) this._continuation.setVisible(true);
     if (!this._timeline) return;
+    if (this._resumeSeed !== undefined) { this.openChainSession(this._resumeSeed); return; }
+    if (this._session?.chainId && this._session.frames.some(frame => !frame.ready)) this.setData({ chainError: '这条联系尚未展开完整，可以再试或返回。' });
     this._timeline.setVisible(true);
     if (this._pendingSession) { this.enterSession(this._pendingSession); return; }
     if (!this._renderer || this.data.loading) return;
     this.readMotionPreference();
+    this.refreshChainLinks();
     if (this.data.paused) {
       if (!this.data.snapshotReady) this.settleReading();
       else this.setData({ phase: 'reading', readingVisible: !this.data.overlay });
@@ -53,7 +62,13 @@ Page({
     else { this._renderer.reading = 0; this.syncMotion(); }
   },
   onHide() {
+    try { this.saveChain(); } catch (_) {}
     this._visible = false;
+    this._chainRequest++;
+    this._nextRequest = null;
+    if (this._continuation) this._continuation.setVisible(false);
+    if (this._networkBudget) this._networkBudget.abortPending();
+    this.setData({ chainBusy: false });
     this.beginAction();
     this._touch = null;
     this._timeline.dragging = false;
@@ -67,12 +82,15 @@ Page({
     this._alive = false;
     this._request++;
     this.beginAction();
+    if (this._continuation) this._continuation.dispose();
+    if (this._networkBudget) this._networkBudget.abortPending();
     if (this._renderer) this._renderer.destroy();
   },
 
   // Captures, animation completions and keyboard timers belong to one action.
   // A new gesture or lifecycle event invalidates every older completion.
   beginAction() {
+    if (this._resolveChainCapture) { this._resolveChainCapture(); this._resolveChainCapture = null; }
     this._action++;
     this._timers.forEach(clearTimeout);
     this._timers.clear();
@@ -111,6 +129,7 @@ Page({
   },
 
   async loadSession(seed) {
+    if (this._provider.branch) return this.openChainSession(seed);
     const request = ++this._request;
     this._pendingSession = null;
     const action = this.beginAction();
@@ -210,7 +229,7 @@ Page({
   syncMotion() {
     if (!this._timeline) return;
     this._timeline.paused = this.data.paused || this.data.phase !== 'flow' || !!this.data.overlay ||
-      this.data.loading || this.data.graphicsError || !!this.data.error;
+      this.data.loading || this.data.chainBusy || this.data.graphicsError || !!this.data.error;
     if (!this._renderer) return;
     const gliding = this._timeline.flinging && !this.data.overlay && !this.data.loading && !this.data.snapshotReady;
     if (this._visible && (!this._timeline.paused || gliding) && !this._timeline.dragging) this._renderer.start();
@@ -218,6 +237,7 @@ Page({
   },
   onWheelFrame() {
     this.updateActive();
+    this.checkChainEnd();
     if (!this._timeline.needsSettle) return;
     this._timeline.needsSettle = false;
     if (this.data.paused) this.settleReading();
@@ -236,6 +256,7 @@ Page({
       { text: active.fullText.slice(at + quote.length), selected: false },
     ].filter(part => part.text);
     this.setData({ active, ordinal: String(active.ordinal).padStart(2, '0'), sourceParts });
+    this.refreshChainLinks();
   },
 
   settleReading(index) {
@@ -256,6 +277,7 @@ Page({
         this._afterReading = null;
         if (next === 'source') this.openSource();
         if (next === 'seed') this.openSeed();
+        if (next === 'path') this.showNoteSheet('path');
       });
     };
     if (Number.isInteger(index)) this._renderer.animateTo({ position: (index + CENTER_PHASE) * CELL, reading: 1, duration: 420 }, complete);
@@ -319,6 +341,17 @@ Page({
     this.later(action, delay, () => {
       this.setData({ sourceMounted: false });
       if (this.data.graphicsError) {
+        if (this._session?.chainId) {
+          this.setData({ paused: true, phase: 'reading', readingVisible: true });
+          this._chainFonts.prepare(this._session).then(prepared => {
+            if (!this.current(action)) return;
+            if (prepared.fontUnavailable) { this.setData({ chainError: '字形还未准备好，可以先读原文，稍后恢复流动。' }); return; }
+            this._session = prepared;
+            this.setData({ graphicsError: false, ready: false, paused: false, readingVisible: false, chainError: '' });
+            this.initRenderer();
+          });
+          return;
+        }
         this.setData({ graphicsError: false, ready: false });
         this.initRenderer();
         return;
@@ -334,10 +367,10 @@ Page({
     if (this.data.paused) this.resumeFlow();
     else { this._pulseOnSettle = true; this.settleReading(); }
   },
-  onPauseControl() { if (this.data.ready && !this.data.loading) this.resumeFlow(); },
+  onPauseControl() { if (this.data.ready && !this.data.loading && !this.data.chainBusy) this.resumeFlow(); },
 
   onTouchStart(event) {
-    if (!this._renderer || this.data.overlay || this.data.loading || this.data.sourceOpen) return;
+    if (!this._renderer || this.data.overlay || this.data.loading || this.data.chainBusy || this.data.sourceOpen) return;
     const touch = event.touches[0];
     if (!touch) return;
     this.beginAction();
@@ -397,6 +430,7 @@ Page({
     } else this.togglePause();
   },
   onCanvasTap(event) {
+    if (this.data.chainBusy) return;
     if (Date.now() < (this._handledTouchTapUntil || 0)) { this._handledTouchTapUntil = 0; return; }
     if (this._suppressTap && Date.now() < this._suppressTapUntil) { this._suppressTap = false; return; }
     this._suppressTap = false;
@@ -417,7 +451,7 @@ Page({
   },
 
   openSource() {
-    if (!this.data.active || this.data.loading) return;
+    if (!this.data.active || this.data.loading || this.data.chainBusy) return;
     if (this.data.sourceOpen) { this.closeSource(); return; }
     if (!this.data.snapshotReady && !this.data.graphicsError) {
       this._afterReading = 'source';
@@ -442,7 +476,7 @@ Page({
     this.later(action, 340, () => this.setData({ sourceMounted: false }));
   },
   openSeed() {
-    if (this.data.loading) return;
+    if (this.data.loading || this.data.chainBusy) return;
     if (!this.data.snapshotReady && !this.data.graphicsError) {
       this._afterReading = 'seed';
       if (this.data.phase !== 'settling') this.settleReading();
@@ -479,8 +513,14 @@ Page({
 
   changePassage(direction) {
     if (!this._session || this.data.loading) return;
-    const ordinal = modulo(this.data.active.ordinal - 1 + direction, this._session.frames.length);
-    const index = this._readingLines.findIndex(line => line.ordinal === ordinal + 1);
+    let ordinal = modulo(this.data.active.ordinal - 1 + direction, this._session.frames.length);
+    if (this._session.chainId) {
+      const current = this._session.frames.findIndex(frame => frame.id === this.data.active.passageId);
+      if (current + direction < 0 && this._windowStart > 0) { this.previousChainWindow(); return; }
+      if (current + direction >= this._session.frames.length && !this._session.exhausted) this.fetchNextChain();
+      ordinal = modulo(current + direction, this._session.frames.length);
+    }
+    const index = this._readingLines.findIndex(line => line.passageId === this._session.frames[ordinal].id);
     const action = this.beginAction();
     const delay = this.data.sourceOpen ? 340 : 180;
     this.setData({ sourceOpen: false, sceneShift: 0, readingVisible: false, phase: 'settling' });
@@ -544,7 +584,7 @@ Page({
   },
   openNote() {
     const active = this.data.active;
-    if (!active || !this.data.paused) return;
+    if (!active || !this.data.paused || this.data.chainBusy) return;
     this._noteContext = { passageId: active.passageId, sourceId: active.sourceId, quote: active.passageQuote,
       source: active.source, chapterLabel: active.chapterLabel, seed: this.data.personalSeed ? this.data.seed : '' };
     this.setData({ noteQuote: active.passageQuote, noteDraft: this._noteDrafts[active.passageId] || '', noteError: '' });
@@ -587,6 +627,10 @@ Page({
       running: !!this._renderer && this._renderer.running, visible: this._visible,
       paused: this.data.paused, phase: this.data.phase, snapshotReady: this.data.snapshotReady,
       mode: this.data.graphicsError ? 'static' : 'webgl', journey: this._session && this._session.journey,
+      chainId: this._session?.chainId, parent: this._session?.parentChainId, chainKind: this._provider?.kind,
+      chainFrames: this._session?.frames.length, branchReadableMs: this._branchReadableMs,
+      chainCache: this._chainStore?.stats(), requests: this._continuation?.stats(),
+      fonts: this._chainFonts?.stats(), looping: this._timeline.loop,
       glyphMode: this._renderer ? this._renderer.glyphMode : null,
       graphicsError: this.data.graphicsError, graphicsFailure: this._graphicsFailure || null,
       glError: this._renderer ? this._renderer.gl.getError() : null };

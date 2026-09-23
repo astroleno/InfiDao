@@ -1,5 +1,6 @@
 {
   "navigationStyle": "custom",
   "disableScroll": true,
-  "backgroundColor": "#050709"
+  "backgroundColor": "#050709",
+  "usingComponents": { "flow-notes": "../../components/flow-notes/index" }
 }

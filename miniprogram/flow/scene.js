@@ -25,8 +25,8 @@ function rowTurn(ordinal) {
   return direction * (ROW_TURN_MIN + modulo(ordinal * 3, 5) * ROW_TURN_STEP);
 }
 
-function rowMotion(index, cursor, count, rowOffset = 0) {
-  const distance = modulo(cursor - index + count / 2, count) - count / 2;
+function rowMotion(index, cursor, count, rowOffset = 0, loop = true) {
+  const distance = loop ? modulo(cursor - index + count / 2, count) - count / 2 : cursor - index;
   // The row keeps its direction and pace while passing through the viewport,
   // including an odd-length content loop. It faces front exactly at focus.
   const ordinal = Math.round(cursor - distance) + rowOffset;
@@ -131,12 +131,12 @@ function quotationGeometry(frames, glyphs, radius, fontSize, camera = radius * 2
 // Mirror the vertex projection for selectable front-facing rows. This is used
 // on touch, not on every animation frame, and never makes blurred rear copies
 // into invisible tap targets.
-function projectedRows(vertices, cursor, count, width, height, reading = 0, rowOffset = 0) {
+function projectedRows(vertices, cursor, count, width, height, reading = 0, rowOffset = 0, loop = true) {
   const m = sceneMetrics(width, height), camera = height / 2, rows = new Map();
   for (let i = 0; i < vertices.length; i += 8) {
     if ((i / 8) % (6 * COPIES) >= 6) continue;
     const index = vertices[i + 3];
-    const motion = rowMotion(index, cursor, count, rowOffset), d = motion.distance;
+    const motion = rowMotion(index, cursor, count, rowOffset, loop), d = motion.distance;
     if (Math.abs(d) > (reading > 0.5 ? 0.35 : 1.25)) continue;
     const angle = vertices[i] + motion.angle;
     const scale = 0.62 + (CENTER_SCALE - 0.62) * Math.exp(-d * d * 0.55);
