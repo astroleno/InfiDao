@@ -13,7 +13,17 @@ const chainActions = {
     api = createRequestBudget(api);
     this._networkBudget = api;
     this._provider = createChainProvider(api);
-    this._chainStore = createChainStore(api, this._provider.kind === 'native' ? { prefix: 'infidao-native-chain-v1:' } : {});
+    this._chainStore = createChainStore(api, {
+      ...(this._provider.kind === 'native' ? { prefix: 'infidao-native-chain-v1:' } : {}),
+      allowTemporary: true,
+      autoPrune: true,
+      onTemporary: error => {
+        if (!this._alive) return;
+        const reason = error.message === 'CHAIN_STORAGE_FULL' ? '阅读记录已满' : '本机暂时无法保存';
+        this.setData({ storageNotice: reason + '，本次阅读进度暂不保存；已有记录和注脚仍保留。' });
+        if (api.showToast) api.showToast({ title: '本次阅读进度暂不保存', icon: 'none', duration: 3000 });
+      },
+    });
     this._chainFonts = this._provider.fonts || createChainFonts(api, this._provider.origin || '');
     this._continuation = createContinuation(this._provider, chain => this._chainFonts.prepare(chain));
     this._chainRequest = 0;
@@ -59,7 +69,8 @@ const chainActions = {
   chainCurrent(token) { return this._alive && this._visible && token === this._chainRequest; },
   chainFailure(error, token) {
     if (!this.chainCurrent(token) || error.cancelled) return;
-    const message = error.message === 'CHAIN_STORAGE_FULL' ? '本机阅读记录已满，原句仍在。' :
+    const message = error.message === 'TEMPORARY_STORAGE_FULL' ? '本次临时阅读空间已满，当前经句仍可阅读。' :
+      error.message === 'CHAIN_STORAGE_FULL' ? '本机阅读记录已满，原句仍在。' :
       error.message && !/^[A-Z_]+$/.test(error.message) ? error.message : '这条联系暂未展开，原句仍可阅读。';
     this._spatialTransition = null;
     this.setData({ wordHit: null, chainBusy: false, chainPending: false, loading: false, pressedAnchor: '', transitionWord: '',

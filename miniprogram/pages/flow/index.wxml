@@ -6,12 +6,13 @@
   <view wx:if="{{wordHit}}" class="word-hit" style="left: {{wordHit.left}}px; top: {{wordHit.top + sceneTop - sceneShift}}px; width: {{wordHit.right - wordHit.left}}px; height: {{wordHit.bottom - wordHit.top}}px" aria-hidden="true" />
   <view wx:if="{{transitionWord}}" class="branch-origin" style="top: {{readerTop}}px" aria-role="status">{{transitionReturning ? '回到「' + transitionWord + '」的来处' : '沿「' + transitionWord + '」而来'}}</view>
 
-  <view wx:if="{{!ready}}" class="arrival" aria-role="status"><text>六经注我</text></view>
+  <view wx:if="{{!ready && !error}}" class="arrival" aria-role="status"><text>六经注我</text></view>
   <view wx:if="{{error}}" class="arrival error-state" aria-role="alert"><text>{{error}}</text><button class="text-button" bindtap="retry">重新展开</button><button wx:if="{{connectionAllowed}}" class="connection-control" bindtap="openConnection">{{connected ? '设置 DS 连接' : '连接 DS'}}</button></view>
   <view wx:if="{{graphicsError && active}}" class="fallback-anchor" style="top: {{centerY}}px; transform: translateY({{-sceneShift}}px)"><view class="fallback-quote"><linked-text classic="{{true}}" parts="{{activeParts}}" frame-id="{{active.passageId}}" busy="{{chainBusy}}" pressed="{{pressedAnchor}}" bind:branch="branchFromWord" /></view></view>
 
   <view wx:if="{{active}}" class="reading-layer {{readingVisible ? 'reading-layer--visible' : ''}}" style="top: {{readerTop}}px; transform: translateY({{-sceneShift}}px)" aria-hidden="{{!readingVisible}}">
     <scroll-view class="reading-scroll" style="height: {{readerHeight + sceneShift}}px" scroll-y="{{true}}" scroll-top="{{readingScroll}}" scroll-into-view="{{sourceTarget}}" bindscroll="onReadingScroll" enhanced="{{true}}" show-scrollbar="{{false}}" catchtap="swallow">
+      <text wx:if="{{storageNotice}}" class="storage-notice" aria-role="status">{{storageNotice}}</text>
       <button wx:if="{{personalSeed}}" class="current-seed" bindtap="openSeed" aria-label="修改当前一念"><text class="eyebrow">你的一念</text><text class="current-seed-text">{{seed}}</text></button>
       <view wx:if="{{active.passageLines.length > 1 && (active.lineIndex > 0 || active.quote.length < 5)}}" class="reading-context"><linked-text classic="{{true}}" parts="{{quoteParts}}" frame-id="{{active.passageId}}" busy="{{chainBusy}}" pressed="{{pressedAnchor}}" bind:branch="branchFromWord" /></view>
       <view class="reading-block"><text class="eyebrow">句意</text><view class="reading-meaning"><linked-text parts="{{meaningParts}}" frame-id="{{active.passageId}}" busy="{{chainBusy}}" pressed="{{pressedAnchor}}" bind:branch="branchFromWord" /></view></view>

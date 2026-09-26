@@ -14,7 +14,7 @@ Page({
   ...chainActions,
   data: {
     wordHit: null, activeParts: [],
-    ready: false, loading: true, error: '', graphicsError: false,
+    ready: false, loading: true, error: '', graphicsError: false, storageNotice: '',
     paused: false, phase: 'flow', overlay: '', overlayVisible: false,
     seed: DEFAULT_SEED, personalSeed: false, draft: '', active: null, ordinal: '01', total: '08',
     sceneTop: 31, sceneHeight: 725, centerY: 393, bottomInset: 48,
