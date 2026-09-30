@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { createEventDecoder, createRemoteProvider } = require('../flow/remote-provider');
+const { createChainProvider } = require('../flow/chain-provider');
 const { createContinuation } = require('../flow/continuation');
 const { createCuratedProvider } = require('../flow/curated-provider');
 const { createChainStore, PREFIX } = require('../flow/chain-store');
@@ -18,7 +19,7 @@ test('an offline word without a prepared link gives an actionable connection err
   const part = classicSpans(frame).find(p => p.selection && !frame.anchors.some(a => a.surface === 'quote' &&
     frame.quoteStart + a.start === p.selection.start && frame.quoteStart + a.end === p.selection.end));
   const page = { ...chainActions, _alive: true, _visible: true, _chainRequest: 0, _session: parent,
-    _chainStore: { child: () => null }, _continuation: createContinuation(provider),
+    _chainStore: createChainStore(storage()), _continuation: createContinuation(provider),
     data: { chainBusy: false, paused: false, wordHit: part },
     setData(patch) { Object.assign(this.data, patch); }, saveChain() {}, syncMotion() {}, pulse() {} };
   await page.branchFromWord({ detail: { frameId: frame.id, anchorId: part.anchorId, selection: part.selection } });
@@ -66,6 +67,27 @@ test('non-chunked native responses follow the same done contract; cancelled late
   cancelled.cancel();
   options.success({ statusCode: 200, data: { events: [] } });
   await assert.rejects(cancelled, error => error.cancelled);
+});
+
+test('native HTTP obtains and reuses a server-signed identity before sending flow requests', async () => {
+  const values = new Map([['infidao-flow-service', 'https://example.invalid']]), calls = [];
+  const api = { getDeviceInfo: () => ({ platform: 'devtools' }), getStorageSync: key => values.get(key),
+    setStorageSync: (key, value) => values.set(key, value),
+    request(options) { calls.push(options); return { abort() {} }; } };
+  const provider = createChainProvider(api), opening = provider.open('本末', { requestId: 'native-issue' });
+  assert.equal(calls.length, 1); assert.match(calls[0].url, /\/api\/flow\/session$/);
+  assert.equal(calls[0].header['x-flow-client'], 'native');
+  calls[0].success({ statusCode: 200, data: { token: 'server-signed-token' } });
+  await tick();
+  assert.equal(calls.length, 2); assert.equal(calls[1].header.Authorization, 'Bearer server-signed-token');
+  assert.equal(calls[1].header['x-flow-session'], undefined);
+  calls[1].success({ statusCode: 200, data: { events: [{ type: 'done', requestId: 'native-issue', chain: { chainId: 'remote-1' } }] } });
+  assert.equal((await opening).chainId, 'remote-1');
+  const another = createChainProvider(api), pending = another.open('先后', { requestId: 'native-renew' });
+  assert.equal(calls[2].header.Authorization, 'Bearer server-signed-token');
+  pending.cancel(); await assert.rejects(pending, error => error.cancelled);
+  calls[2].success({ statusCode: 200, data: { token: 'new-server-token' } });
+  await tick(); assert.equal(calls.length, 3);
 });
 
 test('content and fonts share two network slots; queued cancellation never starts a request', () => {
@@ -346,9 +368,10 @@ test('cancelling an unfinished opening clears waiting, preserves the quote and a
   assert.equal(page.data.active.quote, quote);
   assert.equal(page.data.chainFrame.ready, false, 'a late completion cannot overwrite a cancelled request');
   let retried;
-  page.openChainSession = seed => { retried = seed; };
-  page.retryChain();
-  assert.equal(retried, '');
+  page._continuation.resume = async input => { retried = input; return { ...page._session, frames: page._session.frames.map(frame => ({ ...frame, ready: true })) }; };
+  await page.retryChain();
+  assert.deepEqual(retried, { chainId: page._session.chainId });
+  assert.equal(page.data.active.quote, quote, 'retry continues the existing head rather than opening a new chain');
   page._continuation.dispose();
 });
 

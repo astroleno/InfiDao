@@ -6,7 +6,8 @@ const { FlowTimeline, CELL, CENTER_PHASE } = require('./timeline');
 const { readingLines, sceneMetrics } = require('./scene');
 const { RibbonWindow, SLOT_COUNT } = require('./ribbon-window');
 const { createRequestBudget } = require('./request-budget');
-const { resolveSelection } = require('./classic-text');
+const { branchInput, mergeChain } = require('./generated/shared/controller');
+const { createNativeController, recordFromNative } = require('./controller-host');
 
 const chainActions = {
   initChains(api) {
@@ -36,35 +37,21 @@ const chainActions = {
       readingPositions: Object.fromEntries(Object.entries(this._readingPositions || {}).filter(([id]) => visible.has(id))), windowStart: this._windowStart || 0,
       ribbon: this._ribbon?.snapshot() };
   },
+  flowController() {
+    if (!this._flowController) this._flowController = createNativeController(this);
+    return this._flowController;
+  },
   saveChain() {
+    if (this._flowController) return this._flowController.checkpoint();
     if (!this._session?.chainId) return;
     if (this.data.readingVisible) this.readerPositions()[this.data.sourceOpen ? 'source' : 'reading'] = this._readingScrollTop || 0;
     this._chainStore.put(this._session, this.chainSnapshot());
   },
   async openChainSession(seed) {
     this._spatialTransition = null;
-    const token = ++this._chainRequest;
-    this._resumeSeed = seed;
-    this._retryOperation = { type: 'open', seed };
-    this._nextRequest = null;
-    this._nextBatch = null;
-    try { this.saveChain(); } catch (_) { this.setData({ chainError: '当前阅读未能保存，请整理本机空间后再试。' }); return; }
-    this.setData({ loading: !this._session, chainBusy: true, chainPending: true, chainError: '', error: '', branchLabel: '', pressedAnchor: '', transitionWord: '', inputFocus: false, overlayVisible: false });
-    this.syncMotion();
-    let headTransition;
-    try {
-      const chain = await this._continuation.open(seed, { onHead: head => {
-        if (!this.chainCurrent(token)) return;
-        headTransition = this.presentChain(head, null, token).then(() => {
-          if (this.chainCurrent(token)) { this.setData({ chainBusy: false }); this.syncMotion(); }
-        });
-      } });
-      if (headTransition) await headTransition;
-      if (!this.chainCurrent(token)) return;
-      if (this._session?.chainId === chain.chainId) this.replaceChainBatch(chain);
-      else await this.presentChain(chain, null, token);
-      if (this.chainCurrent(token)) { this.setData({ chainPending: false }); this._resumeSeed = undefined; this._retryOperation = null; }
-    } catch (error) { this.chainFailure(error, token); }
+    this._resumeSeed = undefined;
+    this.setData({ branchLabel: '', pressedAnchor: '', transitionWord: '', inputFocus: false, overlayVisible: false });
+    return this.flowController().open(seed);
   },
   chainCurrent(token) { return this._alive && this._visible && token === this._chainRequest; },
   chainFailure(error, token) {
@@ -81,56 +68,25 @@ const chainActions = {
   },
   async branchFromWord(event) {
     if (this.data.chainBusy || !this._session?.chainId) return;
-    const detail = event.detail || {}, frameId = detail.frameId || event.currentTarget?.dataset.frame,
-      anchorId = detail.anchorId || event.currentTarget?.dataset.anchor;
-    const frame = this._session.frames.find(item => item.id === frameId);
-    const lexical = frame && detail.selection ? resolveSelection(frame, detail.selection) : null;
-    if (!frame || (detail.selection && !lexical) || (!lexical && !frame.anchors.some(anchor => anchor.id === anchorId))) {
-      this.chainFailure(new Error('这个字词的位置已经变化，请重新选择。'), this._chainRequest);
-      return;
-    }
-    const token = ++this._chainRequest;
-    this._nextRequest = null;
-    this._nextBatch = null;
-    try { this.saveChain(); } catch (error) { this.chainFailure(error, token); return; }
-    this._resumeSeed = undefined;
-    const input = { chainId: this._session.chainId, fromFrameId: frameId, anchorId: lexical?.id || anchorId,
-      ...(lexical ? { selection: lexical.selection } : {}) };
-    this._lastBranch = input;
-    this._retryOperation = { type: 'branch', input };
+    const detail = event.detail || {};
+    const selected = { frameId: detail.frameId || event.currentTarget?.dataset.frame,
+      anchorId: detail.anchorId || event.currentTarget?.dataset.anchor, selection: detail.selection };
+    let entry;
+    try { entry = branchInput(this._session, selected); }
+    catch (error) { this.chainFailure(error, this._chainRequest); return; }
     this._branchPressedAt = Date.now();
-    const label = lexical ? lexical.text : frame.anchors.find(anchor => anchor.id === anchorId).label;
-    this._spatialTransition = { direction: 1, label };
+    this._spatialTransition = { direction: 1, label: entry.label };
     try { this._networkBudget?.setStorageSync('infidao-word-links-learned-v1', true); } catch (_) {}
-    this.setData({ hintVisible: false, chainBusy: true, chainPending: true, chainError: '', pressedAnchor: input.anchorId, branchLabel: label });
-    this.syncMotion(); this.pulse();
-    let headTransition;
-    try {
-      const visited = this._chainStore.child(input.chainId, input.fromFrameId, input.anchorId);
-      if (visited) {
-        // Re-enter a visited branch at its last position, including paused
-        // reading and scroll state, without asking the model to rebuild it.
-        this._continuation.setVisible(false); this._continuation.setVisible(true);
-        await this.presentChain(await this._chainFonts.prepare(visited.chain), visited.snapshot, token);
-        if (this.chainCurrent(token)) { this.setData({ chainPending: false }); this._retryOperation = null; }
-        return;
-      }
-      const chain = await this._continuation.branch(input, { onHead: head => {
-        if (this.chainCurrent(token)) headTransition = this.presentChain(head, null, token);
-      } });
-      if (headTransition) await headTransition;
-      if (!this.chainCurrent(token)) return;
-      if (this._session?.chainId === chain.chainId) this.replaceChainBatch(chain);
-      else await this.presentChain(chain, null, token);
-      if (this.chainCurrent(token)) { this.setData({ chainPending: false }); this._retryOperation = null; }
-    } catch (error) { this.chainFailure(error, token); }
+    this.setData({ hintVisible: false, pressedAnchor: entry.input.anchorId, branchLabel: entry.label });
+    this.pulse();
+    return this.flowController().branch(selected);
   },
   async presentChain(chain, snapshot, token) {
     if (!chain.frames.length || !this.chainCurrent(token)) return;
     this.setData({ wordHit: null });
     // Save before replacing anything. Storage exhaustion cannot destroy the
     // only snapshot of the parent or leave a non-returnable branch onscreen.
-    this._chainStore.put(chain, snapshot || {});
+    if (!this._flowController) this._chainStore.put(chain, snapshot || {});
     if (this._renderer && !this.data.snapshotReady) {
       const action = this.beginAction();
       await new Promise(resolve => { this._resolveChainCapture = resolve; this.captureScene(action, resolve); });
@@ -195,15 +151,7 @@ const chainActions = {
   },
   replaceChainBatch(batch) {
     if (this._session.chainId !== batch.chainId) return;
-    const previous = this._session;
-    const existing = new Map(previous.frames.map(frame => [frame.id, frame]));
-    for (const frame of batch.frames) existing.set(frame.id, frame);
-    this._session = { ...batch, frames: Array.from(existing.values()) };
-    if (batch.frames.length && Math.max(...batch.frames.map(frame => frame.ordinal)) < Math.max(...previous.frames.map(frame => frame.ordinal))) {
-      // Reopening a cached head can update its explanation, but cannot rewind
-      // an already advanced continuation cursor or mark the chain unfinished.
-      this._session.cursor = previous.cursor; this._session.exhausted = previous.exhausted;
-    }
+    this._session = mergeChain(this._session, batch);
     const metrics = sceneMetrics(this._window?.windowWidth || 390, this.data.sceneHeight || 725);
     const guard = Math.ceil(Math.max((this.data.sceneHeight || 725) / 2 - metrics.radius, metrics.pitch) / metrics.pitch) + 1;
     this._ribbon.update(readingLines(this._session.frames), this.ribbonCursor(), guard);
@@ -240,21 +188,9 @@ const chainActions = {
   },
   async fetchNextChain() {
     const chain = this._session;
-    if (!chain?.cursor || chain.exhausted || chain.frames.some(frame => frame.ready === false) ||
-      this._nextRequest || this._nextBatch || this.data.chainBusy || this._nextFailedCursor === chain.cursor) return;
-    const token = this._chainRequest, marker = {};
-    this._nextRequest = marker;
-    try {
-      const batch = await this._continuation.next({ chainId: chain.chainId, cursor: chain.cursor });
-      if (!this.chainCurrent(token) || this._session.chainId !== chain.chainId) return;
-      this.replaceChainBatch(batch); this.trimChainWindow(); this.refreshChainLinks();
-    } catch (error) {
-      if (!error.cancelled && this.chainCurrent(token)) {
-        this._nextFailedCursor = chain.cursor;
-        this._retryOperation = { type: 'next' };
-        this.setData({ chainError: '后续经文还未到来，可以留在这一句，或沿短解展开。' });
-      }
-    } finally { if (this._nextRequest === marker) this._nextRequest = null; }
+    if (!chain?.cursor || chain.exhausted || chain.frames.some(frame => frame.ready === false)) return;
+    await this.flowController().next();
+    if (this._session) { this.trimChainWindow(); this.refreshChainLinks(); }
   },
   trimChainWindow() {
     if (this._session.frames.length <= 12) return;
@@ -272,8 +208,7 @@ const chainActions = {
   async previousChainWindow() {
     const saved = this._chainStore.previousWindow(this._session.chainId, this._session.frames[0].ordinal);
     if (!saved) return;
-    const token = ++this._chainRequest;
-    this.saveChain();
+    const controller = this.flowController();
     // Re-enter the preceding original passage; future batches remain cached by
     // their cursor, so replaying a historical window cannot duplicate nodes.
     const lines = readingLines(saved.chain.frames), first = this._session.frames[0].ordinal;
@@ -282,73 +217,33 @@ const chainActions = {
     saved.snapshot.ribbon = null;
     saved.snapshot.rowOffset = 0;
     saved.snapshot.paused = true;
-    await this.presentChain(await this._chainFonts.prepare(saved.chain), saved.snapshot, token);
+    await controller.restore(saved.chain.chainId, { record: recordFromNative(saved), navigation: 'restore' });
   },
   async returnToChain(event) {
     const id = event?.currentTarget?.dataset?.chain || this._session?.parentChainId;
     if (!id) return;
-    const token = ++this._chainRequest;
-    this._nextRequest = null;
-    this._nextBatch = null;
-    try {
-      this.saveChain();
-      const saved = this._chainStore.get(id);
-      if (!saved) throw new Error('未找到这次阅读的位置，当前经文仍在。');
-      this._spatialTransition = { direction: -1, label: this._session.entry?.label || saved.chain.entry?.label || '' };
-      this._continuation.setVisible(false); this._continuation.setVisible(true);
-      this.setData({ chainBusy: true, chainPending: false, chainError: '', branchLabel: '', overlay: '', overlayVisible: false });
-      this.syncMotion();
-      await this.presentChain(await this._chainFonts.prepare(saved.chain), saved.snapshot, token);
-      if (this.chainCurrent(token) && saved.chain.frames.some(frame => frame.ready === false)) this.resumeIncompleteChain();
-    } catch (error) { this.chainFailure(error, token); }
+    this._spatialTransition = { direction: -1, label: this._session.entry?.label || '' };
+    this.setData({ branchLabel: '', overlay: '', overlayVisible: false });
+    return this.flowController().restore(id);
   },
   openChainPath() {
     if (!this.data.paused) { this._afterReading = 'path'; this.settleReading(); }
     else this.showNoteSheet('path');
   },
-  retryChain() {
-    this._nextFailedCursor = null;
+  retryChain() { return this.flowController().retry(); },
+  dismissChainError() {
+    this._flowController?.dismissError();
     this.setData({ chainError: '' });
-    if (this._session?.frames.some(frame => frame.ready === false) && this._provider.resume) { this.resumeIncompleteChain(); return; }
-    if (this._retryOperation?.type === 'open') { this.openChainSession(this._retryOperation.seed); return; }
-    if (this._retryOperation?.type === 'branch' && this._session.chainId === this._retryOperation.input.chainId) {
-      this.branchFromWord({ detail: { frameId: this._retryOperation.input.fromFrameId, anchorId: this._retryOperation.input.anchorId, selection: this._retryOperation.input.selection } }); return;
-    }
-    if (this._session.frames.some(frame => !frame.ready) && this._lastBranch) {
-      const token = ++this._chainRequest;
-      this.setData({ chainBusy: true, chainPending: true });
-      this._continuation.branch(this._lastBranch).then(chain => {
-        if (this.chainCurrent(token)) { this.replaceChainBatch(chain); this.setData({ chainPending: false }); }
-      }).catch(error => this.chainFailure(error, token));
-    } else this.fetchNextChain();
   },
-  dismissChainError() { this.setData({ chainError: '' }); },
-  async resumeIncompleteChain() {
-    if (!this._provider.resume || !this._session?.chainId) return;
-    const token = this._chainRequest, id = this._session.chainId;
-    this.setData({ chainBusy: false, chainPending: true, chainError: '' });
-    try {
-      const chain = await this._continuation.resume({ chainId: id });
-      if (this.chainCurrent(token) && this._session.chainId === id) {
-        this.replaceChainBatch(chain); this.setData({ chainPending: false }); this._retryOperation = null;
-      }
-    } catch (error) { this.chainFailure(error, token); }
-  },
+  resumeIncompleteChain() { return this.flowController().resume(); },
   cancelBranch() {
     this._resumeSeed = undefined;
-    const incomplete = this._session?.frames.some(frame => frame.ready === false);
-    if (incomplete && this._session.parentChainId) { this.returnToChain(); return; }
-    // Keep the opening retry after its readable head has arrived. Cancelling
-    // its explanation must not leave an eternal "generating" label behind.
-    if (!incomplete) this._retryOperation = null;
-    this._chainRequest++;
+    if (this._session?.frames.some(frame => frame.ready === false) && this._session.parentChainId) return this.returnToChain();
     this.beginAction();
     this._spatialTransition = null;
-    this._continuation.setVisible(false); this._continuation.setVisible(true);
-    this.setData({ wordHit: null, chainBusy: false, chainPending: false, loading: false,
-      chainError: incomplete ? '这条联系尚未展开完整，可以再试或返回。' : '',
-      error: this._session ? '' : '这一次还没展开，轻点重试。', transitionWord: '', pressedAnchor: '', branchLabel: '',
-      shots: this.data.shots.map(shot => ({ ...shot, locked: false, offset: 0, scale: 1, departing: false })) });
+    this.flowController().cancel();
+    this.setData({ wordHit: null, transitionWord: '', pressedAnchor: '', branchLabel: '',
+      shots: (this.data.shots || []).map(shot => ({ ...shot, locked: false, offset: 0, scale: 1, departing: false })) });
     this.syncMotion();
   },
 };

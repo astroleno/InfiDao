@@ -1,0 +1,26 @@
+[Unit]
+Description=InfiDao web flow preview
+Wants=network-online.target
+After=network-online.target infidao-redis.service
+Requires=infidao-redis.service
+
+[Service]
+Type=simple
+User=infidao
+Group=infidao
+WorkingDirectory=/opt/infidao-current/app
+EnvironmentFile=/etc/infidao/app.env
+ExecStart=/opt/infidao-runtime/node-v24.21.0/bin/node /opt/infidao-current/app/server.js
+Restart=on-failure
+RestartSec=5
+MemoryMax=650M
+MemorySwapMax=512M
+LimitNOFILE=10000
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+ReadWritePaths=/var/lib/infidao/app /opt/infidao-current/app/.next/cache
+
+[Install]
+WantedBy=multi-user.target

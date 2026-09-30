@@ -1,5 +1,5 @@
 import type { PassageRecord } from "@/types";
-import { rankLexicalCandidates } from "@/lib/search/lexical";
+import { buildLexicalIndex, rankLexicalCandidates } from "@/lib/search/lexical";
 
 const base = {
   collection: "six_classics",
@@ -41,6 +41,13 @@ const corpus: PassageRecord[] = [
 ];
 
 describe("rankLexicalCandidates", () => {
+  it('keeps indexed rankings identical for phrases, aliases, ties and absent terms', () => {
+    const rows = [...corpus, { ...corpus[0]!, id: 'duplicate', text: corpus[0]!.text + '𠮷𠮷 ABC' }];
+    const rank = buildLexicalIndex(rows);
+    for (const query of ['大学 明德', '知止', '学而时习之', '反省自己哪里做得不够', '星际跃迁', '𠮷𠮷', 'abc', '学', '', '不亦说乎？']) {
+      for (const limit of [0, 1, 5, 36]) expect(rank(query, limit)).toEqual(rankLexicalCandidates(rows, query, limit));
+    }
+  });
   it("rewards exact source and text matches", () => {
     const results = rankLexicalCandidates(corpus, "大学 明德", 5);
 

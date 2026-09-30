@@ -7,6 +7,10 @@ export const flowSelectionSchema = z.object({
   textHash: z.string().min(1).max(128), corpusVersion: z.string().min(1).max(100),
 }).strict();
 export type FlowSelection = z.infer<typeof flowSelectionSchema>;
+export const flowRestartSchema = z.object({
+  sourceId: z.string().min(1).max(100), corpusVersion: z.string().min(1).max(100), textHash: z.string().min(1).max(128),
+  quoteStart: z.number().int().nonnegative(), quoteEnd: z.number().int().positive(),
+}).strict();
 export const flowRequestSchema = z.object({
   op: z.enum(["open", "branch", "next"]),
   requestId: z.string().min(1).max(80),
@@ -16,7 +20,18 @@ export const flowRequestSchema = z.object({
   anchorId: z.string().max(80).optional(),
   selection: flowSelectionSchema.optional(),
   cursor: z.string().max(80).nullable().optional(),
-}).strict();
+  restartFrom: flowRestartSchema.optional(),
+}).strict().superRefine((request, context) => {
+  const invalid = (message: string) => context.addIssue({ code: z.ZodIssueCode.custom, message });
+  if (request.restartFrom) {
+    if (request.op !== 'open' || request.chainId !== undefined || request.fromFrameId !== undefined || request.anchorId !== undefined || request.cursor !== undefined) invalid('restartFrom requires an independent open request');
+    if (request.restartFrom.quoteEnd <= request.restartFrom.quoteStart) invalid('Empty quote range');
+    if (request.selection && (request.selection.textHash !== request.restartFrom.textHash || request.selection.corpusVersion !== request.restartFrom.corpusVersion)) invalid('Selection identity differs from restart source');
+  } else if (request.op === 'open' && request.selection) invalid('Open selection requires restartFrom');
+  if (request.selection && request.selection.end <= request.selection.start) invalid('Empty selection range');
+  if (request.op === 'branch' && (!request.chainId || !request.fromFrameId || (!request.anchorId && !request.selection))) invalid('Missing branch identity');
+  if (request.op === 'next' && (!request.chainId || !request.cursor)) invalid('Missing continuation cursor');
+});
 export type FlowRequest = z.infer<typeof flowRequestSchema>;
 
 export interface FlowTarget {

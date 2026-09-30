@@ -159,6 +159,7 @@ precision highp float;
 uniform sampler2D u_texture;
 uniform float u_thickness;
 uniform float u_back;
+uniform float u_borderless;
 varying vec3 v_normal;
 ${FOCUS}
 ${INK_GLSL}
@@ -202,7 +203,10 @@ void main() {
   float readingFace = centerWeight() * smoothstep(0.45, 0.92, n.z);
   light *= 1.0 - readingFace * 0.86;
   // A barely visible neutral grazing reflection keeps the glass path connected.
-  float rim = pow(1.0 - abs(dot(n, v)), 5.0) * 0.04;
+  // Wide browser canvases expose the cylinder silhouette as two hard rails.
+  // Fade only its grazing transmission; keep the glyphs and central dispersion.
+  light *= mix(1.0, smoothstep(0.0, 0.28, abs(dot(n, v))), u_borderless);
+  float rim = pow(1.0 - abs(dot(n, v)), 5.0) * 0.04 * (1.0 - u_borderless);
   vec3 color = (light + vec3(rim)) * opacity();
   // Add atmosphere only in the final image, outside the refraction buffers.
   // This keeps white glyphs and dispersion intact and grain in screen space.
@@ -228,7 +232,7 @@ function makeProgram(gl, fragment, vertex = VERTEX) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','thickness','back','noise','dpr','inkLight','atlasSize'].forEach(name => {
+  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','thickness','back','borderless','noise','dpr','inkLight','atlasSize'].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   });
   return { program, uniforms, attributes: ['position','normal','uv'].map(name => gl.getAttribLocation(program, 'a_' + name)) };
@@ -383,6 +387,7 @@ class WheelRenderer {
     gl.uniform1f(u.final, pass === 2 ? 1 : 0);
     gl.uniform1f(u.reading, this.reading);
     gl.uniform1f(u.back, pass === 1 ? 1 : 0);
+    gl.uniform1f(u.borderless, this.borderless ? 1 : 0);
     // Short throw keeps ghost echoes hugging their source glyphs as soft
     // chromatic fringes instead of readable duplicates on neighbouring rows.
     gl.uniform1f(u.thickness, this.radius * (pass === 1 ? 1.5 : 0.3));

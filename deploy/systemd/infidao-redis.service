@@ -1,0 +1,20 @@
+[Unit]
+Description=InfiDao isolated Redis session store
+After=network.target
+
+[Service]
+Type=simple
+User=infidao-redis
+Group=infidao-redis
+ExecStart=/opt/infidao-runtime/redis-7.4.11/bin/redis-server /etc/infidao/redis.conf
+Restart=on-failure
+RestartSec=3
+LimitNOFILE=10000
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/infidao/redis
+
+[Install]
+WantedBy=multi-user.target

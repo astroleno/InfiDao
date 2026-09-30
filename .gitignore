@@ -48,6 +48,8 @@ playwright/.cache
 /artifacts/annotation-eval/
 .worktrees/
 .codex-review-screenshots/
+/output/
+__pycache__/
 miniprogram/.shots/
 .planning/
 CLAUDE.md

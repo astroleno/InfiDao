@@ -6,6 +6,7 @@ import { flowCorpus } from '../src/lib/flow/candidates';
 import { lexicalBreaks } from '../src/lib/flow/lexemes';
 import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
+import { buildFlowRuntime } from './build-wechat-flow-runtime';
 
 const root = path.resolve('miniprogram');
 const generated = path.join(root, 'flow/generated');
@@ -16,6 +17,7 @@ const write = (relative: string, text: string) => {
 };
 
 async function main() {
+  await buildFlowRuntime();
   fs.mkdirSync(generated, { recursive: true });
   const adapters: Record<string, string> = {
     'node:crypto': 'export const randomUUID = () => host.randomUUID();',

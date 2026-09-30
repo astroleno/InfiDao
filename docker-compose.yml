@@ -6,37 +6,63 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_FLOW_FONT_CDN_BASE: ${NEXT_PUBLIC_FLOW_FONT_CDN_BASE:-}
+        INFIDAO_RELEASE_COMMIT: ${INFIDAO_RELEASE_COMMIT:-}
     container_name: infidao-app
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - DATABASE_PATH=/app/data/lancedb
+      - DATABASE_PATH=/app/runtime/lancedb
+      - LANCEDB_PATH=/app/runtime/lancedb
       - BGE_MODEL_PATH=/app/models/bge-m3
       - REDIS_URL=redis://redis:6379
+      - FLOW_REDIS_URL=redis://redis:6379
+      - FLOW_REDIS_NAMESPACE=${FLOW_REDIS_NAMESPACE:?Set isolated flow namespace}
+      - FLOW_SESSION_SECRET=${FLOW_SESSION_SECRET:?Set a 32+ character session secret}
+      - FLOW_PUBLIC_ORIGIN=${FLOW_PUBLIC_ORIGIN:?Set the HTTPS browser origin}
+      - FLOW_TRUST_PROXY=1
+      - FLOW_NATIVE_HTTP_ENABLED=${FLOW_NATIVE_HTTP_ENABLED:-0}
+      - FLOW_API_KEY=${FLOW_API_KEY:?Set the server-only model key}
+      - FLOW_BASE_URL=${FLOW_BASE_URL:-https://api.deepseek.com}
+      - FLOW_MODEL=${FLOW_MODEL:-deepseek-flash}
+      - FLOW_MAX_ACTIVE_SITE=${FLOW_MAX_ACTIVE_SITE:?Set site concurrency limit}
+      - FLOW_MAX_ACTIVE_OWNER=${FLOW_MAX_ACTIVE_OWNER:?Set reader concurrency limit}
+      - FLOW_MAX_ACTIVE_IP=${FLOW_MAX_ACTIVE_IP:?Set IP concurrency limit}
+      - FLOW_REQUESTS_MINUTE_SITE=${FLOW_REQUESTS_MINUTE_SITE:?Set site request limit}
+      - FLOW_REQUESTS_MINUTE_OWNER=${FLOW_REQUESTS_MINUTE_OWNER:?Set reader request limit}
+      - FLOW_REQUESTS_MINUTE_IP=${FLOW_REQUESTS_MINUTE_IP:?Set IP request limit}
+      - FLOW_MODEL_CALLS_DAY_SITE=${FLOW_MODEL_CALLS_DAY_SITE:?Set site model budget}
+      - FLOW_MODEL_CALLS_DAY_OWNER=${FLOW_MODEL_CALLS_DAY_OWNER:?Set reader model budget}
+      - FLOW_MODEL_CALLS_DAY_IP=${FLOW_MODEL_CALLS_DAY_IP:?Set IP model budget}
       - LOG_LEVEL=info
       - ENABLE_METRICS=true
       - KV_CACHE=true
     volumes:
-      - infidao_data:/app/data
+      - infidao_data:/app/runtime
       - infidao_models:/app/models
       - infidao_logs:/app/logs
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - infidao-network
 
   # Redis cache service
   redis:
-    image: redis:7-alpine
+    image: redis:7.4.11-alpine
     container_name: infidao-redis
-    ports:
-      - "6379:6379"
     volumes:
       - infidao_redis:/data
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --appendonly yes --appendfsync everysec --maxmemory 256mb --maxmemory-policy noeviction
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
     restart: unless-stopped
     networks:
       - infidao-network
@@ -48,9 +74,7 @@ services:
     environment:
       - POSTGRES_DB=infidao
       - POSTGRES_USER=infidao
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-infidao123}
-    ports:
-      - "5432:5432"
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-}
     volumes:
       - infidao_postgres:/var/lib/postgresql/data
     restart: unless-stopped

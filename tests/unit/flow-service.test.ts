@@ -3,7 +3,7 @@ import type { PassageRecord } from '@/types';
 import { anchoredSpans, verifyGenerated, resetFlowState, runFlow, parseGeneratedBatch } from '@/lib/flow/service';
 import { flowJson } from '@/lib/flow/model';
 import { candidatesFor, flowCorpus, checkedQuote } from '@/lib/flow/candidates';
-import { type GeneratedBatch, type FlowAnchor, type FlowEvent, type FlowChain } from '@/lib/flow/contracts';
+import { flowRequestSchema, type GeneratedBatch, type FlowAnchor, type FlowEvent, type FlowChain } from '@/lib/flow/contracts';
 import { selectedLexeme, planLexeme } from '@/lib/flow/lexemes';
 
 jest.mock('@/lib/flow/model', () => ({ flowJson: jest.fn(), flowModelConfig: () => ({ model: 'test' }) }));
@@ -17,6 +17,25 @@ const item = (id: string, text: string) => ({ sourceId: id, quote: text, meaning
   reflection: '先辨明本末，再看先后。', relevance: 0.95, anchors: [{ label: '本末', sense: '根本与末节', direction: '辨别轻重次序', terms: ['本末'],
     target: { sourceId: 's2', quote: rows[1]!.text, meaning: '事物有根本与末节。' } }] });
 beforeEach(() => { jest.clearAllMocks(); resetFlowState(); jest.mocked(candidatesFor).mockResolvedValue(rows); jest.mocked(flowCorpus).mockResolvedValue(rows); });
+
+test('restartFrom verifies canonical source and can reopen a selected word for a different visitor without old chain access', async () => {
+  const restartFrom = { sourceId: 's1', corpusVersion: 'test-v1', textHash: 's1', quoteStart: 0, quoteEnd: 6 };
+  const selection = { start: 1, end: 2, textHash: 's1', corpusVersion: 'test-v1' };
+  expect(flowRequestSchema.safeParse({ op: 'open', requestId: 'invalid', selection }).success).toBe(false);
+  expect(flowRequestSchema.safeParse({ op: 'open', requestId: 'invalid', restartFrom, chainId: 'old' }).success).toBe(false);
+  jest.mocked(flowJson).mockResolvedValueOnce({ sense: '此处安止的方向', direction: '从安止继续看事物先后', terms: ['物有本末', '知所先后'] })
+    .mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] });
+  const events: FlowEvent[] = [];
+  await runFlow({ op: 'open', requestId: 'restart-word', restartFrom, selection }, 'fresh-visitor', new AbortController().signal,
+    event => events.push(event));
+  const chain = (events.at(-1) as { chain: FlowChain }).chain;
+  expect(chain.parentChainId).toBeNull(); expect(chain.focus).toContain('「止」');
+  expect(jest.mocked(flowJson).mock.calls[0]![1]).toMatchObject({ word: '止', before: '知' });
+  expect(jest.mocked(flowJson).mock.calls[1]![1]).toHaveProperty('avoidQuote', '知止而后有定');
+  await expect(runFlow({ op: 'open', requestId: 'wrong-version', restartFrom: { ...restartFrom, textHash: 'changed' } },
+    'fresh-visitor', new AbortController().signal, () => {})).rejects.toMatchObject({ code: 'CORPUS_CHANGED' });
+  expect(flowJson).toHaveBeenCalledTimes(2);
+});
 
 test('verbatim source ranges are required; corrupted private glyphs and fabricated quotes are rejected', () => {
   expect(checkedQuote(rows[0], '知止而后有定')).toEqual({ quoteStart: 0, quoteEnd: 6 });
@@ -195,7 +214,7 @@ test('any canonical word can branch with its local meaning, without a prepared a
   const ids = [];
   for (const start of [5, 7]) {
     jest.mocked(flowJson).mockResolvedValueOnce(plan).mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] });
-    await runFlow({ ...request, selection: { ...selection, start, end: start + 1 } }, 'owner', new AbortController().signal, emit);
+    await runFlow({ ...request, requestId: `word-occurrence-${start}`, selection: { ...selection, start, end: start + 1 } }, 'owner', new AbortController().signal, emit);
     ids.push((events.at(-1) as { chain: FlowChain }).chain.chainId);
   }
   expect(new Set(ids).size).toBe(2);

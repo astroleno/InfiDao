@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "next build",
+    "build": "npm run build:wechat-flow-runtime && npm run build:flow-release && next build",
     "start": "next start",
     "lint": "eslint --ext .js,.mjs,.ts,.tsx src tests scripts --max-warnings=0",
     "lint:fix": "eslint --ext .js,.mjs,.ts,.tsx src tests scripts --fix --max-warnings=0",
@@ -32,6 +32,9 @@
     "compare-search-embeddings": "tsx scripts/compare-search-embeddings.ts",
     "generate-search-graph": "tsx scripts/generate-search-graph.ts",
     "generate:release-artifacts": "npm run generate-search-artifacts && npm run generate-search-graph",
+    "build:wechat-flow-runtime": "tsx scripts/build-wechat-flow-runtime.ts",
+    "build:flow-release": "tsx scripts/build-web-flow-assets.ts",
+    "build:wechat-local-core": "tsx scripts/build-wechat-local-core.ts",
     "smoke:release": "node scripts/release-smoke.mjs",
     "smoke:telemetry": "node scripts/annotation-telemetry-smoke.mjs"
   },
@@ -59,6 +62,7 @@
     "react-hotkeys-hook": "^4.5.1",
     "react-use": "^17.5.1",
     "recharts": "^2.13.3",
+    "redis": "6.2.1",
     "sharp": "^0.33.5",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.4",

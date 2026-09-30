@@ -49,14 +49,14 @@ function createRemoteProvider(api, origin, sessionId) {
       const decoder = createEventDecoder(event);
       const fail = error => { if (!stopped) { stopped = true; if (task) task.abort(); reject(error); } };
       task = api.request({
-        url: origin.replace(/\/$/, '') + '/api/flow', method: 'POST', timeout: 45000,
+        url: origin.replace(/\/$/, '') + '/api/flow', method: 'POST', timeout: 90000,
         enableChunked: true, responseType: 'arraybuffer',
-        header: { 'Content-Type': 'application/json', Accept: 'application/x-ndjson', 'x-flow-session': sessionId },
+        header: { 'Content-Type': 'application/json', Accept: 'application/x-ndjson', 'x-flow-client': 'native', Authorization: 'Bearer ' + sessionId },
         data: { ...payload, requestId: id },
         success(result) {
           if (stopped) return;
           try {
-            if (result.statusCode < 200 || result.statusCode >= 300) throw new Error('内容服务暂不可用，请稍后再试。');
+            if (result.statusCode < 200 || result.statusCode >= 300) throw Object.assign(new Error('内容服务暂不可用，请稍后再试。'), { code: result.statusCode === 401 ? 'INVALID_SESSION' : 'UNAVAILABLE' });
             if (!sawChunks) {
               if (result.data instanceof ArrayBuffer) decoder.push(result.data, true);
               else if (result.data && Array.isArray(result.data.events)) result.data.events.forEach(event);
@@ -85,8 +85,8 @@ function createRemoteProvider(api, origin, sessionId) {
     return promise;
   }
   return { kind: 'remote', origin,
-    open: (seed, options) => request({ op: 'open', seed }, options),
-    resume: input => request({ op: 'open', chainId: input.chainId }),
+    open: (seed, options) => request({ ...(typeof seed === 'object' ? seed : { seed }), op: 'open' }, options),
+    resume: (input, options) => request({ op: 'open', chainId: input.chainId }, options),
     branch: (input, options) => request({ op: 'branch', ...input }, options),
     next: (input, options) => request({ op: 'next', ...input }, options),
   };

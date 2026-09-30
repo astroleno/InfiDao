@@ -1,4 +1,5 @@
 import { FlowError } from "./contracts";
+import { chargeFlowModel } from './model-budget';
 
 export function flowModelConfig() {
   const key = process.env.FLOW_API_KEY || process.env.DEEPSEEK_API_KEY ||
@@ -11,6 +12,9 @@ export function flowModelConfig() {
 
 export async function flowJson(system: string, input: unknown, signal: AbortSignal): Promise<unknown> {
   const config = flowModelConfig();
+  signal.throwIfAborted();
+  await chargeFlowModel();
+  signal.throwIfAborted();
   const timeout = AbortSignal.timeout(18_000);
   const response = await fetch(config.endpoint, {
     method: "POST", signal: AbortSignal.any([signal, timeout]),

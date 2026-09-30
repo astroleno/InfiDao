@@ -135,8 +135,7 @@ function buildQueryTerms(query: string): QueryTerm[] {
   return uniqueByTerm(terms).filter((term) => !isStopped(term.term));
 }
 
-function scorePassage(passage: PassageRecord, terms: QueryTerm[]): LexicalCandidate | null {
-  const haystack = normalize(`${passage.source} ${passage.workTitle} ${passage.chapter} ${passage.text}`);
+function scorePassage(passage: PassageRecord, terms: QueryTerm[], haystack = normalize(`${passage.source} ${passage.workTitle} ${passage.chapter} ${passage.text}`)): LexicalCandidate | null {
   const matched = terms.filter(({ term }) => haystack.includes(term));
 
   if (matched.length === 0) {
@@ -199,4 +198,37 @@ export function rankLexicalCandidates(corpus: PassageRecord[], query: string, li
         left.id.localeCompare(right.id),
     )
     .slice(0, limit);
+}
+
+// Build once for an immutable corpus. Postings only narrow the scan: the exact
+// scorer and tie-breakers still decide the results, including phrase matches.
+export function buildLexicalIndex(corpus: PassageRecord[]) {
+  const texts = corpus.map(row => normalize(`${row.source} ${row.workTitle} ${row.chapter} ${row.text}`));
+  const postings = new Map<string, number[]>();
+  texts.forEach((text, index) => {
+    const chars = Array.from(text);
+    const pairs = new Set(chars.slice(0, -1).map((char, i) => char + chars[i + 1]));
+    for (const pair of pairs) {
+      const rows = postings.get(pair);
+      if (rows) rows.push(index); else postings.set(pair, [index]);
+    }
+  });
+  return (query: string, limit: number): LexicalCandidate[] => {
+    const terms = buildQueryTerms(query), selected = new Set<number>();
+    for (const { term } of terms) {
+      const chars = Array.from(term);
+      if (chars.length < 2) { corpus.forEach((_, i) => selected.add(i)); continue; }
+      let smallest: number[] | undefined;
+      for (let i = 0; i < chars.length - 1; i++) {
+        const rows = postings.get(chars[i]! + chars[i + 1]!);
+        if (!rows) { smallest = []; break; }
+        if (!smallest || rows.length < smallest.length) smallest = rows;
+      }
+      for (const index of smallest || []) selected.add(index);
+    }
+    return Array.from(selected, index => scorePassage(corpus[index]!, terms, texts[index]))
+      .filter((candidate): candidate is LexicalCandidate => candidate !== null)
+      .sort((a, b) => b.lexicalScore - a.lexicalScore || b.evidenceScore - a.evidenceScore || a.id.localeCompare(b.id))
+      .slice(0, limit);
+  };
 }

@@ -4,9 +4,16 @@ const bundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 
+// On the small origin host, run lint and type checks before packaging so the
+// production bundler can stay within a bounded memory cgroup.
+const constrainedBuild = process.env.INFIDAO_CONSTRAINED_BUILD === '1'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Keep validation builds separate from a preview that is already running.
+  distDir: process.env.INFIDAO_BUILD_DIR || '.next',
   experimental: {
+    ...(constrainedBuild ? { cpus: 1 } : {}),
     // Enable optimized package imports
     optimizePackageImports: [
       'lucide-react',
@@ -21,6 +28,9 @@ const nextConfig = {
     scrollRestoration: true,
     largePageDataBytes: 128 * 1000, // 128KB
   },
+  ...(constrainedBuild
+    ? { eslint: { ignoreDuringBuilds: true }, typescript: { ignoreBuildErrors: true } }
+    : {}),
 
   // Images configuration
   images: {

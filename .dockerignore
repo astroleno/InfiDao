@@ -6,16 +6,25 @@ yarn-error.log*
 
 # Build outputs
 .next/
+.tmp/
+.worktrees/
+output/
+.claude/
+.codex-screens/
+.planning/
+artifacts/
+graphify-out/
+ref/
+web/
+models/
 out/
 build/
 dist/
 
-# Environment files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Environment and device-local configuration
+.env*
+miniprogram/project.private.config.json
+ssl/
 
 # Git
 .git/
@@ -67,16 +76,10 @@ coverage/
 tmp/
 temp/
 
-# Docker files
-Dockerfile*
-docker-compose*
-.dockerignore
-
-# Scripts not needed in container
-scripts/
+# Dockerfile, Compose and Nginx config are inputs to the release hash.
+# Build-time generators are required for the web flow release.
 
 # Config files not needed in image
-.eslintrc*
 .prettierrc*
 jest.config.*
 .github/

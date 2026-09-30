@@ -60,9 +60,10 @@ Page({
     }
     if (this._networkBudget) this._networkBudget.resumeRequests();
     if (this._continuation) this._continuation.setVisible(true);
+    this._flowController?.setVisible(true);
     if (!this._timeline) return;
     if (this._resumeSeed !== undefined) { this.openChainSession(this._resumeSeed); return; }
-    if (this._session?.chainId && this._session.frames.some(frame => !frame.ready)) this.setData({ chainError: '这条联系尚未展开完整，可以再试或返回。' });
+    if (!this._flowController && this._session?.chainId && this._session.frames.some(frame => !frame.ready)) this.setData({ chainError: '这条联系尚未展开完整，可以再试或返回。' });
     this._timeline.setVisible(true);
     if (this._pendingSession) { this.enterSession(this._pendingSession); return; }
     if (!this._renderer || this.data.loading) return;
@@ -75,9 +76,10 @@ Page({
     else { this._renderer.reading = 0; this.syncMotion(); }
   },
   onHide() {
-    try { this.saveChain(); } catch (_) {}
+    if (this._flowController) this._flowController.setVisible(false);
+    else { try { this.saveChain(); } catch (_) {} }
     this._visible = false;
-    this._chainRequest++;
+    if (!this._flowController) this._chainRequest++;
     this._nextRequest = null;
     if (this._continuation) this._continuation.setVisible(false);
     if (this._networkBudget) this._networkBudget.abortPending();
@@ -97,6 +99,7 @@ Page({
   },
   onUnload() {
     this._alive = false;
+    this._flowController?.dispose();
     this._request++;
     this.beginAction();
     if (this._continuation) this._continuation.dispose();
