@@ -12,6 +12,11 @@ type TestFrame = { id: string; quote: string; ordinal: number; quoteStart: numbe
 type TestLine = TestFrame & { passageId: string; occurrence: number; lineIndex: number };
 
 describe('shared flow runtime compatibility', () => {
+  test('ships the current shared controller in the native package', () => {
+    const fs = require('node:fs');
+    expect(fs.readFileSync(require.resolve('../../miniprogram/flow/generated/shared/controller'), 'utf8'))
+      .toBe(fs.readFileSync(require.resolve('../../shared/flow/controller'), 'utf8'));
+  });
   test('native package wrappers and shared sources expose identical behavior', () => {
     const a = new shared.FlowTimeline(7);
     const b = new native.FlowTimeline(7);
