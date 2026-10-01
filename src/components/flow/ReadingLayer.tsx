@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import type { FlowFrame } from '@/lib/flow/contracts';
 import type { PersonalNote } from '@/lib/flow-browser/storage';
 import { LinkedText } from './LinkedText';
@@ -18,6 +18,7 @@ type Props = {
   seed: string;
   notes: PersonalNote[];
   savingNote: boolean;
+  waiting?: ReactNode;
   onReturn: () => void;
   onToggleSource: () => void;
   onSourceScroll: (top: number) => void;
@@ -29,7 +30,7 @@ type Props = {
   onUndoNote: () => Promise<void>;
 };
 
-export function ReadingLayer({ frame, chainKind, path, sourceOpen, sourceScrollTop, readingScrollTop, seed, notes, savingNote, onReturn, onToggleSource, onSourceScroll, onReadingScroll, onBranch, onOpenSeed, onSaveNote, onDeleteNote, onUndoNote }: Props) {
+export function ReadingLayer({ frame, chainKind, path, sourceOpen, sourceScrollTop, readingScrollTop, seed, notes, savingNote, waiting, onReturn, onToggleSource, onSourceScroll, onReadingScroll, onBranch, onOpenSeed, onSaveNote, onDeleteNote, onUndoNote }: Props) {
   const sourceRef = useRef<HTMLDivElement>(null);
   const readingRef = useRef<HTMLDivElement>(null);
 
@@ -60,6 +61,7 @@ export function ReadingLayer({ frame, chainKind, path, sourceOpen, sourceScrollT
           {path.length > 1 && <button className={styles.textButton} type="button" onClick={onReturn}>返回上条经文链</button>}
         </div>
       </header>
+      {waiting}
 
       <div ref={readingRef} className={styles.readingScroll} onScroll={event => onReadingScroll(event.currentTarget.scrollTop)}>
         <blockquote className={styles.readerQuote}>

@@ -148,6 +148,8 @@ export class FlowRendererHost {
         width: rect.width,
         height: rect.height,
         dpr,
+        minFrameInterval: 0,
+        refractionScale: 0.5,
         timeline: this.timeline,
         reducedMotion: this.reducedMotion,
         onFrame: () => this.syncRows(),
@@ -190,7 +192,8 @@ export class FlowRendererHost {
     const rows = this.ribbon.frames(cursor) as Array<SlotFrame | undefined>;
     if (changed) {
       this.timeline.centers = rows.map(line => line?.centerOffset || 0);
-      this.renderer.setFrames(rows as SlotFrame[]);
+      // Every caller draws after syncing rows; avoid submitting the same scene twice.
+      this.renderer.setFrames(rows as SlotFrame[], false);
     }
     this.notifyActive(rows);
     if (this.timeline.needsSettle && this.gesture === null) this.settle();

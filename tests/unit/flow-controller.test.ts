@@ -34,6 +34,17 @@ function fixture(overrides: any = {}) {
 }
 
 describe('shared reading controller', () => {
+  test('offers the latest parent mode to a new branch without copying its reading position', async () => {
+    const fresh = { ...snapshot, paused: false, position: 0, rowOffset: 0, sourceOpen: false, readingPositions: {}, ribbon: null };
+    const initialSnapshot = jest.fn((_chain, context) => ({ ...fresh, paused: !!context.parentSnapshot?.paused }));
+    const f = fixture({ initialSnapshot });
+    const opening = f.controller.open(''); await flush(); f.requests[0].resolve(batch('root')); await opening;
+    expect(f.controller.getState().record.snapshot).toEqual(fresh);
+    const branching = f.controller.branch({ frameId: 'root:1', anchorId: 'word' }); await flush();
+    f.requests[1].resolve(batch('child')); await branching;
+    expect(initialSnapshot.mock.calls[1]![1].parentSnapshot).toEqual(snapshot);
+    expect(f.controller.getState().record.snapshot).toEqual({ ...fresh, paused: true });
+  });
   test('ten branches restore each exact snapshot in reverse and forward order without generating again', async () => {
     const f = fixture(); const chainIds: string[] = [], pathIds: string[] = [];
     let opening = f.controller.open(''); await flush(); f.requests[0].resolve(batch('root')); await opening;

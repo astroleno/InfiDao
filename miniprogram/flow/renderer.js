@@ -244,6 +244,8 @@ class WheelRenderer {
     this.canvas = canvas;
     this.atlasCanvas = atlasCanvas;
     this.dpr = Math.min(options.dpr || 1, 2);
+    this.minFrameInterval = options.minFrameInterval ?? 32;
+    this.refractionScale = Math.max(0.25, Math.min(1, options.refractionScale ?? 1));
     this.running = false;
     this.destroyed = false;
     this.frameId = null;
@@ -295,20 +297,22 @@ class WheelRenderer {
 
   target() {
     const gl = this.gl;
+    const width = Math.max(1, Math.round(this.canvas.width * this.refractionScale));
+    const height = Math.max(1, Math.round(this.canvas.height * this.refractionScale));
     const texture = this.texture();
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.canvas.width, this.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     const buffer = gl.createFramebuffer(), depth = gl.createRenderbuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, buffer);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     gl.bindRenderbuffer(gl.RENDERBUFFER, depth);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.canvas.width, this.canvas.height);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depth);
     if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
       gl.deleteTexture(texture); gl.deleteFramebuffer(buffer); gl.deleteRenderbuffer(depth);
       throw new Error('Optical buffer unavailable');
     }
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    return { texture, buffer, depth };
+    return { texture, buffer, depth, width, height };
   }
 
   geometry(vertices) {
@@ -319,7 +323,7 @@ class WheelRenderer {
     return { buffer, count: vertices.length / 8 };
   }
 
-  setFrames(frames) {
+  setFrames(frames, draw = true) {
     if (this.destroyed) return;
     const gl = this.gl, limit = Math.min(4096, gl.getParameter(gl.MAX_TEXTURE_SIZE));
     const glyphs = paintAtlas(this.atlasCanvas, frames, this.dpr, limit);
@@ -341,7 +345,7 @@ class WheelRenderer {
     this.vertices = quotationGeometry(frames, glyphs, this.radius, this.fontSize, this.height * 0.5);
     this.quotations = this.geometry(this.vertices);
     this.count = frames.length;
-    this.draw();
+    if (draw) this.draw();
   }
 
   hitTest(x, y) {
@@ -409,13 +413,14 @@ class WheelRenderer {
     if (this.destroyed || !this.quotations) return;
     const gl = this.gl;
     if (gl.isContextLost()) throw new Error('WebGL context lost');
-    gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, this.noiseTexture);
     gl.activeTexture(gl.TEXTURE0);
     // 1: unobstructed scene. 2: rear glass + text. 3: front glass + text.
     for (let pass = 0; pass < 3; pass++) {
-      gl.bindFramebuffer(gl.FRAMEBUFFER, pass < 2 ? this.targets[pass].buffer : null);
+      const target = pass < 2 ? this.targets[pass] : null;
+      gl.bindFramebuffer(gl.FRAMEBUFFER, target ? target.buffer : null);
+      gl.viewport(0, 0, target ? target.width : this.canvas.width, target ? target.height : this.canvas.height);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       if (pass === 2) {
         gl.disable(gl.DEPTH_TEST);
@@ -449,7 +454,7 @@ class WheelRenderer {
     const loop = timestamp => {
       if (!this.running || this.destroyed || generation !== this.motionGeneration) return;
       try {
-        if (lastDraw === null || timestamp - lastDraw >= 32) {
+        if (lastDraw === null || timestamp - lastDraw >= this.minFrameInterval) {
           this.timeline.tick(timestamp);
           if (this.onFrame) this.onFrame();
           this.draw();

@@ -256,7 +256,7 @@ test('a lexical branch cannot repeat a shortened parent quotation under another 
     .mockResolvedValueOnce({ frames: [item('other-edition', '知止而后有定')] });
   await expect(runFlow({ op: 'branch', requestId: 'duplicate-word', chainId: parent.chainId, fromFrameId: frame.id,
     selection: { start: 1, end: 2, textHash: frame.textHash, corpusVersion: frame.corpusVersion } }, 'owner', new AbortController().signal, () => {}))
-    .rejects.toMatchObject({ code: 'NO_BRANCH' });
+    .rejects.toMatchObject({ code: 'RELATION_UNVERIFIED' });
   expect(jest.mocked(flowJson).mock.calls[2]![1]).toHaveProperty('avoidQuote', frame.quote);
 });
 

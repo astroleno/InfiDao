@@ -211,10 +211,13 @@ export async function runFlow(request: FlowRequest, owner: string, signal: Abort
     const verified = verifyGenerated(batch, candidates, state.seen.length + 1, head).filter(frame =>
       !original || (!original.includes(bare(frame.quote)) && !bare(frame.quote).includes(original)));
     const frames = await reviewRelations(verified, state.chain.seed, state.chain.focus, candidates, signal);
-    if (head && frames[0]?.id !== head.id) throw new FlowError('NO_BRANCH', '这条联系还未核实完整，可以返回原句。', 422);
+    if (head && frames[0]?.id !== head.id) throw new FlowError('RELATION_UNVERIFIED', '这次生成的联系未通过核验，可以换个词，或重试。', 422);
     frames.forEach((frame, index) => { frame.ordinal = state!.seen.length + index + 1; });
     assertCurrent();
-    if (!frames.length && !state.seen.length) throw new FlowError('NO_BRANCH', '暂未找到合适的经文，可以回到原句或换个入口。', 422);
+    if (!frames.length && !state.seen.length) {
+      if (candidates.length) throw new FlowError('RELATION_UNVERIFIED', '这次生成的联系未通过核验，可以换个词，或重试。', 422);
+      throw new FlowError('NO_BRANCH', '暂未检索到合适的经文，可以回到原句或换个词。', 422);
+    }
     const previousCursor = state.chain.cursor;
     for (const frame of frames) {
       if (!state.seen.includes(frame.sourceId)) state.seen.push(frame.sourceId);

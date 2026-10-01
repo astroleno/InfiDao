@@ -2,12 +2,15 @@
 
 import { useEffect, useRef } from 'react';
 import styles from './flow.module.css';
+import { FlowWaiting } from './FlowWaiting';
 
-type Props = { open: boolean; value: string; busy: boolean; error: string; onChange: (value: string) => void; onSubmit: () => void; onClose: () => void; onCancel: () => void };
+type Props = { open: boolean; value: string; busy: boolean; waitingForHead?: boolean; error: string; onChange: (value: string) => void; onSubmit: () => void; onClose: () => void; onCancel: () => void };
 
-export function SeedSheet({ open, value, busy, error, onChange, onSubmit, onClose, onCancel }: Props) {
+export function SeedSheet({ open, value, busy, waitingForHead = busy, error, onChange, onSubmit, onClose, onCancel }: Props) {
   const dialogRef = useRef<HTMLElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const wasBusyRef = useRef(false);
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
   useEffect(() => {
@@ -49,6 +52,11 @@ export function SeedSheet({ open, value, busy, error, onChange, onSubmit, onClos
       if (previous?.isConnected) previous.focus();
     };
   }, [open]);
+  useEffect(() => {
+    if (open && busy) cancelRef.current?.focus();
+    else if (open && wasBusyRef.current) dialogRef.current?.querySelector<HTMLTextAreaElement>('textarea')?.focus();
+    wasBusyRef.current = open && busy;
+  }, [open, busy]);
   if (!open) return null;
   return (
     <div className={styles.sheetBackdrop} role="presentation" onPointerDown={event => { if (event.target === event.currentTarget) onClose(); }}>
@@ -59,8 +67,9 @@ export function SeedSheet({ open, value, busy, error, onChange, onSubmit, onClos
         <label className={styles.srOnly} htmlFor="flow-seed-input">此刻的一念</label>
         <textarea id="flow-seed-input" value={value} maxLength={120} disabled={busy} aria-describedby={error ? 'flow-seed-error' : undefined} onChange={event => onChange(event.target.value)} placeholder="此刻，你在想什么？" />
         {error && <p ref={errorRef} id="flow-seed-error" className={styles.seedError} role="alert">{error}</p>}
+        {busy && <FlowWaiting busy={waitingForHead} onCancel={onCancel} cancelRef={cancelRef} />}
         <div className={styles.sheetActions}>
-          <button className={styles.textButton} type="button" onClick={busy ? onCancel : onClose}>{busy ? '停止展开' : '返回经轮'}</button>
+          <button className={styles.textButton} type="button" onClick={onClose}>返回经轮</button>
           <button className={styles.primaryButton} type="button" disabled={busy} onClick={onSubmit}>{busy ? '正在展开' : '开始阅读'}</button>
         </div>
       </section>

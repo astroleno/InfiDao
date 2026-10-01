@@ -11,6 +11,7 @@ import type { FlowRendererHost } from '@/lib/flow-browser/renderer-host';
 import { ReadingLayer } from './ReadingLayer';
 import { SeedSheet } from './SeedSheet';
 import { WheelCanvas } from './WheelCanvas';
+import { FlowWaiting } from './FlowWaiting';
 import styles from './flow.module.css';
 
 type Selection = { frameId: string; anchorId?: string; selection?: { start: number; end: number; textHash: string; corpusVersion: string }; label: string };
@@ -128,7 +129,7 @@ export function FlowExperience() {
     let alive = true;
     const controller = createBrowserController({
       capture: captureSnapshot,
-      initialSnapshot: () => initialSnapshot(reducedRef.current),
+      initialSnapshot: (_chain, context) => initialSnapshot(reducedRef.current || !!context.parentSnapshot?.paused),
       present(record) { if (alive) present(record); },
       update(record) {
         if (!alive) return;
@@ -291,7 +292,7 @@ export function FlowExperience() {
   const currentFrame = active || frames[0] || null;
 
   return (
-    <main ref={experienceRef} className={styles.experience} aria-busy={loading || busy}>
+    <main ref={experienceRef} className={styles.experience}>
       <div className={styles.experienceContent}>
       <div className={styles.topBar}>
         <h1 className={styles.brand}>六经注我</h1>
@@ -307,10 +308,7 @@ export function FlowExperience() {
         onHostReady={host => { wheelHostRef.current = host; }} />
 
       {loading && <p className={styles.loadingLabel} role="status">正在准备经文与字形…</p>}
-      {pending && <div className={styles.waitingLabel} role="status">
-        {busy ? '正在准备接续…' : '经句已到，正在补全联系…'}
-        <button className={styles.textButton} type="button" onClick={() => controllerRef.current?.cancel()}>停止展开</button>
-      </div>}
+      {pending && !seedOpen && !(paused && currentFrame && !loading) && <FlowWaiting floating busy={busy} label={lastSelectionRef.current?.label} onCancel={() => controllerRef.current?.cancel()} />}
       {flowError && <div className={styles.notice} role="status">
         <p>{flowError.message}</p>
         {['CHAIN_EXPIRED', 'CORPUS_CHANGED', 'CONNECTION_REQUIRED'].includes(flowError.code)
@@ -323,6 +321,7 @@ export function FlowExperience() {
 
       {paused && currentFrame && !loading && (
         <ReadingLayer frame={currentFrame} chainKind={chain?.kind === 'remote' ? 'remote' : 'curated'} path={pathTrail}
+          waiting={pending && !seedOpen ? <FlowWaiting busy={busy} label={lastSelectionRef.current?.label} onCancel={() => controllerRef.current?.cancel()} /> : undefined}
           sourceOpen={sourceOpen} sourceScrollTop={sourceScrollTop} readingScrollTop={readingScrollTop} seed={chain?.seed || ''} notes={notes} savingNote={savingNote}
           onReturn={returnToParent} onToggleSource={onToggleSource} onSourceScroll={top => {
             sourceScrollRef.current = top;
@@ -336,7 +335,7 @@ export function FlowExperience() {
 
       <span className={styles.srOnly} aria-live="polite">{currentFrame ? `${currentFrame.source}，${currentFrame.chapterLabel}。${currentFrame.quote}` : ''}</span>
       </div>
-      <SeedSheet open={seedOpen} value={seed} busy={busy || pending} error={seedError} onChange={changeDraft} onSubmit={() => void startThought()} onClose={closeSeed} onCancel={cancelSeed} />
+      <SeedSheet open={seedOpen} value={seed} busy={busy || pending} waitingForHead={busy} error={seedError} onChange={changeDraft} onSubmit={() => void startThought()} onClose={closeSeed} onCancel={cancelSeed} />
     </main>
   );
 }

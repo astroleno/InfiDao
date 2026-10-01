@@ -51,6 +51,11 @@ describe('browser wheel lifecycle and input', () => {
 
   afterEach(() => { host.destroy(); visibility.mockRestore(); global.ResizeObserver = previousObserver; });
 
+  test('uses each browser animation frame with smaller refraction targets', () => {
+    expect(renderer().minFrameInterval).toBe(0);
+    expect(renderer().refractionScale).toBe(0.5);
+  });
+
   test('freezes phase, cancels touch and restores the previous pause state across background and page cache', () => {
     host.pointerDown(pointer());
     const before = host.snapshot();

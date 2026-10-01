@@ -24,7 +24,7 @@ export type FlowController = {
 };
 type Host = {
   capture: () => ReadingSnapshot;
-  initialSnapshot: () => ReadingSnapshot;
+  initialSnapshot: (chain: BrowserFlowBatch, context: { parentSnapshot?: ReadingSnapshot }) => ReadingSnapshot;
   present: (record: FlowPathRecord) => void;
   update: (record: FlowPathRecord) => void;
   state: (state: ControllerState) => void;

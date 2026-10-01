@@ -420,6 +420,21 @@
 
 .loadingLabel { top: 50%; transform: translateY(-50%); }
 .waitingLabel { z-index: 8; bottom: max(20px, env(safe-area-inset-bottom)); }
+.waitingLabel p { margin: 0; }
+.inlineWaiting {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(218, 192, 137, 0.18);
+  color: var(--flow-muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+.inlineWaiting p { margin: 0; }
+.inlineWaiting button { flex-shrink: 0; }
 .notice { z-index: 8; bottom: max(20px, env(safe-area-inset-bottom)); color: rgba(238, 215, 170, 0.86); }
 .notice p { margin: 0; }
 .storageNotice { top: 64px; color: rgba(237, 205, 153, 0.78); }

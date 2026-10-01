@@ -27,6 +27,17 @@ test('keeps cancellation available while generation is pending and prevents dupl
   expect(p.onClose).not.toHaveBeenCalled();
 });
 
+test('moves focus from the submitted button to cancellation when inputs become disabled', () => {
+  const p = props();
+  const view = render(<SeedSheet {...p} />);
+  screen.getByRole('button', { name: '开始阅读' }).focus();
+  view.rerender(<SeedSheet {...p} busy />);
+  expect(screen.getByRole('button', { name: '停止展开' })).toHaveFocus();
+  expect(screen.getByRole('dialog')).toContainElement(screen.getByRole('status'));
+  view.rerender(<SeedSheet {...p} />);
+  expect(screen.getByRole('textbox')).toHaveFocus();
+});
+
 test('isolates background controls and restores prior attributes and focus on close', () => {
   const p = props();
   const view = render(<><div data-testid="background"><button>打开一念</button></div><SeedSheet {...p} open={false} /></>);

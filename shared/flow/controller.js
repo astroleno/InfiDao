@@ -128,7 +128,8 @@ function createFlowController(host) {
       notify({ record, busy: false });
     } else {
       const parent = context.method === 'branch' || context.method === 'restart' ? context.from : null;
-      const record = { pathId: host.createPathId ? host.createPathId(chain) : host.createId(), chain, snapshot: copy(host.initialSnapshot(chain)),
+      const parentSnapshot = parent && state.record?.pathId === parent.pathId ? captured(state.record).snapshot : parent?.snapshot;
+      const record = { pathId: host.createPathId ? host.createPathId(chain) : host.createId(), chain, snapshot: copy(host.initialSnapshot(chain, { parentSnapshot: copy(parentSnapshot) })),
         parentPathId: parent?.pathId || null, sourceLabel: context.label || (chain.seed ? '此刻的一念' : '最初的经文'),
         completion: incomplete(chain) ? 'pending' : 'complete', createdAt: now(), updatedAt: now() };
       const stored = await queueWrite(async () => {
