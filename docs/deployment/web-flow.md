@@ -6,7 +6,9 @@
 
 ## 发布产物
 
-当前最新预览为 2026-09-30 的 `infidao-e5dbf587fa490062`，来自已推送提交 `29c6691996ba9ffd6ea64a385d8fa39a44ee6e57`。本轮提高辅助文字可读性，修正标点换行、键盘选词和经轮前后浏览，补齐输入面板背景隔离及注脚删除焦点恢复。上一可回滚应用为 `infidao-219e8920dd17d801`。见 [阅读与键盘迭代记录](../qa/web-flow-migration/2026-09-30-reading-accessibility.md)。
+当前最新预览为 2026-10-01 的 `infidao-39873a120c07071b`，来自已推送提交 `252ab06c005680a05e95376ee238458b4fb8f30a`。本轮移除网页固定 30fps 限制，降低折射缓冲开销，修复静读分支模式与输入提交/取消焦点，补齐就近等待提示和失败原因区分。上一可回滚应用为 `infidao-e5dbf587fa490062`。见 [渲染与阅读连续性迭代记录](../qa/web-flow-migration/2026-10-01-rendering-reading-iteration.md)。
+
+前一预览 `infidao-e5dbf587fa490062` 提高辅助文字可读性，修正标点换行、键盘选词和经轮前后浏览，补齐输入面板背景隔离及注脚删除焦点恢复。见 [阅读与键盘迭代记录](../qa/web-flow-migration/2026-09-30-reading-accessibility.md)。
 
 前一预览 `infidao-219e8920dd17d801` 消除网页经轮两侧玻璃硬边、去掉阅读层侧框，加入倒排检索及访客语义索引持久化。模型配置与额度保留。实现、检索计时及 Redis 重启证据见 [索引与边缘迭代记录](../qa/web-flow-migration/2026-09-30-index-border-iteration.md)。
 
