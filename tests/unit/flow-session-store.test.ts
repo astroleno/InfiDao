@@ -1,5 +1,5 @@
 /** @jest-environment node */
-import { createSessionStore, MemoryDocumentBackend, type StoredChain } from '@/lib/flow/session-store';
+import { createSessionStore, MemoryDocumentBackend, SESSION_TTL_MS, type StoredChain } from '@/lib/flow/session-store';
 import { SEMANTIC_LIMIT, SEMANTIC_TTL_MS, retainSemantics } from '@/lib/flow/semantic-index';
 import { FLOW_PROMPT_VERSION, type FlowFrame } from '@/lib/flow/contracts';
 const owner = 'reader-a';
@@ -56,6 +56,18 @@ test('a committed head survives a new store instance and remains owned by its re
   expect(resumed.chain?.chain.chainId).toBe('a'); expect(resumed.lease?.version).toBe(2);
   await expect(restarted.getChain('reader-b', 'a')).rejects.toMatchObject({ code: 'CHAIN_EXPIRED' });
 });
+test('missing and inaccessible chains use the same neutral recovery message', async () => {
+  const f = fixture();
+  for (const id of [undefined, 'missing']) {
+    await expect(f.store.getChain(owner, id)).rejects.toMatchObject({ code: 'CHAIN_EXPIRED', message: '当前经文暂时无法在线接续，原文仍可阅读。' });
+  }
+  const lease = (await f.store.reserve(owner, opening)).lease!;
+  await f.store.commitHead(owner, lease, state('a'));
+  await expect(f.store.getChain('other-owner', 'a')).rejects.toMatchObject({ code: 'CHAIN_EXPIRED', message: '当前经文暂时无法在线接续，原文仍可阅读。' });
+  f.advance(SESSION_TTL_MS + 1);
+  await expect(f.store.getChain(owner, 'a')).rejects.toMatchObject({ code: 'CHAIN_EXPIRED', message: '当前经文暂时无法在线接续，原文仍可阅读。' });
+});
+
 test('parallel reservations permit one generator and reject a reused request with different input', async () => {
   const f = fixture(), results = await Promise.allSettled([f.store.reserve(owner, opening), f.store.reserve(owner, opening)]);
   expect(results.filter(result => result.status === 'fulfilled')).toHaveLength(1);

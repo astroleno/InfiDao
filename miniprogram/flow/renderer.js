@@ -92,6 +92,7 @@ uniform float u_pitch;
 uniform float u_radius;
 uniform float u_final;
 uniform float u_reading;
+uniform float u_readingAmbient;
 varying vec3 v_position;
 // Edge fade lives in the fragment stage: the glass wall is one quad strip
 // with vertices only at ±height, so a vertex-level fade interpolates to zero
@@ -116,6 +117,7 @@ float opacity() {
   // Keep the centered quotation intact. The other rings recede, and the
   // space below it clears for the native reading layer.
   float quiet = (1.0 - 0.97 * smoothstep(0.10, 0.32, abs(y))) * smoothstep(-0.30, -0.12, y);
+  quiet = max(quiet, u_readingAmbient * smoothstep(0.12, 0.32, y));
   float reading = u_final > 0.5 ? mix(1.0, quiet, u_reading) : 1.0;
   return (u_final > 0.5 ? 1.0 - depthBlur() * 0.4 : 1.0) * edgeFade() * reading;
 }
@@ -232,7 +234,7 @@ function makeProgram(gl, fragment, vertex = VERTEX) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','thickness','back','borderless','noise','dpr','inkLight','atlasSize'].forEach(name => {
+  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','thickness','back','borderless','noise','dpr','inkLight','atlasSize'].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   });
   return { program, uniforms, attributes: ['position','normal','uv'].map(name => gl.getAttribLocation(program, 'a_' + name)) };
@@ -392,6 +394,7 @@ class WheelRenderer {
     gl.uniform1f(u.reading, this.reading);
     gl.uniform1f(u.back, pass === 1 ? 1 : 0);
     gl.uniform1f(u.borderless, this.borderless ? 1 : 0);
+    gl.uniform1f(u.readingAmbient, this.readingAmbient || 0);
     // Short throw keeps ghost echoes hugging their source glyphs as soft
     // chromatic fringes instead of readable duplicates on neighbouring rows.
     gl.uniform1f(u.thickness, this.radius * (pass === 1 ? 1.5 : 0.3));

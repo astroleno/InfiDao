@@ -156,6 +156,7 @@ export class FlowRendererHost {
         onError: (error: Error) => this.fail(error),
       });
       this.renderer.borderless = true;
+      this.renderer.readingAmbient = 0.18;
       this.renderer.scrollPitch = metrics.scrollPitch;
       this.renderer.fontSize = browserFontSize(rect.width, rect.height);
       this.renderer.reading = this.paused ? 1 : 0;

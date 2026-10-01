@@ -34,6 +34,35 @@ function fixture(overrides: any = {}) {
 }
 
 describe('shared reading controller', () => {
+  test('a fresh visit opens a new chain without trying to restore an absent one', async () => {
+    const f = fixture(), starting = f.controller.start(); await flush();
+    expect(f.requests[0].input).toBe('');
+    f.requests[0].resolve(batch('fresh')); await starting;
+    expect(f.storage.get).not.toHaveBeenCalled();
+    expect(f.controller.getState().error).toBeNull();
+  });
+
+  test('an unavailable restored head is retained and is not resumed on visibility or reload', async () => {
+    const f = fixture();
+    f.records.set('saved', { pathId: 'saved', chain: batch('old', false), snapshot, completion: 'pending' });
+    f.storage.latest.mockResolvedValue('saved');
+    const starting = f.controller.start(); await flush();
+    f.requests[0].reject(Object.assign(new Error('当前经文暂时无法在线接续，原文仍可阅读。'), { code: 'CHAIN_EXPIRED' }));
+    await starting;
+    expect(f.controller.getState()).toMatchObject({ record: { pathId: 'saved', completion: 'failed' }, error: { code: 'CHAIN_EXPIRED' } });
+    expect(f.records.get('saved').chain.frames[0].quote).toBe('知止');
+    f.controller.setVisible(false); f.controller.setVisible(true); await flush();
+    await f.controller.restore('saved');
+    expect(f.requests).toHaveLength(1);
+    expect(f.controller.getState().error.code).toBe('CHAIN_EXPIRED');
+    // Restart remains an explicit action and preserves the old local path.
+    const restart = f.controller.restart({ frameId: 'old:1' }); await flush();
+    expect(f.requests[1].input.restartFrom).toMatchObject({ sourceId: 'source', textHash: 'hash' });
+    f.requests[1].resolve(batch('new')); await restart;
+    expect(f.controller.getState().record.parentPathId).toBe('saved');
+    expect(f.records.get('saved').chain.chainId).toBe('old');
+  });
+
   test('offers the latest parent mode to a new branch without copying its reading position', async () => {
     const fresh = { ...snapshot, paused: false, position: 0, rowOffset: 0, sourceOpen: false, readingPositions: {}, ribbon: null };
     const initialSnapshot = jest.fn((_chain, context) => ({ ...fresh, paused: !!context.parentSnapshot?.paused }));

@@ -22,7 +22,7 @@ export type AtomicDocumentBackend = {
 const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(value));
 const fresh = (): SessionDocument => ({ schemaVersion: 1, revision: 0, chains: {}, operations: {}, requests: {} });
 const lost = () => new FlowError('OPERATION_EXPIRED', '这次展开已经停止，请重新尝试。', 409);
-const expired = () => new FlowError('CHAIN_EXPIRED', '这条链的在线会话已结束，已保存的经文仍可阅读。', 410);
+const expired = () => new FlowError('CHAIN_EXPIRED', '当前经文暂时无法在线接续，原文仍可阅读。', 410);
 const ownsLease = (document: SessionDocument, lease: OperationLease, now: number) => {
   const operation = document.operations[lease.key];
   return operation?.holder === lease.holder && operation.version === lease.version && operation.expiresAt > now;

@@ -41,6 +41,7 @@ test('deleting notes focuses the next note or undo and announces the result', as
     return <NotesPanel notes={notes} saving={false} onSave={async () => {}} onDelete={async id => { setNotes(items => items.filter(note => note.id !== id)); }} onUndo={async () => { setNotes([second]); }} />;
   }
   render(<Example />);
+  expect(screen.getByRole('heading', { name: '自己的注脚', level: 2 })).toBeInTheDocument();
   act(() => screen.getAllByRole('button', { name: '删除' })[0]!.focus());
   fireEvent.click(screen.getAllByRole('button', { name: '删除' })[0]!);
   await waitFor(() => expect(screen.getByRole('button', { name: '删除' })).toHaveFocus());

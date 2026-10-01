@@ -65,7 +65,7 @@ export function NotesPanel({ notes, saving, onSave, onDelete, onUndo }: Props) {
 
   return (
     <section ref={panelRef} className={styles.notesPanel} aria-labelledby="flow-notes-title">
-      <h3 id="flow-notes-title">自己的注脚</h3>
+      <h2 id="flow-notes-title">自己的注脚</h2>
       <p className={styles.muted}>只保存在这台设备，不会作为模型内容发送。</p>
       <label className={styles.srOnly} htmlFor="flow-note-input">写下自己的注脚</label>
       <textarea id="flow-note-input" value={draft} maxLength={1000} onChange={event => setDraft(event.target.value)} placeholder="记下你自己的联想……" />

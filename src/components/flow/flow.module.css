@@ -297,7 +297,7 @@
   border-top: 1px solid rgba(210, 188, 143, 0.11);
 }
 
-.notesPanel h3 {
+.notesPanel h2 {
   margin: 0 0 6px;
   color: rgba(238, 231, 215, 0.8);
   font-size: 13px;
@@ -372,6 +372,10 @@
   text-decoration: underline;
   text-decoration-color: rgba(222, 195, 139, 0.58);
   outline: none;
+}
+
+@media (pointer: coarse), (max-width: 640px) {
+  .classicText .linkedToken { padding-inline: 2px; }
 }
 
 .linkedToken:active,

@@ -3,6 +3,7 @@
 import { createHash } from 'node:crypto';
 import { cp, lstat, mkdir, readFile, readdir, stat } from 'node:fs/promises';
 import { dirname, join, resolve, sep } from 'node:path';
+import { precompress } from './precompress-static.mjs';
 
 function args(argv) {
   const values = {};
@@ -49,6 +50,7 @@ async function main() {
   await mkdir(dirname(destination), { recursive: true });
   await cp(standalone, destination, { recursive: true, errorOnExist: true, force: false });
   await overlay(join(source, '.next/static'), join(destination, '.next/static'));
+  await precompress(join(destination, '.next/static'));
   await overlay(join(source, 'public'), join(destination, 'public'));
   await overlay(join(source, 'data'), join(destination, 'data'));
   await mkdir(join(destination, '.next/cache'), { recursive: true });

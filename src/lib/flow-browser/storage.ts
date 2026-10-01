@@ -5,6 +5,7 @@ export type ReadingSnapshot = {
 export type FlowPathRecord = {
   pathId: string; chain: any; snapshot: ReadingSnapshot; parentPathId: string | null; sourceLabel: string;
   completion?: 'pending' | 'complete' | 'stopped' | 'failed'; createdAt: number; updatedAt: number;
+  recoveryError?: { code: string; message: string };
 };
 export type PersonalNote = { id: string; chainId: string; frameId: string; text: string; createdAt: number; updatedAt: number };
 type StoreName = 'paths' | 'notes' | 'meta';

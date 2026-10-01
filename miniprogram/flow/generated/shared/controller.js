@@ -120,7 +120,7 @@ function createFlowController(host) {
       if (existing.chain.chainId !== chain.chainId) throw failure('CHAIN_CHANGED', '返回的经文链与当前阅读不一致。');
       const base = state.record?.pathId === existing.pathId ? captured(state.record) : existing;
       const merged = mergeChain(base.chain, chain);
-      const record = { ...base, chain: merged, completion: incomplete(merged) ? 'pending' : 'complete', updatedAt: now() };
+      const record = { ...base, chain: merged, completion: incomplete(merged) ? 'pending' : 'complete', recoveryError: undefined, updatedAt: now() };
       if (!await save(record, context.token)) return;
       context.record = record;
       state = { ...state, record };
@@ -195,12 +195,16 @@ function createFlowController(host) {
           ...options, provider: host.fallbackProvider, fallback: true,
         });
       }
-      if (context.record && incomplete(context.record.chain)) {
-        const record = { ...captured(context.record), completion: 'failed' };
+      // A restored head exists before resume begins. Persist its failure too,
+      // so visibility changes and reloads do not repeatedly resume it.
+      const failedRecord = context.record || (method === 'resume' ? state.record : null);
+      const recoveryError = { code: error.code || error.message || 'UNAVAILABLE',
+        message: error.message && !/^[A-Z_]+$/.test(error.message) ? error.message : '这条联系暂未展开，原句仍可阅读。' };
+      if (failedRecord && incomplete(failedRecord.chain)) {
+        const record = { ...captured(failedRecord), completion: 'failed', recoveryError };
         try { if (await save(record, context.token)) state = { ...state, record }; } catch (_) { notify({ storageWarning: true }); }
       }
-      notify({ busy: false, pending: false, error: { code: error.code || error.message || 'UNAVAILABLE',
-        message: error.message && !/^[A-Z_]+$/.test(error.message) ? error.message : '这条联系暂未展开，原句仍可阅读。' } });
+      notify({ busy: false, pending: false, error: recoveryError });
     } finally {
       if (active === context) active = null;
     }
@@ -227,7 +231,8 @@ function createFlowController(host) {
       providerFor(saved.chain).restore?.(saved.chain);
       await activate(saved, context, options.navigation || 'restore');
       if (!current(context.token)) return;
-      notify({ busy: false, pending: false, error: null });
+      notify({ busy: false, pending: false, error: incomplete(saved.chain) && ['failed', 'stopped'].includes(saved.completion)
+        ? saved.recoveryError || { code: 'INCOMPLETE', message: '这条联系尚未展开完整，可以再试或返回。' } : null });
       retryOperation = null;
       if (incomplete(saved.chain) && (!saved.completion || saved.completion === 'pending')) {
         return execute('resume', { chainId: saved.chain.chainId });
