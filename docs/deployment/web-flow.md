@@ -6,7 +6,9 @@
 
 ## 发布产物
 
-当前最新预览为 2026-10-01 的 `infidao-39873a120c07071b`，来自已推送提交 `252ab06c005680a05e95376ee238458b4fb8f30a`。本轮移除网页固定 30fps 限制，降低折射缓冲开销，修复静读分支模式与输入提交/取消焦点，补齐就近等待提示和失败原因区分。上一可回滚应用为 `infidao-e5dbf587fa490062`。见 [渲染与阅读连续性迭代记录](../qa/web-flow-migration/2026-10-01-rendering-reading-iteration.md)。
+当前最新预览为 2026-10-01 的 `infidao-88cf58319e67fa6e`，来自已推送提交 `1c928041c6d897872871f5534f1e5b0216e24696`。修复旧首句恢复失败后反复补全，补充分享图与正确元信息，改善标题层级、窄屏触控和停驻亮度，并启用 JS/CSS 发布时 Brotli 预压缩。上一可回滚应用为 `infidao-39873a120c07071b`；回滚时同时恢复该版本对应的 Nginx 片段，备份位于新发布目录的 `nginx-before-recovery.inc`。见 [恢复、分享与压缩迭代记录](../qa/web-flow-migration/2026-10-01-recovery-sharing-iteration.md)。
+
+前一预览 `infidao-39873a120c07071b` 移除网页固定 30fps 限制，降低折射缓冲开销，修复静读分支模式与输入提交/取消焦点，补齐就近等待提示和失败原因区分。见 [渲染与阅读连续性迭代记录](../qa/web-flow-migration/2026-10-01-rendering-reading-iteration.md)。
 
 前一预览 `infidao-e5dbf587fa490062` 提高辅助文字可读性，修正标点换行、键盘选词和经轮前后浏览，补齐输入面板背景隔离及注脚删除焦点恢复。见 [阅读与键盘迭代记录](../qa/web-flow-migration/2026-09-30-reading-accessibility.md)。
 
@@ -25,6 +27,8 @@
 可选的 PostgreSQL 配置必须显式提供密码，且不向宿主机公开端口。仓库中的 Nginx 配置仅含 HTTP 服务和 HTTPS 示例，不能直接作为预发布 HTTPS 入口；目标服务器应接入已有 TLS 网关或在获得证书和域名参数后配置并验证 HTTPS。
 
 ## 预发布配置
+
+`deploy/assemble-standalone.mjs` 依赖同目录的 `precompress-static.mjs`，复制组装工具到服务器时需一并复制。它为新 JS/CSS 生成 `.br`；沿用上一版静态资源时允许没有 `.br`，Nginx 会回到 Next 原资源服务。压缩路由仅覆盖 `/_next/static/`，不安装全局模块，不修改模型流式 API 的压缩设置。
 
 在私有环境文件或密钥管理器中配置，勿提交：
 
