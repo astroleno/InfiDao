@@ -154,7 +154,7 @@
   min-height: 0;
   overflow: auto;
   overscroll-behavior: contain;
-  padding: 24px 0 40px;
+  padding: 24px 8px 40px 0;
   scrollbar-color: rgba(206, 181, 130, 0.28) transparent;
 }
 
@@ -166,7 +166,7 @@
   font-size: clamp(24px, 4.4vw, 40px);
   line-height: 1.8;
   text-align: center;
-  text-wrap: pretty;
+  text-wrap: balance;
 }
 
 .explanation {
@@ -444,8 +444,9 @@
 .storageNotice { top: 64px; color: rgba(237, 205, 153, 0.78); }
 
 .status {
-  top: 50%;
-  transform: translateY(65px);
+  /* Keep asset recovery reachable while the paused reading layer is open. */
+  z-index: 8;
+  top: calc(max(14px, env(safe-area-inset-top)) + 48px);
 }
 
 .staticFallback {

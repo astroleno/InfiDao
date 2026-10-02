@@ -2,8 +2,12 @@
 import type { PassageRecord } from '@/types';
 import { anchoredSpans, verifyGenerated, resetFlowState, runFlow, parseGeneratedBatch } from '@/lib/flow/service';
 import { flowJson } from '@/lib/flow/model';
-import { candidatesFor, flowCorpus, checkedQuote } from '@/lib/flow/candidates';
-import { flowRequestSchema, type GeneratedBatch, type FlowAnchor, type FlowEvent, type FlowChain } from '@/lib/flow/contracts';
+import { candidatesFor, flowCorpus, checkedQuote, planFocus } from '@/lib/flow/candidates';
+import { flowRequestSchema, FlowError, type GeneratedBatch, type FlowAnchor, type FlowEvent, type FlowChain } from '@/lib/flow/contracts';
+import { chargeFlowModel, withFlowModelBudget } from '@/lib/flow/model-budget';
+import { createFlowBudget } from '@/lib/flow/request-budget';
+import { MemoryDocumentBackend } from '@/lib/flow/session-store';
+import { reviewRelations } from '@/lib/flow/relations';
 import { selectedLexeme, planLexeme } from '@/lib/flow/lexemes';
 
 jest.mock('@/lib/flow/model', () => ({ flowJson: jest.fn(), flowModelConfig: () => ({ model: 'test' }) }));
@@ -17,6 +21,71 @@ const item = (id: string, text: string) => ({ sourceId: id, quote: text, meaning
   reflection: '先辨明本末，再看先后。', relevance: 0.95, anchors: [{ label: '本末', sense: '根本与末节', direction: '辨别轻重次序', terms: ['本末'],
     target: { sourceId: 's2', quote: rows[1]!.text, meaning: '事物有根本与末节。' } }] });
 beforeEach(() => { jest.clearAllMocks(); resetFlowState(); jest.mocked(candidatesFor).mockResolvedValue(rows); jest.mocked(flowCorpus).mockResolvedValue(rows); });
+
+test('insufficient preflight budget stops before planning, model calls or head emission', async () => {
+  const reserveModels = jest.fn(async (_count: number) => { throw new FlowError('BUDGET_REACHED', '额度不足', 429); });
+  const emit = jest.fn();
+  await expect(withFlowModelBudget({ reserveModels, chargeModel: jest.fn() }, () =>
+    runFlow({ op: 'open', requestId: 'preflight', seed: '关系冲突' }, 'owner', new AbortController().signal, emit)))
+    .rejects.toMatchObject({ code: 'BUDGET_REACHED' });
+  expect(reserveModels).toHaveBeenCalledWith(3);
+  expect(planFocus).not.toHaveBeenCalled(); expect(flowJson).not.toHaveBeenCalled(); expect(emit).not.toHaveBeenCalled();
+});
+
+test('seed planning reserves three, anchored branches reserve two, completed replays reserve nothing', async () => {
+  const reserveModels = jest.fn(async (_count: number) => {}), budget = { reserveModels, chargeModel: jest.fn() };
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s1', rows[0]!.text)] });
+  const events: FlowEvent[] = [], signal = new AbortController().signal;
+  await withFlowModelBudget(budget, () => runFlow({ op: 'open', requestId: 'budget-parent', seed: '本末' }, 'owner', signal, event => events.push(event)));
+  expect(reserveModels).toHaveBeenLastCalledWith(3);
+  const root = (events.at(-1) as { chain: FlowChain }).chain, node = root.frames[0]!;
+  const branch = { op: 'branch' as const, requestId: 'budget-child', chainId: root.chainId, fromFrameId: node.id, anchorId: node.anchors[0]!.id };
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] });
+  await withFlowModelBudget(budget, () => runFlow(branch, 'owner', signal, event => events.push(event)));
+  expect(reserveModels).toHaveBeenLastCalledWith(2);
+  reserveModels.mockClear(); reserveModels.mockRejectedValue(new FlowError('BUDGET_REACHED', '额度不足', 429));
+  await withFlowModelBudget(budget, () => runFlow(branch, 'owner', signal, event => events.push(event)));
+  expect(reserveModels).not.toHaveBeenCalled(); expect(flowJson).toHaveBeenCalledTimes(2);
+  expect(events.at(-1)!.type).toBe('done');
+});
+
+test('format repair cannot silently use the call reserved for review', async () => {
+  const reserveModels = jest.fn().mockResolvedValueOnce(undefined).mockRejectedValueOnce(new FlowError('BUDGET_REACHED', '额度不足', 429));
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [{ quote: 'invalid' }] });
+  await expect(withFlowModelBudget({ reserveModels, chargeModel: jest.fn() }, () =>
+    runFlow({ op: 'open', requestId: 'repair-budget', seed: '本末' }, 'owner', new AbortController().signal, () => {})))
+    .rejects.toMatchObject({ code: 'MODEL_INVALID' });
+  expect(reserveModels.mock.calls.map(call => call[0])).toEqual([3, 1]);
+  expect(flowJson).toHaveBeenCalledTimes(1);
+});
+
+test('a five-call allowance completes a three-call seed and two-call branch, then replays at zero remaining', async () => {
+  const backend = new MemoryDocumentBackend();
+  const budget = createFlowBudget(backend, 'service-budget', { concurrentSite: 2, concurrentOwner: 1, concurrentIP: 2,
+    requestsSite: 20, requestsOwner: 20, requestsIP: 20, modelsSite: 5, modelsOwner: 5, modelsIP: 5 });
+  const events: FlowEvent[] = [], signal = new AbortController().signal;
+  const execute = async (request: Parameters<typeof runFlow>[0]) => {
+    const lease = await budget.acquire('owner', 'ip');
+    try { await withFlowModelBudget(lease, () => runFlow(request, 'owner', signal, event => events.push(event))); }
+    finally { await lease.release(); }
+  };
+  jest.mocked(planFocus).mockImplementationOnce(async () => { await chargeFlowModel(); return { focus: '本末', terms: ['本末', '知止'], supported: true }; });
+  jest.mocked(flowJson).mockImplementationOnce(async () => { await chargeFlowModel(); return { frames: [item('s1', rows[0]!.text)] }; });
+  jest.mocked(reviewRelations).mockImplementationOnce(async frames => { await chargeFlowModel(); return frames; });
+  await execute({ op: 'open', requestId: 'five-parent', seed: '本末' });
+  const root = (events.at(-1) as { chain: FlowChain }).chain, node = root.frames[0]!;
+  const branch = { op: 'branch' as const, requestId: 'five-child', chainId: root.chainId, fromFrameId: node.id, anchorId: node.anchors[0]!.id };
+  jest.mocked(flowJson).mockImplementationOnce(async () => { await chargeFlowModel(); return { frames: [item('s2', rows[1]!.text)] }; });
+  jest.mocked(reviewRelations).mockImplementationOnce(async frames => { await chargeFlowModel(); return frames; });
+  await execute(branch);
+  const child = (events.at(-1) as { chain: FlowChain }).chain;
+  await execute(branch);
+  expect((events.at(-1) as { chain: FlowChain }).chain.chainId).toBe(child.chainId);
+  await expect(execute({ op: 'open', requestId: 'over-budget', seed: '新的心事' })).rejects.toMatchObject({ code: 'BUDGET_REACHED' });
+  const document = JSON.parse((await backend.read('service-budget')).value!);
+  expect(document.counters['owner:owner'].models).toBe(5);
+  expect(document.active).toEqual({}); expect(flowJson).toHaveBeenCalledTimes(2);
+});
 
 test('restartFrom verifies canonical source and can reopen a selected word for a different visitor without old chain access', async () => {
   const restartFrom = { sourceId: 's1', corpusVersion: 'test-v1', textHash: 's1', quoteStart: 0, quoteEnd: 6 };

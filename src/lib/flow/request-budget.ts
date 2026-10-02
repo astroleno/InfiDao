@@ -9,7 +9,7 @@ export type FlowBudgetLimits = {
   modelsSite: number; modelsOwner: number; modelsIP: number;
 };
 type Counters = { minute: number; requests: number; day: number; models: number; updated: number };
-type BudgetDocument = { active: Record<string, { owner: string; ip: string; expiresAt: number }>; counters: Record<string, Counters> };
+type BudgetDocument = { active: Record<string, { owner: string; ip: string; expiresAt: number; reservedModels?: number }>; counters: Record<string, Counters> };
 const limited = () => new FlowError('BUDGET_REACHED', '先读一会儿，稍后再展开新的联系。', 429);
 
 export function flowBudgetLimits(): FlowBudgetLimits {
@@ -62,13 +62,33 @@ export function createFlowBudget(backend: AtomicDocumentBackend, key: string, li
         // Route execution has a 90 s deadline; this lease also clears on disconnect.
         document.active[token] = { owner, ip, expiresAt: now + 120_000 };
       });
+      function held(document: BudgetDocument) {
+        const active = Object.values(document.active);
+        return [active, active.filter(entry => entry.owner === owner), active.filter(entry => entry.ip === ip)]
+          .map(entries => entries.reduce((total, entry) => total + (entry.reservedModels || 0), 0));
+      }
+      const caps = [limits.modelsSite, limits.modelsOwner, limits.modelsIP];
       return {
+        async reserveModels(count: number) {
+          if (!Number.isSafeInteger(count) || count < 1) throw new Error('Invalid model reservation');
+          await mutate((document, now) => {
+            const active = document.active[token];
+            if (!active || active.owner !== owner || active.ip !== ip) throw limited();
+            const counters = scopes.map(id => counter(document, id, now)), reserved = held(document);
+            if (counters.some((entry, index) => entry.models + reserved[index]! + count > caps[index]!)) throw limited();
+            active.reservedModels = (active.reservedModels || 0) + count;
+          });
+        },
         async chargeModel() {
           await mutate((document, now) => {
             const active = document.active[token];
             if (!active || active.owner !== owner || active.ip !== ip) throw limited();
-            const counters = scopes.map(id => counter(document, id, now)), caps = [limits.modelsSite, limits.modelsOwner, limits.modelsIP];
-            if (counters.some((entry, index) => entry.models >= caps[index]!)) throw limited();
+            const counters = scopes.map(id => counter(document, id, now)), reserved = held(document);
+            const consumesReservation = (active.reservedModels || 0) > 0;
+            // Legacy/unreserved calls cannot spend another request's holds.
+            const additional = consumesReservation ? 0 : 1;
+            if (counters.some((entry, index) => entry.models + reserved[index]! + additional > caps[index]!)) throw limited();
+            if (consumesReservation) active.reservedModels = active.reservedModels! - 1;
             counters.forEach(entry => entry.models++);
           });
         },

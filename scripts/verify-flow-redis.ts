@@ -85,8 +85,22 @@ async function main() {
     await stop(); client = await start();
     const afterRestart = await budget().acquire(owner, 'ip');
     await assert.rejects(afterRestart.chargeModel(), { code: 'BUDGET_REACHED' }); await afterRestart.release();
+    const heldBudget = () => createFlowBudget(backend(), 'qa:held-budget', { concurrentSite: 3, concurrentOwner: 1, concurrentIP: 1,
+      requestsSite: 20, requestsOwner: 10, requestsIP: 10, modelsSite: 3, modelsOwner: 3, modelsIP: 3 });
+    const heldA = await heldBudget().acquire('held-a', 'held-a'), heldB = await heldBudget().acquire('held-b', 'held-b');
+    const holds = await Promise.allSettled([heldA.reserveModels(3), heldB.reserveModels(3)]);
+    assert.equal(holds.filter(result => result.status === 'fulfilled').length, 1);
+    const winner = holds[0]!.status === 'fulfilled' ? heldA : heldB, loser = winner === heldA ? heldB : heldA;
+    await stop(); client = await start();
+    await assert.rejects(loser.reserveModels(1), { code: 'BUDGET_REACHED' });
+    await assert.rejects(loser.chargeModel(), { code: 'BUDGET_REACHED' });
+    await winner.chargeModel(); await winner.release();
+    await assert.rejects(loser.reserveModels(3), { code: 'BUDGET_REACHED' });
+    await loser.reserveModels(2); await loser.chargeModel(); await loser.chargeModel();
+    await assert.rejects(loser.chargeModel(), { code: 'BUDGET_REACHED' }); await loser.release();
     console.log(JSON.stringify({ passed: true, checks: ['concurrent CAS', 'AOF restart', 'owner isolation', 'expired lease', 'stale release',
-      'atomic child mapping', 'completion replay', 'semantic AOF restart', 'semantic owner isolation', 'shared concurrency', 'daily budget survives restart'] }));
+      'atomic child mapping', 'completion replay', 'semantic AOF restart', 'semantic owner isolation', 'shared concurrency', 'daily budget survives restart',
+      'atomic model holds', 'model holds survive AOF restart', 'unreserved calls cannot steal holds', 'unused holds released without refunding charges'] }));
   } finally { await stop(); await rm(directory, { recursive: true, force: true }); }
 }
 main().catch(error => { console.error(error.message); process.exitCode = 1; });

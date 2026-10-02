@@ -38,6 +38,9 @@ export function WheelCanvas({ frames, active, chainId, snapshot, paused, reduced
   const [fontFamily, setFontFamily] = useState('');
   const [fontError, setFontError] = useState('');
   const [graphicsError, setGraphicsError] = useState('');
+  const [fontAttempt, setFontAttempt] = useState(0);
+  const [retryingFonts, setRetryingFonts] = useState(false);
+  const fontRetryRef = useRef<HTMLButtonElement>(null);
   const [preview, setPreview] = useState<Selection | null>(null);
 
   callbacksRef.current = { onSelect, onPauseChange, onActiveChange, onSnapshot, onHostReady };
@@ -56,10 +59,14 @@ export function WheelCanvas({ frames, active, chainId, snapshot, paused, reduced
       if (cancelled || !canvasRef.current || !atlasRef.current) return;
       setFontFamily(fonts.family);
       setFontError('');
+      setRetryingFonts(false);
+      if (document.activeElement === fontRetryRef.current) canvasRef.current.focus({ preventScroll: true });
       host = createFlowRendererHost(canvasRef.current, atlasRef.current, framesRef.current, {
         paused: reducedMotionRef.current || pausedRef.current,
         reducedMotion: reducedMotionRef.current,
-        snapshot: snapshotRef.current ?? null,
+        snapshot: fontAttempt > 0 && snapshotRef.current
+          ? { ...snapshotRef.current, paused: pausedRef.current }
+          : snapshotRef.current ?? null,
         callbacks: {
           onSelect: hit => callbacksRef.current.onSelect(hit),
           onPreview: hit => setPreview(hit),
@@ -78,6 +85,7 @@ export function WheelCanvas({ frames, active, chainId, snapshot, paused, reduced
     }).catch(error => {
       if (cancelled) return;
       setFontError(error instanceof Error ? error.message : 'FONT_UNAVAILABLE');
+      setRetryingFonts(false);
       setGraphicsError('FONT_UNAVAILABLE');
       callbacksRef.current.onPauseChange(true);
     });
@@ -89,9 +97,10 @@ export function WheelCanvas({ frames, active, chainId, snapshot, paused, reduced
         callbacksRef.current.onHostReady(null);
       }
     };
-    // The renderer is created once after the first real frame. Subsequent frames update its bounded window.
+    // Initial load and explicit asset retry share this path. Retrying fonts
+    // keeps the current chain/snapshot and never calls the reading provider.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasFrames]);
+  }, [hasFrames, fontAttempt]);
 
   useEffect(() => {
     if (!hostRef.current || chainIdRef.current === chainId) return;
@@ -150,7 +159,10 @@ export function WheelCanvas({ frames, active, chainId, snapshot, paused, reduced
       <p id="flow-wheel-help" className={styles.srOnly}>
         经文可以逐词接续。轻触空白停驻，拖动回看；键盘用空格暂停或继续，上下方向键停驻并浏览前后经文，Tab 进入阅读操作。
       </p>
-      {fontError && <p className={styles.status} role="status">经文字体暂未完整载入，仍可静读；可刷新重试。</p>}
+      {fontError && <p className={styles.status} role="status">经文字体暂未完整载入，仍可静读。
+        <button ref={fontRetryRef} className={styles.textButton} type="button" disabled={retryingFonts}
+          onClick={() => { setRetryingFonts(true); setFontAttempt(value => value + 1); }}>{retryingFonts ? '正在载入字体…' : '重试字体'}</button>
+      </p>}
       {graphicsError && (
         <div className={styles.staticFallback} role="status">
           <p className={styles.fallbackLabel}>经轮暂不可用，当前经句仍可阅读</p>

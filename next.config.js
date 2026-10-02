@@ -1,4 +1,5 @@
 const crypto = require('node:crypto')
+const path = require('node:path')
 
 const bundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
@@ -12,6 +13,9 @@ const constrainedBuild = process.env.INFIDAO_CONSTRAINED_BUILD === '1'
 const nextConfig = {
   // Keep validation builds separate from a preview that is already running.
   distDir: process.env.INFIDAO_BUILD_DIR || '.next',
+  turbopack: {
+    resolveAlias: { './glyph-outline': './src/lib/flow-browser/glyph-outline.js' },
+  },
   experimental: {
     ...(constrainedBuild ? { cpus: 1 } : {}),
     // Enable optimized package imports
@@ -45,6 +49,7 @@ const nextConfig = {
 
   // Webpack configuration for custom optimizations
   webpack: (config, { isServer, dev, webpack }) => {
+    config.resolve.alias['./glyph-outline$'] = path.resolve(__dirname, 'src/lib/flow-browser/glyph-outline.js')
     // Resolve extensions
     config.resolve.extensions = [
       '.tsx',

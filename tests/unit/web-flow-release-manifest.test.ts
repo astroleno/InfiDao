@@ -11,13 +11,19 @@ test('the release binds the exact verified font shards, corpus manifest, and cur
   const base = 'public' + FLOW_RELEASE.fontBasePath;
   const original = read('public/flow-fonts/manifest.json'), pinned = read(base + '/manifest.json');
   expect(digest(pinned)).toBe(FLOW_RELEASE.fontManifestSha256);
-  expect(digest(original)).toBe(FLOW_RELEASE.fontManifestSha256);
+  const { manifestBytes } = require('../../scripts/web-flow-font-assets.cjs').createWebFontRelease(root);
+  expect(pinned.equals(manifestBytes)).toBe(true);
   const manifest = JSON.parse(pinned.toString());
   expect(manifest.version).toBe(FLOW_RELEASE.fontVersion);
-  for (const shard of manifest.shards) {
+  expect(manifest.originalVersion).toBe(JSON.parse(original.toString()).version);
+  expect(manifest.baseFonts).toHaveLength(2);
+  for (const shard of [...manifest.baseFonts, ...manifest.shards]) {
     const bytes = read(base + '/' + shard.file);
     expect(bytes.byteLength).toBe(shard.bytes);
     expect(digest(bytes)).toBe(shard.sha256);
+  }
+  for (const [index, name] of ['serif', 'supplement'].entries()) {
+    expect(read(base + '/' + manifest.baseFonts[index].file).equals(Buffer.from(require(`../../miniprogram/assets/fonts/${name}-data`), 'base64'))).toBe(true);
   }
   const corpus = JSON.parse(read('data/corpus-manifest.json').toString());
   const hash = createHash('sha256').update(read('data/corpus-manifest.json'));

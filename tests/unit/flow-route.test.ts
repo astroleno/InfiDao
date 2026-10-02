@@ -3,12 +3,13 @@ import { POST } from '@/app/api/flow/route';
 import { createSessionToken } from '@/lib/flow/session-identity';
 import { runFlow } from '@/lib/flow/service';
 import { serverFlowBudget } from '@/lib/flow/request-budget';
-import { chargeFlowModel } from '@/lib/flow/model-budget';
+import { chargeFlowModel, reserveFlowModels } from '@/lib/flow/model-budget';
 import type { FlowEvent } from '@/lib/flow/contracts';
 jest.mock('@/lib/flow/service', () => ({ runFlow: jest.fn() }));
 jest.mock('@/lib/flow/session-store-server', () => ({ serverSessionStore: jest.fn(async () => ({})) }));
 jest.mock('@/lib/flow/request-budget', () => ({ serverFlowBudget: jest.fn() }));
-const release = jest.fn(async () => {}), charge = jest.fn(async () => {}), acquire = jest.fn(async () => ({ release, chargeModel: charge }));
+const release = jest.fn(async () => {}), charge = jest.fn(async () => {}), reserveModels = jest.fn(async (_count: number) => {});
+const acquire = jest.fn(async () => ({ release, chargeModel: charge, reserveModels }));
 let originalResponse: typeof Response;
 beforeAll(async () => {
   // The shared Jest setup substitutes a JSON-only Response. Streaming needs Node's native class.
@@ -32,6 +33,7 @@ test('streams head before completion and charges each model invocation in reques
   let complete!: () => void;
   const gate = new Promise<void>(resolve => { complete = resolve; });
   jest.mocked(runFlow).mockImplementation(async (_, __, ___, emit) => {
+    await reserveFlowModels(2);
     await chargeFlowModel(); emit({ type: 'head', requestId: 'route-test', chain: {} } as FlowEvent);
     await gate; emit({ type: 'done', requestId: 'route-test', chain: {} } as FlowEvent);
   });
@@ -41,15 +43,18 @@ test('streams head before completion and charges each model invocation in reques
   expect(release).not.toHaveBeenCalled(); complete();
   expect(new TextDecoder().decode((await reader.read()).value)).toContain('"done"');
   await reader.read(); expect(charge).toHaveBeenCalledTimes(1); expect(release).toHaveBeenCalledTimes(1);
+  expect(reserveModels).toHaveBeenCalledWith(2);
 });
 test('stream cancellation aborts work and releases occupancy exactly once', async () => {
   let signal!: AbortSignal;
   jest.mocked(runFlow).mockImplementation(async (_, __, abortSignal, emit) => {
+    await reserveFlowModels(2);
     signal = abortSignal; emit({ type: 'head', requestId: 'route-test', chain: {} } as FlowEvent);
     await new Promise<void>(resolve => abortSignal.addEventListener('abort', () => resolve(), { once: true }));
   });
   const response = await POST(request()), reader = response.body!.getReader(); await reader.read(); await reader.cancel();
   expect(signal.aborted).toBe(true); expect(release).toHaveBeenCalledTimes(1);
+  expect(reserveModels).toHaveBeenCalledWith(2);
 });
 test('keeps a readable error event and JSON compatibility without leaking implementation errors', async () => {
   jest.mocked(runFlow).mockRejectedValueOnce(new Error('private backend detail'));

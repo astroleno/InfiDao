@@ -1,5 +1,6 @@
 import { FlowError } from "./contracts";
 import { chargeFlowModel } from './model-budget';
+import { measureFlowPhase } from './timings';
 
 export function flowModelConfig() {
   const key = process.env.FLOW_API_KEY || process.env.DEEPSEEK_API_KEY ||
@@ -15,6 +16,10 @@ export async function flowJson(system: string, input: unknown, signal: AbortSign
   signal.throwIfAborted();
   await chargeFlowModel();
   signal.throwIfAborted();
+  return measureFlowPhase('model', () => requestModel(config, system, input, signal));
+}
+
+async function requestModel(config: ReturnType<typeof flowModelConfig>, system: string, input: unknown, signal: AbortSignal): Promise<unknown> {
   const timeout = AbortSignal.timeout(18_000);
   try {
     const response = await fetch(config.endpoint, {

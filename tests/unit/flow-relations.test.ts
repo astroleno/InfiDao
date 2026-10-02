@@ -40,3 +40,18 @@ test('unrelated nodes and ungrounded links disappear instead of being made click
   expect(result[0]!.anchors).toEqual([]);
   expect(result[0]!.reflectionSpans).toEqual([{ text: '可以辨别轻重。' }]);
 });
+
+test('review removes a rejected branch while preserving the accepted parent and its quote', async () => {
+  const conflict: FlowFrame = { ...frame, quote: '何以报德？以直报怨，以德报德。',
+    reflection: '不撕破脸也可以分清是非。', anchors: [{ ...frame.anchors[0]!, id: 'boundary', label: '是非',
+      sense: '公正的边界', direction: '如何维护是非边界',
+      target: { sourceId: 'other', quote: '不患无位，患所以立。', meaning: '不忧没有地位，忧自己凭何立身。' } }] };
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [{ id: 'f', relevant: true,
+    reflection: '不撕破脸也可以分清是非。', anchorIds: [] }] });
+  const result = await reviewRelations([conflict], '同事冒领功劳，我生气，又不想闹僵。', '维护公正边界', [], new AbortController().signal);
+  expect(result[0]!.quote).toBe(conflict.quote);
+  expect(result[0]!.anchors).toEqual([]);
+  const prompt = jest.mocked(flowJson).mock.calls.at(-1)![0];
+  expect(prompt).toContain('逐一核对每个入口');
+  expect(prompt).toContain('心理归因必须有 seed 的明确依据');
+});

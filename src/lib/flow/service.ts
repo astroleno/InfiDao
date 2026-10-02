@@ -7,6 +7,8 @@ import { flowJson, flowModelConfig } from "./model";
 import { reviewRelations } from "./relations";
 import { linkSurfaces } from "./anchors";
 import { lexicalBreaks, selectedLexeme, planLexeme } from "./lexemes";
+import { measureFlowPhase, withFlowTimings } from './timings';
+import { reserveFlowModels } from './model-budget';
 export { anchoredSpans } from "./anchors";
 import { FLOW_PROMPT_VERSION, FLOW_VERSION, FlowError, generatedBatchSchema,
   type FlowAnchor, type FlowChain, type FlowEvent, type FlowFrame, type FlowRequest, type GeneratedBatch } from "./contracts";
@@ -64,6 +66,7 @@ quote 必须是候选 text 的逐字连续子串（含原标点），2–80 字�
 meaning 为 20–50 字原义；reflection 为 25–60 字与此刻联系，避免泛化安慰和诊断，不把联系冒充古义。提供一个可选择的理解角度，不能用“你正因…才…”“你正是…”替用户断定原因，不能假定输入之外的处境。
 每段分别从 quote、meaning、reflection 挑选一个有真实联系的词，最多3个入口。不要把3个入口全部取自 quote；meaning 是原义中的概念，reflection 是联系中的概念，也应能继续探索。某处确实没有合适关联时，省略该处，不能用另一处的多个词凑数。anchor.surface 必须标明词所在的位置，label 必须原样出现在该位置的文字中。单字须有完整实义，不选“必也”“而”等虚词。正文与短解不要写“点击”“入口”等界面说明。每个 target 选择另一个真实候选 sourceId 和原文子串，并给出其简短原义。
 联系可以相近或形成对照，但不能凭同一个字牵强联系，不能声称没有证据的思想传承。同一句话的另一个出处或截取不构成新分支。用户面对被冒犯的边界时不能把入口全部导向责己；倾听讨论不能曲解为审判对方是否言行一致。terms 是能检索该方向的古典概念和短语，1–6项且各不超过20字，方向必须具体。
+每个入口都要单独兑现 direction：若方向是公正、是非或维护边界，target 原义不能只有反省自己、增加实绩或争取认可。对照关系要在方向中说清，无法成立就省略该入口。单字 label 不得从完整词里拆出另一种意思（例如“回报”中的“报”须按当前词义理解）。用户被冒功而生气，不代表嫉妒他人获认可或自身不够好；短解不得补写未经提供的心理动机。
 若给出 head，第一段必须严格保留 head.sourceId 和 head.quote。后续尽量提供不同典籍、不同观察角度。
 返回 JSON {"frames":[{"sourceId":"候选ID","quote":"原文子串","meaning":"原义","reflection":"短解","relevance":0.9,"anchors":[{"surface":"quote","label":"原文里的实义词","sense":"此语境中的义项","direction":"新链讨论的具体方向","terms":["古典检索词"],"target":{"sourceId":"另一个候选ID","quote":"其原文子串","meaning":"其原义"}},{"surface":"meaning","label":"原义里原样出现的词","sense":"此处义项","direction":"具体关联","terms":["古典检索词"],"target":{"sourceId":"另一个候选ID","quote":"其原文子串","meaning":"其原义"}},{"surface":"reflection","label":"短解里原样出现的词","sense":"此处义项","direction":"具体关联","terms":["古典检索词"],"target":{"sourceId":"另一个候选ID","quote":"其原文子串","meaning":"其原义"}}]}]}。`;
 
@@ -74,6 +77,13 @@ async function generateNode(input: Record<string, unknown>, signal: AbortSignal)
   catch (error) {
     signal.throwIfAborted();
     if (!(error instanceof FlowError) || error.code !== 'MODEL_INVALID') throw error;
+    // A repair is optional; reserve its extra call without consuming the hold
+    // already promised to the mandatory relationship review.
+    try { await reserveFlowModels(1); }
+    catch (budgetError) {
+      if (budgetError instanceof FlowError && budgetError.code === 'BUDGET_REACHED') throw error;
+      throw budgetError;
+    }
     // One correction may replace an invalid model response. Never truncate a
     // quote in code, relax source checks, or retry network/semantic rejection.
     return parseGeneratedBatch(await flowJson(prompt + '\n上次输出没有通过格式或长度校验。请重新选择符合上述限制的原文短句并返回完整JSON。',
@@ -119,6 +129,11 @@ async function restartContext(request: FlowRequest, signal: AbortSignal) {
 
 export async function runFlow(request: FlowRequest, owner: string, signal: AbortSignal, emit: (event: FlowEvent) => void,
   store: FlowSessionStore = localSessionStore) {
+  return withFlowTimings(request.op, () => executeFlow(request, owner, signal, emit, store));
+}
+
+async function executeFlow(request: FlowRequest, owner: string, signal: AbortSignal, emit: (event: FlowEvent) => void,
+  store: FlowSessionStore) {
   signal.throwIfAborted();
   let parent: StoredChain | undefined, parentFrame: FlowFrame | undefined;
   let anchor: FlowAnchor | undefined, lexical: ReturnType<typeof selectedLexeme> | undefined;
@@ -161,11 +176,17 @@ export async function runFlow(request: FlowRequest, owner: string, signal: Abort
     if (state && request.op !== 'next') head = state.chain.frames.find(frame => !frame.ready);
     if (request.op === 'next') {
       if (!state || !request.cursor || request.cursor !== state.chain.cursor) throw new FlowError('CURSOR_CHANGED', '阅读进度已更新，请继续当前经文。', 409);
-    } else if (!state) {
+    }
+    // Completed replays return above. New work needs generation + review,
+    // and one planning call only when no stored plan/anchor is available.
+    const needsPlan = !state && (parent ? !anchor : Boolean(request.restartFrom || request.seed?.trim()));
+    await reserveFlowModels(needsPlan ? 3 : 2);
+    assertCurrent();
+    if (!state) {
       const seed = (request.seed || parent?.chain.seed || '').trim();
       let focus: string, terms: string[], fromQuote: string | undefined;
       if (parent && parentFrame) {
-        const plan = anchor || await planLexeme(parentFrame, request.selection!, parent.chain.focus, signal);
+        const plan = anchor || await measureFlowPhase('plan', () => planLexeme(parentFrame!, request.selection!, parent!.chain.focus, signal));
         focus = '「' + (lexical || anchor!).label + '」在《' + parentFrame.source + '》此处：' + plan.sense + '；' + plan.direction;
         terms = plan.terms; fromQuote = parentFrame.quote;
         if (anchor) {
@@ -174,10 +195,10 @@ export async function runFlow(request: FlowRequest, owner: string, signal: Abort
           head = frameFrom(passage!, anchor.target.quote, anchor.target.meaning, 1);
         }
       } else if (request.restartFrom) {
-        const plan = await restartContext(request, signal);
+        const plan = await measureFlowPhase('plan', () => restartContext(request, signal));
         focus = plan.focus; terms = plan.terms; fromQuote = plan.fromQuote;
       } else {
-        const plan = seed ? await planFocus(seed, signal) : { focus: '辨明方向，再安顿当下', terms: ['知止而后有定', '物有本末', '存其心'] };
+        const plan = seed ? await measureFlowPhase('plan', () => planFocus(seed, signal)) : { focus: '辨明方向，再安顿当下', terms: ['知止而后有定', '物有本末', '存其心'] };
         focus = plan.focus; terms = plan.terms;
         if (!seed) {
           const quote = '知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。';
@@ -199,18 +220,18 @@ export async function runFlow(request: FlowRequest, owner: string, signal: Abort
     if (head) emit({ type: 'head', requestId: request.requestId, chain: clone(state.chain) });
     const excluded = new Set(state.seen);
     if (parentFrame) excluded.add(parentFrame.sourceId);
-    const candidates = await candidatesFor(state.terms, state.chain.focus, excluded, head?.sourceId, reservation.semantics);
-    const parsed = candidates.length ? await generateNode({
+    const candidates = await measureFlowPhase('retrieve', () => candidatesFor(state!.terms, state!.chain.focus, excluded, head?.sourceId, reservation.semantics));
+    const parsed = candidates.length ? await measureFlowPhase('generate', () => generateNode({
       seed: state.chain.seed, focus: state.chain.focus, head: head ? { sourceId: head.sourceId, quote: head.quote } : null,
       avoidQuote: state.fromQuote || null,
       candidates: candidates.map(row => ({ sourceId: row.id, source: row.source, chapter: row.chapter, text: row.text.slice(0, 2400) })),
-    }, signal) : { frames: [] };
+    }, signal)) : { frames: [] };
     const batch = { frames: parsed.frames.slice(0, 1) };
     const bare = (text: string) => text.replace(/[\p{P}\p{Z}\s]/gu, '');
     const original = bare(state.fromQuote || '');
     const verified = verifyGenerated(batch, candidates, state.seen.length + 1, head).filter(frame =>
       !original || (!original.includes(bare(frame.quote)) && !bare(frame.quote).includes(original)));
-    const frames = await reviewRelations(verified, state.chain.seed, state.chain.focus, candidates, signal);
+    const frames = await measureFlowPhase('review', () => reviewRelations(verified, state!.chain.seed, state!.chain.focus, candidates, signal));
     if (head && frames[0]?.id !== head.id) throw new FlowError('RELATION_UNVERIFIED', '这次生成的联系未通过核验，可以换个词，或重试。', 422);
     frames.forEach((frame, index) => { frame.ordinal = state!.seen.length + index + 1; });
     assertCurrent();

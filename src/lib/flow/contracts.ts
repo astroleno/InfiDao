@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const FLOW_VERSION = "flow-v1";
-export const FLOW_PROMPT_VERSION = "lexical-entry-v4";
+export const FLOW_PROMPT_VERSION = "lexical-entry-v5";
 export const flowSelectionSchema = z.object({
   start: z.number().int().nonnegative(), end: z.number().int().positive(),
   textHash: z.string().min(1).max(128), corpusVersion: z.string().min(1).max(100),

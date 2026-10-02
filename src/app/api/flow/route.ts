@@ -50,7 +50,7 @@ export async function POST(request: Request): Promise<Response> {
     const failure = (error: unknown): FlowEvent => ({ type: "error", requestId: payload.requestId,
       code: timedOut ? "TIMEOUT" : error instanceof FlowError ? error.code : "UNAVAILABLE",
       message: timedOut ? "这条联系等待较久，可以稍后重试，原句仍可阅读。" : error instanceof FlowError ? error.message : "这条联系暂未展开，原句仍可阅读。" });
-    const execute = (emit: (event: FlowEvent) => void) => withFlowModelBudget(lease.chargeModel,
+    const execute = (emit: (event: FlowEvent) => void) => withFlowModelBudget(lease,
       () => runFlow(payload, owner, controller.signal, emit, store));
     if (!request.headers.get("accept")?.includes("application/x-ndjson")) {
       const events: FlowEvent[] = [];

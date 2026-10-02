@@ -71,7 +71,7 @@ async function main() {
   if (font.version !== release.fontVersion || !Array.isArray(font.shards) || !font.shards.length) {
     throw new Error('runtime font manifest mismatch');
   }
-  for (const shard of font.shards) {
+  for (const shard of [...(font.baseFonts || []), ...font.shards]) {
     if (!/^[a-z0-9_-]+\.woff$/.test(shard.file)) throw new Error('invalid font shard');
     const bytes = await readFile(join(destination, fontPath, shard.file));
     if (bytes.length !== shard.bytes || createHash('sha256').update(bytes).digest('hex') !== shard.sha256) {
@@ -79,7 +79,7 @@ async function main() {
     }
   }
   console.log(JSON.stringify({ releaseId: release.id, corpusFiles: corpus.files.length,
-    nextChunks: chunks.filter(name => name.endsWith('.js')).length, fontShards: font.shards.length,
+    nextChunks: chunks.filter(name => name.endsWith('.js')).length, fontShards: font.shards.length, baseFonts: (font.baseFonts || []).length,
     destination }));
 }
 

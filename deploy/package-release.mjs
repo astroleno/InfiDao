@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { cp, lstat, mkdir, readdir, readFile, stat, utimes, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const directories = ['data', 'miniprogram', 'public', 'scripts', 'shared', 'src', 'tests'];
@@ -89,7 +90,8 @@ async function main() {
   }
   const sourceDigest = sourceHash.digest('hex');
   const releaseId = `infidao-${sourceDigest.slice(0, 16)}`;
-  const fontManifest = JSON.parse(await readFile(join(source, 'public/flow-fonts/manifest.json'), 'utf8'));
+  const { createWebFontRelease } = createRequire(import.meta.url)('../scripts/web-flow-font-assets.cjs');
+  const { manifest: fontManifest, manifestBytes, assets } = createWebFontRelease(source);
   if (!/^[a-zA-Z0-9_-]{10,64}$/.test(fontManifest.version) || !Array.isArray(fontManifest.shards)) {
     fail('invalid font manifest');
   }
@@ -97,14 +99,14 @@ async function main() {
   const objectPrefix = `${args['object-root']}/${releaseId}/`;
   const cdnBase = `https://${args['cdn-host']}/${objectPrefix}${versionPath}`;
   const entries = [];
-  for (const filename of ['manifest.json', ...fontManifest.shards.map(shard => shard.file)]) {
+  for (const { file: filename, bytes, asset } of [
+    { file: 'manifest.json', bytes: manifestBytes },
+    ...assets.map(item => ({ file: item.asset.file, bytes: item.bytes, asset: item.asset })),
+  ]) {
     if (!/^[a-zA-Z0-9._-]+$/.test(filename)) fail('invalid font filename');
-    const original = join(source, 'public/flow-fonts', filename);
     const generated = join(source, 'public', versionPath, filename);
-    const bytes = await readFile(original);
     if (sha(bytes) !== sha(await readFile(generated))) fail('generated font differs from source');
-    const shard = fontManifest.shards.find(item => item.file === filename);
-    if (shard && (shard.bytes !== bytes.length || shard.sha256 !== sha(bytes))) fail('font shard hash mismatch');
+    if (asset && (asset.bytes !== bytes.length || asset.sha256 !== sha(bytes))) fail('font asset hash mismatch');
     const packagePath = `cdn/${versionPath}/${filename}`;
     const target = join(output, packagePath);
     await mkdir(dirname(target), { recursive: true });
