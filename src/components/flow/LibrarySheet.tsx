@@ -11,6 +11,9 @@ type Data = Awaited<ReturnType<typeof loadLibrary>>;
 const tabs = ['最近阅读', '关联', '收藏', '注脚'] as const;
 export function LibrarySheet({ onClose, onOpen, onChanged, context }: { onClose: () => void; onOpen: (target: SavedTarget) => Promise<boolean>; onChanged: () => void; context?: SavedTarget | undefined }) {
   const ref = useFlowDialog(onClose);
+  // Background reflow may change the reader's active passage while this dialog
+  // is open. Keep the opening context so browsing a theme is not interrupted.
+  const [readingContext] = useState(context);
   const [data, setData] = useState<Data | null>(null);
   const [tab, setTab] = useState<(typeof tabs)[number]>('最近阅读');
   const [limit, setLimit] = useState(20);
@@ -53,7 +56,7 @@ export function LibrarySheet({ onClose, onOpen, onChanged, context }: { onClose:
       {error && <p className={styles.seedError} role="status">{error}</p>}
       <div ref={listRef} id="flow-library-panel" role="tabpanel" tabIndex={0} aria-labelledby={`flow-library-tab-${tabs.indexOf(tab)}`} className={styles.libraryList} aria-busy={opening || !data}>
         {tab !== '关联' && (!data ? <p className={styles.muted} role="status">正在取回…</p> : items.length === 0 ? <p className={styles.libraryEmpty}>{tab === '最近阅读' ? '读过的经文会留在这里。' : tab === '收藏' ? '停驻阅读时，可以收藏经句。' : '留下自己的理解，下次再读。'}</p> : null)}
-        {tab === '关联' && <KnowledgeLibrary context={context} opening={opening} onOpen={open} />}
+        {tab === '关联' && <KnowledgeLibrary context={readingContext} opening={opening} onOpen={open} />}
         {tab === '最近阅读' && data?.paths.slice(0, limit).map(path => {
           const frame = snapshotFrame(path);
           return <button key={path.pathId} type="button" className={styles.libraryRow} disabled={opening} onClick={() => void open({ pathId: path.pathId })}>

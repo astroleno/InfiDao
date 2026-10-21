@@ -3,6 +3,7 @@ import { LibrarySheet } from '@/components/flow/LibrarySheet';
 import { loadLibrary } from '@/lib/flow-browser/library';
 import { readingStorage } from '@/lib/flow-browser/storage';
 import { NotesPanel } from '@/components/flow/NotesPanel';
+import { readingGraph } from '@/lib/flow-browser/graph';
 import type { PersonalNote } from '@/lib/flow-browser/storage';
 jest.mock('@/lib/flow-browser/library', () => ({ loadLibrary: jest.fn(), downloadNotes: jest.fn() }));
 jest.mock('@/lib/flow-browser/graph', () => ({ readingGraph: { library: jest.fn(async () => ({ entries: [], connections: [] })), status: () => ({ persisted: true }) } }));
@@ -66,4 +67,26 @@ test('failed new-note save leaves the typed text available for retry', async () 
   fireEvent.click(screen.getByRole('button', { name: '保存注脚' }));
   await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('仅本次可用'));
   expect(screen.getByRole('textbox')).toHaveValue('留下的文字');
+});
+
+test('background reading changes preserve the association being browsed in an open library', async () => {
+  jest.mocked(loadLibrary).mockResolvedValue({ paths: [], bookmarks: [], notes: [] });
+  jest.spyOn(readingStorage, 'loadPath').mockResolvedValue(null);
+  const graph = jest.mocked(readingGraph.library);
+  graph.mockClear();
+  graph.mockResolvedValue({
+    entries: [{ node: { id: 'topic', kind: 'topic', label: '明德慎罚', createdAt: 1 },
+      label: '明德慎罚', detail: '', source: '' }],
+    connections: [],
+  });
+  const callbacks = { onClose: jest.fn(), onOpen: async () => true, onChanged: jest.fn() };
+  const view = render(<LibrarySheet {...callbacks} context={{ pathId: 'original', frameId: 'first' }} />);
+  await screen.findByText('读过的经文会留在这里。');
+  fireEvent.click(screen.getByRole('tab', { name: '关联' }));
+  fireEvent.click(await screen.findByRole('button', { name: '主题 明德慎罚' }));
+  expect(screen.getByRole('heading', { name: '明德慎罚' })).toBeInTheDocument();
+  view.rerender(<LibrarySheet {...callbacks} context={{ pathId: 'other', frameId: 'second' }} />);
+  await act(async () => {});
+  expect(screen.getByRole('heading', { name: '明德慎罚' })).toBeInTheDocument();
+  expect(graph).toHaveBeenCalledTimes(1);
 });
