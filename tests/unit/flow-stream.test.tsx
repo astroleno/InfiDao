@@ -55,6 +55,38 @@ test('returning from an association lands on the quoted occurrence inside the fu
   expect(quoted).toHaveAttribute('data-source-quote');
 });
 
+test('a legacy nonzero reader offset restores its saved passage within the connected stream', () => {
+  const view = render(<FlowStream {...props} entries={[entry, second]} activeKey={entryKey(second)} />);
+  const panel = screen.getByRole('generic', { name: '经文阅读' });
+  const content = panel.firstElementChild as HTMLElement;
+  const article = view.container.querySelector<HTMLElement>('[data-flow-frame="second"]')!;
+  Object.defineProperty(panel, 'clientHeight', { value: 900 });
+  Object.defineProperty(content, 'offsetTop', { value: 100 });
+  Object.defineProperty(content, 'offsetParent', { value: panel });
+  Object.defineProperty(article, 'offsetTop', { value: 4000 });
+  Object.defineProperty(article, 'offsetParent', { value: content });
+  Object.defineProperty(article, 'offsetHeight', { value: 1000 });
+  view.rerender(<FlowStream {...props} entries={[entry, second]} activeKey={entryKey(second)}
+    restore={{ revision: 1, top: 570.5, frameId: 'second', entryKey: entryKey(second) }} />);
+  expect(panel.scrollTop).toBe(3875);
+});
+
+test('a unified stream offset that still addresses the saved passage is retained exactly', () => {
+  const view = render(<FlowStream {...props} entries={[entry, second]} activeKey={entryKey(second)} />);
+  const panel = screen.getByRole('generic', { name: '经文阅读' });
+  const content = panel.firstElementChild as HTMLElement;
+  const article = view.container.querySelector<HTMLElement>('[data-flow-frame="second"]')!;
+  Object.defineProperty(panel, 'clientHeight', { value: 900 });
+  Object.defineProperty(content, 'offsetTop', { value: 100 });
+  Object.defineProperty(content, 'offsetParent', { value: panel });
+  Object.defineProperty(article, 'offsetTop', { value: 4000 });
+  Object.defineProperty(article, 'offsetParent', { value: content });
+  Object.defineProperty(article, 'offsetHeight', { value: 1000 });
+  view.rerender(<FlowStream {...props} entries={[entry, second]} activeKey={entryKey(second)}
+    restore={{ revision: 1, top: 4000, frameId: 'second', entryKey: entryKey(second) }} />);
+  expect(panel.scrollTop).toBe(4000);
+});
+
 test('branching keeps the prefix mounted; old words send their actual owner', () => {
   const onBranch = jest.fn(), view = render(<FlowStream {...props} onBranch={onBranch} />);
   const word = screen.getByRole('button', { name: '知' });

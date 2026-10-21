@@ -73,11 +73,19 @@ export function FlowStream(props: Props) {
         while (node && node !== panel) { top += node.offsetTop; node = node.offsetParent as HTMLElement | null; }
         panel.scrollTop = Math.max(0, top - panel.clientHeight * .42);
       }
-    // Older bookmarks have a passage identity but no unified-stream offset.
-    } else if (!props.restore.top && props.restore.frameId) {
+    // Older readers stored a nonzero offset within their own chain. A saved
+    // passage also anchors offsets after a viewport or typography change.
+    } else if (props.restore.frameId) {
       const article = Array.from(panel.querySelectorAll<HTMLElement>('[data-flow-frame]'))
         .find(node => props.restore.entryKey ? node.dataset.streamKey === props.restore.entryKey : node.dataset.flowFrame === props.restore.frameId);
-      if (article) panel.scrollTop = Math.max(0, article.offsetTop - panel.clientHeight * .25);
+      if (article) {
+        let top = 0, node: HTMLElement | null = article;
+        while (node && node !== panel) { top += node.offsetTop; node = node.offsetParent as HTMLElement | null; }
+        const focus = panel.scrollTop + panel.clientHeight * .42;
+        if (!props.restore.top || focus < top || focus >= top + article.offsetHeight) {
+          panel.scrollTop = Math.max(0, top - panel.clientHeight * .25);
+        }
+      }
     }
     intended.current = false;
     measure.current();
