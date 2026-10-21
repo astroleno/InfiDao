@@ -1,5 +1,5 @@
 /** @jest-environment node */
-import { measureFlowPhase, withFlowTimings } from '@/lib/flow/timings';
+import { measureFlowPhase, withFlowTimings, recordFlowCounts } from '@/lib/flow/timings';
 
 const previous = process.env.FLOW_TIMINGS;
 afterEach(() => {
@@ -44,4 +44,16 @@ test('failures are measured without exposing or replacing errors', async () => {
   expect(JSON.stringify(report)).not.toContain(error.message);
   log.mockImplementation(() => { throw new Error('log unavailable'); });
   expect(await withFlowTimings('open', async () => 42)).toBe(42);
+});
+
+test('bounded diagnostics contain only whitelisted counts and no request content', async () => {
+  process.env.FLOW_TIMINGS = '1';
+  const log = jest.spyOn(console, 'info').mockImplementation(() => {});
+  await withFlowTimings('branch', async () => {
+    recordFlowCounts({ candidateChars: 720, promptTokens: 1000 });
+    recordFlowCounts({ promptTokens: 200, accepted: 1, inputChars: NaN, seed: 'private' } as any);
+  });
+  const report = JSON.parse(log.mock.calls[0]![1] as string);
+  expect(report.counts).toEqual({ candidateChars: 720, promptTokens: 1200, accepted: 1 });
+  expect(JSON.stringify(report)).not.toContain('private');
 });

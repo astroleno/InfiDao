@@ -43,12 +43,12 @@ test('deleting notes focuses the next note or undo and announces the result', as
   render(<Example />);
   expect(screen.getByRole('heading', { name: '自己的注脚', level: 2 })).toBeInTheDocument();
   act(() => screen.getAllByRole('button', { name: '删除' })[0]!.focus());
-  fireEvent.click(screen.getAllByRole('button', { name: '删除' })[0]!);
+  await act(async () => { fireEvent.click(screen.getAllByRole('button', { name: '删除' })[0]!); });
   await waitFor(() => expect(screen.getByRole('button', { name: '删除' })).toHaveFocus());
-  fireEvent.click(screen.getByRole('button', { name: '删除' }));
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: '删除' })); });
   await waitFor(() => expect(screen.getByRole('button', { name: '撤销删除' })).toHaveFocus());
   expect(screen.getByRole('status')).toHaveTextContent('注脚已删除');
-  fireEvent.click(screen.getByRole('button', { name: '撤销删除' }));
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: '撤销删除' })); });
   await waitFor(() => expect(screen.getByRole('textbox')).toHaveFocus());
   expect(screen.getByRole('status')).toHaveTextContent('注脚已恢复');
 });

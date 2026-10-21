@@ -54,6 +54,55 @@ describe('browser wheel lifecycle and input', () => {
   test('uses each browser animation frame with smaller refraction targets', () => {
     expect(renderer().minFrameInterval).toBe(0);
     expect(renderer().refractionScale).toBe(0.5);
+    expect(renderer().opticalProfile).toBe(true);
+  });
+
+  test('late appended glyphs retain the frame already selected in the paused reader', () => {
+    host.setPaused(true);
+    const next = { ...frame, id: 'second', ordinal: 1, quote: '知所先后，则近道矣。', fullText: '知所先后，则近道矣。' };
+    (callbacks.onActiveChange as jest.Mock).mockClear();
+    host.setFrames([frame, next], next.id);
+    host.setFrames([frame, next], next.id);
+    expect(host.snapshot().paused).toBe(true);
+    expect((callbacks.onActiveChange as jest.Mock).mock.calls.every(([active]) => active.passageId === next.id)).toBe(true);
+    expect(renderer().setFrames.mock.calls.at(-1)[0].some((row: any) => row?.passageId === next.id)).toBe(true);
+  });
+
+  test('resume expands light before restarting flow; the React mirror cannot interrupt it', () => {
+    host.setPaused(true); host.togglePause();
+    const instance = renderer();
+    expect(instance.animateTo).toHaveBeenCalledWith({ reading: 0, duration: 300 }, expect.any(Function));
+    expect(host.snapshot().paused).toBe(false); expect(instance.timeline.paused).toBe(true);
+    const stops = instance.stop.mock.calls.length;
+    host.setPaused(false); expect(instance.stop).toHaveBeenCalledTimes(stops);
+    instance.animateTo.mock.calls.at(-1)[1]();
+    expect(instance.timeline.paused).toBe(false); expect(instance.start).toHaveBeenCalled();
+  });
+
+  test('reduced motion cancels an outstanding optical resume', () => {
+    host.setPaused(true); host.togglePause();
+    const instance = renderer(), complete = instance.animateTo.mock.calls.at(-1)[1];
+    host.setReducedMotion(true);
+    const starts = instance.start.mock.calls.length;
+    complete();
+    expect(host.snapshot().paused).toBe(true); expect(instance.start).toHaveBeenCalledTimes(starts);
+  });
+
+  test('tapping the paused canvas uses the same optical resume as the button', () => {
+    host.setPaused(true);
+    host.pointerDown(pointer()); host.pointerUp(pointer());
+    expect(renderer().animateTo).toHaveBeenCalledWith({ reading: 0, duration: 300 }, expect.any(Function));
+    expect(host.snapshot().paused).toBe(false);
+    expect(renderer().timeline.paused).toBe(true);
+  });
+
+  test('resizing during optical resume restores the playing timeline', () => {
+    host.setPaused(true); host.togglePause();
+    expect(renderer().timeline.paused).toBe(true);
+    resize([], {} as ResizeObserver);
+    expect(host.snapshot().paused).toBe(false);
+    expect(renderer().timeline.paused).toBe(false);
+    expect(renderer().start).toHaveBeenCalled();
   });
 
   test('freezes phase, cancels touch and restores the previous pause state across background and page cache', () => {

@@ -1,9 +1,10 @@
 // Canonical UTF-16 ranges are shared by native text, wheel glyphs and branches.
 // Segmentation is shipped with the corpus; older saved records get a complete
 // character-level fallback, never a three-keyword whitelist.
-function ranges(frame) {
-  const text = frame.fullText || frame.passageQuote || frame.quote || '';
-  let ends = frame.lexicalBreaks;
+function ranges(frame, surface) {
+  const explanation = surface === 'meaning' || surface === 'reflection';
+  const text = explanation ? frame[surface] || '' : frame.fullText || frame.passageQuote || frame.quote || '';
+  let ends = explanation ? frame.textBreaks?.[surface] : frame.lexicalBreaks;
   if (!ends || ends[ends.length - 1] !== text.length) {
     let cursor = 0;
     ends = Array.from(text, char => (cursor += char.length));
@@ -15,13 +16,17 @@ function ranges(frame) {
     return range;
   }).filter(range => /[\p{L}\p{N}]/u.test(range.text));
 }
-function selectionFor(frame, range) {
-  return { start: range.start, end: range.end, textHash: frame.textHash, corpusVersion: frame.corpusVersion };
+function selectionFor(frame, range, surface) {
+  return { start: range.start, end: range.end, textHash: frame.textHash, corpusVersion: frame.corpusVersion,
+    ...(surface === 'meaning' || surface === 'reflection' ? { surface, surfaceText: frame[surface] } : {}) };
 }
 function resolveSelection(frame, selection) {
   if (!selection || selection.textHash !== frame.textHash || selection.corpusVersion !== frame.corpusVersion) return null;
-  const range = ranges(frame).find(item => item.start === selection.start && item.end === selection.end);
-  return range ? { ...range, id: `text:${range.start}:${range.end}`, selection: selectionFor(frame, range) } : null;
+  const surface = selection.surface;
+  if (surface && (!['meaning', 'reflection'].includes(surface) ||
+    (frame.ready === false && !frame.settled?.[surface]) || selection.surfaceText !== frame[surface])) return null;
+  const range = ranges(frame, surface).find(item => item.start === selection.start && item.end === selection.end);
+  return range ? { ...range, id: `${surface || 'text'}:${range.start}:${range.end}`, selection: selectionFor(frame, range, surface) } : null;
 }
 function classicSpans(frame, surface = 'quote', from, to) {
   const text = frame.fullText || frame.passageQuote || frame.quote || '';

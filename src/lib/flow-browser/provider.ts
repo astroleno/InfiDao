@@ -23,7 +23,7 @@ export type RemoteFlowProvider = {
   open: (input?: OpenInput, hooks?: Hooks) => Cancellable<BrowserFlowBatch>;
   resume: (input: { chainId: string }, hooks?: Hooks) => Cancellable<BrowserFlowBatch>;
   branch: (input: Omit<FlowRequest, 'op' | 'requestId'>, hooks?: Hooks) => Cancellable<BrowserFlowBatch>;
-  next: (input: { chainId: string; cursor: string }, hooks?: Hooks) => Cancellable<BrowserFlowBatch>;
+  next: (input: { chainId: string; cursor: string; prefetch?: true }, hooks?: Hooks) => Cancellable<BrowserFlowBatch>;
   restore: (chain: BrowserFlowBatch) => void;
 };
 const providerError = (code: string, message: string) => Object.assign(new Error(message), { code });
@@ -68,7 +68,7 @@ export function createRemoteFlowProvider(options: { fetch?: typeof fetch; timeou
       try {
         await ensureSession(controller.signal); controller.signal.throwIfAborted();
         const response = await fetcher(base + '/api/flow', { method: 'POST', credentials: 'same-origin', signal: controller.signal,
-          headers: { 'Content-Type': 'application/json', Accept: 'application/x-ndjson' }, body: JSON.stringify({ ...input, op, requestId }) });
+          headers: { 'Content-Type': 'application/json', Accept: 'application/x-ndjson' }, body: JSON.stringify({ ...input, graph: true, op, requestId }) });
         if (!response.ok) {
           if (response.status === 401) session = null;
           const body = await response.json().catch(() => null);
@@ -84,13 +84,16 @@ export function createRemoteFlowProvider(options: { fetch?: typeof fetch; timeou
           const event = JSON.parse(line) as FlowEvent;
           if (event.requestId !== requestId) return;
           if (event.type === 'error') throw providerError(event.code, event.message);
-          if (!['head', 'frame', 'done'].includes(event.type)) throw providerError('INVALID_RESPONSE', '阅读服务的回复不完整，请重试。');
+          if (!['head', 'progress', 'frame', 'done'].includes(event.type)) throw providerError('INVALID_RESPONSE', '阅读服务的回复不完整，请重试。');
           const chain = event.chain;
           if (!chain?.chainId || chain.kind !== 'remote' || !Array.isArray(chain.frames)) throw providerError('INVALID_RESPONSE', '经文尚未核验完整，请重试。');
           for (const frame of chain.frames) {
             if (!frame.id || typeof frame.fullText !== 'string' || !frame.quote || !Array.isArray(frame.anchors) ||
               typeof frame.ready !== 'boolean' || frame.fullText.slice(frame.quoteStart, frame.quoteEnd) !== frame.quote) {
               throw providerError('INVALID_RESPONSE', '经文尚未核验完整，请重试。');
+            }
+            if (frame.settled && (typeof frame.settled.meaning !== 'boolean' || typeof frame.settled.reflection !== 'boolean')) {
+              throw providerError('INVALID_RESPONSE', '段落尚未核验完整，请重试。');
             }
           }
           controller.signal.throwIfAborted();

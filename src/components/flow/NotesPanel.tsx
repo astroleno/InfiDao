@@ -3,6 +3,8 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import type { PersonalNote } from '@/lib/flow-browser/storage';
 import styles from './flow.module.css';
+import { EditableNote } from './EditableNote';
+import { useNoteDraft } from './useNoteDraft';
 
 type Props = {
   notes: PersonalNote[];
@@ -10,10 +12,13 @@ type Props = {
   onSave: (text: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
   onUndo: () => Promise<void>;
+  onUpdate?: (id: string, text: string) => Promise<void>;
+  draftKey?: string;
 };
 
-export function NotesPanel({ notes, saving, onSave, onDelete, onUndo }: Props) {
-  const [draft, setDraft] = useState('');
+export function NotesPanel({ notes, saving, onSave, onDelete, onUndo, onUpdate, draftKey }: Props) {
+  const draft = useNoteDraft(draftKey);
+  const submitting = useRef(false);
   const [removed, setRemoved] = useState(false);
   const [message, setMessage] = useState('');
   const [deleting, setDeleting] = useState(false);
@@ -23,7 +28,7 @@ export function NotesPanel({ notes, saving, onSave, onDelete, onUndo }: Props) {
 
   useLayoutEffect(() => {
     const target = pendingFocus.current;
-    if (!target) return;
+    if (!target || deleting) return;
     pendingFocus.current = null;
     if (target === 'undo') undoRef.current?.focus();
     else if (target === 'input') panelRef.current?.querySelector('textarea')?.focus();
@@ -31,10 +36,17 @@ export function NotesPanel({ notes, saving, onSave, onDelete, onUndo }: Props) {
   }, [notes, removed, message, deleting]);
 
   async function submit() {
-    const text = draft.trim();
-    if (!text || saving) return;
-    await onSave(text);
-    setDraft('');
+    const original = draft.text;
+    const text = original.trim();
+    if (!text || saving || submitting.current) return;
+    submitting.current = true;
+    try {
+      await onSave(text);
+      const cleared = await draft.clear(original);
+      setMessage(cleared ? '注脚已保存。' : '上一条注脚已保存，当前草稿仍在。');
+    }
+    catch (error) { setMessage(error instanceof Error ? error.message : '保存未成功，请重试。'); }
+    finally { submitting.current = false; }
   }
 
   async function remove(id: string) {
@@ -68,18 +80,18 @@ export function NotesPanel({ notes, saving, onSave, onDelete, onUndo }: Props) {
       <h2 id="flow-notes-title">自己的注脚</h2>
       <p className={styles.muted}>只保存在这台设备，不会作为模型内容发送。</p>
       <label className={styles.srOnly} htmlFor="flow-note-input">写下自己的注脚</label>
-      <textarea id="flow-note-input" value={draft} maxLength={1000} onChange={event => setDraft(event.target.value)} placeholder="记下你自己的联想……" />
-      <button className={styles.quietButton} type="button" disabled={!draft.trim() || saving} onClick={() => void submit()}>
+      <textarea id="flow-note-input" value={draft.text} maxLength={1000} onChange={event => { draft.change(event.target.value); setMessage(''); }} placeholder="记下你自己的联想……" />
+      <button className={styles.quietButton} type="button" disabled={!draft.text.trim() || saving} onClick={() => void submit()}>
         {saving ? '保存中' : '保存注脚'}
       </button>
       {notes.map(note => (
         <article key={note.id} className={styles.noteItem}>
-          <p>{note.text}</p>
+          {onUpdate ? <EditableNote note={note} onUpdate={onUpdate} /> : <p>{note.text}</p>}
           <button data-note-id={note.id} className={styles.textButton} type="button" disabled={deleting} onClick={() => void remove(note.id)}>删除</button>
         </article>
       ))}
       {removed && <button ref={undoRef} className={styles.textButton} type="button" onClick={() => void undo()}>撤销删除</button>}
-      <p className={styles.muted} role="status">{message}</p>
+      <p className={styles.muted} role="status">{draft.message || message}</p>
     </section>
   );
 }

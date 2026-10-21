@@ -51,3 +51,11 @@ test('isolates background controls and restores prior attributes and focus on cl
   expect(screen.getByTestId('background')).not.toHaveAttribute('inert');
   expect(trigger).toHaveFocus();
 });
+
+test('Escape used by a Chinese input method does not dismiss the thought', () => {
+  const p = props(); render(<SeedSheet {...p} />);
+  fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Escape', isComposing: true });
+  expect(p.onClose).not.toHaveBeenCalled();
+  fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Escape' });
+  expect(p.onClose).toHaveBeenCalledTimes(1);
+});

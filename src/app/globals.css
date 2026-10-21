@@ -2,89 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Shared optical palette. HSL aliases keep existing Tailwind consumers aligned. */
 
 @layer base {
-  :root {
-    --background: 24 18% 8%;
-    --foreground: 38 25% 88%;
-    --paper: 42 39% 89%;
-    --ink: 24 15% 7%;
-    --zen: 40 34% 66%;
-    --seal: 7 43% 43%;
-
-    --card: 24 16% 11%;
-    --card-foreground: 38 25% 88%;
-    --reader-surface: 24 17% 11%;
-    --reader-surface-muted: 24 14% 15%;
-    --reader-border: 24 13% 24%;
-    --reader-muted: 28 12% 60%;
-    --reader-danger: 0 57% 24%;
-
-    --popover: 24 16% 11%;
-    --popover-foreground: 38 25% 88%;
-
-    --primary: 37 33% 60%;
-    --primary-foreground: 24 18% 10%;
-
-    --secondary: 24 13% 18%;
-    --secondary-foreground: 38 18% 78%;
-
-    --muted: 24 12% 16%;
-    --muted-foreground: 28 12% 60%;
-
-    --accent: 37 33% 60%;
-    --accent-foreground: 24 18% 10%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 24 12% 24%;
-    --input: 24 12% 24%;
-    --ring: 37 33% 60%;
-
-    --radius: 0.5rem;
-  }
-
+  :root,
   .dark {
-    --background: 24 18% 8%;
-    --foreground: 38 25% 88%;
-    --paper: 42 39% 89%;
-    --ink: 24 15% 7%;
-    --zen: 40 34% 66%;
-    --seal: 7 43% 43%;
+    --void: #020303;
+    --beam: #f4f6fa;
+    --halo: rgba(225, 236, 248, 0.15);
+    --optical-text: #d7dce3;
+    --optical-muted: #9ea4ae;
+    --optical-focus: var(--beam);
+    --background: 180 20% 1%;
+    --foreground: 220 38% 97%;
+    --paper: var(--foreground);
+    --ink: var(--background);
+    --zen: 220 16% 89%;
+    --seal: var(--zen);
 
-    --card: 24 16% 11%;
-    --card-foreground: 38 25% 88%;
-    --reader-surface: 24 17% 11%;
-    --reader-surface-muted: 24 14% 15%;
-    --reader-border: 24 13% 24%;
-    --reader-muted: 28 12% 60%;
+    --card: 216 16% 5%;
+    --card-foreground: var(--foreground);
+    --reader-surface: var(--card);
+    --reader-surface-muted: 216 10% 10%;
+    --reader-border: 216 8% 24%;
+    --reader-muted: 218 9% 65%;
     --reader-danger: 0 57% 24%;
+    --popover: var(--card);
+    --popover-foreground: var(--foreground);
 
-    --popover: 24 16% 11%;
-    --popover-foreground: 38 25% 88%;
+    --primary: var(--zen);
+    --primary-foreground: var(--background);
 
-    --primary: 37 33% 60%;
-    --primary-foreground: 24 18% 10%;
+    --secondary: 216 8% 16%;
+    --secondary-foreground: 215 18% 87%;
 
-    --secondary: 24 13% 18%;
-    --secondary-foreground: 38 18% 78%;
+    --muted: var(--secondary);
+    --muted-foreground: var(--reader-muted);
 
-    --muted: 24 12% 16%;
-    --muted-foreground: 28 12% 60%;
-
-    --accent: 37 33% 60%;
-    --accent-foreground: 24 18% 10%;
+    --accent: var(--zen);
+    --accent-foreground: var(--background);
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 24 12% 24%;
-    --input: 24 12% 24%;
-    --ring: 37 33% 60%;
+    --border: var(--reader-border);
+    --input: var(--reader-border);
+    --ring: var(--zen);
+    --radius: 0.5rem;
   }
 }
 
@@ -95,31 +59,25 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground font-sans;
-    background-image:
-      radial-gradient(circle at top, rgba(114, 90, 50, 0.22), transparent 32%),
-      radial-gradient(circle at bottom, rgba(71, 58, 33, 0.18), transparent 35%),
-      linear-gradient(180deg, rgba(12, 10, 9, 0.98), rgba(20, 17, 15, 1));
+    background: var(--void);
     min-height: 100vh;
     min-height: 100dvh;
   }
 
   ::selection {
-    background: rgba(199, 179, 139, 0.28);
-    color: #f6f1e7;
+    background: rgba(225, 236, 248, 0.2);
+    color: var(--beam);
   }
 }
 
 @layer utilities {
   .ritual-shell {
-    background-image:
-      radial-gradient(circle at 50% 22%, rgba(199, 179, 139, 0.09), transparent 24%),
-      linear-gradient(180deg, rgba(20, 17, 15, 0.94), rgba(12, 10, 9, 0.99));
+    background: var(--void);
   }
 
   .page-vignette {
     background:
-      radial-gradient(circle at center, transparent 0%, rgba(20, 17, 15, 0.2) 48%, rgba(10, 9, 8, 0.94) 100%),
-      linear-gradient(90deg, rgba(10, 9, 8, 0.74), transparent 20%, transparent 80%, rgba(10, 9, 8, 0.74));
+      radial-gradient(circle at center, transparent 0%, rgba(2, 3, 3, 0.2) 48%, rgba(2, 3, 3, 0.94) 100%);
   }
 
   .writing-vertical {
@@ -138,8 +96,8 @@ All colors MUST be HSL.
       opacity 380ms ease,
       filter 380ms ease,
       transform 420ms ease;
-    -webkit-mask-image: radial-gradient(ellipse 34% 24% at 50% 52%, transparent 0%, transparent 46%, rgba(0, 0, 0, 0.35) 64%, #000 100%);
-    mask-image: radial-gradient(ellipse 34% 24% at 50% 52%, transparent 0%, transparent 46%, rgba(0, 0, 0, 0.35) 64%, #000 100%);
+    -webkit-mask-image: radial-gradient(ellipse 56% 48% at 50% 50%, transparent 0%, transparent 64%, rgba(0, 0, 0, 0.2) 82%, #000 100%);
+    mask-image: radial-gradient(ellipse 56% 48% at 50% 50%, transparent 0%, transparent 64%, rgba(0, 0, 0, 0.2) 82%, #000 100%);
   }
 
   .kinetic-text-stage.kinetic-text-stage--typing {
@@ -196,7 +154,7 @@ All colors MUST be HSL.
     font-size: clamp(0.95rem, 1.5vw, 1.7rem);
     letter-spacing: 0;
     line-height: 1.55;
-    text-shadow: 0 12px 44px rgba(199, 179, 139, 0.16);
+    text-shadow: 0 12px 44px var(--halo);
     white-space: nowrap;
     will-change: transform, opacity;
   }
@@ -217,7 +175,7 @@ All colors MUST be HSL.
   }
 
   .kinetic-text-line--classic {
-    color: hsl(var(--zen) / 0.72);
+    color: hsl(var(--foreground) / 0.72);
   }
 
   .kinetic-text-line--thought {
@@ -225,7 +183,7 @@ All colors MUST be HSL.
   }
 
   .kinetic-text-line--response {
-    color: rgba(161, 86, 66, 0.56);
+    color: hsl(var(--foreground) / 0.56);
   }
 
   .kinetic-text-stage--paused .kinetic-text-line,
@@ -260,8 +218,8 @@ All colors MUST be HSL.
     }
 
     .kinetic-text-stage {
-      -webkit-mask-image: radial-gradient(ellipse 48% 27% at 50% 40%, transparent 0%, transparent 48%, rgba(0, 0, 0, 0.38) 68%, #000 100%);
-      mask-image: radial-gradient(ellipse 48% 27% at 50% 40%, transparent 0%, transparent 48%, rgba(0, 0, 0, 0.38) 68%, #000 100%);
+      -webkit-mask-image: radial-gradient(ellipse 84% 44% at 50% 42%, transparent 0%, transparent 66%, rgba(0, 0, 0, 0.2) 86%, #000 100%);
+      mask-image: radial-gradient(ellipse 84% 44% at 50% 42%, transparent 0%, transparent 66%, rgba(0, 0, 0, 0.2) 86%, #000 100%);
     }
 
     .kinetic-text-line:nth-child(n + 15) {

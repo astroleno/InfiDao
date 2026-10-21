@@ -1,4 +1,4 @@
-import { FlowError, type FlowChain, type FlowFrame } from './contracts';
+import { FlowError, type FlowChain, type FlowFrame, type FlowReadingContext } from './contracts';
 import { retainSemantics, type SemanticEntry } from './semantic-index';
 
 export const SESSION_TTL_MS = 6 * 60 * 60 * 1000;
@@ -6,7 +6,8 @@ export const OPERATION_LEASE_MS = 45_000;
 export type StoredChain = {
   owner: string; chain: FlowChain; terms: string[]; seen: string[];
   nodes: Record<string, FlowFrame>; branches: Record<string, string>;
-  initial?: FlowChain; fromQuote?: string; generationKey: string; updated: number;
+  initial?: FlowChain; fromQuote?: string; priorQuotes?: string[]; generationKey: string; updated: number;
+  readingContext?: FlowReadingContext;
 };
 export type OperationLease = { key: string; holder: string; version: number; expiresAt: number };
 type Operation = { version: number; holder: string; expiresAt: number; updated: number; chainId?: string; result?: FlowChain };
@@ -127,6 +128,26 @@ export function createSessionStore(backend: AtomicDocumentBackend, options: { cr
         }
         const existing = document.chains[state.chain.chainId];
         const saved = { ...clone(state), branches: { ...state.branches, ...existing?.branches }, updated: now };
+        document.chains[state.chain.chainId] = saved;
+        document.operations[lease.key]!.chainId = state.chain.chainId;
+        return clone(saved);
+      }, lease);
+    },
+    commitProgress(owner: string, lease: OperationLease, state: StoredChain, expectedCursor: string | null) {
+      return mutate(owner, (document, now) => {
+        const current = document.chains[state.chain.chainId];
+        if (!current || current.owner !== owner) throw expired();
+        if (current.chain.cursor !== expectedCursor) throw new FlowError('CURSOR_CHANGED', '阅读进度已更新，请继续当前经文。', 409);
+        for (const frame of state.chain.frames) {
+          const old = current.nodes[frame.id];
+          if (old && (old.quote !== frame.quote || old.textHash !== frame.textHash || old.sourceId !== frame.sourceId)) {
+            throw new FlowError('FRAME_CHANGED', '经句身份发生变化，已保留原来的阅读。', 409);
+          }
+          for (const surface of ['meaning', 'reflection'] as const) {
+            if (old?.settled?.[surface] && old[surface] !== frame[surface]) throw new FlowError('FRAME_CHANGED', '已读的段落发生变化，已保留原来的阅读。', 409);
+          }
+        }
+        const saved = { ...clone(state), branches: { ...current.branches }, updated: now };
         document.chains[state.chain.chainId] = saved;
         document.operations[lease.key]!.chainId = state.chain.chainId;
         return clone(saved);

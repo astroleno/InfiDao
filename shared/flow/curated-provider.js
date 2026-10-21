@@ -70,7 +70,9 @@ function createCuratedProvider() {
       if (node && selection) {
         const token = resolveSelection(node, selection);
         if (!token) throw new Error('这个字词的位置已经变化，请重新选择。');
-        const prepared = node.anchors.find(item => item.surface === 'quote' && node.quoteStart + item.start === token.start && node.quoteStart + item.end === token.end);
+        const surface = selection.surface || 'quote';
+        const offset = selection.surface ? 0 : node.quoteStart;
+        const prepared = node.anchors.find(item => item.surface === surface && offset + item.start === token.start && offset + item.end === token.end);
         const targetId = prepared?.targetId;
         if (!targetId) throw Object.assign(new Error('这个字词还没有离线接续。连接 DS 后，可按原文语境展开。'), { code: 'CONNECTION_REQUIRED' });
         anchor = { label: token.text, targetId };

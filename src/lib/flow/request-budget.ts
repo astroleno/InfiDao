@@ -10,7 +10,9 @@ export type FlowBudgetLimits = {
 };
 type Counters = { minute: number; requests: number; day: number; models: number; updated: number };
 type BudgetDocument = { active: Record<string, { owner: string; ip: string; expiresAt: number; reservedModels?: number }>; counters: Record<string, Counters> };
-const limited = () => new FlowError('BUDGET_REACHED', '先读一会儿，稍后再展开新的联系。', 429);
+const limited = (models = false) => new FlowError('BUDGET_REACHED', models
+  ? '新的联系暂到额度上限，已读经文仍可回看。'
+  : '先读一会儿，稍后再展开新的联系。', 429);
 
 export function flowBudgetLimits(): FlowBudgetLimits {
   const limit = (name: string, development: number) => {
@@ -69,13 +71,14 @@ export function createFlowBudget(backend: AtomicDocumentBackend, key: string, li
       }
       const caps = [limits.modelsSite, limits.modelsOwner, limits.modelsIP];
       return {
-        async reserveModels(count: number) {
+        async reserveModels(count: number, headroom = 0) {
           if (!Number.isSafeInteger(count) || count < 1) throw new Error('Invalid model reservation');
+          if (!Number.isSafeInteger(headroom) || headroom < 0) throw new Error('Invalid model headroom');
           await mutate((document, now) => {
             const active = document.active[token];
             if (!active || active.owner !== owner || active.ip !== ip) throw limited();
             const counters = scopes.map(id => counter(document, id, now)), reserved = held(document);
-            if (counters.some((entry, index) => entry.models + reserved[index]! + count > caps[index]!)) throw limited();
+            if (counters.some((entry, index) => entry.models + reserved[index]! + count + headroom > caps[index]!)) throw limited(true);
             active.reservedModels = (active.reservedModels || 0) + count;
           });
         },
@@ -87,7 +90,7 @@ export function createFlowBudget(backend: AtomicDocumentBackend, key: string, li
             const consumesReservation = (active.reservedModels || 0) > 0;
             // Legacy/unreserved calls cannot spend another request's holds.
             const additional = consumesReservation ? 0 : 1;
-            if (counters.some((entry, index) => entry.models + reserved[index]! + additional > caps[index]!)) throw limited();
+            if (counters.some((entry, index) => entry.models + reserved[index]! + additional > caps[index]!)) throw limited(true);
             if (consumesReservation) active.reservedModels = active.reservedModels! - 1;
             counters.forEach(entry => entry.models++);
           });

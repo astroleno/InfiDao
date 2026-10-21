@@ -114,3 +114,25 @@ test('a failed optional repair hold preserves the mandatory review allowance', a
     await expect(chargeFlowModel()).rejects.toMatchObject({ code: 'BUDGET_REACHED' });
   });
 });
+
+test('preparation checks three calls of headroom without holding them away from foreground work', async () => {
+  const f = setup({ concurrentOwner: 2, modelsOwner: 5, modelsIP: 5, modelsSite: 5 });
+  const background = await f.worker().acquire('one', 'ip');
+  await background.reserveModels(2, 3);
+  const saved = JSON.parse((await f.backend.read('test:budget')).value!);
+  expect(Object.values(saved.active).map((entry: any) => entry.reservedModels)).toEqual([2]);
+  const foreground = await f.worker().acquire('one', 'ip');
+  await foreground.reserveModels(3);
+  await foreground.chargeModel(); await foreground.chargeModel(); await foreground.chargeModel();
+  await background.chargeModel(); await background.chargeModel();
+  expect(JSON.parse((await f.backend.read('test:budget')).value!).counters.site.models).toBe(5);
+  await expect(foreground.chargeModel()).rejects.toMatchObject({ code: 'BUDGET_REACHED' });
+});
+
+test('declining a preparation leaves the final two calls available to manual continuation', async () => {
+  const f = setup({ modelsOwner: 2, modelsIP: 2, modelsSite: 2 });
+  const request = await f.worker().acquire('one', 'ip');
+  await expect(request.reserveModels(2, 3)).rejects.toMatchObject({ code: 'BUDGET_REACHED' });
+  await request.reserveModels(2); await request.chargeModel(); await request.chargeModel();
+  expect(JSON.parse((await f.backend.read('test:budget')).value!).counters.site.models).toBe(2);
+});

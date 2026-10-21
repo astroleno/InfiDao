@@ -31,7 +31,8 @@ function createChainStore(api, { memoryLimit = 8, byteLimit = 3 * 1024 * 1024, p
   function put(chain, snapshot = {}, id = chain.chainId) {
     const record = copy({ chain, snapshot });
     const bytes = JSON.stringify(record).length * 3;
-    const metadata = { bytes, parentChainId: chain.parentChainId, entry: chain.entry, focus: chain.focus,
+    const metadata = { bytes, parentChainId: snapshot?.__flowRecord?.parentPathId ?? chain.parentChainId,
+      entry: snapshot?.__flowRecord?.parentEntry || chain.entry, focus: chain.focus,
       chainId: chain.chainId, window: id !== chain.chainId, ordinal: chain.frames[0].ordinal, updatedAt: Date.now() };
     protectedChains.add(chain.chainId);
     if (temporary) return putTemporary(record, metadata, id);

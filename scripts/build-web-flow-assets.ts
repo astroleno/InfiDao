@@ -44,7 +44,7 @@ function addSource(relative: string) {
   }
 }
 for (const directory of ['src', 'shared', 'miniprogram/flow', 'miniprogram/content', 'scripts']) addSource(directory);
-for (const file of ['package.json', 'next.config.js', 'Dockerfile', 'docker-compose.yml', 'nginx.conf']) {
+for (const file of ['package.json', 'next.config.js', 'tailwind.config.ts', 'postcss.config.js', 'Dockerfile', 'docker-compose.yml', 'nginx.conf']) {
   sourceDigest.update(file).update(read(file));
 }
 const codeHash = sourceDigest.digest('hex');
@@ -56,7 +56,7 @@ const release = {
   id: process.env.INFIDAO_RELEASE_ID || hash(codeHash + corpusHash + fontHash + curated.version).slice(0, 16),
   commit, worktreeDirty, codeSha256: codeHash, corpusVersion: corpus.version, corpusSha256: corpusHash,
   curatedVersion: curated.version, fontVersion: manifest.version, fontManifestSha256: fontHash,
-  fontBasePath: '/flow-assets/v-' + manifest.version, storageSchema: { browser: 2, server: 1 },
+  fontBasePath: '/flow-assets/v-' + manifest.version, fontPreloads: manifest.baseFonts.map(font => font.file), storageSchema: { browser: 4, server: 1 },
 };
 const releaseDirectory = path.join(root, 'public/flow-releases');
 fs.mkdirSync(releaseDirectory, { recursive: true });

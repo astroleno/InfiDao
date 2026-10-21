@@ -3,6 +3,7 @@ const { CELL, CENTER_PHASE, modulo } = require('./timeline');
 const { CENTER_SCALE, ROW_TURN_MIN, ROW_TURN_STEP, sceneMetrics, wheelGeometry, quotationGeometry, projectedRows, projectedGlyphs } = require('./scene');
 const { ranges, selectionFor } = require('./classic-text');
 const { NOISE_SIZE, inkLight, grainPixels, INK_GLSL } = require('./atmosphere');
+const { BEND_FRAGMENT } = require('./stream-bend');
 
 const BACKGROUND_VERTEX = `
 attribute vec3 a_position;
@@ -11,8 +12,9 @@ void main() { gl_Position = vec4(a_position, 1.0); }
 const BACKGROUND_FRAGMENT = `
 precision highp float;
 uniform vec2 u_resolution;
+uniform float u_opticalProfile;
 ${INK_GLSL}
-void main() { gl_FragColor = vec4(inkBackground(), 1.0); }
+void main() { gl_FragColor = vec4(mix(inkBackground(), vec3(2.0, 3.0, 3.0) / 255.0, u_opticalProfile), 1.0); }
 `;
 
 const VERTEX = `
@@ -93,14 +95,18 @@ uniform float u_radius;
 uniform float u_final;
 uniform float u_reading;
 uniform float u_readingAmbient;
+uniform float u_opticalProfile;
+uniform float u_chromaticStrength;
+uniform float u_edgeFadeStart;
 varying vec3 v_position;
+varying vec3 v_normal;
 // Edge fade lives in the fragment stage: the glass wall is one quad strip
 // with vertices only at ±height, so a vertex-level fade interpolates to zero
 // across the whole wall and the glass vanishes.
 float edgeFade() {
   float camera = u_resolution.y * 0.5;
   float ndcY = v_position.y / (camera - v_position.z);
-  return 1.0 - smoothstep(0.9, 0.995, abs(ndcY));
+  return 1.0 - smoothstep(u_edgeFadeStart, 0.995, abs(ndcY));
 }
 // Camera-lens depth of field: blur follows real distance from the focal
 // plane (the centered reading line), not line index.
@@ -111,6 +117,22 @@ float depthBlur() {
   return clamp(abs(dist - focal) * 0.007, 0.0, 0.8);
 }
 float centerWeight() { float d = v_position.y / u_pitch; return exp(-d * d * 0.55); }
+float opticalDefocus() {
+  // Row-plane tilt is constant across a glyph: its top/bottom strokes must
+  // not acquire colour fringes while the whole reading line is in focus.
+  float y = abs(v_normal.y);
+  // Overlapping focal bands interpolate without hard depth boundaries.
+  float layers = 0.18 * smoothstep(0.08, 0.24, y)
+    + 0.24 * smoothstep(0.24, 0.50, y)
+    + 0.38 * smoothstep(0.50, 0.90, y);
+  return mix(depthBlur(), max(depthBlur() * smoothstep(0.08, 0.24, y), layers), u_opticalProfile);
+}
+float chromaticSpread() {
+  // Defocused peripheral rows retain quiet, stationary dispersion on pause.
+  // The focal row remains white because its opticalDefocus is zero.
+  float resting = min(u_readingAmbient * 2.0, 0.6) * smoothstep(0.16, 0.60, abs(v_normal.y));
+  return mix(1.0, mix(1.0, resting, u_reading) * u_chromaticStrength, u_opticalProfile);
+}
 float opacity() {
   float camera = u_resolution.y * 0.5;
   float y = v_position.y / (camera - v_position.z);
@@ -138,11 +160,11 @@ float glyphAlpha(vec2 uv, float blur) {
   return a;
 }
 void main() {
-  float dof = depthBlur();
-  float blur = dof * 8.0 / u_atlasSize;
+  float dof = opticalDefocus();
+  float blur = dof * 8.0 / u_atlasSize * mix(1.0, 1.0 - u_reading * 0.45, u_opticalProfile);
   // Lens chromatic aberration grows with defocus: red/blue channels split
   // along the glyph axis on out-of-focus rows.
-  float ca = dof * 3.0 / u_atlasSize;
+  float ca = dof * 3.0 / u_atlasSize * mix(1.0, 1.4 + dof * 2.0, u_opticalProfile) * chromaticSpread();
   vec3 rgb = vec3(
     glyphAlpha(v_uv + vec2(ca, 0.0), blur),
     glyphAlpha(v_uv, blur),
@@ -162,41 +184,62 @@ uniform sampler2D u_texture;
 uniform float u_thickness;
 uniform float u_back;
 uniform float u_borderless;
-varying vec3 v_normal;
+uniform float u_streamDispersion;
 ${FOCUS}
 ${INK_GLSL}
 float random(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+vec2 projectedUv(vec3 position) {
+  float camera = u_resolution.y * 0.5;
+  return position.xy * camera / (camera - position.z) / u_resolution + 0.5;
+}
 vec3 transmitted(vec3 n, vec3 v, float ior, float thickness) {
   // Volume transmission: trace the wavelength's ray through the glass and
   // project the exit point into the scene buffer. At this radius the throw
   // lands inside the dark bands between rows, so echoes stay visible.
   vec3 ray = normalize(refract(-v, n, 1.0 / ior)) * thickness;
   vec3 exitPoint = v_position + ray;
-  float camera = u_resolution.y * 0.5;
-  vec2 uv = exitPoint.xy * camera / (camera - exitPoint.z) / u_resolution + 0.5;
+  vec2 uv = projectedUv(exitPoint);
   if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) return vec3(0.0);
   float fresnel = 0.04 + 0.96 * pow(1.0 - max(dot(n, v), 0.0), 5.0);
   return texture2D(u_texture, uv).rgb * (1.0 - fresnel);
 }
 void main() {
+  float camera = u_resolution.y * 0.5;
+  float distance = abs(v_position.y / (camera - v_position.z));
+  float dispersion = u_streamDispersion * u_final * smoothstep(0.34, 0.80, distance);
   vec3 n = normalize(v_normal) * (u_back > 0.5 ? -1.0 : 1.0);
-  vec3 v = normalize(vec3(0.0, 0.0, u_resolution.y * 0.5) - v_position);
+  vec3 v = normalize(vec3(0.0, 0.0, camera) - v_position);
+  // Focus belongs to the projected light, independently of foreground depth.
+  // Measure the unperturbed ray's screen-space throw back to its source glyph:
+  // close projections stay compact; distant projections spread and fade.
+  vec3 referenceRay = normalize(refract(-v, n, 1.0 / 1.5)) * u_thickness;
+  float projectionDistance = length((projectedUv(v_position + referenceRay)
+    - projectedUv(v_position)) * u_resolution);
+  float projectionDefocus = smoothstep(3.0, max(36.0, u_pitch * 1.1), projectionDistance);
+  float roughness = mix(0.045 + depthBlur() * 0.09,
+    mix(0.032, 0.10, projectionDefocus), u_streamDispersion);
   vec3 light = vec3(0.0);
   float seed = random(gl_FragCoord.xy);
+  float spread = chromaticSpread() * mix(1.0, 1.0 + opticalDefocus() * 0.5, u_opticalProfile);
+  spread *= 1.0 + dispersion * 0.45;
   for (int i = 0; i < 8; i++) {
     float phase = (float(i) + seed) / 8.0;
     float thickness = u_thickness * (1.0 + 0.1 * phase);
-    // Roughness keeps the 8 taps diverging even at the focal plane, so echoes
-    // smear into soft halos of light instead of sharp duplicate glyphs.
-    float blur = 0.045 + depthBlur() * 0.09;
-    vec3 normal = normalize(n + vec3(sin(float(i) * 2.4), cos(float(i) * 2.4), 0.0) * blur);
+    // All eight wavelength taps remain; only their spatial footprint changes.
+    vec3 normal = normalize(n + vec3(sin(float(i) * 2.4), cos(float(i) * 2.4), 0.0) * roughness);
+    // Keep the full wavelength distribution: overlapping rough rays produce
+    // the original diamond fire instead of isolated blocks of primary colour.
     light.r += transmitted(normal, v, 1.5, thickness).r;
-    light.g += transmitted(normal, v, 1.5 * (1.0 + 0.09 * phase), thickness).g;
-    light.b += transmitted(normal, v, 1.5 * (1.0 + 0.20 * phase), thickness).b;
+    light.g += transmitted(normal, v, 1.5 * (1.0 + 0.09 * phase * spread), thickness).g;
+    light.b += transmitted(normal, v, 1.5 * (1.0 + 0.20 * phase * spread), thickness).b;
   }
   light /= 8.0;
-  // Keep the dispersion calm: echoes stay under the text they came from.
-  light *= 0.5;
+  // White glyphs own the reading plane. Keep the multi-colour transmission
+  // behind and beside them, with more room for light outside that plane.
+  light *= mix(0.5, 0.7, u_streamDispersion * u_final);
+  float readingTransmission = mix(0.35, 1.0, smoothstep(0.18, 0.72, distance));
+  light *= mix(1.0, readingTransmission, u_streamDispersion * u_final);
+  light *= mix(1.0, mix(1.0, 0.58, projectionDefocus), u_streamDispersion);
   // The far wall throws its echoes half a screen away, doubling rows onto
   // each other; keep it to a whisper so only the front fringe reads.
   light *= u_back > 0.5 ? 0.25 : 1.0;
@@ -207,12 +250,13 @@ void main() {
   // A barely visible neutral grazing reflection keeps the glass path connected.
   // Wide browser canvases expose the cylinder silhouette as two hard rails.
   // Fade only its grazing transmission; keep the glyphs and central dispersion.
-  light *= mix(1.0, smoothstep(0.0, 0.28, abs(dot(n, v))), u_borderless);
+  float grazing = mix(1.0, smoothstep(0.0, 0.28, abs(dot(n, v))), u_borderless);
+  light *= grazing;
   float rim = pow(1.0 - abs(dot(n, v)), 5.0) * 0.04 * (1.0 - u_borderless);
   vec3 color = (light + vec3(rim)) * opacity();
   // Add atmosphere only in the final image, outside the refraction buffers.
   // This keeps white glyphs and dispersion intact and grain in screen space.
-  if (u_final > 0.5) color += inkBackground();
+  if (u_final > 0.5) color += mix(inkBackground(), vec3(2.0, 3.0, 3.0) / 255.0, u_opticalProfile);
   gl_FragColor = vec4(color, 1.0);
 }
 `;
@@ -234,7 +278,7 @@ function makeProgram(gl, fragment, vertex = VERTEX) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','thickness','back','borderless','noise','dpr','inkLight','atlasSize'].forEach(name => {
+  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','inkMeta','inkEnabled'].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   });
   return { program, uniforms, attributes: ['position','normal','uv'].map(name => gl.getAttribLocation(program, 'a_' + name)) };
@@ -297,10 +341,10 @@ class WheelRenderer {
     return texture;
   }
 
-  target() {
+  target(scale = this.refractionScale) {
     const gl = this.gl;
-    const width = Math.max(1, Math.round(this.canvas.width * this.refractionScale));
-    const height = Math.max(1, Math.round(this.canvas.height * this.refractionScale));
+    const width = Math.max(1, Math.round(this.canvas.width * scale));
+    const height = Math.max(1, Math.round(this.canvas.height * scale));
     const texture = this.texture();
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     const buffer = gl.createFramebuffer(), depth = gl.createRenderbuffer();
@@ -394,13 +438,20 @@ class WheelRenderer {
     gl.uniform1f(u.reading, this.reading);
     gl.uniform1f(u.back, pass === 1 ? 1 : 0);
     gl.uniform1f(u.borderless, this.borderless ? 1 : 0);
+    gl.uniform1f(u.streamReadability, this.streamReadability ? 1 : 0);
+    gl.uniform1f(u.streamDispersion, this.streamReadability && !this.reducedMotion ? Math.max(0, Math.min(1, this.streamDispersion || 0)) : 0);
     gl.uniform1f(u.readingAmbient, this.readingAmbient || 0);
+    gl.uniform1f(u.opticalProfile, this.opticalProfile ? 1 : 0);
+    gl.uniform1f(u.chromaticStrength, this.reducedMotion ? 0 : 1);
+    gl.uniform1f(u.edgeFadeStart, this.edgeFadeStart ?? 0.9);
     // Short throw keeps ghost echoes hugging their source glyphs as soft
     // chromatic fringes instead of readable duplicates on neighbouring rows.
     gl.uniform1f(u.thickness, this.radius * (pass === 1 ? 1.5 : 0.3));
     gl.uniform1i(u.texture, 0);
     gl.uniform1f(u.atlasSize, this.atlasSize || 1024);
     gl.uniform1i(u.noise, 1);
+    gl.uniform1i(u.inkMeta, 2);
+    gl.uniform1f(u.inkEnabled, this.inkEnabled ? 1 : 0);
     gl.uniform1f(u.dpr, this.dpr);
     gl.uniform1f(u.inkLight, inkLight(this.timeline.ambientPhase, this.reducedMotion));
     gl.bindBuffer(gl.ARRAY_BUFFER, geometry.buffer);
@@ -528,7 +579,174 @@ class WheelRenderer {
     });
     if (this.textTexture) gl.deleteTexture(this.textTexture);
     if (this.noiseTexture) gl.deleteTexture(this.noiseTexture);
+    if (this.foregroundTexture) gl.deleteTexture(this.foregroundTexture);
+    if (this.inkTexture) gl.deleteTexture(this.inkTexture);
   }
 }
 
-module.exports = { WheelRenderer };
+// The browser's continuous reader supplies the same visible glyphs in screen
+// coordinates. Keep the original glass material and transmission passes; its
+// DOM owns reading order, hit targets and scrolling, with no second timeline.
+const SCREEN_VERTEX = `
+attribute vec3 a_position;
+varying vec2 v_uv;
+void main() {
+  v_uv = a_position.xy * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 1.0);
+}
+`;
+const SCREEN_FRAGMENT = `
+precision highp float;
+uniform sampler2D u_texture;
+uniform sampler2D u_inkMeta;
+uniform float u_inkEnabled;
+uniform vec2 u_resolution;
+varying vec2 v_uv;
+float inkHash(vec2 p) {
+  p = fract(p * vec2(127.1, 311.7));
+  p += dot(p, p + 34.37);
+  return fract(p.x * p.y);
+}
+float inkNoise(vec2 p) {
+  vec2 i = floor(p), f = fract(p), u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(inkHash(i), inkHash(i + vec2(1.0, 0.0)), u.x),
+    mix(inkHash(i + vec2(0.0, 1.0)), inkHash(i + vec2(1.0)), u.x), u.y);
+}
+float inkFbm(vec2 p) {
+  float value = 0.0, amplitude = 0.57;
+  for (int i = 0; i < 3; i++) {
+    value += inkNoise(p) * amplitude;
+    p = mat2(0.80, 0.60, -0.60, 0.80) * p * 2.02 + 7.13;
+    amplitude *= 0.5;
+  }
+  return value;
+}
+void main() {
+  vec4 glyph = texture2D(u_texture, v_uv);
+  if (u_inkEnabled < 0.5) { gl_FragColor = glyph; return; }
+  vec4 meta = texture2D(u_inkMeta, v_uv);
+  if (meta.a < 0.5 || meta.r > 0.998) { gl_FragColor = glyph; return; }
+  if (meta.r < 0.002) { gl_FragColor = vec4(0.0); return; }
+  // Adapted from TongyeGuanmi's loader: multiple ink scales fill the real
+  // glyph mask, with a short wet edge. Its colour comes from our own source.
+  float p = smoothstep(0.0, 1.0, meta.r);
+  vec2 coord = v_uv * u_resolution / max(12.0, meta.b * 255.0);
+  vec2 seed = vec2(meta.g * 43.7, meta.g * 71.3);
+  float field = inkFbm(coord * 2.4 + seed) * 0.62
+    + inkFbm(coord * 7.0 - seed) * 0.28 + inkNoise(coord * 24.0 + seed) * 0.10;
+  float threshold = mix(0.90, 0.18, p);
+  float reveal = smoothstep(threshold - 0.10, threshold + 0.09, field + p * 0.16);
+  reveal = max(reveal, smoothstep(0.72, 0.98, p));
+  float edge = (1.0 - smoothstep(0.0, 0.13, abs(field + p * 0.16 - threshold)))
+    * smoothstep(0.04, 0.30, p) * (1.0 - smoothstep(0.68, 1.0, p));
+  vec2 px = (0.6 + sin(p * 3.14159265) * 0.5) / u_resolution;
+  vec4 a = texture2D(u_texture, v_uv + vec2(px.x, 0.0));
+  vec4 b = texture2D(u_texture, v_uv - vec2(px.x, 0.0));
+  vec4 c = texture2D(u_texture, v_uv + vec2(0.0, px.y));
+  vec4 d = texture2D(u_texture, v_uv - vec2(0.0, px.y));
+  float wet = max(glyph.a, max(max(a.a, b.a), max(c.a, d.a)));
+  float bead = smoothstep(0.78, 0.98, inkHash(floor(coord * 18.0 + seed)));
+  float alpha = clamp(glyph.a * reveal + wet * edge * (0.15 + bead * 0.14), 0.0, 1.0);
+  vec3 color = max(glyph.rgb, max(max(a.rgb, b.rgb), max(c.rgb, d.rgb)));
+  gl_FragColor = vec4(color, alpha);
+}
+`;
+
+class StreamGlassRenderer extends WheelRenderer {
+  init() {
+    super.init();
+    // A resized canvas can reuse the previous WebGL context. Its enabled
+    // attributes may still reference deleted geometry from the old instance.
+    for (let index = 0; index < this.gl.getParameter(this.gl.MAX_VERTEX_ATTRIBS); index++) {
+      this.gl.disableVertexAttribArray(index);
+    }
+    this.screenProgram = makeProgram(this.gl, SCREEN_FRAGMENT, SCREEN_VERTEX);
+    this.programs.push(this.screenProgram);
+    this.inkTexture = this.texture();
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+    this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array(4));
+    if (this.bend) {
+      this.bendProgram = makeProgram(this.gl, BEND_FRAGMENT, SCREEN_VERTEX);
+      this.programs.push(this.bendProgram);
+      this.composite = this.target(1);
+      this.targets.push(this.composite);
+      this.foregroundTexture = this.texture();
+    }
+    this.count = 1;
+    this.borderless = true;
+  }
+
+  drawSource(source, foreground, bend, ink) {
+    if (this.destroyed) return;
+    const gl = this.gl;
+    if (gl.isContextLost()) throw new Error('WebGL context lost');
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, this.textTexture);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+    if (this.bendProgram && foreground) {
+      gl.bindTexture(gl.TEXTURE_2D, this.foregroundTexture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, foreground);
+    }
+    this.inkEnabled = !!ink;
+    gl.activeTexture(gl.TEXTURE2);
+    gl.bindTexture(gl.TEXTURE_2D, this.inkTexture);
+    if (ink) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ink);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, this.noiseTexture);
+    gl.activeTexture(gl.TEXTURE0);
+
+    for (let pass = 0; pass < 3; pass++) {
+      const target = pass < 2 ? this.targets[pass] : this.bendProgram ? this.composite : null;
+      gl.bindFramebuffer(gl.FRAMEBUFFER, target ? target.buffer : null);
+      gl.viewport(0, 0, target ? target.width : this.canvas.width, target ? target.height : this.canvas.height);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      if (pass === 2) {
+        gl.disable(gl.DEPTH_TEST);
+        gl.depthMask(false);
+        this.mesh(this.backgroundProgram, this.backgroundQuad, pass, false);
+        gl.depthMask(true);
+        gl.enable(gl.DEPTH_TEST);
+      }
+      if (pass) {
+        gl.bindTexture(gl.TEXTURE_2D, this.targets[pass - 1].texture);
+        gl.cullFace(pass === 1 ? gl.FRONT : gl.BACK);
+        if (pass === 2) gl.depthMask(false);
+        this.mesh(this.glassProgram, this.glass, pass, false);
+        if (pass === 2) gl.depthMask(true);
+      }
+      // Active ink and folded glyphs share the foreground. Settled central
+      // glyphs return to native text after their last ink frame.
+      if (pass < 2 || this.bendProgram && foreground) {
+        gl.disable(gl.DEPTH_TEST);
+        gl.cullFace(gl.BACK);
+        gl.bindTexture(gl.TEXTURE_2D, pass < 2 ? this.textTexture : this.foregroundTexture);
+        this.mesh(this.screenProgram, this.backgroundQuad, pass, false);
+        gl.enable(gl.DEPTH_TEST);
+      }
+    }
+    if (this.bendProgram && bend) {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+      gl.disable(gl.DEPTH_TEST);
+      gl.disable(gl.BLEND);
+      gl.cullFace(gl.BACK);
+      gl.bindTexture(gl.TEXTURE_2D, this.composite.texture);
+      const program = this.bendProgram, u = program.uniforms;
+      gl.useProgram(program.program);
+      gl.uniform1f(u.bendZone, bend.zone);
+      gl.uniform1f(u.bendRound, bend.rounding);
+      gl.uniform1f(u.bendAngle, bend.angle);
+      gl.uniform1f(u.bendPersp, bend.perspective);
+      gl.uniform1f(u.bendFlare, bend.flare || 0);
+      this.mesh(program, this.backgroundQuad, 3, false);
+      gl.enable(gl.BLEND);
+      gl.enable(gl.DEPTH_TEST);
+    }
+  }
+}
+
+module.exports = { WheelRenderer, StreamGlassRenderer };

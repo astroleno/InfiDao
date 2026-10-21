@@ -42,7 +42,7 @@ test('resume preserves chain identity and request ID and uses only same-origin c
   await f.provider.resume({ chainId: 'a' }, { requestId: 'resume-id' });
   const request = (f.fetcher.mock.calls as any)[1][1];
   expect(request.credentials).toBe('same-origin');
-  expect(JSON.parse(request.body)).toEqual({ op: 'open', chainId: 'a', requestId: 'resume-id' });
+  expect(JSON.parse(request.body)).toEqual({ op: 'open', chainId: 'a', graph: true, requestId: 'resume-id' });
   expect(request.headers['x-flow-session']).toBeUndefined();
 });
 test('HTTP budget errors retain the server code and message', async () => {
@@ -58,4 +58,14 @@ test('transport failures show a readable message instead of Failed to fetch', as
 test('malformed streamed JSON is reported as an incomplete service response', async () => {
   const f = fixture([new TextEncoder().encode('{broken}\n')]);
   await expect(f.provider.open('')).rejects.toMatchObject({ code: 'INVALID_RESPONSE', message: '阅读服务的回复不完整，请重试。' });
+});
+
+test('paragraph progress reaches the consumer before done and malformed readiness is rejected', async () => {
+  const progress = { ...chain, frames: [{ ...chain.frames[0], meaning: '已经核验。', settled: { meaning: true, reflection: false } }] };
+  const f = fixture([wire([{ type: 'progress', requestId: 'r', chain: progress }, { type: 'done', requestId: 'r', chain: progress }])]);
+  const onEvent = jest.fn();
+  await f.provider.open('', { requestId: 'r', onEvent });
+  expect(onEvent.mock.calls[0]![0]).toMatchObject({ type: 'progress', chain: { frames: [{ settled: { meaning: true } }] } });
+  const bad = fixture([wire([{ type: 'progress', requestId: 'r', chain: { ...progress, frames: [{ ...progress.frames[0], settled: { meaning: 'yes' } }] } }])]);
+  await expect(bad.provider.open('', { requestId: 'r' })).rejects.toMatchObject({ code: 'INVALID_RESPONSE' });
 });

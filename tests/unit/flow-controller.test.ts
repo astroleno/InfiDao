@@ -1,5 +1,6 @@
 /** @jest-environment node */
 const { createFlowController, mergeChain } = require('../../shared/flow/controller');
+import { withPreparedContinuation } from '@/lib/flow-browser/prepared-provider';
 
 function deferred<T = any>() {
   let resolve!: (value: T) => void, reject!: (error: any) => void;
@@ -34,6 +35,192 @@ function fixture(overrides: any = {}) {
 }
 
 describe('shared reading controller', () => {
+  test('a visible ancestor word branches directly from its owner without an intermediate presentation', async () => {
+    const f = fixture(), opening = f.controller.open(''); await flush();
+    f.requests[0].resolve(batch('root')); await opening;
+    const root = f.controller.getState().record;
+    const child = f.controller.branch({ frameId: 'root:1', anchorId: 'word' }); await flush();
+    f.requests[1].resolve(batch('child')); await child;
+    f.host.present.mockClear();
+    const branch = f.controller.branch({ pathId: root.pathId, frameId: 'root:1', anchorId: 'word' }); await flush();
+    expect(f.requests[2].input.chainId).toBe('root');
+    expect(f.controller.getState().record.chain.chainId).toBe('child');
+    expect(f.host.present).not.toHaveBeenCalled();
+    f.requests[2].resolve(batch('new-direction')); await branch;
+    expect(f.controller.getState().record.parentPathId).toBe(root.pathId);
+    expect(f.host.present).toHaveBeenCalledTimes(1);
+  });
+
+  test('rapid ancestor selections are versioned before asynchronous history loads', async () => {
+    const f = fixture(), opening = f.controller.open(''); await flush();
+    const rootBatch = batch('root'); rootBatch.frames[0]!.anchors.push({ id: 'other', label: '止' });
+    f.requests[0].resolve(rootBatch); await opening;
+    const root = f.controller.getState().record;
+    const child = f.controller.branch({ frameId: 'root:1', anchorId: 'word' }); await flush();
+    f.requests[1].resolve(batch('child')); await child;
+    const loading = deferred();
+    f.storage.get.mockImplementationOnce(() => loading.promise);
+    const first = f.controller.branch({ pathId: root.pathId, frameId: 'root:1', anchorId: 'word' }); await flush();
+    const last = f.controller.branch({ pathId: root.pathId, frameId: 'root:1', anchorId: 'other' }); await flush();
+    loading.resolve(root); await flush();
+    expect(f.requests).toHaveLength(3);
+    expect(f.requests[2].input.anchorId).toBe('other');
+    f.requests[2].resolve(batch('latest')); await Promise.all([first, last]);
+    expect(f.controller.getState().record.chain.chainId).toBe('latest');
+  });
+
+  test('an expired ancestor reconnects from its own canonical quotation and keeps its parent', async () => {
+    const f = fixture(), opening = f.controller.open(''); await flush();
+    f.requests[0].resolve(batch('root')); await opening;
+    const root = f.controller.getState().record;
+    const child = f.controller.branch({ frameId: 'root:1', anchorId: 'word' }); await flush();
+    f.requests[1].resolve(batch('child')); await child;
+    const next = f.controller.branch({ pathId: root.pathId, frameId: 'root:1', anchorId: 'word' }); await flush();
+    f.requests[2].reject(Object.assign(new Error('expired'), { code: 'CHAIN_EXPIRED' })); await flush();
+    expect(f.requests[3].input.restartFrom.sourceId).toBe('source');
+    f.requests[3].resolve(batch('reconnected')); await next;
+    expect(f.controller.getState().record.parentPathId).toBe(root.pathId);
+  });
+
+  test('a faster second word supersedes an in-flight branch, deduplicates repeats and ignores late results', async () => {
+    const f = fixture(), open = f.controller.open('');
+    await flush();
+    const root = batch('root');
+    root.frames[0]!.anchors.push({ id: 'another', label: '止' });
+    f.requests[0].resolve(root); await open;
+    const a = f.controller.branch({ frameId: 'root:1', anchorId: 'word' }); await flush();
+    expect(f.controller.getState().busy).toBe(true);
+    const b = f.controller.branch({ frameId: 'root:1', anchorId: 'another' }); await flush();
+    await f.controller.branch({ frameId: 'root:1', anchorId: 'another' });
+    expect(f.requests).toHaveLength(3);
+    expect(f.requests[1].task.cancel).toHaveBeenCalledTimes(1);
+    f.requests[1].event('head', batch('stale')); await flush();
+    expect(f.controller.getState().record.chain.chainId).toBe('root');
+    f.requests[2].resolve(batch('latest')); await Promise.all([a, b]);
+    expect(f.controller.getState().record.chain.chainId).toBe('latest');
+    expect(f.host.history).toHaveBeenCalledTimes(2);
+  });
+
+  test('an accepted meaning can branch before the whole node completes', async () => {
+    const f = fixture(), open = f.controller.open(''); await flush();
+    const head: any = batch('live', false);
+    Object.assign(head.frames[0], { corpusVersion: 'v1', meaning: '', reflection: '', settled: { meaning: false, reflection: false } });
+    f.requests[0].event('head', head); await flush();
+    const paragraph = structuredClone(head);
+    Object.assign(paragraph.frames[0], { meaning: '方向。', textBreaks: { meaning: [2, 3], reflection: [] },
+      settled: { meaning: true, reflection: false } });
+    f.requests[0].event('progress', paragraph); await flush();
+    expect(f.controller.getState()).toMatchObject({ pending: true, record: { chain: { frames: [{ meaning: '方向。' }] } } });
+    const branch = f.controller.branch({ frameId: 'live:1', selection: {
+      surface: 'meaning', surfaceText: '方向。', start: 0, end: 2, textHash: 'hash', corpusVersion: 'v1',
+    } }); await flush();
+    expect(f.requests[1].input.selection.surfaceText).toBe('方向。');
+    f.requests[1].resolve(batch('child')); await Promise.all([open, branch]);
+    expect(f.controller.getState().record.chain.chainId).toBe('child');
+    expect(() => mergeChain(paragraph, { ...paragraph, frames: [{ ...paragraph.frames[0], meaning: '偷偷改写。' }] }))
+      .toThrow('已读的段落');
+  });
+  test('controller preparation leaves the path unchanged and next consumes that exact request', async () => {
+    const f = fixture(), prepared = withPreparedContinuation(f.provider as any);
+    (f.host as any).defaultProvider = prepared;
+    (f.host as any).providerFor = () => prepared;
+    const open = f.controller.open(''); await flush(); f.requests[0].resolve(batch('root')); await open;
+    const before = structuredClone(f.controller.getState());
+    f.controller.prepareNext();
+    expect(f.controller.getState()).toEqual(before); expect(f.requests).toHaveLength(2);
+    f.requests[1].resolve(batch('root', true, 2)); await flush();
+    await f.controller.next();
+    expect(f.requests).toHaveLength(2);
+    expect(f.controller.getState().record.chain.frames).toHaveLength(2);
+    expect(f.requests[1].task.cancel).not.toHaveBeenCalled();
+  });
+  test('visibility cancellation suspends a preparation; explicit cancellation and dispose release it', async () => {
+    const f = fixture();
+    const suspendPreparation = jest.fn(), cancelPreparation = jest.fn();
+    Object.assign(f.provider, { suspendPreparation, cancelPreparation });
+    const open = f.controller.open(''); await flush(); f.requests[0].resolve(batch('root')); await open;
+    cancelPreparation.mockClear();
+    f.controller.setVisible(false); expect(suspendPreparation).toHaveBeenCalledTimes(1); expect(cancelPreparation).not.toHaveBeenCalled();
+    f.controller.setVisible(true); f.controller.cancel(); expect(cancelPreparation).toHaveBeenCalledTimes(1);
+    f.controller.dispose(); expect(cancelPreparation).toHaveBeenCalledTimes(2);
+  });
+  test('a provider with no online replacement retains its actionable connection error', async () => {
+    const f = fixture(), open = f.controller.open(''); await flush(); f.requests[0].resolve(batch('root')); await open;
+    const parent = f.controller.getState().record;
+    const branch = f.controller.branch({ frameId: 'root:1', anchorId: 'word' }); await flush();
+    f.requests[1].reject(Object.assign(new Error('连接服务后继续。'), { code: 'CONNECTION_REQUIRED' })); await branch;
+    expect(f.requests).toHaveLength(2); expect(f.controller.getState().record.pathId).toBe(parent.pathId);
+    expect(f.controller.getState().error.code).toBe('CONNECTION_REQUIRED');
+  });
+  test('a curated word can still reconnect through a different online default provider', async () => {
+    const f = fixture(), open = f.controller.open(''); await flush(); f.requests[0].resolve(batch('root')); await open;
+    const local = { branch: jest.fn(async () => { throw Object.assign(new Error('connect'), { code: 'CONNECTION_REQUIRED' }); }) };
+    (f.host as any).providerFor = () => local;
+    const branch = f.controller.branch({ frameId: 'root:1', anchorId: 'word' }); await flush(); await flush();
+    expect(local.branch).toHaveBeenCalledTimes(1); expect(f.requests).toHaveLength(2);
+    f.requests[1].resolve(batch('online')); await branch;
+    expect(f.controller.getState().record.chain.chainId).toBe('online');
+  });
+  test('an explicitly selected expired word reopens once without an error flash and replays its saved edge', async () => {
+    const f = fixture(), opening = f.controller.open(''); await flush();
+    f.requests[0].resolve(batch('root')); await opening;
+    const parent = f.controller.getState().record;
+    const branching = f.controller.branch({ frameId: 'root:1', anchorId: 'word' }); await flush();
+    f.requests[1].reject(Object.assign(new Error('expired'), { code: 'CHAIN_EXPIRED' })); await flush();
+    expect(f.requests).toHaveLength(3);
+    expect(f.requests[2].input.restartFrom).toMatchObject({ sourceId: 'source', textHash: 'hash' });
+    expect(f.host.state.mock.calls.every((call: any[]) => !call[0].error)).toBe(true);
+    f.requests[2].resolve({ ...batch('reopened'), parentChainId: null, entry: null }); await branching;
+    const child = f.controller.getState().record;
+    expect(child).toMatchObject({ parentPathId: parent.pathId, parentEntry: { fromFrameId: 'root:1', anchorId: 'word', label: '知止' } });
+    await f.controller.restore(parent.pathId);
+    f.storage.child.mockResolvedValueOnce(child);
+    await f.controller.branch({ frameId: 'root:1', anchorId: 'word' });
+    expect(f.requests).toHaveLength(3);
+    expect(f.controller.getState().record.pathId).toBe(child.pathId);
+  });
+
+  test('an expired continuation reopens from the last read passage with a replayable local edge', async () => {
+    const f = fixture(), opening = f.controller.open(''); await flush(); f.requests[0].resolve(batch('root')); await opening;
+    const parent = f.controller.getState().record;
+    const next = f.controller.next(); await flush();
+    f.requests[1].reject(Object.assign(new Error('expired'), { code: 'CHAIN_EXPIRED' })); await flush();
+    f.requests[2].resolve(batch('reopened')); await next;
+    expect(f.controller.getState().record).toMatchObject({ parentPathId: parent.pathId,
+      parentEntry: { fromFrameId: 'root:1', anchorId: 'next:next', label: '沿此意继续' } });
+    expect(f.records.get(parent.pathId).chain.chainId).toBe('root');
+  });
+
+  test.each(['BUDGET_REACHED', 'CORPUS_CHANGED'])('does not automatically retry %s', async code => {
+    const f = fixture(), opening = f.controller.open(''); await flush(); f.requests[0].resolve(batch('root')); await opening;
+    const branching = f.controller.branch({ frameId: 'root:1', anchorId: 'word' }); await flush();
+    f.requests[1].reject(Object.assign(new Error(code), { code })); await branching;
+    expect(f.requests).toHaveLength(2); expect(f.controller.getState().error.code).toBe(code);
+  });
+
+  test('a failed automatic reopen never loops, and cancellation blocks late expired errors', async () => {
+    const f = fixture(), opening = f.controller.open(''); await flush(); f.requests[0].resolve(batch('root')); await opening;
+    const branching = f.controller.branch({ frameId: 'root:1', anchorId: 'word' }); await flush();
+    f.requests[1].reject(Object.assign(new Error('expired'), { code: 'CHAIN_EXPIRED' })); await flush();
+    f.requests[2].reject(Object.assign(new Error('expired'), { code: 'CHAIN_EXPIRED' })); await branching;
+    expect(f.requests).toHaveLength(3); expect(f.controller.getState().error.code).toBe('CHAIN_EXPIRED');
+    const another = f.controller.branch({ frameId: 'root:1', anchorId: 'word' }); await flush();
+    f.controller.cancel(); f.requests[3].reject(Object.assign(new Error('expired'), { code: 'CHAIN_EXPIRED' })); await another;
+    expect(f.requests).toHaveLength(4); expect(f.controller.getState().error).toBeNull();
+  });
+
+  test('library restore never resumes an incomplete chain on open or visibility changes', async () => {
+    const f = fixture();
+    f.records.set('saved', { pathId: 'saved', chain: batch('old', false), snapshot, completion: 'pending' });
+    await f.controller.restore('saved', { navigation: 'push', resumeIncomplete: false });
+    expect(f.requests).toHaveLength(0);
+    expect(f.controller.getState()).toMatchObject({ record: { completion: 'stopped' }, error: { code: 'INCOMPLETE' } });
+    expect(f.records.get('saved').completion).toBe('stopped');
+    f.controller.setVisible(false); f.controller.setVisible(true); await flush();
+    expect(f.requests).toHaveLength(0);
+    const retrying = f.controller.retry(); await flush(); expect(f.requests).toHaveLength(1);
+    f.requests[0].resolve(batch('old')); await retrying;
+  });
   test('a fresh visit opens a new chain without trying to restore an absent one', async () => {
     const f = fixture(), starting = f.controller.start(); await flush();
     expect(f.requests[0].input).toBe('');

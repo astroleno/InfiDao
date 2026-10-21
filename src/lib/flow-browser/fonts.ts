@@ -2,6 +2,7 @@ type FontAsset = { id: string; file: string; bytes: number; sha256: string };
 type FontShard = FontAsset & { characters: string };
 type FontManifest = { version: string; shards: FontShard[]; unsupported?: string; baseCharacters?: string; baseFonts?: Array<FontAsset & { family: string }> };
 type FontReady = { version: string; family: string; families: string[]; characters: string };
+export type FontProgress = { phase: 'manifest' | 'fonts' | 'ready'; loaded: number; total: number };
 import { FLOW_RELEASE } from './release.generated';
 import { FLOW_FONT_BASE, FLOW_FONT_CDN_BASE, FLOW_FONT_LOCAL_BASE } from './font-assets';
 
@@ -13,6 +14,7 @@ const { installFont, hasGlyph, installBaseFonts } = require('./glyph-outline') a
 
 const manifests = new Map<string, Promise<{ manifest: FontManifest; baseUrl: string }>>();
 const loadedFaces = new Map<string, Promise<void>>();
+const installedFaces = new Set<string>();
 const loadedShards = new Map<string, Promise<ArrayBuffer>>();
 const loadedBases = new Map<string, Promise<string[]>>();
 const localBase = FLOW_FONT_LOCAL_BASE;
@@ -79,6 +81,7 @@ async function registerFace(family: string, data: ArrayBuffer): Promise<void> {
     const face = new FontFace(family, data, { style: 'normal', weight: '400' });
     await face.load();
     document.fonts.add(face);
+    installedFaces.add(family);
   })();
   loadedFaces.set(key, pending);
   pending.catch(() => loadedFaces.delete(key));
@@ -126,7 +129,9 @@ function prepareBaseFonts(manifest: FontManifest, baseUrl: string): Promise<stri
   return loadedBases.get(key)!;
 }
 
-export async function prepareFlowFonts(frames: Array<{ quote: string; fullText?: string }>, baseUrl = preferredBase): Promise<FontReady> {
+export async function prepareFlowFonts(frames: Array<{ quote: string; fullText?: string }>, baseUrl = preferredBase, onProgress?: (progress: FontProgress) => void): Promise<FontReady> {
+  const report = (progress: FontProgress) => { try { onProgress?.(progress); } catch { /* An observer cannot make a verified font unusable. */ } };
+  report({ phase: 'manifest', loaded: 0, total: 0 });
   baseUrl = baseUrl.replace(/\/$/, '');
   const text = Array.from(new Set(frames.flatMap(frame => Array.from(`${frame.quote}${frame.fullText || frame.quote}`)))).join('');
   const loaded = await loadManifest(baseUrl);
@@ -141,6 +146,9 @@ export async function prepareFlowFonts(frames: Array<{ quote: string; fullText?:
   const baseCoverage = new Set(Array.from(manifest.baseCharacters || ''));
   const extraCharacters = new Set(Array.from(text).filter(char => !baseCoverage.has(char)));
   const needed = manifest.shards.filter(shard => Array.from(shard.characters).some(char => extraCharacters.has(char)));
+  const assets = [...manifest.baseFonts || [], ...needed];
+  let loadedAssets = 0;
+  report({ phase: 'fonts', loaded: 0, total: assets.length });
   // Schedule the two base faces first within the same global download cap.
   const basesReady = prepareBaseFonts(manifest, baseUrl);
   const shardsReady = Promise.all(needed.map(async shard => {
@@ -151,13 +159,24 @@ export async function prepareFlowFonts(frames: Array<{ quote: string; fullText?:
     installFont(family, shard.characters, buffer);
     return family;
   }));
-  const [baseFamilies, shardFamilies] = await Promise.all([basesReady, shardsReady]);
+  // Observe the same cached asset promises, including for concurrent callers.
+  // Downloads count only after byte-length and SHA verification, before face installation.
+  const progressReady = Promise.all(assets.map(asset => loadFontAsset(asset, baseUrl).then(() => {
+    report({ phase: 'fonts', loaded: ++loadedAssets, total: assets.length });
+  })));
+  const [baseFamilies, shardFamilies] = await Promise.all([basesReady, shardsReady, progressReady]);
   // Keep the manifest order even when downloads finish in a different order.
   const families = [...baseFamilies, ...shardFamilies];
 
   const uncovered = Array.from(new Set(Array.from(text).filter(char => !hasGlyph(char))));
   if (uncovered.length) throw new Error('FONT_UNCOVERED');
   const family = [...families.map(name => `"${name}"`), '"Songti SC"', '"Noto Serif CJK SC"', 'serif'].join(', ');
-  document.documentElement.style.setProperty('--flow-classic-family', family);
+  // Late work for a previous chain may add faces, but must never remove faces
+  // used by the current quotation or by an expanded source paragraph.
+  const available = [...(manifest.baseFonts || []).map(font => font.family),
+    ...manifest.shards.map(shard => `InfiDao-${shard.id}-${shard.sha256}`)].filter(name => installedFaces.has(name));
+  document.documentElement.style.setProperty('--flow-classic-family',
+    [...available.map(name => `"${name}"`), '"Songti SC"', '"Noto Serif CJK SC"', 'serif'].join(', '));
+  report({ phase: 'ready', loaded: assets.length, total: assets.length });
   return { version: manifest.version, family, families, characters: text };
 }

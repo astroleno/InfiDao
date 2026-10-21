@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import colors from "tailwindcss/colors";
 
 export default {
   darkMode: ["class"],
@@ -14,6 +15,12 @@ export default {
     },
     extend: {
       colors: {
+        // Existing stone utilities share the neutral optical surfaces.
+        stone: {
+          ...colors.neutral,
+          500: 'hsl(var(--reader-muted) / <alpha-value>)',
+          600: 'hsl(218 9% 55% / <alpha-value>)',
+        },
         paper: "hsl(var(--paper))",
         ink: "hsl(var(--ink))",
         zen: "hsl(var(--zen))",

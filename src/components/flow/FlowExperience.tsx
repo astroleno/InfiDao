@@ -1,21 +1,24 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import type { FlowFrame } from '@/lib/flow/contracts';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { FlowFrame, FlowSelection as TextSelection } from '@/lib/flow/contracts';
 import type { BrowserFlowBatch } from '@/lib/flow-browser/provider';
 import { createBrowserController, type FlowController, type ControllerState } from '@/lib/flow-browser/controller-host';
-import { shouldPrefetchFlow } from '@/lib/flow-browser/prefetch';
 import { observeFlowViewport } from '@/lib/flow-browser/viewport';
 import { createPathId, deleteNote, listNotes, loadPath, restoreNote, saveNote, loadDraft, saveDraft, type FlowPathRecord, type PersonalNote, type ReadingSnapshot } from '@/lib/flow-browser/storage';
-import type { FlowRendererHost } from '@/lib/flow-browser/renderer-host';
-import { ReadingLayer } from './ReadingLayer';
+import { connectedRecords, entryKey, streamEntries, type StreamEntry } from '@/lib/flow-browser/continuity';
+import { FlowStream } from './FlowStream';
 import { SeedSheet } from './SeedSheet';
-import { WheelCanvas } from './WheelCanvas';
-import { FlowWaiting } from './FlowWaiting';
+import { FlowResume, FlowWaiting } from './FlowWaiting';
+import { LibrarySheet } from './LibrarySheet';
+import { FlowLoading } from './FlowLoading';
+import { FlowMenu } from './FlowMenu';
+import { prepareFlowFonts, type FontProgress } from '@/lib/flow-browser/fonts';
+import { readingStorage } from '@/lib/flow-browser/storage';
+import { noteContext, quoteKey, snapshotFrame, type SavedTarget } from '@/lib/flow-browser/library';
 import styles from './flow.module.css';
 
-type Selection = { frameId: string; anchorId?: string; selection?: { start: number; end: number; textHash: string; corpusVersion: string }; label: string };
-type TrailItem = { pathId: string; label: string };
+type Selection = { pathId?: string; frameId: string; anchorId?: string; selection?: TextSelection; label: string };
 
 const { CELL, CENTER_PHASE } = require('../../../shared/flow/timeline') as { CELL: number; CENTER_PHASE: number };
 
@@ -26,84 +29,146 @@ function initialSnapshot(paused: boolean): ReadingSnapshot {
 export function FlowExperience() {
   const experienceRef = useRef<HTMLElement>(null);
   const [chain, setChain] = useState<BrowserFlowBatch | null>(null);
-  const [frames, setFrames] = useState<FlowFrame[]>([]);
+  const [records, setRecords] = useState<FlowPathRecord[]>([]);
+  const entries = useMemo(() => streamEntries(records), [records]);
+  const frames = chain?.frames || [];
   const [active, setActive] = useState<FlowFrame | null>(null);
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [fontProgress, setFontProgress] = useState<FontProgress>({ phase: 'manifest', loaded: 0, total: 0 });
+  const [preparingQuote, setPreparingQuote] = useState('');
+  const [firstVisualReady, setFirstVisualReady] = useState(false);
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState(false);
   const [flowError, setFlowError] = useState<ControllerState['error']>(null);
-  const [notice, setNotice] = useState('');
   const [storageWarning, setStorageWarning] = useState(false);
   const [sourceOpen, setSourceOpen] = useState(false);
-  const [sourceScrollTop, setSourceScrollTop] = useState(0);
-  const [readingScrollTop, setReadingScrollTop] = useState(0);
+  const [restorePosition, setRestorePosition] = useState<{ revision: number; top: number; frameId?: string; entryKey?: string; source?: boolean }>({ revision: 0, top: 0 });
   const [seedOpen, setSeedOpen] = useState(false);
   const [seedError, setSeedError] = useState('');
+  const [seedBusy, setSeedBusy] = useState(false);
   const [seed, setSeed] = useState('');
   const [notes, setNotes] = useState<PersonalNote[]>([]);
   const [savingNote, setSavingNote] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [bookmarkKeys, setBookmarkKeys] = useState<Set<string>>(new Set());
+  const [hint, setHint] = useState(false);
+  const [connecting, setConnecting] = useState<Selection | null>(null);
+  const [notesFrameId, setNotesFrameId] = useState<string | null>(null);
+  const libraryPause = useRef(true);
+  const seedPause = useRef(false);
+  const seedOrigin = useRef<string | null>(null);
+  const seedOpenRef = useRef(false);
+  const seedSubmitting = useRef(false);
+  const submittedDraft = useRef<{ version: number; value: string } | null>(null);
+  const seedTarget = useRef<{ pathId: string; frameId: string } | null>(null);
+  const libraryRestored = useRef(false);
+  const savingBookmark = useRef(false);
+  const bookmarkVersion = useRef(0);
+  const savingNoteId = useRef<{ id: string; chainId: string; frameId: string; createdAt: number } | null>(null);
 
   const controllerRef = useRef<FlowController | null>(null);
-  const chainRef = useRef<BrowserFlowBatch | null>(null);
   const recordRef = useRef<FlowPathRecord | null>(null);
+  const recordsRef = useRef<FlowPathRecord[]>([]);
+  const entriesRef = useRef<StreamEntry[]>([]);
+  const activeEntryRef = useRef<StreamEntry | null>(null);
   const snapshotRef = useRef<ReadingSnapshot>(initialSnapshot(false));
   const sourceOpenRef = useRef(false);
-  const sourceScrollRef = useRef(0);
   const readingScrollRef = useRef(0);
   const draftVersionRef = useRef(0);
   const seedRequestRef = useRef(0);
   const frameRef = useRef<FlowFrame | null>(null);
   const undoNoteRef = useRef<PersonalNote | null>(null);
   const lastSelectionRef = useRef<Selection | null>(null);
-  const wheelHostRef = useRef<FlowRendererHost | null>(null);
   const reducedRef = useRef(false);
+  const pausedRef = useRef(false);
 
-  chainRef.current = chain;
   reducedRef.current = reducedMotion;
+  pausedRef.current = paused;
+  recordsRef.current = records;
+  entriesRef.current = entries;
 
   function captureSnapshot() {
-    const latest = wheelHostRef.current?.snapshot() || snapshotRef.current;
-    return { ...latest, sourceOpen: sourceOpenRef.current,
+    return { ...snapshotRef.current, paused: pausedRef.current, ...(frameRef.current ? { activeFrameId: frameRef.current.id } : {}),
+      ...(activeEntryRef.current ? { activeEntryKey: entryKey(activeEntryRef.current) } : {}), sourceOpen: sourceOpenRef.current,
       readingPositions: { ...snapshotRef.current.readingPositions,
-        source: sourceScrollRef.current, reader: readingScrollRef.current } };
+        reader: readingScrollRef.current, ...(frameRef.current ? { [frameRef.current.id + ':reader']: readingScrollRef.current } : {}),
+        ...(activeEntryRef.current ? { [entryKey(activeEntryRef.current) + ':reader']: readingScrollRef.current } : {}) } };
   }
 
-  async function collectTrail(record: FlowPathRecord): Promise<TrailItem[]> {
-    const trail: TrailItem[] = [];
-    const visited = new Set<string>();
-    let current: FlowPathRecord | null = record;
-    while (current && !visited.has(current.pathId)) {
-      visited.add(current.pathId);
-      trail.unshift({ pathId: current.pathId, label: current.sourceLabel });
-      current = current.parentPathId ? await loadPath(current.parentPathId) : null;
-    }
-    return trail;
+  function pauseReading(next = true) {
+    pausedRef.current = next;
+    snapshotRef.current = { ...snapshotRef.current, paused: next };
+    setPaused(next);
   }
 
-  function present(record: FlowPathRecord) {
+  async function present(record: FlowPathRecord, context: { current: () => boolean; navigation: string }) {
+    const nextRecords = await connectedRecords(record, loadPath);
+    if (!context.current()) return;
+    const nextEntries = streamEntries(nextRecords);
+    const preserve = context.navigation === 'push' && !!record.parentPathId &&
+      recordsRef.current.some(item => item.pathId === record.parentPathId);
+    const previousSnapshot = captureSnapshot();
     lastSelectionRef.current = null;
+    setConnecting(null);
+    if (!preserve) setNotesFrameId(null);
+    if (seedSubmitting.current && seedOpenRef.current && record.pathId !== seedOrigin.current) {
+      seedSubmitting.current = false;
+      setSeedBusy(false);
+      if (submittedDraft.current?.version === draftVersionRef.current) changeDraft('');
+      submittedDraft.current = null;
+      seedOpenRef.current = false;
+      setSeedOpen(false);
+    }
     const nextChain = record.chain as BrowserFlowBatch;
     recordRef.current = record;
-    chainRef.current = nextChain;
-    snapshotRef.current = record.snapshot;
-    sourceOpenRef.current = record.snapshot.sourceOpen;
-    sourceScrollRef.current = record.snapshot.readingPositions.source || 0;
-    readingScrollRef.current = record.snapshot.readingPositions.reader || 0;
+    snapshotRef.current = preserve ? previousSnapshot : record.snapshot;
+    sourceOpenRef.current = snapshotRef.current.sourceOpen;
+    readingScrollRef.current = snapshotRef.current.readingPositions.reader || 0;
+    recordsRef.current = nextRecords;
+    entriesRef.current = nextEntries;
+    const wantedId = preserve ? frameRef.current?.id : record.snapshot.activeFrameId || snapshotFrame(record)?.id;
+    const wantedKey = preserve && activeEntryRef.current ? entryKey(activeEntryRef.current) : record.snapshot.activeEntryKey;
+    activeEntryRef.current = nextEntries.find(entry => entryKey(entry) === wantedKey) || nextEntries.find(entry => entry.frame.id === wantedId) || nextEntries[0] || null;
+    frameRef.current = activeEntryRef.current?.frame || null;
     setChain(nextChain);
-    setFrames(nextChain.frames);
-    frameRef.current = nextChain.frames[0] || null;
+    setRecords(nextRecords);
     setActive(frameRef.current);
-    setPaused(reducedRef.current || record.snapshot.paused);
-    setSourceOpen(record.snapshot.sourceOpen);
-    setSourceScrollTop(sourceScrollRef.current);
-    setReadingScrollTop(readingScrollRef.current);
-    setNotice('');
-    void collectTrail(record).then(trail => { if (recordRef.current?.pathId === record.pathId) setPathTrail(trail); });
+    pauseReading(reducedRef.current || snapshotRef.current.paused);
+    setSourceOpen(sourceOpenRef.current);
+    if (!preserve) setRestorePosition(value => ({ revision: value.revision + 1, top: readingScrollRef.current,
+      ...(context.navigation === 'source' ? { source: true } : {}),
+      ...(wantedId ? { frameId: wantedId } : {}), ...(wantedKey ? { entryKey: wantedKey } : {}) }));
   }
 
-  const [pathTrail, setPathTrail] = useState<TrailItem[]>([]);
+  useEffect(() => {
+    if (seedOpen || libraryOpen) controllerRef.current?.cancelPreparation();
+    // The single stream prepares one continuation as the reader approaches its end.
+    // A pause alone is not an instruction to spend calls on another direction.
+  }, [seedOpen, libraryOpen]);
+
+  useEffect(() => {
+    let alive = true;
+    void readingStorage.hintSeen().then(seen => { if (alive) setHint(!seen); });
+    return () => { alive = false; };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+    const version = bookmarkVersion.current;
+    void readingStorage.listBookmarks().then(value => {
+      if (alive && bookmarkVersion.current === version) setBookmarkKeys(new Set(value.map(item => item.key)));
+    });
+    return () => { alive = false; };
+  }, [entries]);
+
+  useEffect(() => {
+    if (!sourceOpen || !active) return;
+    // Full-source typography is optional work after the reader asks for it.
+    // A system serif remains readable if a supplementary face is unavailable.
+    void prepareFlowFonts([{ quote: active.quote, fullText: active.fullText }]).catch(() => {});
+  }, [sourceOpen, active]);
 
   useEffect(() => {
     if (experienceRef.current) return observeFlowViewport(experienceRef.current);
@@ -116,8 +181,7 @@ export function FlowExperience() {
       reducedRef.current = media.matches;
       setReducedMotion(media.matches);
       if (media.matches) {
-        setPaused(true);
-        wheelHostRef.current?.setPaused(true);
+        pauseReading();
       }
     };
     sync();
@@ -129,20 +193,35 @@ export function FlowExperience() {
     let alive = true;
     const controller = createBrowserController({
       capture: captureSnapshot,
-      initialSnapshot: (_chain, context) => initialSnapshot(reducedRef.current || !!context.parentSnapshot?.paused),
-      present(record) { if (alive) present(record); },
+      preparation(quote, progress) { if (alive) { setPreparingQuote(quote); setFontProgress(progress); } },
+      initialSnapshot: (_chain, context) => initialSnapshot(reducedRef.current || seedOpenRef.current || !!context.parentSnapshot?.paused),
+      async present(record, context) { if (alive) await present(record, { ...context, current: () => alive && context.current() }); },
       update(record) {
         if (!alive) return;
         recordRef.current = record;
-        chainRef.current = record.chain;
-        setChain(record.chain); setFrames(record.chain.frames);
-        frameRef.current = record.chain.frames.find((frame: FlowFrame) => frame.id === frameRef.current?.id) || record.chain.frames[0] || null;
+        const nextRecords = recordsRef.current.map(item => item.pathId === record.pathId ? record : item);
+        recordsRef.current = nextRecords;
+        entriesRef.current = streamEntries(nextRecords);
+        setChain(record.chain); setRecords(nextRecords);
+        const currentKey = activeEntryRef.current && entryKey(activeEntryRef.current);
+        activeEntryRef.current = entriesRef.current.find(entry => entryKey(entry) === currentKey) || entriesRef.current.find(entry => entry.frame.id === frameRef.current?.id) || entriesRef.current[0] || null;
+        frameRef.current = activeEntryRef.current?.frame || null;
         setActive(frameRef.current);
+      },
+      background(record) {
+        if (!alive || !recordsRef.current.some(item => item.pathId === record.pathId)) return;
+        const currentKey = activeEntryRef.current && entryKey(activeEntryRef.current);
+        const nextRecords = recordsRef.current.map(item => item.pathId === record.pathId ? record : item);
+        recordsRef.current = nextRecords;
+        entriesRef.current = streamEntries(nextRecords);
+        activeEntryRef.current = entriesRef.current.find(entry => entryKey(entry) === currentKey) || activeEntryRef.current;
+        frameRef.current = activeEntryRef.current?.frame || null;
+        setRecords(nextRecords); setActive(frameRef.current);
       },
       state(state) {
         if (!alive) return;
         setBusy(state.busy); setPending(state.pending); setFlowError(state.error);
-        setLoading(!state.record && state.pending);
+        setLoading(!state.record && (state.pending || state.busy));
         if (state.storageWarning) setStorageWarning(true);
       },
     });
@@ -169,46 +248,42 @@ export function FlowExperience() {
   }, []);
 
   useEffect(() => {
-    if (!chain || !active) {
+    const entry = activeEntryRef.current;
+    if (!entry || !active) {
       setNotes([]);
       return;
     }
     let cancelled = false;
-    listNotes(chain.chainId, active.id).then(value => { if (!cancelled) setNotes(value); });
+    listNotes(entry.chainId, active.id).then(value => { if (!cancelled) setNotes(value); });
     return () => { cancelled = true; };
   }, [chain, active]);
 
   async function handleBranch(selection: Selection) {
-    setNotice('');
+    const controller = controllerRef.current;
+    if (!controller) return;
+    const selectedEntry = entriesRef.current.find(item => item.frame.id === selection.frameId && (!selection.pathId || selection.pathId === item.pathId));
+    if (selectedEntry) handleReadEntry(selectedEntry);
+    pauseReading();
     lastSelectionRef.current = selection;
-    await controllerRef.current?.branch(selection);
+    setConnecting(selection);
+    await controller.branch(selection);
+    if (lastSelectionRef.current === selection && !controller.getState().pending) setConnecting(null);
   }
 
-  function handleActiveChange(line: FlowFrame) {
-    const current = chainRef.current;
-    if (!current) return;
-    const passageId = (line as FlowFrame & { passageId?: string }).passageId || line.id;
-    const canonical = current.frames.find(frame => frame.id === passageId);
-    if (!canonical) return;
-    const movedToAnotherFrame = frameRef.current?.id !== canonical.id;
-    if (movedToAnotherFrame) {
-      const positions = snapshotRef.current.readingPositions;
-      const key = canonical.id;
-      sourceScrollRef.current = positions[key + ':source'] || 0;
-      readingScrollRef.current = positions[key + ':reader'] || 0;
-      setSourceScrollTop(sourceScrollRef.current); setReadingScrollTop(readingScrollRef.current);
-    }
-    frameRef.current = canonical;
-    setActive(canonical);
-    if (shouldPrefetchFlow({ ordinal: canonical.ordinal, lastOrdinal: current.frames[current.frames.length - 1]!.ordinal,
-      frameCount: current.frames.length, moved: movedToAnotherFrame, paused, reducedMotion: reducedRef.current })) {
-      void controllerRef.current?.next();
-    }
+  function handleReadEntry(entry: StreamEntry) {
+    if (entryKey(entry) === (activeEntryRef.current && entryKey(activeEntryRef.current))) return;
+    activeEntryRef.current = entry;
+    frameRef.current = entry.frame;
+    setActive(entry.frame);
+    setNotes([]);
+    sourceOpenRef.current = false;
+    setSourceOpen(false);
   }
 
-  function updateSnapshot(next: ReadingSnapshot) {
-    snapshotRef.current = { ...next, sourceOpen: sourceOpenRef.current,
-      readingPositions: { ...snapshotRef.current.readingPositions, source: sourceScrollRef.current, reader: readingScrollRef.current } };
+  function continueReading() {
+    lastSelectionRef.current = null;
+    setConnecting(null);
+    void controllerRef.current?.next();
   }
 
   function onToggleSource() {
@@ -220,26 +295,49 @@ export function FlowExperience() {
 
   async function startThought() {
     const controller = controllerRef.current;
-    if (!controller || busy || pending) return;
+    if (!controller || seedBusy || (seedTarget.current && !seed.trim())) return;
     const request = ++seedRequestRef.current;
-    setNotice('');
     setSeedError('');
     lastSelectionRef.current = null;
-    await controller.open(seed);
+    seedSubmitting.current = true;
+    submittedDraft.current = { version: draftVersionRef.current, value: seed };
+    setSeedBusy(true);
+    if (seedTarget.current) await controller.think(seed, seedTarget.current);
+    else await controller.open(seed);
     if (request !== seedRequestRef.current) return;
+    seedSubmitting.current = false;
+    setSeedBusy(false);
     const error = controller.getState().error;
-    if (error) setSeedError(error.message);
-    else setSeedOpen(false);
+    if (error && seedOpenRef.current) setSeedError(error.message);
+    else { seedOpenRef.current = false; setSeedOpen(false); }
   }
 
-  function openSeed() { setSeedError(''); setSeedOpen(true); }
+  function openSeed() {
+    seedRequestRef.current++;
+    seedPause.current = pausedRef.current;
+    seedOpenRef.current = true;
+    seedOrigin.current = recordRef.current?.pathId || null;
+    seedTarget.current = activeEntryRef.current ? { pathId: activeEntryRef.current.pathId, frameId: activeEntryRef.current.frame.id } : null;
+    pauseReading();
+    setSeedError(''); setSeedOpen(true);
+  }
   function cancelSeed() {
     seedRequestRef.current++;
-    controllerRef.current?.cancel();
+    if (seedSubmitting.current) controllerRef.current?.cancel();
+    seedSubmitting.current = false;
+    setSeedBusy(false);
   }
   function closeSeed() {
     seedRequestRef.current++;
-    if (busy || pending) controllerRef.current?.cancel();
+    const submitted = seedSubmitting.current;
+    if (submitted) controllerRef.current?.cancel();
+    seedSubmitting.current = false;
+    setSeedBusy(false);
+    seedOpenRef.current = false;
+    if (!submitted || (recordRef.current?.pathId || null) === seedOrigin.current) {
+      const next = seedPause.current || reducedRef.current;
+      pauseReading(next);
+    }
     setSeedOpen(false);
   }
 
@@ -249,25 +347,77 @@ export function FlowExperience() {
     void saveDraft(value).then(result => { if (!result.persisted) setStorageWarning(true); });
   }
 
-  function returnToParent() {
-    controllerRef.current?.returnToParent();
-  }
-
   async function onSaveNote(text: string) {
-    if (!chain || !active) return;
+    const entry = activeEntryRef.current;
+    if (!entry) return;
+    const { chainId, pathId, frame } = entry;
     setSavingNote(true);
     const now = Date.now();
-    const result = await saveNote({ id: createPathId(), chainId: chain.chainId, frameId: active.id, text, createdAt: now, updatedAt: now });
-    await refreshNotes(chain.chainId, active.id);
-    if (!result.persisted) setStorageWarning(true);
-    setSavingNote(false);
+    const previous = savingNoteId.current;
+    const id = previous?.chainId === chainId && previous.frameId === frame.id ? previous.id : createPathId();
+    const createdAt = previous?.id === id ? previous.createdAt : now;
+    savingNoteId.current = { id, chainId, frameId: frame.id, createdAt };
+    try {
+      const result = await saveNote({ id, chainId, frameId: frame.id, text, createdAt, updatedAt: now, context: noteContext(frame), pathId });
+      await refreshNotes(chainId, frame.id);
+      if (!result.persisted) { setStorageWarning(true); throw new Error('注脚仅本次可用，请重试保存或导出。'); }
+      savingNoteId.current = null;
+    } finally { setSavingNote(false); }
+  }
+
+  async function onUpdateNote(id: string, text: string) {
+    const result = await readingStorage.updateNote(id, text);
+    if (activeEntryRef.current) await refreshNotes(activeEntryRef.current.chainId, activeEntryRef.current.frame.id);
+    if (!result.persisted) { setStorageWarning(true); throw new Error('修改仅本次可用，请重试保存或导出。'); }
+  }
+
+  function openLibrary() {
+    libraryPause.current = paused; libraryRestored.current = false;
+    controllerRef.current?.cancel();
+    pauseReading();
+    void controllerRef.current?.checkpoint();
+    setLibraryOpen(true);
+  }
+  function closeLibrary() {
+    if (!libraryRestored.current) {
+      controllerRef.current?.cancel();
+      const next = libraryPause.current || reducedRef.current;
+      pauseReading(next);
+    }
+    setLibraryOpen(false);
+  }
+  async function openSaved(target: SavedTarget) {
+    const restored = await controllerRef.current?.openSaved(target) || false;
+    if (restored) {
+      libraryRestored.current = true;
+      setNotesFrameId(target.notes ? frameRef.current?.id || null : null);
+    }
+    return restored;
+  }
+  async function toggleBookmark() {
+    const frame = frameRef.current, record = recordsRef.current.find(item => item.pathId === activeEntryRef.current?.pathId);
+    if (!frame || !record || savingBookmark.current) return;
+    const snapshot = captureSnapshot();
+    savingBookmark.current = true;
+    bookmarkVersion.current++;
+    try {
+      const key = quoteKey(frame), previous = await readingStorage.getBookmark(key);
+      const result = previous ? await readingStorage.deleteBookmark(key) : await readingStorage.saveBookmark({ kind: 'bookmark', key, pathId: record.pathId, chainId: record.chain.chainId, frameId: frame.id, ...noteContext(frame), snapshot, createdAt: Date.now(), updatedAt: Date.now() });
+      setBookmarkKeys(keys => {
+        const next = new Set(keys);
+        if (previous) next.delete(key);
+        else next.add(key);
+        return next;
+      });
+      if (!result.persisted) setStorageWarning(true);
+    } finally { savingBookmark.current = false; }
   }
 
   async function onDeleteNote(id: string) {
     const result = await deleteNote(id);
     if (result.deleted && result.previous) undoNoteRef.current = result.previous;
     if (!result.persisted) setStorageWarning(true);
-    if (chain && active) await refreshNotes(chain.chainId, active.id);
+    if (activeEntryRef.current) await refreshNotes(activeEntryRef.current.chainId, activeEntryRef.current.frame.id);
   }
 
   async function onUndoNote() {
@@ -276,66 +426,73 @@ export function FlowExperience() {
     const result = await restoreNote(note);
     if (!result.persisted) setStorageWarning(true);
     undoNoteRef.current = null;
-    if (chain && active) await refreshNotes(chain.chainId, active.id);
+    if (activeEntryRef.current) await refreshNotes(activeEntryRef.current.chainId, activeEntryRef.current.frame.id);
   }
 
   async function refreshNotes(chainId: string, frameId: string) {
     const value = await listNotes(chainId, frameId);
-    if (chainRef.current?.chainId === chainId && frameRef.current?.id === frameId) setNotes(value);
+    if (activeEntryRef.current?.chainId === chainId && frameRef.current?.id === frameId) setNotes(value);
   }
 
   function toggleFlow() {
-    if (wheelHostRef.current) wheelHostRef.current.togglePause();
-    else setPaused(!paused);
+    pauseReading(!pausedRef.current);
   }
 
   const currentFrame = active || frames[0] || null;
-
+  const awaitingQuote = busy || !frames.some(item => item.ready === false);
+  const canResume = flowError?.code === 'INCOMPLETE' && !pending &&
+    controllerRef.current?.getState().record?.completion === 'stopped';
+  const errorFeedback = flowError && !canResume ? <div className={styles.streamError} role="status">
+    <p>{flowError.message}</p>
+    {flowError.code !== 'BUDGET_REACHED' && (['CHAIN_EXPIRED', 'CORPUS_CHANGED', 'CONNECTION_REQUIRED'].includes(flowError.code)
+      ? <button className={styles.textButton} type="button" onClick={() => {
+        const selected = lastSelectionRef.current;
+        if (selected?.pathId && selected.pathId !== recordRef.current?.pathId) void controllerRef.current?.branch(selected);
+        else void controllerRef.current?.restart(selected || (currentFrame ? { frameId: currentFrame.id } : undefined));
+      }}>{lastSelectionRef.current?.selection ? '沿此词重新展开' : '从原句重新展开'}</button>
+      : <button className={styles.textButton} type="button" onClick={() => void controllerRef.current?.retry()}>重试</button>)}
+    <button className={styles.textButton} type="button" onClick={() => controllerRef.current?.dismissError()}>{flowError.code === 'BUDGET_REACHED' ? '回到已读经文' : '留在原句'}</button>
+  </div> : undefined;
   return (
     <main ref={experienceRef} className={styles.experience}>
       <div className={styles.experienceContent}>
       <div className={styles.topBar}>
         <h1 className={styles.brand}>六经注我</h1>
         <div className={styles.topActions}>
-          <button className={styles.topButton} type="button" onClick={openSeed}>此刻的一念</button>
           <button className={styles.topButton} type="button" onClick={toggleFlow} aria-pressed={paused}>{paused ? '继续流动' : '停驻阅读'}</button>
+          <FlowMenu onThought={openSeed} onLibrary={openLibrary} libraryDisabled={!chain || loading} />
         </div>
       </div>
 
-      <WheelCanvas frames={frames} active={currentFrame} chainId={chain?.chainId || ''} snapshot={chain ? snapshotRef.current : null}
-        paused={paused} reducedMotion={reducedMotion} onSelect={selection => void handleBranch(selection)}
-        onPauseChange={setPaused} onActiveChange={frame => void handleActiveChange(frame)} onSnapshot={updateSnapshot}
-        onHostReady={host => { wheelHostRef.current = host; }} />
+      <FlowStream entries={entries} activeKey={activeEntryRef.current ? entryKey(activeEntryRef.current) : ''}
+        paused={paused || seedOpen || libraryOpen} reducedMotion={reducedMotion} pending={pending}
+        connecting={connecting} restore={restorePosition}
+        canContinue={!!chain?.cursor && !chain.exhausted && !flowError && frames.every(item => item.ready !== false)}
+        onContinue={continueReading} onPrepareNext={() => controllerRef.current?.prepareNext()}
+        onPause={() => pauseReading()} onRead={handleReadEntry} onVisualReady={() => setFirstVisualReady(true)}
+        onScroll={top => { readingScrollRef.current = top; }} onBranch={selection => void handleBranch(selection)}
+        waiting={!seedOpen && (pending ? <FlowWaiting compact busy={awaitingQuote} label={connecting?.label} onCancel={() => controllerRef.current?.cancel()} />
+          : canResume ? <FlowResume onResume={() => void controllerRef.current?.retry()} /> : errorFeedback)}
+        sourceOpen={sourceOpen} onToggleSource={onToggleSource} bookmarkKeys={bookmarkKeys} onBookmark={() => void toggleBookmark()}
+        notesFrameId={notesFrameId} notes={notes} savingNote={savingNote}
+        onSaveNote={onSaveNote} onDeleteNote={onDeleteNote} onUndoNote={onUndoNote} onUpdateNote={onUpdateNote} />
 
-      {loading && <p className={styles.loadingLabel} role="status">正在准备经文与字形…</p>}
-      {pending && !seedOpen && !(paused && currentFrame && !loading) && <FlowWaiting floating busy={busy} label={lastSelectionRef.current?.label} onCancel={() => controllerRef.current?.cancel()} />}
-      {flowError && <div className={styles.notice} role="status">
-        <p>{flowError.message}</p>
-        {['CHAIN_EXPIRED', 'CORPUS_CHANGED', 'CONNECTION_REQUIRED'].includes(flowError.code)
-          ? <button className={styles.textButton} type="button" onClick={() => void controllerRef.current?.restart(lastSelectionRef.current || (currentFrame ? { frameId: currentFrame.id } : undefined))}>{lastSelectionRef.current?.selection ? '沿原词重新展开' : '从原句重新展开'}</button>
-          : <button className={styles.textButton} type="button" onClick={() => void controllerRef.current?.retry()}>重试</button>}
-        <button className={styles.textButton} type="button" onClick={() => controllerRef.current?.dismissError()}>留在原句</button>
-      </div>}
-      {notice && !busy && !flowError && <p className={styles.notice} role="status">{notice}</p>}
+      <FlowLoading active={!firstVisualReady && !flowError} progress={fontProgress} quote={currentFrame?.quote || preparingQuote} reducedMotion={reducedMotion} />
+      {hint && !loading && !pending && <div className={styles.firstHint}><span>点词接续，滑动回看。</span><button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button></div>}
+      {!entries.length && errorFeedback && <div className={styles.notice}>{errorFeedback}</div>}
       {storageWarning && <p className={styles.storageNotice} role="status">本机存储暂不可用；当前阅读仍可继续，刷新后可能无法恢复。</p>}
-
-      {paused && currentFrame && !loading && (
-        <ReadingLayer frame={currentFrame} chainKind={chain?.kind === 'remote' ? 'remote' : 'curated'} path={pathTrail}
-          waiting={pending && !seedOpen ? <FlowWaiting busy={busy} label={lastSelectionRef.current?.label} onCancel={() => controllerRef.current?.cancel()} /> : undefined}
-          sourceOpen={sourceOpen} sourceScrollTop={sourceScrollTop} readingScrollTop={readingScrollTop} seed={chain?.seed || ''} notes={notes} savingNote={savingNote}
-          onReturn={returnToParent} onToggleSource={onToggleSource} onSourceScroll={top => {
-            sourceScrollRef.current = top;
-            snapshotRef.current = { ...snapshotRef.current, readingPositions: { ...snapshotRef.current.readingPositions, source: top, [currentFrame.id + ':source']: top } };
-          }} onReadingScroll={top => {
-            readingScrollRef.current = top;
-            snapshotRef.current = { ...snapshotRef.current, readingPositions: { ...snapshotRef.current.readingPositions, reader: top, [currentFrame.id + ':reader']: top } };
-          }} onBranch={selection => void handleBranch(selection)} onOpenSeed={openSeed}
-          onSaveNote={onSaveNote} onDeleteNote={onDeleteNote} onUndoNote={onUndoNote} />
-      )}
 
       <span className={styles.srOnly} aria-live="polite">{currentFrame ? `${currentFrame.source}，${currentFrame.chapterLabel}。${currentFrame.quote}` : ''}</span>
       </div>
-      <SeedSheet open={seedOpen} value={seed} busy={busy || pending} waitingForHead={busy} error={seedError} onChange={changeDraft} onSubmit={() => void startThought()} onClose={closeSeed} onCancel={cancelSeed} />
+      <SeedSheet open={seedOpen} value={seed} busy={seedBusy} continuing={!!seedTarget.current} error={seedError} onChange={changeDraft} onSubmit={() => void startThought()} onClose={closeSeed} onCancel={cancelSeed} />
+      {libraryOpen && <LibrarySheet onClose={closeLibrary} onOpen={openSaved}
+        context={activeEntryRef.current ? { pathId: activeEntryRef.current.pathId, frameId: activeEntryRef.current.frame.id } : undefined} onChanged={() => {
+        if (activeEntryRef.current) void refreshNotes(activeEntryRef.current.chainId, activeEntryRef.current.frame.id);
+        const version = ++bookmarkVersion.current;
+        void readingStorage.listBookmarks().then(value => {
+          if (version === bookmarkVersion.current) setBookmarkKeys(new Set(value.map(item => item.key)));
+        });
+      }} />}
     </main>
   );
 }

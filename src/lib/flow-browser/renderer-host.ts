@@ -102,6 +102,7 @@ export class FlowRendererHost {
     this.reducedMotion = options.reducedMotion;
     this.callbacks = options.callbacks;
     this.timeline = new FlowTimeline(SLOT_COUNT);
+    this.timeline.speed = 0.65;
     this.timeline.loop = true;
     this.timeline.paused = this.paused;
     this.timeline.setVisible(this.visible);
@@ -134,6 +135,7 @@ export class FlowRendererHost {
       this.timeline.paused = true;
       this.callbacks.onPauseChange(true);
     }
+    this.timeline.paused = this.paused;
     const previousSnapshot = this.ribbon?.snapshot() || this.restoreRibbon;
     const cursor = this.cursor();
     this.clearGesture();
@@ -150,13 +152,15 @@ export class FlowRendererHost {
         dpr,
         minFrameInterval: 0,
         refractionScale: 0.5,
+        opticalProfile: true,
+        edgeFadeStart: rect.width <= rect.height ? 0.82 : 0.9,
         timeline: this.timeline,
         reducedMotion: this.reducedMotion,
         onFrame: () => this.syncRows(),
         onError: (error: Error) => this.fail(error),
       });
       this.renderer.borderless = true;
-      this.renderer.readingAmbient = 0.18;
+      this.renderer.readingAmbient = 0.28;
       this.renderer.scrollPitch = metrics.scrollPitch;
       this.renderer.fontSize = browserFontSize(rect.width, rect.height);
       this.renderer.reading = this.paused ? 1 : 0;
@@ -213,7 +217,7 @@ export class FlowRendererHost {
     }
   }
 
-  setFrames(frames: FlowFrame[]) {
+  setFrames(frames: FlowFrame[], activeFrameId?: string) {
     if (this.destroyed) return;
     this.frames = frames;
     const lines = readingLines(frames);
@@ -222,6 +226,10 @@ export class FlowRendererHost {
       return;
     }
     this.ribbon.update(lines, this.cursor(), this.visibleGuard());
+    if (this.paused && activeFrameId && activeFrameId !== this.lastActiveId && frames.some(frame => frame.id === activeFrameId)) {
+      this.focusFrame(activeFrameId);
+      return;
+    }
     try { this.drawRows(); } catch (error) { this.fail(error as Error); }
   }
 
@@ -267,6 +275,9 @@ export class FlowRendererHost {
   setPaused(paused: boolean) {
     if (this.destroyed) return;
     paused = paused || !this.renderer || this.contextLost;
+    // React mirrors pause notifications back here. An identical value must
+    // not interrupt the explicit resume animation.
+    if (paused === this.paused && !this.settling && !this.gesture && this.renderer && !this.contextLost) return;
     this.clearGesture();
     this.settling = false;
     this.paused = paused;
@@ -288,7 +299,17 @@ export class FlowRendererHost {
   }
 
   togglePause() {
-    if (this.paused) this.setPaused(false);
+    if (this.paused && this.renderer && this.visible && !this.reducedMotion) {
+      this.clearGesture(); this.settling = false; this.paused = false;
+      this.timeline.paused = true;
+      this.callbacks.onPauseChange(false); this.emitSnapshot();
+      this.renderer.animateTo({ reading: 0, duration: 300 }, () => {
+        if (this.destroyed || this.paused || !this.visible || !this.renderer) return;
+        this.timeline.paused = false;
+        this.renderer.start(); this.emitSnapshot();
+      });
+    }
+    else if (this.paused) this.setPaused(false);
     else this.settle();
   }
 
@@ -300,6 +321,15 @@ export class FlowRendererHost {
     this.timeline.advancePosition(this.timeline.targetFor(this.timeline.index) - this.timeline.position);
     this.syncRows();
     this.renderer.draw();
+    this.emitSnapshot();
+  }
+
+  focusFrame(frameId: string) {
+    if (this.destroyed || !this.ribbon || !this.frames.some(frame => frame.id === frameId)) return;
+    this.setPaused(true);
+    this.ribbon.seek(frameId, this.cursor());
+    this.lastActiveId = frameId;
+    try { this.drawRows(); this.renderer?.draw(); } catch (error) { this.fail(error as Error); }
     this.emitSnapshot();
   }
 
@@ -318,6 +348,7 @@ export class FlowRendererHost {
   pointerDown(event: PointerEventLike) {
     if (!this.renderer || this.destroyed || !this.visible || this.contextLost || this.gesture || !isPrimaryPointer(event)) return;
     this.settling = false;
+    this.timeline.paused = this.paused;
     const point = this.localPoint(event);
     this.timeline.cancelFling();
     this.timeline.dragging = true;
@@ -365,7 +396,7 @@ export class FlowRendererHost {
         this.emitSnapshot();
         this.callbacks.onSelect(gesture.hit);
         if (!gesture.paused) this.renderer?.start();
-      } else if (gesture.paused) this.setPaused(false);
+      } else if (gesture.paused) this.togglePause();
       else this.settle();
     } else if (gesture.paused) {
       if (flung) this.renderer?.start();
@@ -442,6 +473,7 @@ export class FlowRendererHost {
       if (this.settling) this.setPaused(true);
       this.emitSnapshot();
     } else if (this.renderer && !this.contextLost) {
+      this.timeline.paused = this.paused;
       this.renderer.reading = this.paused ? 1 : 0;
       if (this.paused) this.renderer.draw(); else this.renderer.start();
     }

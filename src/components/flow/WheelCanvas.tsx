@@ -22,19 +22,21 @@ type Props = {
   onActiveChange: (frame: FlowFrame) => void;
   onSnapshot: (snapshot: ReadingSnapshot) => void;
   onHostReady: (host: FlowRendererHost | null) => void;
+  onVisualReady?: () => void;
 };
 
-export function WheelCanvas({ frames, active, chainId, snapshot, paused, reducedMotion, onSelect, onPauseChange, onActiveChange, onSnapshot, onHostReady }: Props) {
+export function WheelCanvas({ frames, active, chainId, snapshot, paused, reducedMotion, onSelect, onPauseChange, onActiveChange, onSnapshot, onHostReady, onVisualReady }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const atlasRef = useRef<HTMLCanvasElement>(null);
   const hostRef = useRef<FlowRendererHost | null>(null);
-  const callbacksRef = useRef({ onSelect, onPauseChange, onActiveChange, onSnapshot, onHostReady });
+  const callbacksRef = useRef({ onSelect, onPauseChange, onActiveChange, onSnapshot, onHostReady, onVisualReady });
   const framesRef = useRef(frames);
   const snapshotRef = useRef(snapshot);
   const chainIdRef = useRef(chainId);
   const latestChainIdRef = useRef(chainId);
   const reducedMotionRef = useRef(reducedMotion);
   const pausedRef = useRef(paused);
+  const activeRef = useRef(active?.id);
   const [fontFamily, setFontFamily] = useState('');
   const [fontError, setFontError] = useState('');
   const [graphicsError, setGraphicsError] = useState('');
@@ -43,51 +45,68 @@ export function WheelCanvas({ frames, active, chainId, snapshot, paused, reduced
   const fontRetryRef = useRef<HTMLButtonElement>(null);
   const [preview, setPreview] = useState<Selection | null>(null);
 
-  callbacksRef.current = { onSelect, onPauseChange, onActiveChange, onSnapshot, onHostReady };
+  callbacksRef.current = { onSelect, onPauseChange, onActiveChange, onSnapshot, onHostReady, onVisualReady };
   framesRef.current = frames;
   snapshotRef.current = snapshot;
   latestChainIdRef.current = chainId;
   reducedMotionRef.current = reducedMotion;
   pausedRef.current = paused;
+  activeRef.current = active?.id;
   const hasFrames = frames.length > 0;
 
   useEffect(() => {
     if (!framesRef.current.length || !canvasRef.current || !atlasRef.current) return;
     let cancelled = false;
     let host: FlowRendererHost | null = null;
-    prepareFlowFonts(framesRef.current).then(fonts => {
+    const prepare = async () => {
+      let prepared = framesRef.current;
+      let fonts;
+      for (;;) {
+        prepared = framesRef.current;
+        fonts = await prepareFlowFonts(prepared.map(frame => ({ quote: frame.quote })));
+        if (cancelled) return;
+        if (prepared === framesRef.current) break;
+      }
       if (cancelled || !canvasRef.current || !atlasRef.current) return;
       setFontFamily(fonts.family);
       setFontError('');
       setRetryingFonts(false);
       if (document.activeElement === fontRetryRef.current) canvasRef.current.focus({ preventScroll: true });
-      host = createFlowRendererHost(canvasRef.current, atlasRef.current, framesRef.current, {
+      // Constructor notifications must not rewind a reader who moved while
+      // the glyphs were loading. The text record already owns that position.
+      const desired = activeRef.current;
+      const restored = snapshotRef.current?.activeFrameId || prepared[0]?.id;
+      let starting = true;
+      host = createFlowRendererHost(canvasRef.current, atlasRef.current, prepared, {
         paused: reducedMotionRef.current || pausedRef.current,
         reducedMotion: reducedMotionRef.current,
-        snapshot: fontAttempt > 0 && snapshotRef.current
-          ? { ...snapshotRef.current, paused: pausedRef.current }
-          : snapshotRef.current ?? null,
+        snapshot: snapshotRef.current ? { ...snapshotRef.current, paused: pausedRef.current } : null,
         callbacks: {
           onSelect: hit => callbacksRef.current.onSelect(hit),
           onPreview: hit => setPreview(hit),
           onPauseChange: value => callbacksRef.current.onPauseChange(value),
-          onActiveChange: frame => callbacksRef.current.onActiveChange(frame),
+          onActiveChange: frame => { if (!starting) callbacksRef.current.onActiveChange(frame); },
           onSnapshot: value => callbacksRef.current.onSnapshot(value),
           onError: error => {
             setGraphicsError(error.message || 'WEBGL_UNAVAILABLE');
+            callbacksRef.current.onVisualReady?.();
           },
-          onReady: () => setGraphicsError(''),
+          onReady: () => { setGraphicsError(''); callbacksRef.current.onVisualReady?.(); },
         },
       });
+      if (pausedRef.current && desired && desired !== restored) host.focusFrame(desired);
+      starting = false;
       hostRef.current = host;
       chainIdRef.current = latestChainIdRef.current;
       callbacksRef.current.onHostReady(host);
-    }).catch(error => {
+    };
+    void prepare().catch(error => {
       if (cancelled) return;
       setFontError(error instanceof Error ? error.message : 'FONT_UNAVAILABLE');
       setRetryingFonts(false);
       setGraphicsError('FONT_UNAVAILABLE');
       callbacksRef.current.onPauseChange(true);
+      callbacksRef.current.onVisualReady?.();
     });
     return () => {
       cancelled = true;
@@ -103,14 +122,26 @@ export function WheelCanvas({ frames, active, chainId, snapshot, paused, reduced
   }, [hasFrames, fontAttempt]);
 
   useEffect(() => {
-    if (!hostRef.current || chainIdRef.current === chainId) return;
-    chainIdRef.current = chainId;
-    hostRef.current.switchChain(framesRef.current, snapshotRef.current || null, reducedMotionRef.current);
-  }, [chainId]);
-
-  useEffect(() => {
-    hostRef.current?.setFrames(frames);
-  }, [frames]);
+    const host = hostRef.current;
+    if (!host) return;
+    let cancelled = false;
+    void prepareFlowFonts(frames.map(frame => ({ quote: frame.quote }))).then(fonts => {
+      if (cancelled || hostRef.current !== host) return;
+      setFontFamily(fonts.family); setFontError('');
+      setGraphicsError(value => value === 'FONT_UNAVAILABLE' ? '' : value);
+      if (chainIdRef.current !== chainId) {
+        chainIdRef.current = chainId;
+        host.switchChain(frames, snapshotRef.current || null, reducedMotionRef.current);
+      } else host.setFrames(frames, pausedRef.current ? activeRef.current : undefined);
+    }).catch(error => {
+      if (cancelled || hostRef.current !== host) return;
+      setFontError(error instanceof Error ? error.message : 'FONT_UNAVAILABLE');
+      setGraphicsError('FONT_UNAVAILABLE');
+      callbacksRef.current.onPauseChange(true);
+      callbacksRef.current.onVisualReady?.();
+    });
+    return () => { cancelled = true; };
+  }, [frames, chainId]);
 
   useEffect(() => {
     hostRef.current?.setPaused(paused);

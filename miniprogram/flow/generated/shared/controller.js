@@ -12,6 +12,16 @@ function mergeChain(previous, batch) {
     if (old && (old.quote !== frame.quote || old.sourceId !== frame.sourceId || old.textHash !== frame.textHash)) {
       throw failure('FRAME_CHANGED', '经句身份发生变化，已保留原来的阅读。');
     }
+    // A delayed checkpoint may arrive after a longer stream prefix or the
+    // complete frame. It is an earlier observation, not changed settled text.
+    if (old && frame.ready === false && (old.ready !== false ||
+      ['meaning', 'reflection'].some(surface => old[surface]?.length > (frame[surface]?.length || 0) &&
+        old[surface].startsWith(frame[surface] || '')))) continue;
+    for (const surface of ['meaning', 'reflection']) {
+      if (old?.settled?.[surface] && old[surface] !== frame[surface]) {
+        throw failure('FRAME_CHANGED', '已读的段落发生变化，已保留原来的阅读。');
+      }
+    }
     if (!old || old.ready === false || frame.ready !== false) frames.set(frame.id, copy(frame));
   }
   const merged = { ...previous, ...batch, frames: Array.from(frames.values()).sort((a, b) => a.ordinal - b.ordinal) };
@@ -42,6 +52,7 @@ function branchInput(chain, selected) {
 function createFlowController(host) {
   let state = { record: host.initialRecord || null, busy: false, pending: false, error: null, storageWarning: false, version: 0 };
   let visible = true, disposed = false, active = null, retryOperation = null;
+  const background = new Set();
   let writes = Promise.resolve();
   const now = host.now || Date.now;
   const notify = patch => {
@@ -49,6 +60,7 @@ function createFlowController(host) {
     if (!disposed) host.state?.({ ...state });
   };
   const current = token => !disposed && visible && token === state.version;
+  const available = context => current(context.token) || (!disposed && visible && background.has(context) && !context.cancelled);
   const queueWrite = work => {
     const result = writes.then(work);
     writes = result.catch(() => {});
@@ -74,11 +86,31 @@ function createFlowController(host) {
     await save(record);
   }
 
+  function stop(context, retain = false) {
+    if (!context) return;
+    context.cancelled = true;
+    background.delete(context);
+    context.task?.cancel?.();
+    // Already received, verified events finish their durable writes even when
+    // a newer click supersedes presentation. Incomplete detached paths remain
+    // explicitly resumable instead of silently restarting on a later visit.
+    if (retain && host.backgroundLimit) void context.queue.then(async () => {
+      if (context.record && incomplete(context.record.chain)) {
+        await save({ ...context.record, completion: 'stopped', updatedAt: now() });
+      }
+    }).catch(() => notify({ storageWarning: true }));
+  }
+
   function begin(method, input) {
+    if (method !== 'next') providerFor(state.record?.chain)?.cancelPreparation?.();
     const previous = active;
     active = null;
+    if (host.backgroundLimit && ['branch', 'restart'].includes(method) && previous?.task) {
+      background.add(previous);
+      while (background.size > host.backgroundLimit) stop(background.values().next().value, true);
+    } else stop(previous, true);
+    if (method === 'restore' || method === 'open') for (const context of background) stop(context, true);
     notify({ version: state.version + 1, error: null });
-    previous?.task?.cancel?.();
     host.cancelPresentation?.();
     const context = { token: state.version, method, input, from: state.record, record: null,
       requestId: host.createId(), queue: Promise.resolve(), task: null, presented: false, lastBatch: '' };
@@ -108,42 +140,51 @@ function createFlowController(host) {
     });
   }
 
-  async function deliver(batch, context, stage) {
-    if (!current(context.token) || !batch?.frames) return;
+  async function deliver(batch, context, stage, received = false) {
+    const durable = !!host.backgroundLimit && (received || background.has(context));
+    if ((!available(context) && !durable) || !batch?.frames) return;
     if (!batch.frames.length && !['next', 'resume'].includes(context.method)) throw failure('EMPTY_CHAIN', '暂未找到可接续的经文。');
     const fingerprint = JSON.stringify(batch);
     if (fingerprint === context.lastBatch) return;
-    const chain = host.prepare ? await host.prepare(copy(batch)) : copy(batch);
-    if (!current(context.token)) return;
-    const existing = context.record || (['next', 'resume'].includes(context.method) ? state.record : null);
+    const chain = host.prepare && current(context.token) ? await host.prepare(copy(batch)) : copy(batch);
+    if (!available(context) && !durable) return;
+    const existing = context.record || (['next', 'resume'].includes(context.method) ? context.from : null);
     if (existing) {
       if (existing.chain.chainId !== chain.chainId) throw failure('CHAIN_CHANGED', '返回的经文链与当前阅读不一致。');
       const base = state.record?.pathId === existing.pathId ? captured(state.record) : existing;
       const merged = mergeChain(base.chain, chain);
       const record = { ...base, chain: merged, completion: incomplete(merged) ? 'pending' : 'complete', recoveryError: undefined, updatedAt: now() };
-      if (!await save(record, context.token)) return;
+      if (!await save(record, durable ? undefined : context.token)) return;
       context.record = record;
-      state = { ...state, record };
-      host.update?.(copy(record));
-      notify({ record, busy: false });
+      if (current(context.token)) {
+        state = { ...state, record };
+        host.update?.(copy(record));
+        notify({ record, busy: false });
+      } else if (state.record?.pathId === record.pathId && !disposed) {
+        state = { ...state, record };
+        host.update?.(copy(record));
+      } else if (!disposed) host.background?.(copy(record));
     } else {
       const parent = context.method === 'branch' || context.method === 'restart' ? context.from : null;
       const parentSnapshot = parent && state.record?.pathId === parent.pathId ? captured(state.record).snapshot : parent?.snapshot;
       const record = { pathId: host.createPathId ? host.createPathId(chain) : host.createId(), chain, snapshot: copy(host.initialSnapshot(chain, { parentSnapshot: copy(parentSnapshot) })),
         parentPathId: parent?.pathId || null, sourceLabel: context.label || (chain.seed ? '此刻的一念' : '最初的经文'),
+        ...(parent && context.parentEntry ? { parentEntry: copy(context.parentEntry) } : {}),
         completion: incomplete(chain) ? 'pending' : 'complete', createdAt: now(), updatedAt: now() };
       const stored = await queueWrite(async () => {
-        if (!current(context.token)) return false;
+        if (!current(context.token) && !durable) return false;
         const latestParent = parent && state.record?.pathId === parent.pathId ? captured(state.record) : parent;
         const result = latestParent ? await host.storage.commitBranch(copy(latestParent), copy(record)) : await host.storage.put(copy(record));
         warn(result);
-        return current(context.token);
+        return durable || current(context.token);
       });
       if (!stored) return;
-      await activate(record, context, context.navigation || 'push');
+      context.record = record;
+      if (current(context.token)) await activate(record, context, context.navigation || 'push');
+      else if (!disposed) host.background?.(copy(record));
     }
     context.lastBatch = fingerprint;
-    if (stage === 'frame') retryOperation = null;
+    if (stage === 'frame' && current(context.token)) retryOperation = null;
   }
 
   function providerFor(chain) { return chain ? host.providerFor(chain) : host.defaultProvider; }
@@ -158,9 +199,26 @@ function createFlowController(host) {
       await checkpoint();
       context.from = state.record;
       if (!current(context.token)) return;
+      // Visible earlier paragraphs still belong to their original server chain.
+      // Resolve their owner without presenting/restoring it as a separate view.
+      if (options.sourcePathId && options.sourcePathId !== context.from?.pathId) {
+        context.from = await host.storage.get(options.sourcePathId);
+        if (!current(context.token)) return;
+        if (!context.from) throw failure('PATH_MISSING', '未找到这段经文的来路，当前阅读仍在。');
+      }
+      if (method === 'branch' && options.selected) {
+        const chosen = branchInput(context.from.chain, options.selected);
+        input = chosen.input;
+        context.input = input;
+        context.label = `沿「${chosen.label}」`;
+        context.parentEntry = { fromFrameId: input.fromFrameId, anchorId: input.anchorId, label: chosen.label,
+          ...(input.selection ? { selection: copy(input.selection) } : {}) };
+      }
       const provider = options.provider || providerFor(context.from?.chain);
       if (options.visited) {
-        const saved = await host.storage.child(context.from.pathId, input.fromFrameId, input.anchorId);
+        const entry = context.parentEntry || input;
+        const saved = await host.storage.child(context.from.pathId, entry.fromFrameId, entry.anchorId, entry.selection || input.selection);
+        warn(host.storage.status?.());
         if (!current(context.token)) return;
         if (saved && !incomplete(saved.chain)) {
           saved.chain = host.prepare ? await host.prepare(saved.chain) : saved.chain;
@@ -173,23 +231,46 @@ function createFlowController(host) {
       }
       const operation = method === 'restart' ? 'open' : method;
       if (!provider?.[operation]) throw failure('CONNECTION_REQUIRED', '这处联系需要联网后继续，原句仍可阅读。');
+      if (method === 'branch' && host.branchDelayMs) {
+        await new Promise(resolve => setTimeout(resolve, host.branchDelayMs));
+        if (!current(context.token)) return;
+      }
       context.task = provider[operation](input, { requestId: context.requestId, onEvent: event => {
-        if (!current(context.token) || (event.requestId && event.requestId !== context.requestId)) return;
-        if (event.type !== 'head' && event.type !== 'frame') return;
-        context.queue = context.queue.then(() => deliver(event.chain, context, event.type));
+        if (!available(context) || (event.requestId && event.requestId !== context.requestId)) return;
+        if (!['head', 'progress', 'frame'].includes(event.type)) return;
+        context.queue = context.queue.then(() => deliver(event.chain, context, event.type, true));
         // Keep the rejection for the caller while avoiding unhandled async event errors.
         context.queue.catch(() => context.task?.cancel?.());
       } });
       const result = await context.task;
       await context.queue;
-      if (!current(context.token)) return;
-      await deliver(result, context, 'frame');
+      if (!available(context) && !host.backgroundLimit) return;
+      await deliver(result, context, 'frame', true);
       if (current(context.token)) { notify({ busy: false, pending: false }); retryOperation = null; }
       return state.record;
     } catch (error) {
       // A provider may reject after emitting head; let that checkpoint finish first.
       try { await context.queue; } catch (preparationError) { error = preparationError; }
-      if (!current(context.token) || error.cancelled || error.name === 'AbortError') return;
+      if (!current(context.token)) {
+        if (host.backgroundLimit && context.record && incomplete(context.record.chain) && !context.cancelled) {
+          const recoveryError = { code: error.code || 'UNAVAILABLE', message: error.message || '这条联系尚未展开完整，可以重试。' };
+          await save({ ...context.record, completion: 'failed', recoveryError, updatedAt: now() }).catch(() => notify({ storageWarning: true }));
+        }
+        return;
+      }
+      if (error.cancelled || error.name === 'AbortError') return;
+      // The reader already chose an exact word or continuation. An expired
+      // remote cursor must not turn that one action into an error-and-retry UI.
+      // Reopen once from canonical source; never restart background restores,
+      // changed source text, quotas, or a request which already delivered data.
+      if (['branch', 'next'].includes(method) && !context.record && context.from &&
+        ['CHAIN_EXPIRED', 'ANCHOR_EXPIRED', 'CONNECTION_REQUIRED'].includes(error.code) &&
+        (error.code !== 'CONNECTION_REQUIRED' || providerFor(context.from.chain) !== host.defaultProvider)) {
+        const selected = method === 'branch'
+          ? { frameId: input.fromFrameId, anchorId: input.anchorId, ...(input.selection ? { selection: input.selection } : {}) }
+          : { frameId: context.from.chain.frames[context.from.chain.frames.length - 1]?.id };
+        return restart(selected, { parentEntry: context.parentEntry, label: context.label, sourceRecord: context.from });
+      }
       if (!state.record && method === 'open' && host.fallbackProvider && options.provider !== host.fallbackProvider && !options.fallback) {
         return execute('open', typeof input === 'string' ? input : input.seed || '', {
           ...options, provider: host.fallbackProvider, fallback: true,
@@ -206,6 +287,7 @@ function createFlowController(host) {
       }
       notify({ busy: false, pending: false, error: recoveryError });
     } finally {
+      background.delete(context);
       if (active === context) active = null;
     }
   }
@@ -226,15 +308,19 @@ function createFlowController(host) {
         }
         throw failure('PATH_MISSING', '未找到这次阅读的位置，当前经文仍在。');
       }
+      if (options.resumeIncomplete === false && incomplete(saved.chain) && (!saved.completion || saved.completion === 'pending')) {
+        saved.completion = 'stopped';
+        if (!await save(saved, context.token)) return;
+      }
       saved.chain = host.prepare ? await host.prepare(saved.chain) : saved.chain;
       if (!current(context.token)) return;
       providerFor(saved.chain).restore?.(saved.chain);
       await activate(saved, context, options.navigation || 'restore');
       if (!current(context.token)) return;
-      notify({ busy: false, pending: false, error: incomplete(saved.chain) && ['failed', 'stopped'].includes(saved.completion)
+      notify({ busy: false, pending: false, error: incomplete(saved.chain) && (options.resumeIncomplete === false || ['failed', 'stopped'].includes(saved.completion))
         ? saved.recoveryError || { code: 'INCOMPLETE', message: '这条联系尚未展开完整，可以再试或返回。' } : null });
       retryOperation = null;
-      if (incomplete(saved.chain) && (!saved.completion || saved.completion === 'pending')) {
+      if (options.resumeIncomplete !== false && incomplete(saved.chain) && (!saved.completion || saved.completion === 'pending')) {
         return execute('resume', { chainId: saved.chain.chainId });
       }
     } catch (error) {
@@ -243,10 +329,14 @@ function createFlowController(host) {
   }
 
   function cancel(manual = true) {
+    const provider = providerFor(state.record?.chain);
+    if (manual) provider?.cancelPreparation?.();
+    else provider?.suspendPreparation?.();
     const previous = active;
     active = null;
     notify({ version: state.version + 1, busy: false, pending: false });
-    previous?.task?.cancel?.();
+    stop(previous, manual);
+    for (const context of background) stop(context, true);
     host.cancelPresentation?.();
     if (manual && state.record && incomplete(state.record.chain)) {
       const record = { ...captured(state.record), completion: 'stopped' };
@@ -256,10 +346,45 @@ function createFlowController(host) {
     }
   }
 
+  function restart(selected, options = {}) {
+    const record = options.sourceRecord || state.record, frame = record?.chain.frames.find(item => item.id === selected?.frameId) || record?.chain.frames[0];
+    if (!frame) return Promise.resolve();
+    try {
+      const chosen = selected && (selected.selection || selected.anchorId) ? branchInput(record.chain, selected) : null;
+      const lexical = chosen?.input.selection;
+      const anchor = frame.anchors.find(item => item.id === selected?.anchorId);
+      const surface = lexical?.surface || anchor?.surface;
+      // Former explanations are reading intent, never trusted ancient text.
+      const seed = options.seed !== undefined ? options.seed : surface && surface !== 'quote'
+        ? `沿「${chosen.label}」继续。这是经句「${frame.quote}」的${surface === 'meaning' ? '现代释义' : '生成联系'}中的词。`.slice(0, 120)
+        : record.chain.seed;
+      const parentEntry = options.parentEntry || (chosen ? { fromFrameId: frame.id, anchorId: chosen.input.anchorId, label: chosen.label,
+        ...(lexical ? { selection: copy(lexical) } : {}) } : null);
+      return execute('restart', { seed, restartFrom: { sourceId: frame.sourceId,
+        corpusVersion: frame.corpusVersion, textHash: frame.textHash, quoteStart: frame.quoteStart, quoteEnd: frame.quoteEnd },
+        ...(lexical && !lexical.surface ? { selection: lexical } : {}) }, { provider: host.defaultProvider,
+        sourcePathId: record.pathId,
+        ...(parentEntry ? { parentEntry, visited: !parentEntry.thought } : {}),
+        label: options.label || (chosen ? `沿「${chosen.label}」` : '从原句重新展开') });
+    } catch (error) { notify({ error: { code: error.code, message: error.message } }); return Promise.resolve(); }
+  }
+
   return {
     getState: () => ({ ...state }), current,
     checkpoint,
     open: (seed, options) => execute('open', seed, { provider: host.defaultProvider, ...options }),
+    async think(seed, selected) {
+      const thought = String(seed || '').trim().slice(0, 120);
+      if (!thought) return;
+      const version = state.version;
+      const record = selected?.pathId && selected.pathId !== state.record?.pathId
+        ? await host.storage.get(selected.pathId) : state.record;
+      if (!current(version)) return;
+      const frame = record?.chain.frames.find(item => item.id === selected?.frameId) || record?.chain.frames[0];
+      if (!record || !frame) return execute('open', thought, { provider: host.defaultProvider });
+      return restart({ frameId: frame.id }, { sourceRecord: record, seed: thought, label: '添一念',
+        parentEntry: { fromFrameId: frame.id, anchorId: 'thought:' + host.createId(), label: '添一念', thought } });
+    },
     curated: seed => execute('open', seed || '', { provider: host.fallbackProvider, navigation: state.record ? 'push' : 'replace', fallback: true }),
     async start(pathId) {
       const version = state.version;
@@ -269,31 +394,42 @@ function createFlowController(host) {
       return execute('open', '', { provider: host.defaultProvider, navigation: 'replace' });
     },
     branch(selected) {
-      if (!state.record || state.busy) return Promise.resolve();
+      if (!state.record) return Promise.resolve();
       try {
+        const sourcePathId = selected.pathId || state.record.pathId;
+        if (active?.method === 'branch' && active.sourcePathId === sourcePathId &&
+          active.selected?.frameId === selected.frameId &&
+          active.selected?.anchorId === selected.anchorId &&
+          JSON.stringify(active.selected?.selection) === JSON.stringify(selected.selection)) return Promise.resolve();
+        if (sourcePathId !== state.record.pathId) {
+          return execute('branch', {}, { visited: true, sourcePathId, selected: copy(selected) });
+        }
         const { input, label } = branchInput(state.record.chain, selected);
-        return execute('branch', input, { visited: true, label: `沿「${label}」` });
+        if (active?.method === 'branch' && active.input.chainId === input.chainId &&
+          active.input.fromFrameId === input.fromFrameId && active.input.anchorId === input.anchorId) return Promise.resolve();
+        return execute('branch', input, { visited: true, sourcePathId, selected: copy(selected), label: `沿「${label}」`,
+          parentEntry: { fromFrameId: input.fromFrameId, anchorId: input.anchorId, label,
+            ...(input.selection ? { selection: copy(input.selection) } : {}) } });
       } catch (error) { notify({ error: { code: error.code, message: error.message } }); return Promise.resolve(); }
     },
     next() {
       const chain = state.record?.chain;
-      if (!chain?.cursor || chain.exhausted || incomplete(chain) || state.pending || state.busy || (state.error && retryOperation?.method === 'next')) return Promise.resolve();
-      return execute('next', { chainId: chain.chainId, cursor: chain.cursor });
+      if (!chain?.cursor || !chain.frames.length || chain.exhausted || incomplete(chain) || state.pending || state.busy || (state.error && retryOperation?.method === 'next')) return Promise.resolve();
+      return execute('next', { chainId: chain.chainId, cursor: chain.cursor }, { visited: true, label: '沿此意继续',
+        parentEntry: { fromFrameId: chain.frames[chain.frames.length - 1].id, anchorId: 'next:' + chain.cursor, label: '沿此意继续' } });
     },
+    prepareNext() {
+      const chain = state.record?.chain;
+      if (!visible || disposed || state.pending || state.busy || state.error || !chain?.cursor ||
+        chain.kind !== 'remote' || chain.exhausted || !chain.frames.length || incomplete(chain)) return;
+      providerFor(chain)?.prepareNext?.({ chainId: chain.chainId, cursor: chain.cursor });
+    },
+    cancelPreparation: () => providerFor(state.record?.chain)?.cancelPreparation?.(),
     resume() {
       if (!state.record || !incomplete(state.record.chain)) return Promise.resolve();
       return execute('resume', { chainId: state.record.chain.chainId });
     },
-    restart(selected) {
-      const record = state.record, frame = record?.chain.frames.find(item => item.id === selected?.frameId) || record?.chain.frames[0];
-      if (!frame) return Promise.resolve();
-      try {
-        const lexical = selected?.selection ? branchInput(record.chain, selected).input.selection : null;
-        return execute('restart', { seed: record.chain.seed, restartFrom: { sourceId: frame.sourceId,
-          corpusVersion: frame.corpusVersion, textHash: frame.textHash, quoteStart: frame.quoteStart, quoteEnd: frame.quoteEnd },
-          ...(lexical ? { selection: lexical } : {}) }, { provider: host.defaultProvider, label: lexical ? '沿原词重新展开' : '从原句重新展开' });
-      } catch (error) { notify({ error: { code: error.code, message: error.message } }); return Promise.resolve(); }
-    },
+    restart,
     restore, cancel,
     retry() {
       if (state.record && incomplete(state.record.chain)) return execute('resume', { chainId: state.record.chain.chainId });
@@ -310,7 +446,7 @@ function createFlowController(host) {
       }
       else if (!state.record && retryOperation) void execute(retryOperation.method, retryOperation.input, retryOperation.options);
     },
-    dispose() { cancel(false); disposed = true; },
+    dispose() { cancel(false); providerFor(state.record?.chain)?.cancelPreparation?.(); disposed = true; },
   };
 }
 

@@ -27,7 +27,7 @@ describe('font asset readiness', () => {
     Object.defineProperty(document, 'fonts', { configurable: true, value: { add: jest.fn() } });
     Object.defineProperty(global, 'crypto', { configurable: true, value: webcrypto });
     const original = require('@/lib/flow-browser/fonts').prepareFlowFonts as typeof prepare;
-    prepare = (frames, baseUrl = '/test-fonts') => original(frames, baseUrl);
+    prepare = (frames, baseUrl = '/test-fonts', onProgress) => original(frames, baseUrl, onProgress);
   });
 
   afterEach(() => {
@@ -63,6 +63,29 @@ describe('font asset readiness', () => {
     expect(faceMock.mock.calls.filter(([family]) => family.startsWith('InfiDao-one-'))).toHaveLength(1);
   });
 
+  test('each observer counts verified assets without adding downloads, and waits for faces before reporting ready', async () => {
+    let release!: () => void;
+    faceMock.mockImplementation(() => ({ load: () => new Promise<void>(resolve => { release = resolve; }) }));
+    const firstProgress = jest.fn(), secondProgress = jest.fn();
+    const first = prepare([{ quote: '甲' }], '/test-fonts', firstProgress);
+    const second = prepare([{ quote: '甲' }], '/test-fonts', secondProgress);
+    await waitFor(() => expect(firstProgress).toHaveBeenCalledWith({ phase: 'fonts', loaded: 1, total: 1 }));
+    expect(firstProgress).not.toHaveBeenCalledWith({ phase: 'ready', loaded: 1, total: 1 });
+    release(); await Promise.all([first, second]);
+    expect(firstProgress).toHaveBeenLastCalledWith({ phase: 'ready', loaded: 1, total: 1 });
+    expect(secondProgress).toHaveBeenLastCalledWith({ phase: 'ready', loaded: 1, total: 1 });
+    expect(fetchMock.mock.calls.filter(([url]) => url.endsWith('one.ttf'))).toHaveLength(1);
+  });
+
+  test('corrupt assets never advance progress and observer failures do not break valid fonts', async () => {
+    const progress = jest.fn();
+    fetchMock.mockImplementationOnce(async () => ({ ok: true, json: async () => manifest }))
+      .mockImplementationOnce(async () => ({ ok: true, arrayBuffer: async () => new ArrayBuffer(1) }));
+    await expect(prepare([{ quote: '甲' }], '/test-fonts', progress)).rejects.toThrow('FONT_INCOMPLETE');
+    expect(progress).not.toHaveBeenCalledWith(expect.objectContaining({ loaded: 1 }));
+    await expect(prepare([{ quote: '甲' }], '/test-fonts', () => { throw new Error('observer'); })).resolves.toMatchObject({ version: 'v1' });
+  });
+
   test('rejects truncated shards and retries rather than caching the failure', async () => {
     fetchMock.mockImplementationOnce(async () => ({ ok: true, json: async () => manifest }))
       .mockImplementationOnce(async () => ({ ok: true, arrayBuffer: async () => new ArrayBuffer(1) }));
@@ -91,6 +114,23 @@ describe('font asset readiness', () => {
     expect((await prepare([], '/version-a')).version).toBe('/version-a/manifest.json');
     expect((await prepare([], '/version-b')).version).toBe('/version-b/manifest.json');
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  test('a late preparation keeps every installed face available to the current reader', async () => {
+    const shards = Array.from('甲乙', (characters, index) => ({ id: String(index), file: `${index}.ttf`, characters, bytes: 2, sha256: testHash }));
+    let release!: () => void;
+    fetchMock.mockImplementation(async (url: string) => {
+      if (url.endsWith('manifest.json')) return { ok: true, json: async () => ({ version: 'union', shards }) };
+      if (url.endsWith('0.ttf')) await new Promise<void>(resolve => { release = resolve; });
+      return { ok: true, arrayBuffer: async () => new ArrayBuffer(2) };
+    });
+    const late = prepare([{ quote: '甲' }]);
+    await prepare([{ quote: '乙' }]);
+    expect(document.documentElement.style.getPropertyValue('--flow-classic-family')).toContain('InfiDao-1-');
+    release(); await late;
+    const family = document.documentElement.style.getPropertyValue('--flow-classic-family');
+    expect(family).toContain('InfiDao-0-'); expect(family).toContain('InfiDao-1-');
+    expect(family.indexOf('InfiDao-0-')).toBeLessThan(family.indexOf('InfiDao-1-'));
   });
 
   test('shares verified base bytes between DOM and canvas and skips redundant shards', async () => {

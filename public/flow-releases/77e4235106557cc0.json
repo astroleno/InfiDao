@@ -1,0 +1,20 @@
+{
+  "id": "77e4235106557cc0",
+  "commit": "8e98a102f857256d0bbdae52a3fd028996328cc0",
+  "worktreeDirty": true,
+  "codeSha256": "bc862861a21429ee107459063a22bf4c258a9d3976c39d7780f4fd05ae61a971",
+  "corpusVersion": "guji-core-v1",
+  "corpusSha256": "3ac315b83fbb75f5076e444a09823d243d1237995ba2244eecb43af76c0ce3ec",
+  "curatedVersion": "curated-9dcbdbbc52ea63b7",
+  "fontVersion": "6260e75c0bc7134351a0",
+  "fontManifestSha256": "46fb9c490f185581230c140654286858fab810180288ea809e5b53ae49fefbb4",
+  "fontBasePath": "/flow-assets/v-6260e75c0bc7134351a0",
+  "fontPreloads": [
+    "base-serif-c2701e3fde99183cf3b9.woff",
+    "base-supplement-7ae6002e9d58b6a75354.woff"
+  ],
+  "storageSchema": {
+    "browser": 2,
+    "server": 1
+  }
+}

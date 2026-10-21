@@ -97,6 +97,22 @@ test('parent completion merges child mappings committed while its head was still
   expect((await f.store.getChain(owner, 'a')).branches).toEqual({ 'f:w': 'b' });
   expect((await f.store.getChain(owner, 'b')).chain.parentChainId).toBe('a');
 });
+
+test('progress retains concurrent child edges and rejects mutation of a published paragraph', async () => {
+  const f = fixture(), parent = state('p'), lease = (await f.store.reserve(owner, opening)).lease!;
+  const frame = { ...verifiedFrame('f'), ready: false, reflection: '', settled: { meaning: true, reflection: false } };
+  parent.chain.frames = [frame]; parent.nodes[frame.id] = frame;
+  await f.store.commitHead(owner, lease, parent);
+  const childLease = (await f.store.reserve(owner, { key: 'branch:p:f:w', requestId: 'child', fingerprint: 'child' })).lease!;
+  await f.store.commitHead(owner, childLease, state('c', childLease.key), { id: 'p', edge: 'f:w' });
+  const changed = structuredClone(parent);
+  changed.chain.frames[0]!.meaning = '被更改的段落。'; changed.nodes.f = changed.chain.frames[0]!;
+  await expect(f.store.commitProgress(owner, lease, changed, '0')).rejects.toMatchObject({ code: 'FRAME_CHANGED' });
+  const progressed = structuredClone(parent);
+  progressed.chain.frames[0]!.reflection = '新的完整联系。'; progressed.chain.frames[0]!.settled!.reflection = true;
+  progressed.nodes.f = progressed.chain.frames[0]!;
+  expect((await f.store.commitProgress(owner, lease, progressed, '0')).branches).toEqual({ 'f:w': 'c' });
+});
 test('saved completion replays without a lease, even after a lost response and new store instance', async () => {
   const f = fixture(), saved = state('a'), lease = (await f.store.reserve(owner, opening)).lease!;
   await f.store.commitHead(owner, lease, saved); saved.chain.cursor = 'ready'; saved.initial = saved.chain;

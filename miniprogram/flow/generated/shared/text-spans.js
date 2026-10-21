@@ -1,7 +1,7 @@
 // Native text and server anchors share UTF-16 offsets. A link is accepted only
 // when its explicit range still contains its label in this exact surface.
-const { classicSpans } = require('./classic-text');
-function textSpans(frame, surface) {
+const { classicSpans, ranges: wordRanges, selectionFor } = require('./classic-text');
+function textSpans(frame, surface, allWords = false) {
   if (surface === 'quote' || surface === 'fullText') return classicSpans(frame, surface);
   const text = frame[surface] || '', source = surface === 'fullText';
   const field = source ? 'quote' : surface;
@@ -16,6 +16,13 @@ function textSpans(frame, surface) {
   }).sort((a, b) => a.start - b.start || b.end - a.end);
   const accepted = []; let last = -1;
   for (const range of ranges) if (range.start >= last) { accepted.push(range); last = range.end; }
+  if (allWords && (frame.ready !== false || frame.settled?.[surface]) && ['meaning', 'reflection'].includes(surface)) {
+    for (const range of wordRanges(frame, surface)) {
+      if (accepted.some(anchor => range.start < anchor.end && range.end > anchor.start)) continue;
+      accepted.push({ ...range, id: `${surface}:${range.start}:${range.end}`, selection: selectionFor(frame, range, surface) });
+    }
+    accepted.sort((a, b) => a.start - b.start);
+  }
   const selectedStart = source ? frame.quoteStart : -1, selectedEnd = source ? frame.quoteEnd : -1;
   const cuts = new Set([0, text.length]);
   for (const range of accepted) { cuts.add(range.start); cuts.add(range.end); }
@@ -23,7 +30,7 @@ function textSpans(frame, surface) {
   const points = Array.from(cuts).sort((a, b) => a - b);
   return points.slice(0, -1).map((start, index) => {
     const end = points[index + 1], link = accepted.find(range => start >= range.start && end <= range.end);
-    return { text: text.slice(start, end), anchorId: link?.id || '', selected: source && start >= selectedStart && end <= selectedEnd };
+    return { text: text.slice(start, end), anchorId: link?.id || '', ...(link?.selection ? { selection: link.selection } : {}), selected: source && start >= selectedStart && end <= selectedEnd };
   });
 }
 module.exports = { textSpans };
