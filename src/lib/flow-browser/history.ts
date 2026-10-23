@@ -1,4 +1,13 @@
+import { preserveMotionCandidate } from './motion-candidate';
+
 const STATE_KEY = 'flowPathId';
+
+function readerUrl(pathId?: string) {
+  const url = new URL('/infidao', window.location.origin);
+  if (pathId) url.searchParams.set('reading', pathId);
+  preserveMotionCandidate(url, window.location.search);
+  return url.pathname + url.search;
+}
 
 function currentPathId() {
   const state = history.state as Record<string, unknown> | null;
@@ -17,18 +26,18 @@ export function createFlowHistory(onNavigate: (pathId: string | null) => void) {
   return {
     current: currentPathId,
     initialize(pathId: string) {
-      history.replaceState({ ...(history.state || {}), [STATE_KEY]: pathId, flowTrail: [pathId] }, '', '/infidao');
+      history.replaceState({ ...(history.state || {}), [STATE_KEY]: pathId, flowTrail: [pathId] }, '', readerUrl());
     },
     push(pathId: string) {
       const trail = Array.isArray(history.state?.flowTrail) ? history.state.flowTrail : [currentPathId()].filter(Boolean);
-      history.pushState({ ...(history.state || {}), [STATE_KEY]: pathId, flowTrail: [...trail, pathId] }, '', `/infidao?reading=${encodeURIComponent(pathId)}`);
+      history.pushState({ ...(history.state || {}), [STATE_KEY]: pathId, flowTrail: [...trail, pathId] }, '', readerUrl(pathId));
     },
     returnTo(pathId: string) {
       const trail: string[] = Array.isArray(history.state?.flowTrail) ? history.state.flowTrail : [];
       const index = trail.slice(0, -1).lastIndexOf(pathId);
       if (index >= 0) history.go(index - (trail.length - 1));
       else {
-        history.replaceState({ ...(history.state || {}), [STATE_KEY]: pathId, flowTrail: [pathId] }, '', `/infidao?reading=${encodeURIComponent(pathId)}`);
+        history.replaceState({ ...(history.state || {}), [STATE_KEY]: pathId, flowTrail: [pathId] }, '', readerUrl(pathId));
         onNavigate(pathId);
       }
     },

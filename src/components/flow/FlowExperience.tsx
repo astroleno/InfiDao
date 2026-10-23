@@ -16,6 +16,7 @@ import { FlowMenu } from './FlowMenu';
 import { prepareFlowFonts, type FontProgress } from '@/lib/flow-browser/fonts';
 import { readingStorage } from '@/lib/flow-browser/storage';
 import { noteContext, quoteKey, snapshotFrame, type SavedTarget } from '@/lib/flow-browser/library';
+import { useMotionCandidate } from '@/lib/flow-browser/motion-candidate';
 import styles from './flow.module.css';
 
 type Selection = { pathId?: string; frameId: string; anchorId?: string; selection?: TextSelection; label: string };
@@ -27,6 +28,7 @@ function initialSnapshot(paused: boolean): ReadingSnapshot {
 }
 
 export function FlowExperience() {
+  const motion = useMotionCandidate();
   const experienceRef = useRef<HTMLElement>(null);
   const [chain, setChain] = useState<BrowserFlowBatch | null>(null);
   const [records, setRecords] = useState<FlowPathRecord[]>([]);
@@ -434,10 +436,6 @@ export function FlowExperience() {
     if (activeEntryRef.current?.chainId === chainId && frameRef.current?.id === frameId) setNotes(value);
   }
 
-  function toggleFlow() {
-    pauseReading(!pausedRef.current);
-  }
-
   const currentFrame = active || frames[0] || null;
   const awaitingQuote = busy || !frames.some(item => item.ready === false);
   const canResume = flowError?.code === 'INCOMPLETE' && !pending &&
@@ -458,18 +456,18 @@ export function FlowExperience() {
       <div className={styles.experienceContent}>
       <div className={styles.topBar}>
         <h1 className={styles.brand}>六经注我</h1>
-        <div className={styles.topActions}>
-          <button className={styles.topButton} type="button" onClick={toggleFlow} aria-pressed={paused}>{paused ? '继续流动' : '停驻阅读'}</button>
-          <FlowMenu onThought={openSeed} onLibrary={openLibrary} libraryDisabled={!chain || loading} />
-        </div>
       </div>
+      <FlowMenu onThought={openSeed} onLibrary={openLibrary} libraryDisabled={!chain || loading} onOpen={() => pauseReading()}
+        motionCandidate={motion.available ? { enabled: motion.variant === 'liquid-live', onToggle: motion.toggle } : undefined} />
 
       <FlowStream entries={entries} activeKey={activeEntryRef.current ? entryKey(activeEntryRef.current) : ''}
+        motionVariant={motion.variant}
         paused={paused || seedOpen || libraryOpen} reducedMotion={reducedMotion} pending={pending}
         connecting={connecting} restore={restorePosition}
         canContinue={!!chain?.cursor && !chain.exhausted && !flowError && frames.every(item => item.ready !== false)}
         onContinue={continueReading} onPrepareNext={() => controllerRef.current?.prepareNext()}
-        onPause={() => pauseReading()} onRead={handleReadEntry} onVisualReady={() => setFirstVisualReady(true)}
+        onPause={() => pauseReading()} onResume={() => { if (!seedOpen && !libraryOpen && !reducedMotion) pauseReading(false); }}
+        onRead={handleReadEntry} onVisualReady={() => setFirstVisualReady(true)}
         onScroll={top => { readingScrollRef.current = top; }} onBranch={selection => void handleBranch(selection)}
         waiting={!seedOpen && (pending ? <FlowWaiting compact busy={awaitingQuote} label={connecting?.label} onCancel={() => controllerRef.current?.cancel()} />
           : canResume ? <FlowResume onResume={() => void controllerRef.current?.retry()} /> : errorFeedback)}
@@ -478,7 +476,7 @@ export function FlowExperience() {
         onSaveNote={onSaveNote} onDeleteNote={onDeleteNote} onUndoNote={onUndoNote} onUpdateNote={onUpdateNote} />
 
       <FlowLoading active={!firstVisualReady && !flowError} progress={fontProgress} quote={currentFrame?.quote || preparingQuote} reducedMotion={reducedMotion} />
-      {hint && !loading && !pending && <div className={styles.firstHint}><span>点词接续，滑动回看。</span><button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button></div>}
+      {hint && !loading && !pending && <div className={styles.firstHint}><span>点一下停驻，滑动继续；点词接续。</span><button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button></div>}
       {!entries.length && errorFeedback && <div className={styles.notice}>{errorFeedback}</div>}
       {storageWarning && <p className={styles.storageNotice} role="status">本机存储暂不可用；当前阅读仍可继续，刷新后可能无法恢复。</p>}
 

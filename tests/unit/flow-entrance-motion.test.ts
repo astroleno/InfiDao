@@ -1,5 +1,17 @@
 import { EntranceMotion, InkMotion } from '@/lib/flow-browser/entrance-motion';
 
+test('the final reveal invalidates its native ownership even if progress already rounded to 255', () => {
+  const ink = new InkMotion(), target: number[] = [];
+  ink.sync('止'); ink.begin(0); ink.sample(649.5, false);
+  const revision = ink.revision;
+  expect(ink.progress(0, 1, target)).toBe(target);
+  expect(Math.round(target[0]! * 255)).toBe(255);
+  ink.sample(650, false);
+  expect(ink.revision).toBeGreaterThan(revision);
+  expect(ink.phase).toBe('settled');
+  expect(ink.progress(0, 1, target)).toEqual([1]);
+});
+
 test('three parts enter left, right, left and the next passage starts from the right', () => {
   const parts = Array.from({ length: 6 }, (_, index) => new EntranceMotion(index % 2 ? 1 : -1));
   parts.forEach(part => { part.begin(0); part.sample(0, 1440, false); });

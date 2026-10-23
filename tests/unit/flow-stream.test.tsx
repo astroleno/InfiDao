@@ -41,6 +41,21 @@ test('flow and pause retain the same readable words, scroll container and focus'
   expect(view.container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
 });
 
+test('active-passage and pause changes retain parsed native words and use the latest selection handlers', () => {
+  const breaks = jest.fn(() => first.lexicalBreaks!);
+  const retained = { ...entry, frame: { ...first, get lexicalBreaks() { return breaks(); } } };
+  const entries = [retained, second], originalBranch = jest.fn(), latestBranch = jest.fn();
+  const view = render(<FlowStream {...props} entries={entries} onBranch={originalBranch} />);
+  const word = screen.getByRole('button', { name: '止' });
+  expect(breaks).toHaveBeenCalled(); breaks.mockClear();
+  view.rerender(<FlowStream {...props} entries={entries} activeKey={entryKey(second)} paused={false} onBranch={latestBranch} />);
+  expect(breaks).not.toHaveBeenCalled();
+  expect(screen.getByRole('button', { name: '止' })).toBe(word);
+  fireEvent.click(word);
+  expect(originalBranch).not.toHaveBeenCalled();
+  expect(latestBranch).toHaveBeenCalledWith(expect.objectContaining({ pathId: entry.pathId, frameId: first.id }));
+});
+
 test('returning from an association lands on the quoted occurrence inside the full source', () => {
   const original: StreamEntry = { ...entry, frame: { ...first, fullText: '篇首。知止。篇末。', quoteStart: 3, quoteEnd: 6 } };
   const view = render(<FlowStream {...props} entries={[original]} sourceOpen />);
@@ -228,11 +243,65 @@ test('tab focus and programmatic layout changes do not spend a continuation; rea
   Object.defineProperty(article, 'offsetHeight', { value: 500 });
   fireEvent.keyDown(panel, { key: 'Tab' }); fireEvent.scroll(panel);
   expect(onContinue).not.toHaveBeenCalled(); expect(onPrepareNext).not.toHaveBeenCalled();
-  fireEvent.wheel(panel); fireEvent.scroll(panel);
+  fireEvent.wheel(panel, { deltaY: 40 }); fireEvent.scroll(panel);
   expect(onContinue).toHaveBeenCalledTimes(1); expect(onPrepareNext).toHaveBeenCalledTimes(1);
   view.rerender(<FlowStream {...props} entries={[entry, second]} onContinue={onContinue} onPrepareNext={onPrepareNext} />);
   fireEvent.scroll(panel);
   expect(onContinue).toHaveBeenCalledTimes(1); expect(onPrepareNext).toHaveBeenCalledTimes(1);
+});
+
+test('click pauses while intentional wheel, touch and page navigation resume playback', () => {
+  const onPause = jest.fn(), onResume = jest.fn();
+  render(<FlowStream {...props} reducedMotion={false} onPause={onPause} onResume={onResume} />);
+  const panel = screen.getByRole('generic', { name: '经文阅读' });
+  fireEvent.click(panel);
+  expect(onPause).toHaveBeenCalledTimes(1);
+  fireEvent.scroll(panel);
+  expect(onResume).not.toHaveBeenCalled();
+  fireEvent.wheel(panel, { deltaY: 80 });
+  fireEvent.touchMove(panel, { touches: [{ clientX: 40, clientY: 60 }] });
+  fireEvent.keyDown(panel, { key: 'PageDown' });
+  expect(onResume).toHaveBeenCalledTimes(3);
+  fireEvent.wheel(panel, { deltaX: 60 });
+  fireEvent.wheel(panel, { deltaY: 80, ctrlKey: true });
+  fireEvent.touchMove(panel, { touches: [{ clientX: 40, clientY: 60 }, { clientX: 50, clientY: 80 }] });
+  expect(onResume).toHaveBeenCalledTimes(3);
+});
+
+test('selection, editing and reduced motion stay paused while scrolling', () => {
+  const onResume = jest.fn();
+  const view = render(<FlowStream {...props} reducedMotion={false} onResume={onResume} />);
+  const panel = screen.getByRole('generic', { name: '经文阅读' });
+  const range = document.createRange();
+  range.selectNodeContents(screen.getByRole('button', { name: '知' }));
+  window.getSelection()!.addRange(range);
+  try {
+    fireEvent.wheel(panel, { deltaY: 40 });
+    expect(onResume).not.toHaveBeenCalled();
+  } finally { window.getSelection()!.removeAllRanges(); }
+  const textarea = document.createElement('textarea');
+  panel.append(textarea);
+  fireEvent.wheel(textarea, { deltaY: 40 });
+  fireEvent.keyDown(textarea, { key: 'ArrowDown' });
+  expect(onResume).not.toHaveBeenCalled();
+  textarea.remove();
+  view.rerender(<FlowStream {...props} onResume={onResume} />);
+  fireEvent.wheel(panel, { deltaY: 40 });
+  expect(onResume).not.toHaveBeenCalled();
+});
+
+test('word navigation and activation keep their behavior without resuming playback', () => {
+  const onResume = jest.fn(), onBranch = jest.fn();
+  render(<FlowStream {...props} reducedMotion={false} onResume={onResume} onBranch={onBranch} />);
+  const word = screen.getByRole('button', { name: '止' });
+  fireEvent.keyDown(word, { key: 'Home' });
+  expect(screen.getByRole('button', { name: '知' })).toHaveFocus();
+  fireEvent.keyDown(word, { key: ' ' });
+  fireEvent.click(word);
+  expect(onBranch).toHaveBeenCalledTimes(1);
+  expect(onResume).not.toHaveBeenCalled();
+  fireEvent.keyDown(word, { key: 'PageDown' });
+  expect(onResume).toHaveBeenCalledTimes(1);
 });
 
 test('a verified late font family refreshes the canvas without replaying revealed glyphs', async () => {
@@ -249,19 +318,67 @@ test('a verified late font family refreshes the canvas without replaying reveale
   act(() => document.documentElement.style.setProperty('--flow-classic-family', 'Kangxi'));
   await frames();
   const mock = jest.mocked(StreamGlass).mock.results.at(-1)!.value;
-  expect(mock.draw).toHaveBeenLastCalledWith(expect.arrayContaining([expect.objectContaining({ font: 'normal 400 30px Kangxi' })]), 390, 900, true);
+  expect(mock.draw).toHaveBeenLastCalledWith(expect.arrayContaining([expect.objectContaining({ font: 'normal 400 30px Kangxi' })]),
+    390, 900, true, expect.objectContaining({ width: 390, height: 900 }), expect.any(Number), expect.objectContaining({ fontRevision: expect.any(Number) }));
   expect(view.container.querySelector('[data-flow-entrance]')).toHaveAttribute('data-ink-phase', 'settled');
   view.unmount(); style.mockRestore();
   document.documentElement.style.removeProperty('--flow-classic-family');
 });
 
-test('streamed suffixes inherit paragraph glyph progress after token wrappers are remeasured', async () => {
+test('an explicitly enabled probe reports layout and draw work without remeasuring pure scroll', () => {
+  const host = window as Window & { __INFIDAO_FLOW_RENDER_PROBE__?: (frame: Record<string, unknown>) => void };
+  const frames: Record<string, any>[] = [];
+  host.__INFIDAO_FLOW_RENDER_PROBE__ = frame => frames.push(frame);
+  const callbacks = new Map<number, FrameRequestCallback>(); let serial = 0;
+  const raf = jest.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => { callbacks.set(++serial, callback); return serial; });
+  const cancel = jest.spyOn(window, 'cancelAnimationFrame').mockImplementation(id => { callbacks.delete(id); });
+  const view = render(<FlowStream {...props} />);
+  const panel = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+  Object.defineProperty(panel, 'clientHeight', { value: 844 });
+  Object.defineProperty(panel, 'clientWidth', { value: 390 });
+  const step = (time: number) => act(() => { const pending = [...callbacks.values()]; callbacks.clear(); pending.forEach(callback => callback(time)); });
+  try {
+    step(10);
+    const count = frames.at(-1)!.layout.count;
+    panel.scrollTop = 40; fireEvent.scroll(panel); step(30);
+    expect(frames.at(-1)).toMatchObject({ drawMs: expect.any(Number), sceneMs: expect.any(Number), layout: { count, reason: 'mount' } });
+    expect(jest.mocked(StreamGlass).mock.calls.at(-1)![2]).toBe(true);
+  } finally {
+    view.unmount(); raf.mockRestore(); cancel.mockRestore(); delete host.__INFIDAO_FLOW_RENDER_PROBE__;
+  }
+});
+
+test('multiple font notifications in a frame share one layout refresh', async () => {
+  const host = window as Window & { __INFIDAO_FLOW_RENDER_PROBE__?: (frame: Record<string, unknown>) => void };
+  const frames: Record<string, any>[] = [];
+  host.__INFIDAO_FLOW_RENDER_PROBE__ = frame => frames.push(frame);
+  const callbacks = new Map<number, FrameRequestCallback>(); let serial = 0;
+  const raf = jest.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => { callbacks.set(++serial, callback); return serial; });
+  const cancel = jest.spyOn(window, 'cancelAnimationFrame').mockImplementation(id => { callbacks.delete(id); });
+  const view = render(<FlowStream {...props} />);
+  const panel = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+  Object.defineProperty(panel, 'clientHeight', { value: 844 });
+  Object.defineProperty(panel, 'clientWidth', { value: 390 });
+  const step = (time: number) => act(() => { const pending = [...callbacks.values()]; callbacks.clear(); pending.forEach(callback => callback(time)); });
+  try {
+    step(10); const count = frames.at(-1)!.layout.count;
+    await act(async () => { document.documentElement.style.setProperty('--flow-classic-family', 'First'); });
+    await act(async () => { document.documentElement.style.setProperty('--flow-classic-family', 'Final'); });
+    step(30);
+    expect(frames.at(-1)!.layout).toMatchObject({ count: count + 1, reason: 'font' });
+  } finally {
+    view.unmount(); raf.mockRestore(); cancel.mockRestore(); delete host.__INFIDAO_FLOW_RENDER_PROBE__;
+    document.documentElement.style.removeProperty('--flow-classic-family');
+  }
+});
+
+test.each(['current', 'liquid-live'] as const)('streamed suffixes keep glyph progress after remeasurement in %s', async motionVariant => {
   let clock = 0, serial = 0;
   const callbacks = new Map<number, FrameRequestCallback>();
   const raf = jest.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => { callbacks.set(++serial, callback); return serial; });
   const cancel = jest.spyOn(window, 'cancelAnimationFrame').mockImplementation(id => { callbacks.delete(id); });
   const now = jest.spyOn(performance, 'now').mockImplementation(() => clock);
-  const view = render(<FlowStream {...props} reducedMotion={false} />);
+  const view = render(<FlowStream {...props} reducedMotion={false} motionVariant={motionVariant} />);
   const panel = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
   Object.defineProperty(panel, 'clientHeight', { value: 844 });
   Object.defineProperty(panel, 'clientWidth', { value: 390 });
@@ -284,15 +401,66 @@ test('streamed suffixes inherit paragraph glyph progress after token wrappers ar
     await measureWords(); step(0); step(900);
     expect(progress().map(glyph => glyph.progress)).toEqual([1, 1, 1]);
     const withMeaning = { ...entry, frame: { ...first, meaning: '方向', textBreaks: { meaning: [2], reflection: [] } } };
-    view.rerender(<FlowStream {...props} entries={[withMeaning]} reducedMotion={false} />);
+    view.rerender(<FlowStream {...props} entries={[withMeaning]} reducedMotion={false} motionVariant={motionVariant} />);
     await measureWords(); step(1000);
     expect(progress().map(glyph => glyph.progress)).toEqual([1, 1, 1, 0, 0]);
     step(1900);
     const suffix = { ...withMeaning, frame: { ...withMeaning.frame, meaning: '方向而后', textBreaks: { meaning: [2, 4], reflection: [] } } };
-    view.rerender(<FlowStream {...props} entries={[suffix]} reducedMotion={false} />);
+    view.rerender(<FlowStream {...props} entries={[suffix]} reducedMotion={false} motionVariant={motionVariant} />);
     await measureWords(); step(2000);
     expect(progress().map(glyph => glyph.char).join('')).toBe('知止。方向而后');
     expect(progress().map(glyph => glyph.progress)).toEqual([1, 1, 1, 1, 1, 0, 0]);
+  } finally {
+    view.unmount(); raf.mockRestore(); cancel.mockRestore(); now.mockRestore();
+    document.documentElement.style.removeProperty('--flow-classic-family');
+  }
+});
+
+test('switching the liquid candidate preserves entrance, ink progress, pause and the mounted reader', async () => {
+  let clock = 0, serial = 0;
+  const callbacks = new Map<number, FrameRequestCallback>();
+  const raf = jest.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => { callbacks.set(++serial, callback); return serial; });
+  const cancel = jest.spyOn(window, 'cancelAnimationFrame').mockImplementation(id => { callbacks.delete(id); });
+  const now = jest.spyOn(performance, 'now').mockImplementation(() => clock);
+  const view = render(<FlowStream {...props} paused={false} autoScroll={false} reducedMotion={false} motionVariant="liquid-live" />);
+  const panel = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+  Object.defineProperty(panel, 'clientHeight', { value: 844 });
+  Object.defineProperty(panel, 'clientWidth', { value: 390 });
+  panel.scrollTop = 37;
+  const part = view.container.querySelector<HTMLElement>('[data-flow-entrance]')!;
+  const step = (time: number) => act(() => {
+    clock = time;
+    const pending = [...callbacks.values()]; callbacks.clear();
+    pending.forEach(callback => callback(time));
+  });
+  const drawn = jest.mocked(StreamGlass).mock.results.at(-1)!.value.draw as jest.Mock;
+  const ink = () => (drawn.mock.calls.at(-1)![0] as Array<{ ink?: number[] }>).flatMap(run => run.ink || [1]);
+  try {
+    view.container.querySelectorAll<HTMLElement>('[data-flow-entrance], [data-flow-optic]').forEach(element => {
+      Object.defineProperty(element, 'offsetTop', { configurable: true, value: 200 });
+      Object.defineProperty(element, 'offsetHeight', { configurable: true, value: 50 });
+    });
+    await act(async () => { document.documentElement.style.setProperty('--flow-classic-family', 'candidate-entry-test'); });
+    step(0); step(120);
+    expect(part).toHaveAttribute('data-entry-phase', 'entering');
+    expect(part).toHaveAttribute('data-ink-phase', 'entering');
+    expect(ink()[0]).toBeGreaterThan(0); expect(ink()[0]).toBeLessThan(1);
+    const progress = ink()[0]!;
+    view.rerender(<FlowStream {...props} paused={false} autoScroll={false} reducedMotion={false} motionVariant="current" />);
+    step(140);
+    expect(ink()[0]).toBeGreaterThan(progress); expect(ink()[0]).toBeLessThan(1);
+    expect(part).toHaveAttribute('data-entry-phase', 'entering');
+    view.rerender(<FlowStream {...props} autoScroll={false} reducedMotion={false} motionVariant="liquid-live" />);
+    step(1000); const frozen = ink(); step(2000);
+    expect(ink()).toEqual(frozen);
+    expect(part).toHaveAttribute('data-entry-phase', 'paused');
+    expect(part).toHaveAttribute('data-ink-phase', 'paused');
+    expect(view.container.querySelector('[data-flow-viewport]')).toBe(panel);
+    expect(panel.scrollTop).toBe(37);
+    view.rerender(<FlowStream {...props} paused={false} autoScroll={false} reducedMotion={false} motionVariant="liquid-live" />);
+    step(3000);
+    expect(part).toHaveAttribute('data-entry-phase', 'settled');
+    expect(part).toHaveAttribute('data-ink-phase', 'settled');
   } finally {
     view.unmount(); raf.mockRestore(); cancel.mockRestore(); now.mockRestore();
     document.documentElement.style.removeProperty('--flow-classic-family');

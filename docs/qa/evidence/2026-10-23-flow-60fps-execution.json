@@ -1,0 +1,1890 @@
+{
+  "date": "2026-10-23",
+  "status": "partial_implementation_verified_performance_acceptance_not_passed",
+  "report": "docs/qa/2026-10-23-flow-60fps-execution.md",
+  "localRawEvidenceDirectory": ".tmp/flow-60fps-execution-20261023/",
+  "limitations": [
+    "This index contains summaries and hashes; complete frames, scripts, screenshots and frozen sources remain in the ignored local evidence directory.",
+    "FPS means render callback frequency, not independently attributed page presentation.",
+    "Performance scenarios are about 6 seconds each; formal 30-second by 5-round acceptance did not run because control calibration failed.",
+    "AC low-power mode was observed enabled at the start and disabled at the end; the agent did not change it and the switch time is unknown. Timing differences are confounded.",
+    "Ordinary current mode still has severe stalls; older candidate long-history stalls were not reproduced in either frozen or optimized builds, so no root-cause fix is claimed.",
+    "GPU queries may perturb submission. The first scrolling query CPU peak is retained; stage attribution and repeatable GPU savings are unresolved.",
+    "Mobile data is viewport simulation, not a physical-device performance result.",
+    "Final browser behavior checks are limited to the recorded cases; history and append combinations were rerun in unit tests, not exhaustively in the final browser run.",
+    "Ordinary static mode performs no repaint when unchanged; null FPS is not a measured zero-FPS failure.",
+    "Earlier mobile A/B records used different restored scroll positions and are excluded from strict gain comparisons."
+  ],
+  "builds": {
+    "baseline": "e3d8aa14afe348a3",
+    "u2": "b0f37acdcaf1f248",
+    "final": "3f42a54778e65474",
+    "finalCodeHash": "8e569a3925d37a7f71816ad2ebd1d602ddef577cbd5add41b28f9da7b9381ba7"
+  },
+  "finalSourceSha256": {
+    "src/components/flow/FlowStream.tsx": "798b8037cc17587ad294f53fbe1fbe6cd4b76673f2e29016f90b60cd22238499",
+    "src/lib/flow-browser/stream-scene.ts": "a44ee61fac651eaea360c4036f7646b3c42852ed4f0f59ac8b3b520854d28696",
+    "src/lib/flow-browser/stream-frame-plan.ts": "f662c56f36088843eeeeb9ac4bbf4337024b74f48e3eb6dac02efdcc35682d23",
+    "src/lib/flow-browser/stream-glyph-cache.ts": "f31740faa5ba89d9dce3182c9c7d23842c6a9083ac893103a3e29e8da0b09dee",
+    "src/lib/flow-browser/stream-glass.ts": "36e2e2015fe5bc48ea80bf588ecfa718fb17acd2e64bf50587fea2f39f3453dc",
+    "src/lib/flow-browser/entrance-motion.ts": "b1a980e3009194247becdcab1639f0a22c8cf01bd2271549ec7c09a4cf0b45e1",
+    "miniprogram/flow/renderer.js": "af0b40af20dcfe3ac70139fa6d18021c9f3244f4db2fb707dbdfcef71458e3aa",
+    "miniprogram/flow/stream-bend.js": "700dc103b5746f3a73f263f2caddbedd09b85d29e28e317a5e35086144652cd6",
+    "miniprogram/flow/stream-liquid.js": "6909cb10cdf31ebd62a0d7bd1dabc73a8c51ae670a40e9a93fc198ed185be6dc"
+  },
+  "control": {
+    "control-start.json": {
+      "fps": 29.640608,
+      "p50": 33.3,
+      "p95": 34.2,
+      "max": 50.6,
+      "cpuP95": 0.1,
+      "viewport": [
+        1440,
+        900,
+        2
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+      "callbackCount": 209,
+      "everyCallbackVisibleAndFocused": true
+    },
+    "control-final.json": {
+      "fps": 29.196716,
+      "p50": 33.3,
+      "p95": 50,
+      "max": 100,
+      "cpuP95": 0.1,
+      "viewport": [
+        1440,
+        900,
+        2
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+      "callbackCount": 235,
+      "everyCallbackVisibleAndFocused": true
+    }
+  },
+  "performance": {
+    "baseline-desktop.json": [
+      {
+        "scenario": "liquid-static",
+        "elapsed": 6004.9,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.495576,
+        "p50": 33.3,
+        "p95": 34.3,
+        "p99": 50.5,
+        "max": 50.9,
+        "cpuP50": 0.8,
+        "cpuP95": 1.3,
+        "cpuMax": 1.6,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 178,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 112,
+        "maxIndexedWordsVisited": 0,
+        "totalWords": 321
+      },
+      {
+        "scenario": "liquid-fast-first",
+        "elapsed": 6033.3,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.417631,
+        "p50": 33.3,
+        "p95": 34.3,
+        "p99": 50.7,
+        "max": 66.7,
+        "cpuP50": 2.6,
+        "cpuP95": 13.3,
+        "cpuMax": 30.6,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 178,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 306,
+        "totalWords": 321
+      },
+      {
+        "scenario": "liquid-fast-repeat",
+        "elapsed": 6006.5,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.578877,
+        "p50": 33.3,
+        "p95": 34.3,
+        "p99": 50.1,
+        "max": 50.1,
+        "cpuP50": 2.5,
+        "cpuP95": 3.5,
+        "cpuMax": 3.7,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 178,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 306,
+        "totalWords": 321
+      },
+      {
+        "scenario": "current-static",
+        "elapsed": 6345.1,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 6.666667,
+        "p50": 150,
+        "p95": 150,
+        "p99": 150,
+        "max": 150,
+        "cpuP50": 4.5,
+        "cpuP95": 4.5,
+        "cpuMax": 4.5,
+        "errors": [],
+        "blocked": [
+          "/api/flow/session"
+        ],
+        "recordedFrames": 2,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 136,
+        "maxIndexedWordsVisited": 277,
+        "totalWords": 321
+      },
+      {
+        "scenario": "current-fast-first",
+        "elapsed": 6077.0,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 5.878418,
+        "p50": 166.7,
+        "p95": 316.7,
+        "p99": 365.7,
+        "max": 365.7,
+        "cpuP50": 2,
+        "cpuP95": 3.5,
+        "cpuMax": 4.3,
+        "errors": [],
+        "blocked": [
+          "/api/flow/session"
+        ],
+        "recordedFrames": 30,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 306,
+        "totalWords": 321
+      },
+      {
+        "scenario": "current-fast-repeat",
+        "elapsed": 6178.1,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 4.602247,
+        "p50": 200.1,
+        "p95": 482.9,
+        "p99": 483.3,
+        "max": 483.3,
+        "cpuP50": 2.3,
+        "cpuP95": 4.4,
+        "cpuMax": 4.6,
+        "errors": [],
+        "blocked": [
+          "/api/flow/session"
+        ],
+        "recordedFrames": 28,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 147,
+        "maxIndexedWordsVisited": 300,
+        "totalWords": 321
+      }
+    ],
+    "u2-desktop.json": [
+      {
+        "scenario": "liquid-static",
+        "elapsed": 6029.5,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.500492,
+        "p50": 33.3,
+        "p95": 34.4,
+        "p99": 50.6,
+        "max": 50.6,
+        "cpuP50": 0.7,
+        "cpuP95": 1.3,
+        "cpuMax": 1.6,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 178,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 112,
+        "maxIndexedWordsVisited": 0,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 6,
+          "totalMs": 19.5,
+          "lastMs": 2.9,
+          "reason": "resize"
+        }
+      },
+      {
+        "scenario": "liquid-fast-first",
+        "elapsed": 6001.5,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.581843,
+        "p50": 33.3,
+        "p95": 34.3,
+        "p99": 50.2,
+        "max": 50.6,
+        "cpuP50": 2.6,
+        "cpuP95": 4.3,
+        "cpuMax": 9,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 178,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 306,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 6,
+          "totalMs": 19.5,
+          "lastMs": 2.9,
+          "reason": "resize"
+        }
+      },
+      {
+        "scenario": "liquid-fast-repeat",
+        "elapsed": 6028.8,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.584815,
+        "p50": 33.3,
+        "p95": 34.2,
+        "p99": 50,
+        "max": 51,
+        "cpuP50": 2.4,
+        "cpuP95": 3.3,
+        "cpuMax": 3.6,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 179,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 306,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 6,
+          "totalMs": 19.5,
+          "lastMs": 2.9,
+          "reason": "resize"
+        }
+      },
+      {
+        "scenario": "current-static",
+        "elapsed": 6403.8,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": null,
+        "max": 0,
+        "cpuMax": 0,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 0,
+        "pipelines": []
+      },
+      {
+        "scenario": "current-fast-first",
+        "elapsed": 6027.1,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 4.731183,
+        "p50": 150,
+        "p95": 450,
+        "p99": 1000.1,
+        "max": 1000.1,
+        "cpuP50": 1.8,
+        "cpuP95": 7.1,
+        "cpuMax": 7.2,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 23,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 133,
+        "maxIndexedWordsVisited": 273,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 6,
+          "totalMs": 37.2,
+          "lastMs": 25.7,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "current-fast-repeat",
+        "elapsed": 6259.2,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 4.357591,
+        "p50": 233.4,
+        "p95": 416.6,
+        "p99": 449.9,
+        "max": 449.9,
+        "cpuP50": 1.9,
+        "cpuP95": 4.3,
+        "cpuMax": 4.8,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 27,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 138,
+        "maxIndexedWordsVisited": 285,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 6,
+          "totalMs": 37.2,
+          "lastMs": 25.7,
+          "reason": "font"
+        }
+      }
+    ],
+    "final-desktop.json": [
+      {
+        "scenario": "liquid-static",
+        "elapsed": 6006.9,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.080942,
+        "p50": 33.3,
+        "p95": 50,
+        "p99": 51.5,
+        "max": 51.6,
+        "cpuP50": 1.1,
+        "cpuP95": 1.8,
+        "cpuMax": 2.5,
+        "driverFps": 29.080942,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 175,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 112,
+        "maxIndexedWordsVisited": 0,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 4,
+          "totalMs": 27.6,
+          "lastMs": 13.8,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "liquid-fast-first",
+        "elapsed": 6010.9,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.323559,
+        "p50": 33.3,
+        "p95": 49.3,
+        "p99": 50.2,
+        "max": 51.6,
+        "cpuP50": 3,
+        "cpuP95": 5,
+        "cpuMax": 7.2,
+        "driverFps": 29.323559,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 177,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 306,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 4,
+          "totalMs": 27.6,
+          "lastMs": 13.8,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "liquid-fast-repeat",
+        "elapsed": 6042.5,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 28.997034,
+        "p50": 33.3,
+        "p95": 50,
+        "p99": 51.2,
+        "max": 51.3,
+        "cpuP50": 2.5,
+        "cpuP95": 3.5,
+        "cpuMax": 5.5,
+        "driverFps": 28.997034,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 176,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 306,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 4,
+          "totalMs": 27.6,
+          "lastMs": 13.8,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "current-static",
+        "elapsed": 6032.4,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": null,
+        "max": 0,
+        "cpuMax": 0,
+        "driverFps": 1.368524,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 0,
+        "pipelines": []
+      },
+      {
+        "scenario": "current-fast-first",
+        "elapsed": 6039.2,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 3.071693,
+        "p50": 218.2,
+        "p95": 1016.6,
+        "p99": 1016.6,
+        "max": 1016.6,
+        "cpuP50": 2.9,
+        "cpuP95": 6.6,
+        "cpuMax": 6.6,
+        "driverFps": 3.366337,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 16,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 138,
+        "maxIndexedWordsVisited": 285,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 4,
+          "totalMs": 49.2,
+          "lastMs": 39.7,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "current-fast-repeat",
+        "elapsed": 6060.1,
+        "articles": 6,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 3.060508,
+        "p50": 316.6,
+        "p95": 783.3,
+        "p99": 783.3,
+        "max": 783.3,
+        "cpuP50": 2.8,
+        "cpuP95": 5.9,
+        "cpuMax": 5.9,
+        "driverFps": 3.14056,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 19,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 306,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 4,
+          "totalMs": 49.2,
+          "lastMs": 39.7,
+          "reason": "font"
+        }
+      }
+    ],
+    "final-mobile.json": [
+      {
+        "scenario": "liquid-static",
+        "elapsed": 6001.3,
+        "articles": 6,
+        "viewport": [
+          390,
+          844,
+          2
+        ],
+        "canvas": [
+          585,
+          1266
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 30,
+        "p50": 33.3,
+        "p95": 34.2,
+        "p99": 50.1,
+        "max": 50.2,
+        "cpuP50": 0.3,
+        "cpuP95": 0.6,
+        "cpuMax": 0.8,
+        "driverFps": 30,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 181,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 106,
+        "maxIndexedWordsVisited": 0,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 4,
+          "totalMs": 13.4,
+          "lastMs": 7.9,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "liquid-fast-first",
+        "elapsed": 6020,
+        "articles": 6,
+        "viewport": [
+          390,
+          844,
+          2
+        ],
+        "canvas": [
+          585,
+          1266
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.671612,
+        "p50": 33.3,
+        "p95": 34.2,
+        "p99": 50,
+        "max": 50.1,
+        "cpuP50": 1.1,
+        "cpuP95": 2.2,
+        "cpuMax": 4.5,
+        "driverFps": 29.671612,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 179,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 116,
+        "maxIndexedWordsVisited": 240,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 4,
+          "totalMs": 13.4,
+          "lastMs": 7.9,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "liquid-fast-repeat",
+        "elapsed": 6018.6,
+        "articles": 6,
+        "viewport": [
+          390,
+          844,
+          2
+        ],
+        "canvas": [
+          585,
+          1266
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.666667,
+        "p50": 33.3,
+        "p95": 34.3,
+        "p99": 50,
+        "max": 50.3,
+        "cpuP50": 1,
+        "cpuP95": 1.7,
+        "cpuMax": 4.8,
+        "driverFps": 29.666667,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 179,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 116,
+        "maxIndexedWordsVisited": 240,
+        "totalWords": 321,
+        "lastLayout": {
+          "count": 4,
+          "totalMs": 13.4,
+          "lastMs": 7.9,
+          "reason": "font"
+        }
+      }
+    ],
+    "baseline-long.json": [
+      {
+        "scenario": "liquid-fast-top",
+        "elapsed": 6023.1,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.584815,
+        "p50": 33.3,
+        "p95": 34.3,
+        "p99": 50.9,
+        "max": 50.9,
+        "cpuP50": 1.6,
+        "cpuP95": 9.3,
+        "cpuMax": 15.8,
+        "driverFps": 29.584815,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 179,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 313,
+        "totalWords": 9630
+      },
+      {
+        "scenario": "liquid-fast-middle",
+        "elapsed": 6009.1,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.500492,
+        "p50": 33.3,
+        "p95": 34,
+        "p99": 50.1,
+        "max": 66.6,
+        "cpuP50": 1.5,
+        "cpuP95": 6.3,
+        "cpuMax": 24.7,
+        "driverFps": 29.500492,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 178,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 155,
+        "maxIndexedWordsVisited": 323,
+        "totalWords": 9630
+      },
+      {
+        "scenario": "liquid-fast-middle-repeat",
+        "elapsed": 6019.7,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.665183,
+        "p50": 33.3,
+        "p95": 34,
+        "p99": 50,
+        "max": 50.1,
+        "cpuP50": 1.1,
+        "cpuP95": 2.2,
+        "cpuMax": 2.7,
+        "driverFps": 29.665183,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 179,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 155,
+        "maxIndexedWordsVisited": 323,
+        "totalWords": 9630
+      }
+    ],
+    "u2-long.json": [
+      {
+        "scenario": "liquid-fast-top",
+        "elapsed": 6011.7,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.582338,
+        "p50": 33.3,
+        "p95": 34.3,
+        "p99": 50,
+        "max": 50,
+        "cpuP50": 1.2,
+        "cpuP95": 2.8,
+        "cpuMax": 4.1,
+        "driverFps": 29.582338,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 178,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 313,
+        "totalWords": 9630,
+        "lastLayout": {
+          "count": 6,
+          "totalMs": 501.6,
+          "lastMs": 204.3,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "liquid-fast-middle",
+        "elapsed": 6020.5,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.667161,
+        "p50": 33.3,
+        "p95": 34.1,
+        "p99": 50,
+        "max": 50.1,
+        "cpuP50": 1.1,
+        "cpuP95": 2.5,
+        "cpuMax": 4.5,
+        "driverFps": 29.667161,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 179,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 155,
+        "maxIndexedWordsVisited": 323,
+        "totalWords": 9630,
+        "lastLayout": {
+          "count": 6,
+          "totalMs": 501.6,
+          "lastMs": 204.3,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "liquid-fast-middle-repeat",
+        "elapsed": 6019.7,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.666667,
+        "p50": 33.3,
+        "p95": 34.3,
+        "p99": 50,
+        "max": 51,
+        "cpuP50": 1.1,
+        "cpuP95": 2.2,
+        "cpuMax": 2.4,
+        "driverFps": 29.666667,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 179,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 155,
+        "maxIndexedWordsVisited": 323,
+        "totalWords": 9630,
+        "lastLayout": {
+          "count": 6,
+          "totalMs": 501.6,
+          "lastMs": 204.3,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "current-fast-top",
+        "elapsed": 6027.7,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 5.652297,
+        "p50": 166.7,
+        "p95": 350,
+        "p99": 350.1,
+        "max": 350.1,
+        "cpuP50": 2.1,
+        "cpuP95": 2.9,
+        "cpuMax": 3.4,
+        "driverFps": 5.508261,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 27,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 142,
+        "maxIndexedWordsVisited": 293,
+        "totalWords": 9630,
+        "lastLayout": {
+          "count": 8,
+          "totalMs": 831.8,
+          "lastMs": 90.1,
+          "reason": "resize"
+        }
+      },
+      {
+        "scenario": "current-fast-middle",
+        "elapsed": 6271.4,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 5.806486,
+        "p50": 117.4,
+        "p95": 383.4,
+        "p99": 500,
+        "max": 500,
+        "cpuP50": 2.2,
+        "cpuP95": 4.1,
+        "cpuMax": 4.4,
+        "driverFps": 5.589072,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 34,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 317,
+        "totalWords": 9630,
+        "lastLayout": {
+          "count": 8,
+          "totalMs": 831.8,
+          "lastMs": 90.1,
+          "reason": "resize"
+        }
+      },
+      {
+        "scenario": "current-fast-middle-repeat",
+        "elapsed": 6303.7,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 4.424779,
+        "p50": 200,
+        "p95": 450,
+        "p99": 450.8,
+        "max": 450.8,
+        "cpuP50": 2.1,
+        "cpuP95": 3.9,
+        "cpuMax": 4.1,
+        "driverFps": 4.309488,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 26,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 317,
+        "totalWords": 9630,
+        "lastLayout": {
+          "count": 8,
+          "totalMs": 831.8,
+          "lastMs": 90.1,
+          "reason": "resize"
+        }
+      }
+    ],
+    "final-long.json": [
+      {
+        "scenario": "liquid-fast-top",
+        "elapsed": 6025.9,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.667161,
+        "p50": 33.3,
+        "p95": 33.5,
+        "p99": 50.1,
+        "max": 50.1,
+        "cpuP50": 1.2,
+        "cpuP95": 2.6,
+        "cpuMax": 3,
+        "driverFps": 29.667161,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 179,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 151,
+        "maxIndexedWordsVisited": 313,
+        "totalWords": 9630,
+        "lastLayout": {
+          "count": 4,
+          "totalMs": 428.1,
+          "lastMs": 220.4,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "liquid-fast-middle",
+        "elapsed": 6021.3,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.666667,
+        "p50": 33.3,
+        "p95": 34.2,
+        "p99": 50,
+        "max": 50.1,
+        "cpuP50": 1.2,
+        "cpuP95": 2.2,
+        "cpuMax": 5,
+        "driverFps": 29.666667,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 179,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 155,
+        "maxIndexedWordsVisited": 323,
+        "totalWords": 9630,
+        "lastLayout": {
+          "count": 4,
+          "totalMs": 428.1,
+          "lastMs": 220.4,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "liquid-fast-middle-repeat",
+        "elapsed": 6019.5,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 29.666667,
+        "p50": 33.3,
+        "p95": 34.3,
+        "p99": 50.1,
+        "max": 50.1,
+        "cpuP50": 1,
+        "cpuP95": 1.3,
+        "cpuMax": 3.1,
+        "driverFps": 29.666667,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 179,
+        "pipelines": [
+          "cached"
+        ],
+        "maxVisibleWords": 155,
+        "maxIndexedWordsVisited": 323,
+        "totalWords": 9630,
+        "lastLayout": {
+          "count": 4,
+          "totalMs": 428.1,
+          "lastMs": 220.4,
+          "reason": "font"
+        }
+      },
+      {
+        "scenario": "current-fast-top",
+        "elapsed": 6001.1,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 2.800519,
+        "p50": 265.7,
+        "p95": 1049.9,
+        "p99": 1049.9,
+        "max": 1049.9,
+        "cpuP50": 3.2,
+        "cpuP95": 112.8,
+        "cpuMax": 112.8,
+        "driverFps": 2.922055,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 15,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 147,
+        "maxIndexedWordsVisited": 306,
+        "totalWords": 9630,
+        "lastLayout": {
+          "count": 5,
+          "totalMs": 569.6,
+          "lastMs": 110.3,
+          "reason": "resize"
+        }
+      },
+      {
+        "scenario": "current-fast-middle",
+        "elapsed": 6103.9,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 3.844418,
+        "p50": 251.1,
+        "p95": 449.4,
+        "p99": 533.4,
+        "max": 533.4,
+        "cpuP50": 2.3,
+        "cpuP95": 4.4,
+        "cpuMax": 4.9,
+        "driverFps": 3.934426,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 24,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 155,
+        "maxIndexedWordsVisited": 323,
+        "totalWords": 9630,
+        "lastLayout": {
+          "count": 5,
+          "totalMs": 569.6,
+          "lastMs": 110.3,
+          "reason": "resize"
+        }
+      },
+      {
+        "scenario": "current-fast-middle-repeat",
+        "elapsed": 6195.2,
+        "articles": 180,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "focused": true,
+        "visibility": "visible",
+        "paused": "true",
+        "fps": 3.610823,
+        "p50": 233.3,
+        "p95": 633.3,
+        "p99": 783.4,
+        "max": 783.4,
+        "cpuP50": 2.4,
+        "cpuP95": 4.2,
+        "cpuMax": 4.5,
+        "driverFps": 3.558001,
+        "errors": [],
+        "blocked": [],
+        "recordedFrames": 22,
+        "pipelines": [
+          "canvas"
+        ],
+        "maxVisibleWords": 140,
+        "maxIndexedWordsVisited": 293,
+        "totalWords": 9630,
+        "lastLayout": {
+          "count": 5,
+          "totalMs": 569.6,
+          "lastMs": 110.3,
+          "reason": "resize"
+        }
+      }
+    ]
+  },
+  "quality": {
+    "u5-visual-quality.json": {
+      "cases": 16,
+      "maxChannelError": 0,
+      "maxChangedPixels": 0,
+      "maxMissingPixels": 0,
+      "nonemptyReferenceCases": 13,
+      "caseNames": [
+        "mobile-overlap",
+        "mobile-fractional",
+        "mobile-punctuation",
+        "mobile-edge",
+        "mobile-ink",
+        "mobile-highlight",
+        "mobile-outside",
+        "mobile-return",
+        "mobile-zero",
+        "mobile-prose",
+        "desktop-edge",
+        "desktop-shift",
+        "desktop-contract",
+        "desktop-ink",
+        "desktop-current",
+        "desktop-cached-again"
+      ]
+    },
+    "u5-dynamic-quality.json": {
+      "cases": 36,
+      "maxChannelError": 0,
+      "maxChangedPixels": 0,
+      "maxMissingPixels": 0,
+      "nonemptyReferenceCases": 34,
+      "caseNames": [
+        "motion-0",
+        "motion-1",
+        "motion-2",
+        "motion-3",
+        "motion-4",
+        "motion-5",
+        "motion-6",
+        "motion-7",
+        "motion-8",
+        "motion-9",
+        "motion-10",
+        "motion-11",
+        "motion-12",
+        "motion-13",
+        "motion-14",
+        "motion-15",
+        "motion-16",
+        "motion-17",
+        "motion-18",
+        "motion-19",
+        "motion-20",
+        "motion-21",
+        "motion-22",
+        "motion-23",
+        "motion-24",
+        "motion-25",
+        "motion-26",
+        "motion-27",
+        "motion-28",
+        "motion-29",
+        "motion-30",
+        "motion-31",
+        "motion-32",
+        "motion-33",
+        "motion-34",
+        "motion-35"
+      ]
+    }
+  },
+  "rejectedExperimentQuality": {
+    "default-gpu-visual-quality.json": {
+      "cases": 18,
+      "maxChannelError": 156,
+      "maxChangedPixels": 62373,
+      "maxMissingPixels": 0,
+      "nonemptyReferenceCases": 15,
+      "caseNames": [
+        "mobile-current-max",
+        "mobile-current-ink",
+        "mobile-current-focus",
+        "mobile-fractional",
+        "mobile-punctuation",
+        "mobile-edge",
+        "mobile-ink",
+        "mobile-highlight",
+        "mobile-outside",
+        "mobile-return",
+        "mobile-zero",
+        "mobile-prose",
+        "desktop-edge",
+        "desktop-shift",
+        "desktop-contract",
+        "desktop-ink",
+        "desktop-current",
+        "desktop-cached-again"
+      ]
+    },
+    "default-batch-visual-quality.json": {
+      "cases": 19,
+      "maxChannelError": 4,
+      "maxChangedPixels": 14071,
+      "maxMissingPixels": 0,
+      "nonemptyReferenceCases": 16,
+      "caseNames": [
+        "mobile-current-row",
+        "mobile-current-max",
+        "mobile-current-ink",
+        "mobile-current-focus",
+        "mobile-fractional",
+        "mobile-punctuation",
+        "mobile-edge",
+        "mobile-ink",
+        "mobile-highlight",
+        "mobile-outside",
+        "mobile-return",
+        "mobile-zero",
+        "mobile-prose",
+        "desktop-edge",
+        "desktop-shift",
+        "desktop-contract",
+        "desktop-ink",
+        "desktop-current",
+        "desktop-cached-again"
+      ]
+    },
+    "default-crop-visual-quality.json": {
+      "cases": 19,
+      "maxChannelError": 4,
+      "maxChangedPixels": 13836,
+      "maxMissingPixels": 0,
+      "nonemptyReferenceCases": 16,
+      "caseNames": [
+        "mobile-current-row",
+        "mobile-current-max",
+        "mobile-current-ink",
+        "mobile-current-focus",
+        "mobile-fractional",
+        "mobile-punctuation",
+        "mobile-edge",
+        "mobile-ink",
+        "mobile-highlight",
+        "mobile-outside",
+        "mobile-return",
+        "mobile-zero",
+        "mobile-prose",
+        "desktop-edge",
+        "desktop-shift",
+        "desktop-contract",
+        "desktop-ink",
+        "desktop-current",
+        "desktop-cached-again"
+      ]
+    },
+    "default-cpu-canvas-visual-quality.json": {
+      "cases": 19,
+      "maxChannelError": 32,
+      "maxChangedPixels": 52551,
+      "maxMissingPixels": 0,
+      "nonemptyReferenceCases": 16,
+      "caseNames": [
+        "mobile-current-row",
+        "mobile-current-max",
+        "mobile-current-ink",
+        "mobile-current-focus",
+        "mobile-fractional",
+        "mobile-punctuation",
+        "mobile-edge",
+        "mobile-ink",
+        "mobile-highlight",
+        "mobile-outside",
+        "mobile-return",
+        "mobile-zero",
+        "mobile-prose",
+        "desktop-edge",
+        "desktop-shift",
+        "desktop-contract",
+        "desktop-ink",
+        "desktop-current",
+        "desktop-cached-again"
+      ]
+    },
+    "default-clip-visual-quality.json": {
+      "cases": 19,
+      "maxChannelError": 6,
+      "maxChangedPixels": 14196,
+      "maxMissingPixels": 0,
+      "nonemptyReferenceCases": 16,
+      "caseNames": [
+        "mobile-current-row",
+        "mobile-current-max",
+        "mobile-current-ink",
+        "mobile-current-focus",
+        "mobile-fractional",
+        "mobile-punctuation",
+        "mobile-edge",
+        "mobile-ink",
+        "mobile-highlight",
+        "mobile-outside",
+        "mobile-return",
+        "mobile-zero",
+        "mobile-prose",
+        "desktop-edge",
+        "desktop-shift",
+        "desktop-contract",
+        "desktop-ink",
+        "desktop-current",
+        "desktop-cached-again"
+      ]
+    },
+    "default-aligned-visual-quality.json": {
+      "cases": 19,
+      "maxChannelError": 4,
+      "maxChangedPixels": 13885,
+      "maxMissingPixels": 0,
+      "nonemptyReferenceCases": 16,
+      "caseNames": [
+        "mobile-current-row",
+        "mobile-current-max",
+        "mobile-current-ink",
+        "mobile-current-focus",
+        "mobile-fractional",
+        "mobile-punctuation",
+        "mobile-edge",
+        "mobile-ink",
+        "mobile-highlight",
+        "mobile-outside",
+        "mobile-return",
+        "mobile-zero",
+        "mobile-prose",
+        "desktop-edge",
+        "desktop-shift",
+        "desktop-contract",
+        "desktop-ink",
+        "desktop-current",
+        "desktop-cached-again"
+      ]
+    }
+  },
+  "finalGpuWholeQueries": [
+    {
+      "mode": "static",
+      "disjoint": false,
+      "gpuMs": 2.627916,
+      "wallToAvailability": 53.5,
+      "valid": true,
+      "frameCpuMs": 1
+    },
+    {
+      "mode": "static",
+      "disjoint": false,
+      "gpuMs": 3.394625,
+      "wallToAvailability": 46.5,
+      "valid": true,
+      "frameCpuMs": 1.9
+    },
+    {
+      "mode": "static",
+      "disjoint": false,
+      "gpuMs": 3.497624,
+      "wallToAvailability": 46,
+      "valid": true,
+      "frameCpuMs": 1.8
+    },
+    {
+      "mode": "static",
+      "disjoint": false,
+      "gpuMs": 3.778,
+      "wallToAvailability": 46.5,
+      "valid": true,
+      "frameCpuMs": 1.7
+    },
+    {
+      "mode": "static",
+      "disjoint": false,
+      "gpuMs": 4.593541,
+      "wallToAvailability": 47.5,
+      "valid": true,
+      "frameCpuMs": 1.8
+    },
+    {
+      "mode": "scroll",
+      "disjoint": false,
+      "gpuMs": 18.04925,
+      "wallToAvailability": 76.9,
+      "valid": true,
+      "frameCpuMs": 54.2
+    },
+    {
+      "mode": "scroll",
+      "disjoint": false,
+      "gpuMs": 13.767208,
+      "wallToAvailability": 27.5,
+      "valid": true,
+      "frameCpuMs": 1.7
+    },
+    {
+      "mode": "scroll",
+      "disjoint": false,
+      "gpuMs": 11.64375,
+      "wallToAvailability": 24.5,
+      "valid": true,
+      "frameCpuMs": 1.9
+    },
+    {
+      "mode": "scroll",
+      "disjoint": false,
+      "gpuMs": 10.653,
+      "wallToAvailability": 24.3,
+      "valid": true,
+      "frameCpuMs": 2.8
+    },
+    {
+      "mode": "scroll",
+      "disjoint": false,
+      "gpuMs": 9.845083,
+      "wallToAvailability": 24.1,
+      "valid": true,
+      "frameCpuMs": 2
+    }
+  ],
+  "finalBrowserBehavior": {
+    "default": {
+      "variant": "current",
+      "backend": "canvas",
+      "candidateButtons": false,
+      "overflow": false,
+      "errors": [],
+      "blocked": []
+    },
+    "toggle": {
+      "panelSame": true,
+      "wordSame": true,
+      "scrollSame": true,
+      "paused": "true",
+      "variant": "liquid-live"
+    },
+    "loss": {
+      "focusRetained": true,
+      "optics": "lost",
+      "visible": "1"
+    },
+    "reduced": {
+      "optics": "reduced",
+      "opacity": "1"
+    },
+    "final": {
+      "errors": [],
+      "blocked": [],
+      "fonts": true,
+      "backend": "cached",
+      "overflow": false
+    }
+  },
+  "checks": {
+    "flowSuitesPassed": 53,
+    "flowTestsPassed": 422,
+    "nativeSharedTestsPassed": 124,
+    "applicationAndScriptTypes": "passed",
+    "lint": "passed",
+    "productionBuild": "passed",
+    "formal60FpsPresentation": "not_passed",
+    "physicalMobileDevice": "not_run"
+  },
+  "rawArtifactSha256": {
+    "baseline-desktop.json": "52f808c6a61b1d8fcc3485419cc50a122843f3505153e07f136311aa3d203420",
+    "baseline-desktop.mjs": "6426e44e7dac98180e9761a9bfd3e778ac38d3f70babee99a5a1dd9fe7b9e9a0",
+    "baseline-hashes.json": "d43b2737cab566924639a893725f3c18c87e2ec78c2580cfc0800bd6c3f30e17",
+    "baseline-long.json": "140b5d22d41e1e670f53c487c1f881576acc9b5a8ef9932f32ee4f756d67f73f",
+    "baseline-long.mjs": "a8d5d57b6ef8d61bd75c0c76c169efead4b377f0d7b80b3de38473d8078a0408",
+    "build-experiments.mjs": "1554f83432d1186ca1c5cd20d1938a54bd4c6b0e5c2c39d58bd9c80762e8e355",
+    "build-final.log": "02eb9adf197326d11437d1da8fe98f7eb295b37e735f668f9b9bbd6bd22af74a",
+    "cleanup.json": "d73c006957b724a6963ad52dd19f5a29b816b8ab4dde3ef5fab591bc935742fd",
+    "control-final.json": "104d8487c1fda61d228c07185f45e9d914a54a6610cf6b3c48dca04fdf468357",
+    "control-start.json": "c4296b037dd592de6cc66ea0af8b1dd217271d73ac705fe499c10922e2834084",
+    "default-aligned-visual-quality.json": "3436ab2546de05010d9a20e3f9fd02153353dcaa88a36485ab186e5388e4b1fb",
+    "default-batch-visual-quality.json": "aba80139f106085830413fde9173d7f4d792c5a55c61a09eb9cb10fa21649df5",
+    "default-clip-visual-quality.json": "e623d93f8021e44a43dd64bb206df3f810b60aa1b3d3e982213ebde0bbdb1b2a",
+    "default-cpu-canvas-visual-quality.json": "8c3e1db1a9c44e605ade84e70bbf8b98ca9ad1f25285fe31e1e5b7ee0ef0f980",
+    "default-crop-visual-quality.json": "ace5a4c58fb0e8c68af90eda46b68a9312aef69f9078b5f68978a441e7754654",
+    "default-gpu-visual-quality.json": "1f6d1d6ee6c0c7a07c8bcca8f38ecd887e84f2bdccc8964b386c4a4dd979b79e",
+    "dynamic-u5.mjs": "0d00af4c97e6b857261532df5a16d5f1bf6380db8c971461b4780581e737c1b7",
+    "final-behavior.json": "57411a2d86cc5f7e28cba26c856a89da2a195c7a082fdbeafd7537379338291f",
+    "final-behavior.mjs": "86b01293a9ee80fb0ef41d9591398d35ab96959a9943fd9b5255698716d292b7",
+    "final-current-main-trace-gaps.json": "187159e5436870cfc06045664cbeb35307e96a913d79f44c51b60da592beaa28",
+    "final-current-main-trace-performance.json": "ba537a39ac3bb80b0738bfa5ecfe3fefe955c6d756dc6f27029c7809a3b78844",
+    "final-current-main-trace-summary.json": "c00b3eb3914bcc89afd422b83d344bcd7b1330635169e63dbbdda4f4dacabd50",
+    "final-current-main-trace.json": "f565643c48570dfc35a27e63a30199c71c3883906f829ccb3c47a455cff7e1a0",
+    "final-desktop.json": "ab5fdeda80d2eac77d0db32f60a3cc9209a2936d0a0444a9d358c332ad8f578c",
+    "final-desktop.mjs": "d80ed736c035c4107e103eb532ef683fd0196d4e7d999b622b453f650648ed8e",
+    "final-gpu-whole.json": "d7e5618095caea93bb1174b47a9f7d0df660ec3c798e17a7e632407ec6006d93",
+    "final-long.json": "b245afb32b549d11cba2e8b7270e83776d8ba6cc7641a569f84ed62a1553efe9",
+    "final-long.mjs": "0797ecc346b99babc4b9f8c2717b873f9a5decfd495780da0cb3a13648306e54",
+    "final-mobile.json": "ac900b442e0aaedef3d2ea90868010eb7541476a444dd8de9b6dd6f51d86ae4a",
+    "final-mobile.mjs": "3c477c458c382f580c181b8f09f8efc455527fefc75492f6b8c050cbc72f1057",
+    "final-reader-mobile.png": "6909d6543963c32e011eedfc0c298db5c5814fbe33878606f26970c3a2a48810",
+    "final-source-hashes.json": "8735de01dca49db48fd9792b66d9ae363fd9c4a7304ec10f31a69265ebe63983",
+    "gpu-final.mjs": "70ecc17f18ff8c82af3f8bcc1a5a29d54311db06fa638b230acc7d8d96e17ae9",
+    "lint-final.log": "8d1aeb8bde3c02311671fe644c44102a6f4e11b4e0179c7bf43a854587eeb55b",
+    "long-u2.mjs": "870949a539581588b655279bf1ce7b27cdb6b59dbde071d990d24a42d3fe5276",
+    "native-tests-final.log": "19dff1948a0cedbd8da0904ab04a87a2ee3c461ce7866c4f7d028bca749c2244",
+    "reader-helpers.mjs": "63cb32a79032de7c8f348ad636534c69aeec50341eddb178ed2e33eaebbb6226",
+    "releases/3f42a54778e65474.json": "2af21483f521e15cf1ec0ed6662c62ebefdbedb5bebdced243e58052744b82e7",
+    "script-types-final.log": "30dab208ce1fad518cc940fd3b3f336f5dc7b10c8ce50ce6a00d61eb91c177d3",
+    "seed-baseline.mjs": "4fa95a7f0083f72beedca2d5443d4e09eb5acffc419886e4e04d8e4ae905b2a8",
+    "seed-final.mjs": "b8abd3bca83283bbe65eaf7b0f7d6ce8ed477e50e1b56391fa7d01246cdbe7c9",
+    "seed-optimized.mjs": "70d4f8e4badcea1c38516e6228e38343d4dec77605d24db9da1f925be10630fc",
+    "tests-final.log": "a488b0be38b73dc97a63ae066b97fac97751d2b6826b02059489bf0247492533",
+    "trace-current-final.mjs": "5fc97eef23a25c001ef9943fb669a99839098876d5356339c8ee9afd9fac3ba8",
+    "type-check-after-cleanup.log": "fa0f5ed26a55ebf4865b8f9140df43883ad38557f7530a6aae317fb153a5a7b9",
+    "u2-desktop.json": "f56b188e458571e5f73f514ad690fadb270862d3c73bf9d7249fa06f0680b27d",
+    "u2-desktop.mjs": "4cf9fe969fc82dcded195730ce75b1a5a4c47050d67ee92459083f15c45d7987",
+    "u2-gpu-stages.json": "248597d2b31b7b9166aa3ee16bb793821072b7a6f9905ef7fbd18c4d3d0b6b15",
+    "u2-gpu-whole.json": "77f4241c10b07ce8c6cb73e60d7526e516eb308029f9ed98b6931874bdef3181",
+    "u2-long.json": "e02919957337a3a1415ad55ae2e78665e9c98bcea37b298675e88b2b625dd581",
+    "u5-dynamic-fonts.json": "3e533a54d2a9a6c7e1e124d40002f9c7b4bf1f5408beb8b13c80e5285bfab850",
+    "u5-dynamic-quality.json": "1459944a75e5faa5a3a6e1efb83277a422b010f1586d5e64b3125ac1efba3b2d",
+    "u5-visual-fonts.json": "3e533a54d2a9a6c7e1e124d40002f9c7b4bf1f5408beb8b13c80e5285bfab850",
+    "u5-visual-quality.json": "580fefbc4821b8b48a5b2cd349174d9d96512217d04e535f58de9ef45a7f4a80",
+    "visual-u5.mjs": "ef09cabbe11d45fa2eeca81675b227d0258c3e60d94f3d00fd2cf9190faa6bb8"
+  }
+}

@@ -176,8 +176,8 @@
 .stream .quotePhrase { display: inline-block; white-space: nowrap; }
 /* Match the first optical frame before JS paints, avoiding a center-to-side flash. */
 @media (prefers-reduced-motion: no-preference) {
-  .stream [data-entry-side="left"]:not([data-entry-phase]) [data-flow-optic] { transform: translateX(clamp(-48px, -6vw, -18px)); }
-  .stream [data-entry-side="right"]:not([data-entry-phase]) [data-flow-optic] { transform: translateX(clamp(18px, 6vw, 48px)); }
+  .stream[data-motion-variant="current"] [data-entry-side="left"]:not([data-entry-phase]) [data-flow-optic] { transform: translateX(clamp(-48px, -6vw, -18px)); }
+  .stream[data-motion-variant="current"] [data-entry-side="right"]:not([data-entry-phase]) [data-flow-optic] { transform: translateX(clamp(18px, 6vw, 48px)); }
 }
 
 @media (max-width: 600px) {
@@ -197,20 +197,39 @@
   gap: 8px;
 }
 
-.readingMenu { position: relative; display: flex; }
-.readingMenu .readingMenuTrigger { display: grid; place-items: center; width: 44px; min-height: 44px; padding: 0; }
-.readingMenuTrigger svg { fill: currentColor; }
+.readingMenu { position: absolute; z-index: 6; inset: 0; pointer-events: none; touch-action: pan-y; }
+.readingMenu .readingMenuTrigger {
+  position: absolute; top: 50%; right: env(safe-area-inset-right, 0px); transform: translateY(-50%);
+  display: grid; place-items: center; width: 44px; height: 96px; padding: 0;
+  border: 0; color: var(--beam); background: transparent; cursor: pointer;
+  pointer-events: auto; touch-action: pan-y; -webkit-tap-highlight-color: transparent;
+}
+.readingMenuTrigger span { width: 3px; height: 42px; border-radius: 3px; background: currentColor; opacity: .26; transition: opacity 160ms ease, height 160ms ease; }
+.readingMenuTrigger:hover span, .readingMenuTrigger:focus-visible span { opacity: .8; height: 50px; }
+.readingMenu .readingMenuTrigger:focus-visible { outline: 1px solid var(--flow-focus); outline-offset: -8px; border-radius: 14px; }
+.readingMenu[data-open="true"] .readingMenuTrigger { visibility: hidden; }
+.readingMenuScrim { position: absolute; inset: 0; background: rgba(0, 0, 0, .38); pointer-events: auto; animation: readingMenuFade 180ms ease-out; }
 .readingMenuPanel {
-  position: absolute; z-index: 5; top: calc(100% + 8px); right: 0;
-  display: grid; min-width: 128px; max-width: calc(100vw - 32px); gap: 2px; padding: 6px;
-  border-radius: 12px; background: #14181c; box-shadow: 0 8px 24px rgba(0, 0, 0, .36);
+  position: absolute; z-index: 1; inset: 0 0 0 auto; width: min(300px, calc(100% - 48px)); box-sizing: border-box;
+  display: flex; flex-direction: column; gap: 8px; padding: max(28px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) 24px;
+  border-left: 1px solid rgba(225, 236, 248, .1); background: #090d0e; box-shadow: -16px 0 48px rgba(0, 0, 0, .22);
+  pointer-events: auto; touch-action: pan-y; overflow-y: auto; overscroll-behavior: contain;
+  animation: readingMenuIn 220ms cubic-bezier(.2, .7, .2, 1);
 }
 .readingMenuPanel[hidden] { display: none; }
+.readingMenuHeading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 36px; }
+.readingMenuHeading h2 { margin: 0; color: var(--flow-muted); font-size: 12px; font-weight: 400; letter-spacing: .14em; }
+.readingMenuClose { display: grid; place-items: center; min-width: 44px; min-height: 44px; margin-right: -12px; border: 0; background: none; color: var(--flow-muted); font: inherit; font-size: 25px; cursor: pointer; }
+.readingMenuClose:focus-visible { outline: 1px solid var(--flow-focus); outline-offset: -4px; border-radius: 8px; }
 .readingMenuPanel .textButton {
-  min-height: 44px; width: 100%; padding: 9px 14px; text-align: left;
-  color: var(--beam); font-size: 13px; letter-spacing: .04em; white-space: nowrap;
+  min-height: 52px; width: 100%; padding: 12px 0; text-align: left;
+  color: var(--beam); font-size: 15px; letter-spacing: .06em; white-space: normal;
+  border-bottom: 1px solid rgba(225, 236, 248, .08); border-radius: 0;
 }
 .readingMenuPanel .textButton:disabled { color: var(--flow-muted); opacity: .5; cursor: default; }
+@keyframes readingMenuIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes readingMenuFade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .readingMenuPanel, .readingMenuScrim { animation: none; } .readingMenuTrigger span { transition: none; } }
 
 .topButton {
   min-height: 38px;

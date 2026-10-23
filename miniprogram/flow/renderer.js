@@ -3,7 +3,8 @@ const { CELL, CENTER_PHASE, modulo } = require('./timeline');
 const { CENTER_SCALE, ROW_TURN_MIN, ROW_TURN_STEP, sceneMetrics, wheelGeometry, quotationGeometry, projectedRows, projectedGlyphs } = require('./scene');
 const { ranges, selectionFor } = require('./classic-text');
 const { NOISE_SIZE, inkLight, grainPixels, INK_GLSL } = require('./atmosphere');
-const { BEND_FRAGMENT } = require('./stream-bend');
+const { BEND_FRAGMENT, bendRowMap } = require('./stream-bend');
+const { LIQUID_FIELD_FRAGMENT, noiseHashGrid } = require('./stream-liquid');
 
 const BACKGROUND_VERTEX = `
 attribute vec3 a_position;
@@ -278,9 +279,13 @@ function makeProgram(gl, fragment, vertex = VERTEX) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','inkMeta','inkEnabled'].forEach(name => {
+  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','bendAdhesion','bendScroll','bendLiquid','bendCaustics','bendContacts','bendPerlin','bendNoisePhase','bendLookup','bendLookupEnabled','inkMeta','inkMetaNext','inkMetaMix','inkEnabled','sourceWindow'].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   });
+  for (const name of ['noiseHashContact', 'noiseHashSurface', 'noiseContactBounds', 'noiseSurfaceBounds', 'noiseHashEnabled']) {
+    uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
+  }
+  uniforms.sourcePremultiplied = gl.getUniformLocation(program, 'u_sourcePremultiplied');
   return { program, uniforms, attributes: ['position','normal','uv'].map(name => gl.getAttribLocation(program, 'a_' + name)) };
 }
 
@@ -300,7 +305,8 @@ class WheelRenderer {
     this.buffers = [];
     this.targets = [];
     this.programs = [];
-    this.gl = canvas.getContext('webgl', { alpha: false, antialias: true, depth: true, preserveDrawingBuffer: true });
+    this.gl = canvas.getContext('webgl', { alpha: false, antialias: options.antialias ?? true, depth: true,
+      preserveDrawingBuffer: options.preserveDrawingBuffer ?? true, powerPreference: options.powerPreference ?? 'default' });
     if (!this.gl) throw new Error('WebGL unavailable');
     try { this.init(); } catch (error) { this.destroy(); throw error; }
   }
@@ -452,6 +458,7 @@ class WheelRenderer {
     gl.uniform1i(u.noise, 1);
     gl.uniform1i(u.inkMeta, 2);
     gl.uniform1f(u.inkEnabled, this.inkEnabled ? 1 : 0);
+    gl.uniform1f(u.sourcePremultiplied, this.sourcePremultiplied ? 1 : 0);
     gl.uniform1f(u.dpr, this.dpr);
     gl.uniform1f(u.inkLight, inkLight(this.timeline.ambientPhase, this.reducedMotion));
     gl.bindBuffer(gl.ARRAY_BUFFER, geometry.buffer);
@@ -581,6 +588,14 @@ class WheelRenderer {
     if (this.noiseTexture) gl.deleteTexture(this.noiseTexture);
     if (this.foregroundTexture) gl.deleteTexture(this.foregroundTexture);
     if (this.inkTexture) gl.deleteTexture(this.inkTexture);
+    if (this.surfaceTextures) for (const slot of this.surfaceTextures) {
+      if (slot.texture !== this.inkTexture) gl.deleteTexture(slot.texture);
+    }
+    this.surfaceTextures = null;
+    if (this.noiseHashes) for (const slot of this.noiseHashes) gl.deleteTexture(slot.texture);
+    this.noiseHashes = null;
+    if (this.bendLookupTexture) gl.deleteTexture(this.bendLookupTexture);
+    this.uploadSizes?.clear();
   }
 }
 
@@ -600,8 +615,18 @@ precision highp float;
 uniform sampler2D u_texture;
 uniform sampler2D u_inkMeta;
 uniform float u_inkEnabled;
+uniform float u_sourcePremultiplied;
 uniform vec2 u_resolution;
+uniform vec2 u_sourceWindow;
 varying vec2 v_uv;
+vec4 sourceGlyph(vec2 uv) {
+  float x = (uv.x - u_sourceWindow.x) / u_sourceWindow.y;
+  if ((x < 0.0 && u_sourceWindow.x > 0.0)
+    || (x > 1.0 && u_sourceWindow.x + u_sourceWindow.y < 0.999999)) return vec4(0.0);
+  vec4 glyph = texture2D(u_texture, vec2(x, uv.y));
+  if (u_sourcePremultiplied > 0.5 && glyph.a > 0.0) glyph.rgb /= glyph.a;
+  return glyph;
+}
 float inkHash(vec2 p) {
   p = fract(p * vec2(127.1, 311.7));
   p += dot(p, p + 34.37);
@@ -622,7 +647,7 @@ float inkFbm(vec2 p) {
   return value;
 }
 void main() {
-  vec4 glyph = texture2D(u_texture, v_uv);
+  vec4 glyph = sourceGlyph(v_uv);
   if (u_inkEnabled < 0.5) { gl_FragColor = glyph; return; }
   vec4 meta = texture2D(u_inkMeta, v_uv);
   if (meta.a < 0.5 || meta.r > 0.998) { gl_FragColor = glyph; return; }
@@ -630,6 +655,15 @@ void main() {
   // Adapted from TongyeGuanmi's loader: multiple ink scales fill the real
   // glyph mask, with a short wet edge. Its colour comes from our own source.
   float p = smoothstep(0.0, 1.0, meta.r);
+  vec2 px = (0.6 + sin(p * 3.14159265) * 0.5) / u_resolution;
+  vec4 a = sourceGlyph(v_uv + vec2(px.x, 0.0));
+  vec4 b = sourceGlyph(v_uv - vec2(px.x, 0.0));
+  vec4 c = sourceGlyph(v_uv + vec2(0.0, px.y));
+  vec4 d = sourceGlyph(v_uv - vec2(0.0, px.y));
+  float wet = max(glyph.a, max(max(a.a, b.a), max(c.a, d.a)));
+  // Include the original wet-edge neighbourhood before rejecting empty
+  // pixels. The reveal noise cannot create ink where all five masks are zero.
+  if (wet == 0.0) { gl_FragColor = vec4(0.0); return; }
   vec2 coord = v_uv * u_resolution / max(12.0, meta.b * 255.0);
   vec2 seed = vec2(meta.g * 43.7, meta.g * 71.3);
   float field = inkFbm(coord * 2.4 + seed) * 0.62
@@ -639,12 +673,6 @@ void main() {
   reveal = max(reveal, smoothstep(0.72, 0.98, p));
   float edge = (1.0 - smoothstep(0.0, 0.13, abs(field + p * 0.16 - threshold)))
     * smoothstep(0.04, 0.30, p) * (1.0 - smoothstep(0.68, 1.0, p));
-  vec2 px = (0.6 + sin(p * 3.14159265) * 0.5) / u_resolution;
-  vec4 a = texture2D(u_texture, v_uv + vec2(px.x, 0.0));
-  vec4 b = texture2D(u_texture, v_uv - vec2(px.x, 0.0));
-  vec4 c = texture2D(u_texture, v_uv + vec2(0.0, px.y));
-  vec4 d = texture2D(u_texture, v_uv - vec2(0.0, px.y));
-  float wet = max(glyph.a, max(max(a.a, b.a), max(c.a, d.a)));
   float bead = smoothstep(0.78, 0.98, inkHash(floor(coord * 18.0 + seed)));
   float alpha = clamp(glyph.a * reveal + wet * edge * (0.15 + bead * 0.14), 0.0, 1.0);
   vec3 color = max(glyph.rgb, max(max(a.rgb, b.rgb), max(c.rgb, d.rgb)));
@@ -655,6 +683,7 @@ void main() {
 class StreamGlassRenderer extends WheelRenderer {
   init() {
     super.init();
+    this.uploadSizes = new Map();
     // A resized canvas can reuse the previous WebGL context. Its enabled
     // attributes may still reference deleted geometry from the old instance.
     for (let index = 0; index < this.gl.getParameter(this.gl.MAX_VERTEX_ATTRIBS); index++) {
@@ -667,17 +696,183 @@ class StreamGlassRenderer extends WheelRenderer {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
     this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array(4));
     if (this.bend) {
-      this.bendProgram = makeProgram(this.gl, BEND_FRAGMENT, SCREEN_VERTEX);
-      this.programs.push(this.bendProgram);
       this.composite = this.target(1);
       this.targets.push(this.composite);
       this.foregroundTexture = this.texture();
+      this.bendLookupTexture = this.texture();
+      this.bendLookupAvailable = !!this.gl.getExtension('OES_texture_float')
+        && this.canvas.height <= this.gl.getParameter(this.gl.MAX_TEXTURE_SIZE);
+      this.noiseHashAvailable = this.gl.getParameter(this.gl.MAX_TEXTURE_IMAGE_UNITS) >= 7;
+      // Compile out the fallback's 40 intersections on lookup-capable GPUs.
+      // Both variants retain the exact same fold geometry and resolution.
+      this.bendProgram = makeProgram(this.gl,
+        (this.bendLookupAvailable ? '#define BEND_LOOKUP_ONLY\n' : '')
+        + (this.noiseHashAvailable ? '#define NOISE_HASH_CACHE\n' : '') + BEND_FRAGMENT, SCREEN_VERTEX);
+      this.programs.push(this.bendProgram);
+      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+      this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array(4));
     }
     this.count = 1;
     this.borderless = true;
   }
 
-  drawSource(source, foreground, bend, ink) {
+  drawSurfaceQuad(program) {
+    // These two screen-space passes do not use wheel geometry, ink timing,
+    // atlas or material uniforms. Submit only their actual shared inputs.
+    const gl = this.gl, geometry = this.backgroundQuad, u = program.uniforms;
+    gl.uniform2f(u.resolution, this.width, this.height);
+    gl.uniform1i(u.texture, 0);
+    gl.uniform1i(u.inkMeta, 2);
+    gl.uniform1f(u.noiseHashEnabled, this.noiseHashActive ? 1 : 0);
+    if (this.noiseHashActive) {
+      gl.uniform1i(u.noiseHashContact, 5);
+      gl.uniform1i(u.noiseHashSurface, 6);
+      const [contact, surface] = this.noiseHashes.map(slot => slot.frame);
+      gl.uniform4f(u.noiseContactBounds, contact.left, contact.top, contact.width, contact.height);
+      gl.uniform4f(u.noiseSurfaceBounds, surface.left, surface.top, surface.width, surface.height);
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, geometry.buffer);
+    program.attributes.forEach((location, index) => {
+      if (location < 0) return;
+      gl.enableVertexAttribArray(location);
+      gl.vertexAttribPointer(location, index === 2 ? 2 : 3, gl.FLOAT, false, 32, [0, 12, 24][index]);
+    });
+    gl.drawArrays(gl.TRIANGLES, 0, geometry.count);
+  }
+
+  drawLiquidField(bend, sourceWindow) {
+    const gl = this.gl;
+    // Allocate only for the opt-in liquid profiles. The accepted comparison
+    // and the normal reader keep their existing targets and optical path.
+    if (!this.liquidProgram) {
+      this.liquidProgram = makeProgram(gl,
+        (this.noiseHashAvailable ? '#define NOISE_HASH_CACHE\n' : '') + LIQUID_FIELD_FRAGMENT, SCREEN_VERTEX);
+      this.programs.push(this.liquidProgram);
+      this.liquidTarget = this.target(0.66);
+      this.targets.push(this.liquidTarget);
+    }
+    gl.activeTexture(gl.TEXTURE2);
+    gl.bindTexture(gl.TEXTURE_2D, this.surfaceTexture || this.inkTexture);
+    gl.activeTexture(gl.TEXTURE4);
+    gl.bindTexture(gl.TEXTURE_2D, this.nextSurfaceTexture || this.inkTexture);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.liquidTarget.buffer);
+    gl.viewport(0, 0, this.liquidTarget.width, this.liquidTarget.height);
+    gl.disable(gl.DEPTH_TEST);
+    gl.disable(gl.BLEND);
+    gl.cullFace(gl.BACK);
+    const program = this.liquidProgram, u = program.uniforms;
+    gl.useProgram(program.program);
+    gl.uniform1f(u.bendZone, bend.zone);
+    gl.uniform1f(u.bendAdhesion, bend.adhesion || 0);
+    gl.uniform1f(u.bendScroll, bend.adhesionScroll || 0);
+    gl.uniform1f(u.bendContacts, bend.contacts ? 1 : 0);
+    gl.uniform1f(u.bendPerlin, bend.perlin ? 1 : 0);
+    gl.uniform1f(u.bendNoisePhase, bend.noisePhase || 0);
+    gl.uniform1i(u.inkMetaNext, 4);
+    gl.uniform1f(u.inkMetaMix, this.surfaceMix || 0);
+    const left = sourceWindow?.left || 0, span = sourceWindow?.width ?? 1;
+    gl.uniform2f(u.sourceWindow, left, span);
+    // Storage width maps UVs; the active width only limits work. Clear the
+    // whole previous field to its exact neutral encoding before either band.
+    const activeSpan = sourceWindow?.activeWidth ?? span;
+    const margin = (16 + 40 * Math.abs(bend.adhesion || 0)) / this.width;
+    const pixels = this.liquidTarget.width, rows = this.liquidTarget.height;
+    const x = Math.max(0, Math.floor((left - margin) * pixels));
+    const end = Math.min(pixels, Math.ceil((left + activeSpan + margin) * pixels));
+    const band = Math.min(rows, Math.ceil(rows * (bend.zone ?? 1)) + 1);
+    gl.disable(gl.SCISSOR_TEST);
+    gl.clearColor(128 / 255, 128 / 255, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clearColor(0, 0, 0, 1);
+    gl.enable(gl.SCISSOR_TEST);
+    if (band * 2 >= rows) {
+      gl.scissor(x, 0, end - x, rows); this.drawSurfaceQuad(program);
+    } else {
+      // The shader returns that same neutral value throughout the reading
+      // center. A one-pixel guard keeps interpolation at each fold unchanged.
+      gl.scissor(x, 0, end - x, band); this.drawSurfaceQuad(program);
+      gl.scissor(x, rows - band, end - x, band); this.drawSurfaceQuad(program);
+    }
+    gl.disable(gl.SCISSOR_TEST);
+    gl.activeTexture(gl.TEXTURE2);
+    gl.bindTexture(gl.TEXTURE_2D, this.liquidTarget.texture);
+    gl.activeTexture(gl.TEXTURE0);
+  }
+
+  bindBendRows(bend) {
+    const gl = this.gl;
+    gl.activeTexture(gl.TEXTURE3);
+    gl.bindTexture(gl.TEXTURE_2D, this.bendLookupTexture);
+    const key = `${this.canvas.height}:${bend.zone}:${bend.rounding}:${bend.angle}:${bend.perspective}`;
+    if (this.bendLookupAvailable && this.bendLookupKey !== key) {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, this.canvas.height, 0, gl.RGBA, gl.FLOAT, bendRowMap(bend, this.canvas.height));
+      this.bendLookupKey = key;
+    }
+    gl.activeTexture(gl.TEXTURE0);
+  }
+
+  bindNoiseHashes(bend) {
+    const gl = this.gl;
+    if (!this.noiseHashes) this.noiseHashes = [0, 1].map(index => {
+      gl.activeTexture(gl.TEXTURE5 + index);
+      const texture = this.texture();
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      return { texture, frame: null };
+    });
+    for (let index = 0; index < 2; index++) {
+      const slot = this.noiseHashes[index];
+      const frame = noiseHashGrid(this.width, this.height, bend.adhesionScroll || 0, bend.noisePhase || 0, index === 0, slot.frame);
+      gl.activeTexture(gl.TEXTURE5 + index);
+      gl.bindTexture(gl.TEXTURE_2D, slot.texture);
+      if (frame !== slot.frame) {
+        if (slot.frame?.width === frame.width && slot.frame?.height === frame.height) {
+          gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, frame.width, frame.height, gl.RGBA, gl.UNSIGNED_BYTE, frame.data);
+        } else {
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, frame.width, frame.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, frame.data);
+        }
+        slot.frame = frame;
+      }
+    }
+    gl.activeTexture(gl.TEXTURE0);
+  }
+
+  uploadSource(texture, source) {
+    const gl = this.gl, size = this.uploadSizes.get(texture);
+    // The source canvases keep their dimensions while scrolling. Reuse the
+    // texture storage instead of asking the driver to allocate it each frame.
+    if (size && size.width === source.width && size.height === source.height) {
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, source);
+    } else {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+      this.uploadSizes.set(texture, { width: source.width, height: source.height });
+    }
+  }
+
+  bindSurfacePair(pair) {
+    const gl = this.gl;
+    if (!this.surfaceTextures) this.surfaceTextures = [{ texture: this.texture(), key: null }, { texture: this.texture(), key: null }];
+    const bind = frame => {
+      let slot = this.surfaceTextures.find(candidate => candidate.key === frame);
+      if (!slot) {
+        slot = this.surfaceTextures.find(candidate => candidate.key !== pair.current && candidate.key !== pair.next);
+        gl.bindTexture(gl.TEXTURE_2D, slot.texture);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        this.uploadSource(slot.texture, frame.canvas);
+        slot.key = frame;
+      }
+      return slot.texture;
+    };
+    this.surfaceTexture = bind(pair.current);
+    this.nextSurfaceTexture = bind(pair.next);
+    this.surfaceMix = pair.mix;
+    gl.bindTexture(gl.TEXTURE_2D, this.surfaceTexture);
+  }
+
+  drawSource(source, foreground, bend, ink, adhesion, sourceChanged = true, surfacePair, sourceWindow) {
     if (this.destroyed) return;
     const gl = this.gl;
     if (gl.isContextLost()) throw new Error('WebGL context lost');
@@ -685,31 +880,84 @@ class StreamGlassRenderer extends WheelRenderer {
     gl.bindTexture(gl.TEXTURE_2D, this.textTexture);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
-    if (this.bendProgram && foreground) {
+    if (sourceChanged) this.uploadSource(this.textTexture, source);
+    if (sourceChanged && this.bendProgram && foreground) {
       gl.bindTexture(gl.TEXTURE_2D, this.foregroundTexture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, foreground);
+      this.uploadSource(this.foregroundTexture, foreground);
     }
     this.inkEnabled = !!ink;
     gl.activeTexture(gl.TEXTURE2);
     gl.bindTexture(gl.TEXTURE_2D, this.inkTexture);
-    if (ink) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ink);
+    // A retained composite already contains this reveal frame. Upload again
+    // when its immutable runs/progress change and the source is recomposed.
+    if (ink && sourceChanged) this.uploadSource(this.inkTexture, ink);
+    if (adhesion) {
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+      if (surfacePair) this.bindSurfacePair(surfacePair);
+      else {
+        // Scrolling changes the lettering, so paint/upload the exact live mask.
+        // Cached phases become invalid when this texture's contents change.
+        if (!this.surfaceTextures) this.surfaceTextures = [{ texture: this.texture(), key: null }, { texture: this.texture(), key: null }];
+        for (const slot of this.surfaceTextures) slot.key = null;
+        this.surfaceTexture = this.surfaceTextures[0].texture;
+        this.nextSurfaceTexture = null;
+        this.surfaceMix = 0;
+        gl.bindTexture(gl.TEXTURE_2D, this.surfaceTexture);
+        this.uploadSource(this.surfaceTexture, adhesion);
+      }
+    }
+    this.composeSource(bend, ink, adhesion, foreground, sourceChanged, sourceWindow);
+  }
+
+  // Browser glyph caches paint directly into textures on this context. The
+  // same glass/dispersion/ink shaders consume them without a Canvas readback.
+  drawGpuSource(sources, bend, sourceChanged = true, sourceWindow) {
+    if (this.destroyed) return;
+    if (this.gl.isContextLost()) throw new Error('WebGL context lost');
+    const names = ['textTexture', 'foregroundTexture', 'inkTexture', 'surfaceTexture', 'nextSurfaceTexture', 'surfaceMix', 'sourcePremultiplied'];
+    const previous = names.map(name => this[name]);
+    try {
+      this.textTexture = sources.source; this.foregroundTexture = sources.foreground;
+      this.inkTexture = sources.ink || previous[2];
+      this.surfaceTexture = sources.adhesion; this.nextSurfaceTexture = null; this.surfaceMix = 0;
+      this.sourcePremultiplied = true; this.inkEnabled = !!sources.ink;
+      this.composeSource(bend, sources.ink, sources.adhesion, sources.foreground, sourceChanged, sourceWindow);
+    } finally { names.forEach((name, index) => { this[name] = previous[index]; }); }
+  }
+
+  composeSource(bend, ink, adhesion, foreground, sourceChanged, sourceWindow) {
+    const gl = this.gl;
+    // Ink metadata must remain independent while the contact field changes.
+    // The screen passes sample it before the final fold binds the water field.
+    gl.activeTexture(gl.TEXTURE2);
+    gl.bindTexture(gl.TEXTURE_2D, this.inkTexture);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, this.noiseTexture);
     gl.activeTexture(gl.TEXTURE0);
 
-    for (let pass = 0; pass < 3; pass++) {
+    // The lettering and base glass stay in the composite while only the
+    // liquid surface moves. No repeated text uploads or refraction passes.
+    for (let pass = 0; sourceChanged && pass < 3; pass++) {
       const target = pass < 2 ? this.targets[pass] : this.bendProgram ? this.composite : null;
       gl.bindFramebuffer(gl.FRAMEBUFFER, target ? target.buffer : null);
       gl.viewport(0, 0, target ? target.width : this.canvas.width, target ? target.height : this.canvas.height);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       if (pass === 2) {
-        gl.disable(gl.DEPTH_TEST);
-        gl.depthMask(false);
-        this.mesh(this.backgroundProgram, this.backgroundQuad, pass, false);
-        gl.depthMask(true);
-        gl.enable(gl.DEPTH_TEST);
+        if (this.opticalProfile) {
+          // This profile's background shader is a constant, exactly matching
+          // a clear. Avoid a full-screen program/texture pass on every scroll.
+          gl.clearColor(2 / 255, 3 / 255, 3 / 255, 1);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+          gl.clearColor(0, 0, 0, 1);
+        } else {
+          gl.disable(gl.DEPTH_TEST);
+          gl.depthMask(false);
+          this.mesh(this.backgroundProgram, this.backgroundQuad, pass, false);
+          gl.depthMask(true);
+          gl.enable(gl.DEPTH_TEST);
+        }
       }
       if (pass) {
         gl.bindTexture(gl.TEXTURE_2D, this.targets[pass - 1].texture);
@@ -724,11 +972,34 @@ class StreamGlassRenderer extends WheelRenderer {
         gl.disable(gl.DEPTH_TEST);
         gl.cullFace(gl.BACK);
         gl.bindTexture(gl.TEXTURE_2D, pass < 2 ? this.textTexture : this.foregroundTexture);
+        gl.useProgram(this.screenProgram.program);
+        const left = sourceWindow?.left || 0, span = sourceWindow?.width ?? 1;
+        gl.uniform2f(this.screenProgram.uniforms.sourceWindow, left, span);
+        // The source window includes the original blur and underline margins.
+        // Skip only transparent columns, at the original backing resolution.
+        if (sourceWindow) {
+          const pixels = target ? target.width : this.canvas.width;
+          const x = Math.max(0, Math.floor(left * pixels) - 1);
+          const end = Math.min(pixels, Math.ceil((left + (sourceWindow.activeWidth ?? span)) * pixels) + 1);
+          gl.enable(gl.SCISSOR_TEST);
+          gl.scissor(x, 0, end - x, target ? target.height : this.canvas.height);
+        }
         this.mesh(this.screenProgram, this.backgroundQuad, pass, false);
+        if (sourceWindow) gl.disable(gl.SCISSOR_TEST);
         gl.enable(gl.DEPTH_TEST);
       }
     }
     if (this.bendProgram && bend) {
+      const liquid = !!(adhesion && bend.liquid);
+      this.noiseHashActive = !!(adhesion && bend.perlin && this.noiseHashAvailable);
+      if (this.noiseHashActive) this.bindNoiseHashes(bend);
+      if (liquid) this.drawLiquidField(bend, sourceWindow);
+      else if (adhesion) {
+        gl.activeTexture(gl.TEXTURE2);
+        gl.bindTexture(gl.TEXTURE_2D, this.surfaceTexture);
+        gl.activeTexture(gl.TEXTURE0);
+      }
+      this.bindBendRows(bend);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
       gl.viewport(0, 0, this.canvas.width, this.canvas.height);
       gl.disable(gl.DEPTH_TEST);
@@ -742,7 +1013,16 @@ class StreamGlassRenderer extends WheelRenderer {
       gl.uniform1f(u.bendAngle, bend.angle);
       gl.uniform1f(u.bendPersp, bend.perspective);
       gl.uniform1f(u.bendFlare, bend.flare || 0);
-      this.mesh(program, this.backgroundQuad, 3, false);
+      gl.uniform1f(u.bendAdhesion, adhesion ? bend.adhesion || 0 : 0);
+      gl.uniform1f(u.bendScroll, bend.adhesionScroll || 0);
+      gl.uniform1f(u.bendLiquid, liquid ? 1 : 0);
+      gl.uniform1f(u.bendCaustics, liquid ? bend.caustics || 0 : 0);
+      gl.uniform1f(u.bendContacts, liquid && bend.contacts ? 1 : 0);
+      gl.uniform1f(u.bendPerlin, liquid && bend.perlin ? 1 : 0);
+      gl.uniform1f(u.bendNoisePhase, bend.noisePhase || 0);
+      gl.uniform1i(u.bendLookup, 3);
+      gl.uniform1f(u.bendLookupEnabled, this.bendLookupAvailable ? 1 : 0);
+      this.drawSurfaceQuad(program);
       gl.enable(gl.BLEND);
       gl.enable(gl.DEPTH_TEST);
     }

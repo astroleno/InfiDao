@@ -1,24 +1,36 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type ComponentProps, type ReactNode } from 'react';
 import type { FlowSelection } from '@/lib/flow-browser/controller-host';
 import { entryKey, type StreamEntry } from '@/lib/flow-browser/continuity';
 import { quoteKey } from '@/lib/flow-browser/library';
-import { ribbonProjection } from '@/lib/flow-browser/ribbon-optics';
+import { streamBendSettings, streamProjection, type StreamMotionVariant } from '@/lib/flow-browser/motion-profile';
 import { EntranceMotion, InkMotion } from '@/lib/flow-browser/entrance-motion';
+import { ScrollNoiseMotion, SettlingScrollNoiseMotion } from '@/lib/flow-browser/liquid-motion';
 import { StreamGlass, type OpticalRun } from '@/lib/flow-browser/stream-glass';
-import { bendSettings, bendSourcePoint, bindBendInteraction, type BendSettings } from '@/lib/flow-browser/bend';
+import { StreamSceneIndex } from '@/lib/flow-browser/stream-scene';
+import { StreamFramePlanner } from '@/lib/flow-browser/stream-frame-plan';
+import { bendSourcePoint, bindBendInteraction, type BendSettings } from '@/lib/flow-browser/bend';
 import type { PersonalNote } from '@/lib/flow-browser/storage';
 import { LinkedText } from './LinkedText';
 import { NotesPanel } from './NotesPanel';
 import { StreamActions } from './StreamActions';
 import styles from './flow.module.css';
 
+// Active-passage updates retain the native text subtree for every other
+// passage. The same buttons keep their identity and keyboard focus.
+const RetainedLinkedText = memo(LinkedText);
+
 type Props = {
   entries: StreamEntry[];
   activeKey: string;
   paused: boolean;
+  autoScroll?: boolean;
   reducedMotion: boolean;
+  motionVariant?: StreamMotionVariant;
+  motionSeed?: number;
+  /** Comparison fixtures may start settled; reader materials never disable entry. */
+  settleEntrance?: boolean;
   pending: boolean;
   connecting: FlowSelection | null;
   waiting?: ReactNode;
@@ -27,6 +39,7 @@ type Props = {
   onContinue: () => void;
   onPrepareNext: () => void;
   onPause: () => void;
+  onResume?: () => void;
   onRead: (entry: StreamEntry) => void;
   onScroll: (top: number) => void;
   onVisualReady: () => void;
@@ -53,11 +66,21 @@ export function FlowStream(props: Props) {
   const optics = useRef<() => void>(() => {});
   const measure = useRef<() => void>(() => {});
   const entrance = useRef({ pause: () => {}, resume: () => {} });
+  const articleScene = useRef(new StreamSceneIndex<{ top: number; bottom: number; order: number; entry: StreamEntry }>());
   const previousFlow = useRef({ paused: props.paused, revision: props.restore.revision });
   const intended = useRef(false);
+  const pointer = useRef<{ x: number; y: number; moved: boolean } | null>(null);
   const preparedAt = useRef('');
   const continuedAt = useRef('');
   const [notesFor, setNotesFor] = useState<string | null>(null);
+  const contentEntries = useMemo(() => props.entries.map(entry => ({
+    entry,
+    select: (selection: Parameters<ComponentProps<typeof LinkedText>['onSelect']>[0]) => {
+      intended.current = false;
+      live.current.onRead(entry);
+      live.current.onBranch({ ...selection, pathId: entry.pathId });
+    },
+  })), [props.entries]);
 
   useLayoutEffect(() => {
     const panel = panelRef.current;
@@ -99,51 +122,122 @@ export function FlowStream(props: Props) {
     const panel = panelRef.current, content = contentRef.current;
     if (!panel || !content) return;
     let handle = 0, last = 0, remainder = 0, disposed = false;
-    type Part = { element: HTMLElement; top: number; bottom: number; motion: EntranceMotion; ink: InkMotion };
+    type Part = { element: HTMLElement; top: number; bottom: number; order: number; motion: EntranceMotion; ink: InkMotion; inkPhase: string };
     let parts: Part[] = [];
     const motions = new WeakMap<HTMLElement, EntranceMotion>();
     const inks = new WeakMap<HTMLElement, InkMotion>();
     type Hit = { element: HTMLElement; x: number; y: number; width: number; height: number };
-    let words: Array<{ element: HTMLElement; x: number; y: number; wordWidth: number; wordHeight: number; profile: string;
-      text: string; font: string; spacing: string; color: string; quiet: boolean; part: Part | undefined; links: Hit[]; inkIndex: number }> = [];
+    type Word = { element: HTMLElement; x: number; y: number; top: number; bottom: number; order: number;
+      wordWidth: number; wordHeight: number; profile: string; count: number;
+      text: string; font: string; spacing: string; color: string; quiet: boolean; part: Part | undefined;
+      links: Hit[]; hits: Hit[]; inkIndex: number; progress: number[]; run: OpticalRun };
+    let words: Word[] = [];
+    const wordRecords = new WeakMap<HTMLElement, Word>();
+    const partRecords = new Map<HTMLElement, Part>();
+    const partIndex = new StreamSceneIndex<Part>(), wordIndex = new StreamSceneIndex<Word>();
+    const activeParts = new Set<Part>(), workParts = new Set<Part>();
+    const visibleParts: Part[] = [], visibleWords: Word[] = [];
+    let previousWords = new Set<Word>(), nextWords = new Set<Word>();
+    const planner = new StreamFramePlanner();
+    let settledAll = false, nextWordId = 0;
+    let passedUntil = -Infinity, frameWordsVisited = 0;
+    // Local diagnostics opt in before mounting. Normal reading does not time,
+    // copy or publish per-frame records, nor read back GPU results.
+    const probe = (window as Window & { __INFIDAO_FLOW_RENDER_PROBE__?: (frame: Record<string, unknown>) => void }).__INFIDAO_FLOW_RENDER_PROBE__;
+    const layoutProbe = { count: 0, totalMs: 0, lastMs: 0, reason: '' };
+    let drawMs = 0;
+    let pendingMeasure: 'resize' | 'font' | null = null, measuredSize = '';
+    const layoutSize = () => `${content.clientWidth}:${content.clientHeight}:${panel.clientWidth}:${panel.clientHeight}`;
     let drawn: { settings: BendSettings; hits: Hit[] } | null = null;
     let width = 0;
     let glass: StreamGlass | null = null;
-    let measurement = 0, lastPaint = '';
-    let lastFocus: Element | null = null;
+    let liquidNoise: ScrollNoiseMotion | undefined;
+    const surfaceMotions = new Map<StreamMotionVariant, SettlingScrollNoiseMotion>();
+    const cachedRuns: OpticalRun[] = [], cachedHits: Hit[] = [];
+
+    const finishPart = (part: Part) => {
+      if (part.motion.offset || part.ink.phase !== 'settled') planner.invalidate('motion');
+      part.motion.finish(); part.ink.finish(); part.inkPhase = 'settled';
+      if (part.element.dataset.entryPhase !== 'settled') part.element.dataset.entryPhase = 'settled';
+      if (part.element.dataset.inkPhase !== 'settled') part.element.dataset.inkPhase = 'settled';
+      activeParts.delete(part);
+    };
 
     const paint = (time: number) => {
+      frameWordsVisited = 0;
       const height = panel.clientHeight;
       if (!height) return false;
+      const scrollTop = panel.scrollTop, activeElement = document.activeElement;
+      const canvasOwnsGlyphs = !live.current.reducedMotion && glassRef.current?.dataset.optics === 'ready';
+      const variant = live.current.motionVariant || 'current';
       let stagger = 0, moving = false;
-      for (const part of parts) {
-        if (part.bottom < panel.scrollTop) { part.motion.finish(); part.ink.finish(); }
-        if (part.element.contains(document.activeElement)) {
+      const settleAll = !!live.current.settleEntrance || live.current.reducedMotion;
+      if (settleAll && !settledAll) parts.forEach(finishPart);
+      settledAll = settleAll;
+      // A jump can skip years of retained history. Remember the boundary and
+      // settle a skipped paragraph only when it becomes relevant again.
+      passedUntil = Math.max(passedUntil, scrollTop);
+      workParts.clear();
+      partIndex.visible(scrollTop, scrollTop + height - 24, visibleParts);
+      for (const part of visibleParts) workParts.add(part);
+      for (const part of activeParts) workParts.add(part);
+      const focusedPart = activeElement instanceof Element ? partRecords.get(activeElement.closest<HTMLElement>('[data-flow-entrance]')!) : undefined;
+      if (focusedPart) workParts.add(focusedPart);
+      for (const part of workParts) {
+        if (part.bottom < passedUntil) { finishPart(part); continue; }
+        const previousOffset = Math.round(part.motion.offset * 1000), previousInk = part.ink.revision;
+        if (part.element.contains(activeElement)) {
           if (part.motion.waiting) part.motion.finish();
           else part.motion.pause(time);
           part.ink.finish();
         }
-        if (part.top - panel.scrollTop < height - 24 && part.bottom > panel.scrollTop) {
+        if (part.top - scrollTop < height - 24 && part.bottom > scrollTop) {
           const delay = part.motion.waiting ? stagger++ * 90 : 0;
           part.motion.begin(time, delay);
           part.ink.begin(time, delay);
         }
         moving = part.motion.sample(time, width, live.current.reducedMotion) || moving;
         moving = part.ink.sample(time, live.current.reducedMotion) || moving;
-        part.element.dataset.entryPhase = part.motion.phase;
-        part.element.dataset.inkPhase = part.ink.phase;
+        if (part.element.dataset.entryPhase !== part.motion.phase) part.element.dataset.entryPhase = part.motion.phase;
+        const inkPhase = part.ink.phase;
+        part.inkPhase = inkPhase;
+        if (part.element.dataset.inkPhase !== inkPhase) part.element.dataset.inkPhase = inkPhase;
+        if (previousOffset !== Math.round(part.motion.offset * 1000) || previousInk !== part.ink.revision) planner.invalidate('motion');
+        if ((!part.motion.done && !part.motion.waiting) || inkPhase === 'entering' || inkPhase === 'paused') activeParts.add(part);
+        else activeParts.delete(part);
       }
-      const offsets = parts.map(part => `${part.motion.offset.toFixed(3)}:${part.ink.key}`).join(':');
-      const key = `${panel.scrollTop}:${width}:${height}:${measurement}:${live.current.reducedMotion}:${offsets}`;
-      if (key === lastPaint && lastFocus === document.activeElement) return moving;
-      lastPaint = key;
-      lastFocus = document.activeElement;
-      const runs: OpticalRun[] = [];
-      const hits: Hit[] = [];
-      const bend = bendSettings(width, height), zone = bend.zone * height;
-      for (const word of words) {
-        const screenY = word.y - panel.scrollTop;
-        if (screenY < -70 || screenY > height + 70) {
+      const bend: BendSettings = streamBendSettings(width, height, variant, scrollTop), zone = bend.zone * height;
+      if (variant === 'liquid-settle' || variant === 'liquid-live' || variant === 'liquid-live-before') {
+        let motion = surfaceMotions.get(variant);
+        if (!motion) {
+          motion = new SettlingScrollNoiseMotion(live.current.motionSeed, variant !== 'liquid-settle', variant === 'liquid-live');
+          surfaceMotions.set(variant, motion);
+        }
+        const sample = motion.sample(scrollTop, time, live.current.reducedMotion || document.hidden);
+        bend.noisePhase = sample.phase;
+        moving = sample.moving || moving;
+      } else if (bend.perlin) {
+        liquidNoise ??= new ScrollNoiseMotion(live.current.motionSeed);
+        bend.noisePhase = liquidNoise.advance(scrollTop);
+      }
+      const plan = planner.frame({ scrollTop, width, height, reducedMotion: live.current.reducedMotion, variant,
+        surfacePhase: Math.round((bend.noisePhase ?? 0) * 1e6), focus: activeElement, canvasReady: canvasOwnsGlyphs });
+      if (!plan.surfaceChanged) return moving;
+      if (!plan.sourceChanged && drawn) {
+        const started = probe ? performance.now() : 0;
+        glass?.draw(cachedRuns, width, height, live.current.reducedMotion, bend, plan.fontRevision, plan);
+        if (probe) drawMs += performance.now() - started;
+        drawn.settings = bend;
+        return moving;
+      }
+      const runs = cachedRuns, hits = cachedHits;
+      runs.length = 0; hits.length = 0;
+      wordIndex.visible(scrollTop - 70, scrollTop + height + 70, visibleWords);
+      frameWordsVisited = wordIndex.visited;
+      nextWords.clear();
+      for (const word of visibleWords) nextWords.add(word);
+      for (const word of previousWords) {
+        if (!nextWords.has(word)) {
           if (word.profile !== 'outside') {
             // Offscreen words stay keyboard-focusable. Native scrolling brings
             // the very same button back into the optical reading band.
@@ -155,44 +249,56 @@ export function FlowStream(props: Props) {
             word.element.removeAttribute('data-flow-ink');
             word.profile = 'outside';
           }
-          continue;
         }
-        const projection = ribbonProjection({
+      }
+      const oldWords = previousWords; previousWords = nextWords; nextWords = oldWords;
+      for (const word of visibleWords) {
+        const screenY = word.y - scrollTop;
+        const projection = streamProjection({
           ...word, viewportWidth: width, viewportHeight: height,
-          scrollTop: panel.scrollTop, reducedMotion: live.current.reducedMotion,
-        });
-        const focused = word.element.contains(document.activeElement);
+          scrollTop, reducedMotion: live.current.reducedMotion,
+        }, variant);
+        const focused = word.element.contains(activeElement);
         const blur = focused || word.quiet ? 0 : projection.blur;
         const offset = word.part?.motion.offset || 0;
         const folded = !live.current.reducedMotion && !word.quiet &&
           (screenY - word.wordHeight * projection.scale / 2 < zone || screenY + word.wordHeight * projection.scale / 2 > height - zone);
-        const progress = word.part?.ink.progress(word.inkIndex, Array.from(word.text).length);
+        const progress = word.part && word.part.inkPhase !== 'settled' ? word.part.ink.progress(word.inkIndex, word.count, word.progress) : undefined;
         const inking = !live.current.reducedMotion && !!progress?.some(value => value < 1);
         word.element.toggleAttribute('data-flow-bent', folded);
         word.element.toggleAttribute('data-flow-ink', inking);
         const transform = offset ? `translateX(${offset.toFixed(3)}px) ${projection.transform}` : projection.transform;
-        if (!word.quiet) runs.push({
-          text: word.text, font: word.font, spacing: word.spacing, color: word.color,
-          x: width / 2 + (word.x - width / 2) * projection.scale + offset,
-          y: screenY, scale: projection.scale,
-          folded, opacity: projection.opacity, blur,
-          surface: word.part?.element.dataset.flowEntrance as OpticalRun['surface'] || 'fullText',
-          ...(inking && progress ? { ink: progress } : {}),
-          highlighted: focused || !!word.element.querySelector('[data-bend-hover]'),
-        });
-        for (const link of word.quiet ? [] : word.links) hits.push({ ...link,
-          x: width / 2 + (link.x - width / 2) * projection.scale + offset,
-          y: screenY + (link.y - word.y) * projection.scale,
-          width: link.width * projection.scale, height: link.height * projection.scale });
-        const profile = `${transform}:${blur.toFixed(3)}:${projection.opacity.toFixed(3)}`;
+        if (!word.quiet) {
+          const run = word.run;
+          run.x = width / 2 + (word.x - width / 2) * projection.scale + offset;
+          run.y = screenY; run.scale = projection.scale; run.folded = folded;
+          run.opacity = projection.opacity; run.blur = blur; run.fire = projection.fire;
+          run.ink = inking ? progress : undefined;
+          run.highlighted = focused || !!word.element.querySelector('[data-bend-hover]');
+          runs.push(run);
+          for (let i = 0; i < word.links.length; i++) {
+            const link = word.links[i]!, hit = word.hits[i]!;
+            hit.x = width / 2 + (link.x - width / 2) * projection.scale + offset;
+            hit.y = screenY + (link.y - word.y) * projection.scale;
+            hit.width = link.width * projection.scale; hit.height = link.height * projection.scale;
+            hits.push(hit);
+          }
+        }
+        // Invisible native glyphs retain their accessible buttons and layout;
+        // only the canvas paints them. Updating their filters/transforms too
+        // creates redundant paint and compositing work during fast scrolling.
+        const canvasGlyph = canvasOwnsGlyphs && (folded || inking);
+        const profile = canvasGlyph ? 'canvas' : `${transform}:${blur.toFixed(3)}:${projection.opacity.toFixed(3)}`;
         if (word.profile === profile) continue;
         word.profile = profile;
         word.element.style.transformOrigin = projection.origin;
-        word.element.style.transform = transform;
-        word.element.style.opacity = String(projection.opacity);
-        word.element.style.filter = blur ? `blur(${blur.toFixed(3)}px)` : 'none';
+        word.element.style.transform = canvasGlyph ? 'none' : transform;
+        word.element.style.opacity = canvasGlyph ? '1' : String(projection.opacity);
+        word.element.style.filter = canvasGlyph || !blur ? 'none' : `blur(${blur.toFixed(3)}px)`;
       }
-      glass?.draw(runs, width, height, live.current.reducedMotion);
+      const started = probe ? performance.now() : 0;
+      glass?.draw(runs, width, height, live.current.reducedMotion, bend, plan.fontRevision, plan);
+      if (probe) drawMs += performance.now() - started;
       drawn = { settings: bend, hits };
       return moving;
     };
@@ -201,9 +307,12 @@ export function FlowStream(props: Props) {
       if (!handle && !disposed) handle = requestAnimationFrame(tick);
     };
     const tick = (time: number) => {
+      const started = probe ? performance.now() : 0;
+      drawMs = 0;
       handle = 0;
+      if (pendingMeasure) remeasure(pendingMeasure);
       const p = live.current;
-      if (!p.paused && !p.reducedMotion && !document.hidden && p.entries.length) {
+      if (!p.paused && p.autoScroll !== false && !p.reducedMotion && !document.hidden && p.entries.length) {
         const elapsed = last ? Math.min(48, time - last) : 0;
         // Slow enough to read complete paragraphs. Preserve subpixel movement
         // even in browsers which quantize scrollTop to device pixels.
@@ -217,6 +326,12 @@ export function FlowStream(props: Props) {
         schedule();
       } else last = 0;
       if (paint(time)) schedule();
+      if (probe) {
+        const cpuMs = performance.now() - started;
+        probe({ time, cpuMs, totalWords: words.length, visibleWords: cachedRuns.length,
+          indexedWordsVisited: frameWordsVisited, activeParts: activeParts.size, visibleParts: visibleParts.length,
+          scrollTop: panel.scrollTop, drawMs, sceneMs: cpuMs - drawMs, layout: { ...layoutProbe }, render: glass?.diagnostics });
+      }
     };
     optics.current = schedule;
     entrance.current = {
@@ -233,11 +348,18 @@ export function FlowStream(props: Props) {
       }
       return { x, y };
     };
-    const remeasure = () => {
-      measurement++;
+    const remeasure = (reason = 'content') => {
+      const started = probe ? performance.now() : 0;
+      pendingMeasure = null;
+      // Materialize the previous layout's lazy finish boundary before content
+      // moves or new paragraphs are inserted. This is layout work, not RAF work.
+      partIndex.finishBefore(passedUntil, finishPart);
+      passedUntil = panel.scrollTop;
+      planner.invalidate('layout');
+      settledAll = false;
       width = content.clientWidth;
       const byElement = new Map<HTMLElement, Part>();
-      parts = Array.from(content.querySelectorAll<HTMLElement>('[data-flow-entrance]')).map(element => {
+      parts = Array.from(content.querySelectorAll<HTMLElement>('[data-flow-entrance]')).map((element, order) => {
         let motion = motions.get(element);
         if (!motion) {
           motion = new EntranceMotion(Number(element.dataset.entryOrder) % 2 ? 1 : -1);
@@ -246,55 +368,91 @@ export function FlowStream(props: Props) {
         let ink = inks.get(element);
         if (!ink) { ink = new InkMotion(); inks.set(element, ink); }
         const { y } = positionOf(element);
-        const part = { element, top: y - element.offsetHeight / 2, bottom: y + element.offsetHeight / 2, motion, ink };
+        const part = partRecords.get(element) ?? { element, top: 0, bottom: 0, order, motion, ink, inkPhase: ink.phase };
+        part.top = y - element.offsetHeight / 2; part.bottom = y + element.offsetHeight / 2; part.order = order;
         byElement.set(element, part);
         return part;
       });
-      words = Array.from(content.querySelectorAll<HTMLElement>('[data-flow-optic]')).map(element => {
+      partRecords.clear(); activeParts.clear();
+      for (const part of parts) partRecords.set(part.element, part);
+      words = Array.from(content.querySelectorAll<HTMLElement>('[data-flow-optic]')).map((element, order) => {
         element.style.removeProperty('visibility');
         // offset geometry ignores our transforms and remains stable while paused.
         const { x, y } = positionOf(element);
         // x is panel-relative; its optical axis is the viewport center.
         const style = getComputedStyle(element);
-        return { element, x, y, wordWidth: element.offsetWidth, profile: '',
+        const text = element.textContent || '';
+        const previous = wordRecords.get(element);
+        const run = previous?.run ?? { id: ++nextWordId, text: '', font: '', spacing: '', color: '', x, y, scale: 1 };
+        const links = Array.from(element.querySelectorAll<HTMLElement>('button')).map(button => ({
+          element: button, ...positionOf(button), width: button.offsetWidth, height: button.offsetHeight,
+        }));
+        const word: Word = Object.assign(previous ?? {}, { element, x, y, top: y, bottom: y, order,
+          wordWidth: element.offsetWidth, profile: '', count: Array.from(text).length,
           wordHeight: element.offsetHeight, inkIndex: 0,
-          text: element.textContent || '', font: `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`,
+          text, font: `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`,
           spacing: style.letterSpacing === 'normal' ? '0px' : style.letterSpacing,
           color: style.color, quiet: element.dataset.flowOptic === 'quiet',
-          links: Array.from(element.querySelectorAll<HTMLElement>('button')).map(button => ({
-            element: button, ...positionOf(button), width: button.offsetWidth, height: button.offsetHeight,
-          })),
-          part: byElement.get(element.closest<HTMLElement>('[data-flow-entrance]')!) };
+          links, hits: links.map(link => ({ ...link })), run, progress: previous?.progress ?? [],
+          part: byElement.get(element.closest<HTMLElement>('[data-flow-entrance]')!) });
+        Object.assign(run, { text, font: word.font, spacing: word.spacing, color: word.color, width: word.wordWidth,
+          rowId: Math.round(y * 2), surface: word.part?.element.dataset.flowEntrance as OpticalRun['surface'] || 'fullText' });
+        wordRecords.set(element, word);
+        return word;
       });
-      const textByPart = new Map<Part, string>();
+      const textByPart = new Map<Part, { text: string; count: number }>();
       for (const word of words) if (word.part) {
-        const prefix = textByPart.get(word.part) || '';
-        word.inkIndex = Array.from(prefix).length;
-        textByPart.set(word.part, prefix + word.text);
+        const paragraph = textByPart.get(word.part) ?? { text: '', count: 0 };
+        word.inkIndex = paragraph.count;
+        paragraph.text += word.text; paragraph.count += word.count;
+        textByPart.set(word.part, paragraph);
       }
-      for (const part of parts) part.ink.sync(textByPart.get(part) || '');
+      for (const part of parts) {
+        part.ink.sync(textByPart.get(part)?.text || ''); part.inkPhase = part.ink.phase;
+        if (part.element.dataset.entryPhase !== part.motion.phase) part.element.dataset.entryPhase = part.motion.phase;
+        if (part.element.dataset.inkPhase !== part.inkPhase) part.element.dataset.inkPhase = part.inkPhase;
+        if ((!part.motion.done && !part.motion.waiting) || part.inkPhase === 'entering' || part.inkPhase === 'paused') activeParts.add(part);
+      }
+      partIndex.setLayout(parts); wordIndex.setLayout(words);
+      const entriesByKey = new Map(live.current.entries.map(entry => [entryKey(entry), entry]));
+      articleScene.current.setLayout(Array.from(content.querySelectorAll<HTMLElement>('[data-flow-frame]')).flatMap((element, order) => {
+        const entry = entriesByKey.get(element.dataset.streamKey!);
+        const { y } = positionOf(element);
+        return entry ? [{ top: y - element.offsetHeight / 2, bottom: y + element.offsetHeight / 2, order, entry }] : [];
+      }));
       width = panel.clientWidth;
+      measuredSize = layoutSize();
+      if (probe) {
+        layoutProbe.count++; layoutProbe.lastMs = performance.now() - started;
+        layoutProbe.totalMs += layoutProbe.lastMs; layoutProbe.reason = reason;
+      }
       schedule();
     };
     measure.current = remeasure;
-    const resize = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(remeasure) : null;
+    // Font and size notifications can describe the same layout in one frame.
+    // Keep content/restoration measurement synchronous, and fold notifications
+    // into the next paint without repeating the full history traversal.
+    const resize = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => {
+      if (layoutSize() !== measuredSize) { pendingMeasure ??= 'resize'; schedule(); }
+    }) : null;
     resize?.observe(content);
     resize?.observe(panel);
-    document.fonts?.addEventListener('loadingdone', remeasure);
+    const fontChanged = () => { planner.invalidate('font'); pendingMeasure = 'font'; schedule(); };
+    document.fonts?.addEventListener('loadingdone', fontChanged);
     // Verified FontFaces are loaded before document.fonts.add(), so adding a
     // late ancestor's face need not emit loadingdone or change line geometry.
     // The installed family list is the typography contract used by native text.
     let classicFamily = document.documentElement.style.getPropertyValue('--flow-classic-family');
     const fontStyles = new MutationObserver(() => {
       const next = document.documentElement.style.getPropertyValue('--flow-classic-family');
-      if (next !== classicFamily) { classicFamily = next; remeasure(); }
+      if (next !== classicFamily) { classicFamily = next; fontChanged(); }
     });
     fontStyles.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
     const onFocus = () => { entrance.current.pause(); };
     panel.addEventListener('focusin', onFocus);
     panel.addEventListener('focusout', schedule);
     document.addEventListener('visibilitychange', schedule);
-    if (glassRef.current) glass = new StreamGlass(glassRef.current, () => { measurement++; schedule(); });
+    if (glassRef.current) glass = new StreamGlass(glassRef.current, () => { planner.invalidate('restore'); schedule(); }, !!probe);
     const unbindBend = bindBendInteraction(panel, (clientX, clientY) => {
       if (!drawn || live.current.reducedMotion || glassRef.current?.dataset.optics !== 'ready') return undefined;
       const rect = panel.getBoundingClientRect(), shape = drawn.settings;
@@ -307,14 +465,14 @@ export function FlowStream(props: Props) {
       const hit = drawn.hits.find(hit => hit.element.isConnected &&
         Math.abs(point.x - hit.x) <= hit.width / 2 && Math.abs(point.y - hit.y) <= hit.height / 2);
       return hit?.element || null;
-    }, () => { measurement++; schedule(); });
-    remeasure();
+    }, () => { planner.invalidate('interaction'); schedule(); });
+    remeasure('mount');
     return () => {
       disposed = true;
       cancelAnimationFrame(handle);
       resize?.disconnect();
       fontStyles.disconnect();
-      document.fonts?.removeEventListener('loadingdone', remeasure);
+      document.fonts?.removeEventListener('loadingdone', fontChanged);
       panel.removeEventListener('focusin', onFocus);
       panel.removeEventListener('focusout', schedule);
       document.removeEventListener('visibilitychange', schedule);
@@ -339,34 +497,43 @@ export function FlowStream(props: Props) {
     }
     previousFlow.current = { paused: props.paused, revision: props.restore.revision };
     optics.current();
-  }, [props.paused, props.reducedMotion, props.restore.revision]);
+  }, [props.paused, props.reducedMotion, props.restore.revision, props.motionVariant]);
   const count = props.entries.length;
   useEffect(() => {
     if (count) live.current.onVisualReady();
   }, [count]);
 
   const pause = () => {
-    intended.current = true;
+    intended.current = false;
     entrance.current.pause();
     props.onPause();
+  };
+  const resumeFromInput = (target: EventTarget | null) => {
+    const selection = window.getSelection();
+    if (selection && !selection.isCollapsed && (panelRef.current?.contains(selection.anchorNode) || panelRef.current?.contains(selection.focusNode))) return;
+    if (target instanceof Element && target.closest('textarea, input, select, [contenteditable="true"]')) return;
+    intended.current = true;
+    if (!props.onResume) { entrance.current.pause(); props.onPause(); return; }
+    if (props.reducedMotion) return;
+    entrance.current.resume();
+    props.onResume();
   };
   function onScroll() {
     const panel = panelRef.current;
     if (!panel) return;
     optics.current();
     props.onScroll(panel.scrollTop);
-    const articles = Array.from(panel.querySelectorAll<HTMLElement>('[data-flow-frame]'));
     const edge = panel.scrollTop + panel.clientHeight * .38;
-    const visible = articles.filter(article => article.offsetTop <= edge).at(-1) || articles[0];
-    const entry = props.entries.find(item => entryKey(item) === visible?.dataset.streamKey);
-    const editing = panel.querySelector('textarea:focus, input:focus');
+    const entry = articleScene.current.atOrBefore(edge)?.entry;
+    const focused = document.activeElement;
+    const editing = focused instanceof Element && panel.contains(focused) && focused.matches('textarea, input');
     if (entry && entryKey(entry) !== props.activeKey && !editing && !props.sourceOpen && !notesFor) props.onRead(entry);
     if ((!intended.current && props.paused) || editing || props.pending || !props.canContinue) return;
-    const tail = articles.at(-1);
+    const tail = articleScene.current.last;
     if (!tail) return;
     const cursor = props.entries.at(-1);
     const key = cursor ? entryKey(cursor) : '';
-    const gap = tail.offsetTop + tail.offsetHeight - panel.scrollTop - panel.clientHeight * .82;
+    const gap = tail.bottom - panel.scrollTop - panel.clientHeight * .82;
     if (gap < panel.clientHeight * .6 && preparedAt.current !== key) {
       preparedAt.current = key;
       props.onPrepareNext();
@@ -382,41 +549,53 @@ export function FlowStream(props: Props) {
     ? props.entries.find(item => item.frame.id === props.connecting?.frameId && (!props.connecting.pathId || item.pathId === props.connecting.pathId))
     : props.entries.at(-1);
 
-  return <section className={styles.stream} aria-label="连续经文流" data-flow-stream data-paused={props.paused} data-pending={props.pending}>
+  return <section className={styles.stream} aria-label="连续经文流" data-flow-stream data-motion-variant={props.motionVariant || 'current'} data-paused={props.paused} data-pending={props.pending}>
     <canvas ref={glassRef} className={styles.streamGlass} data-flow-glass aria-hidden="true" />
     <div ref={panelRef} className={styles.streamViewport} tabIndex={0} aria-label="经文阅读" data-flow-viewport
-      onWheel={pause} onTouchMove={pause} onPointerDown={() => { entrance.current.pause(); props.onPause(); }} onScroll={onScroll}
+      aria-description={props.onResume ? '点击停驻阅读，滚轮、滑动或翻页键继续流动。' : undefined}
+      onWheel={event => { if (!event.ctrlKey && event.deltaY) resumeFromInput(event.target); }}
+      onTouchMove={event => { if (event.touches.length === 1) resumeFromInput(event.target); }}
+      onPointerDown={event => {
+        if (event.button !== 0) return;
+        pointer.current = { x: event.clientX, y: event.clientY, moved: false };
+        pause();
+      }}
+      onPointerMove={event => {
+        if (pointer.current && Math.hypot(event.clientX - pointer.current.x, event.clientY - pointer.current.y) > 6) pointer.current.moved = true;
+      }}
+      onPointerCancel={() => { pointer.current = null; }}
+      onClick={event => {
+        if (pointer.current?.moved) { pointer.current = null; return; }
+        pointer.current = null;
+        if (event.target instanceof Element && !event.target.closest('button, a, input, textarea, select, [contenteditable="true"]')) pause();
+      }}
+      onScroll={onScroll}
       onKeyDown={event => {
-        if (!event.altKey && !event.ctrlKey && !event.metaKey) {
-          entrance.current.pause();
-          props.onPause();
-          if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'End', 'Home', ' '].includes(event.key)) intended.current = true;
-        }
+        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+        const editing = event.target instanceof Element && event.target.closest('input, textarea, select, [contenteditable="true"]');
+        const activating = event.key === ' ' && event.target instanceof Element && event.target.closest('button, a');
+        if (!editing && !activating && ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'End', 'Home', ' '].includes(event.key)) resumeFromInput(event.target);
+        else pause();
       }}>
       <div ref={contentRef} className={styles.streamContent}>
-        {props.entries.map((entry, entryIndex) => {
+        {contentEntries.map(({ entry, select }, entryIndex) => {
           const key = entryKey(entry), item = entry.frame, current = key === props.activeKey;
           const connecting = props.connecting?.pathId && props.connecting.pathId !== entry.pathId ? null : props.connecting;
           const bookmarked = props.bookmarkKeys.has(quoteKey(item));
-          const select = (selection: FlowSelection & { label: string }) => {
-            intended.current = false;
-            props.onRead(entry);
-            props.onBranch({ ...selection, pathId: entry.pathId });
-          };
           return <article key={key} data-flow-frame={item.id} data-flow-path={entry.pathId} data-stream-key={key} data-flow-ready={item.ready !== false}
             className={styles.streamNode} aria-label={`${item.source} · ${item.chapterLabel}`}>
             <blockquote className={styles.streamQuote} data-flow-heading data-flow-entrance="quote"
               data-entry-order={entryIndex * 3} data-entry-side={entryIndex % 2 ? 'right' : 'left'}>
-              <LinkedText optical frame={item} surface="quote" onSelect={select} connecting={connecting} />
+              <RetainedLinkedText optical frame={item} surface="quote" onSelect={select} connecting={connecting} />
             </blockquote>
             {item.meaning && <div className={styles.streamMeaning} data-flow-surface="meaning" aria-label="释义"
               data-flow-entrance="meaning" data-entry-order={entryIndex * 3 + 1} data-entry-side={entryIndex % 2 ? 'left' : 'right'}>
-              <p><LinkedText optical frame={item} surface="meaning" onSelect={select} connecting={connecting} /></p>
+              <p><RetainedLinkedText optical frame={item} surface="meaning" onSelect={select} connecting={connecting} /></p>
             </div>}
             {(item.ready !== false || item.settled?.reflection) && item.reflection && <div className={styles.streamReflection} data-flow-surface="reflection"
               aria-label="此刻回响" data-flow-entrance="reflection" data-entry-order={entryIndex * 3 + (item.meaning ? 2 : 1)}
               data-entry-side={(entryIndex + (item.meaning ? 0 : 1)) % 2 ? 'right' : 'left'}>
-              <p><LinkedText optical frame={item} surface="reflection" onSelect={select} connecting={connecting} /></p>
+              <p><RetainedLinkedText optical frame={item} surface="reflection" onSelect={select} connecting={connecting} /></p>
             </div>}
             <StreamActions source={`${item.source} · ${item.chapterLabel}`} sourceOpen={current && props.sourceOpen}
               bookmarked={bookmarked} notesOpen={current && (notesFor === key || notesFor === item.id)}
@@ -426,7 +605,7 @@ export function FlowStream(props: Props) {
               onNotes={() => { props.onRead(entry); setNotesFor(notesFor === key || notesFor === item.id ? null : key); }} />
             {current && props.sourceOpen && <div className={styles.streamSourceText} data-flow-source>
               <p className={styles.sectionLabel}>{item.source} · {item.chapterLabel} · 完整原文</p>
-              <p className={styles.fullSource}><LinkedText optical frame={item} surface="fullText" onSelect={select} connecting={connecting} /></p>
+              <p className={styles.fullSource}><RetainedLinkedText optical frame={item} surface="fullText" onSelect={select} connecting={connecting} /></p>
               {entry.kind === 'remote' && <p className={styles.streamProvenance}>原文来自六经资料库；释义与回响由 AI 生成，供参照。</p>}
             </div>}
             {current && (notesFor === key || notesFor === item.id) && <NotesPanel key={key} draftKey={JSON.stringify([entry.chainId, item.id])}

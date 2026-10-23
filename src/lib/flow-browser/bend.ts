@@ -3,6 +3,18 @@ export type BendSettings = {
   width: number; height: number; zone: number; rounding: number; angle: number; perspective: number;
   // Mobile lateral expansion shares the same surface depth and inverse map.
   flare?: number;
+  // Local capillary deformation, shared by the optical pass and its inverse.
+  adhesion?: number;
+  // Material coordinates make the irregular tension stable during scrubbing.
+  adhesionScroll?: number;
+  // A shared height field supplies local refraction, reflection and caustics.
+  liquid?: boolean;
+  caustics?: number;
+  // Sparse content-stable contacts across the whole upper/lower fold.
+  contacts?: boolean;
+  // A third noise dimension advances while scrolling, including in reverse.
+  perlin?: boolean;
+  noisePhase?: number;
 };
 
 export const { bendSettings, bendSourcePoint, bendDisplayPoint } = require('../../../miniprogram/flow/stream-bend') as {
