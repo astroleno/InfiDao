@@ -1,4 +1,5 @@
 import { StreamGlyphCache } from '@/lib/flow-browser/stream-glyph-cache';
+import { createHash } from 'node:crypto';
 import { streamBendSettings } from '@/lib/flow-browser/motion-profile';
 import type { OpticalRun } from '@/lib/flow-browser/stream-glass';
 
@@ -38,6 +39,62 @@ function harness(textureSize = 4096, profile = false) {
     new Map(runs.map(item => [Math.round(item.y * 2), { left: 165, right: 225 }])), 0, Math.round(width * 1.5), changed);
   return { gl, cache, draw };
 }
+
+test('vertex uploads retain the established geometry and float32 conversion', () => {
+  const { gl, cache, draw } = harness();
+  const uploads: string[] = [];
+  gl.bufferSubData.mockImplementation((_target: unknown, _offset: number, data: Float32Array) => {
+    uploads.push(createHash('sha256').update(new Uint8Array(data.buffer, data.byteOffset, data.byteLength)).digest('hex'));
+  });
+  draw();
+  draw([{ ...run, x: 196.25, y: 121.125, opacity: .4, blur: 3, ink: [.2, .8] }]);
+  draw([{ ...run, highlighted: true, blur: 0 }]);
+  // Frozen before changing the numeric staging path: fractional origins,
+  // partially revealed ink metadata and focused lettering, in draw order.
+  expect(uploads).toEqual([
+    'bbb18bd8fd994655c2121f244bdc421616c8ea049ccf944e28b9911cae681884',
+    '4034bfc11281524e29f9654d57e46c06d2843fa86db254d38e07d162d18653a0',
+    'ca84fd2c4d015812f70bf85f591d21cee013bdd6643c335fedb052dbbbca00a0',
+    'd1b68c0640f477e97e299dcb3d48b9ba6ce53b63ab0a98020121c9f223537e67',
+    'dcfe9cdabda02b123a024d951d638b4ef1dbe2de20530c25d4eaf62f82ecb27a',
+    '13749482948218161327db9df39565365edd570bc95531a62ac73c3a7517d06e',
+    '0e67c2325f749e6e220c965a6b00540a43abe98162cd8938e171269e8918c1c6',
+    'f8b006e1b386e4e337ba3c8d6525f6bafc7cf94b40d014587c5b25d2923a0474',
+    '94d1539d83429c1f026a3da4e8c16a4a5882209c69aa554d3ffedca22cb7ccd1',
+    '864b0715cd1d12af0c543ea54634d0ae405ee7f8bb7887ef36f866a13f6a14bb',
+    'f9c45d7ab3bc2bed71aec142d0545ffad28367cd7eef069675e8382911568ca4',
+    '80f798d4b4cfa9d9d25c3ec2aa823a25813e382e6bd084d3189a883fa0bc6224',
+    '4f930b225ba99de320c1eb86a7490e4d14640314eea8b03c316e21b26f9e492f',
+    '7ea6ae88eebdb0cdc4b839c32ebba8dd5750f3f97190bf1d950b8b3638b6a0a8',
+    '64915bec5464170ed9aaf57932c48f3158c134805d8a5d3af2452105dfa3d55e',
+    '1c9f48090f62bc91428071f7ed22b4705f5360c080ba67badc43a0f412bc4502',
+    'e81d08af3b5f7cad795cfa70f8a6ce7c1ef49c5c497ad46ad7c4005c76562207',
+    '038e0a9910a2e5aedf818c5b2b526bbf6bf16228c9b3b1c4b1e458c31e537ad4',
+    '36e4cbd8ad2ccd0407369fdf525b8ba91479e5d83e7d36582082008e698c0e21',
+  ]);
+  cache.destroy();
+});
+
+test('vertex storage survives equal and smaller batches and grows only when needed', () => {
+  const { gl, cache, draw } = harness();
+  const vertices = () => (cache as unknown as { vertices: { data: Float32Array } }).vertices.data;
+  draw();
+  const first = vertices();
+  gl.bufferData.mockClear();
+  draw();
+  expect(vertices()).toBe(first);
+  expect(gl.bufferData).not.toHaveBeenCalled();
+  draw(Array.from({ length: 12 }, (_, index) => ({ ...run, y: 120 + index * 45 })));
+  const expanded = vertices();
+  expect(expanded.length).toBeGreaterThan(first.length);
+  expect(Math.log2(expanded.length)).toBe(Math.floor(Math.log2(expanded.length)));
+  gl.bufferData.mockClear();
+  draw();
+  expect(vertices()).toBe(expanded);
+  expect(gl.bufferData).not.toHaveBeenCalled();
+  cache.destroy();
+  expect(vertices().byteLength).toBe(0);
+});
 
 test('scroll, opacity, blur and ink progress reuse glyph pixels at twice the existing backing density', () => {
   const { gl, cache, draw } = harness();

@@ -15,6 +15,7 @@ type Row = { runs: OpticalRun[]; first: OpticalRun; cell: Cell; color: number[];
 type Tile = Rect & { row: Row; mode: number; sigma: number; screen: Rect; gradient: number };
 type Measure = (run: OpticalRun, text?: string) => TextMetrics;
 type Program = { program: WebGLProgram; attributes: number[]; uniforms: Record<string, WebGLUniformLocation | null> };
+type Vertices = { data: Float32Array; length: number };
 
 export type GpuGlyphSources = {
   source: WebGLTexture;
@@ -151,12 +152,28 @@ function makeProgram(gl: WebGLRenderingContext, fragment: string): Program {
 }
 
 const CORNERS = [[0, 0], [0, 1], [1, 0], [1, 0], [0, 1], [1, 1]] as const;
-function quad(data: number[], rect: Rect, uv: Rect, bounds: number[], params: number[], scene: Rect, row: number[], color: number[]) {
-  for (const [x, y] of CORNERS) {
-    data.push(rect.x + x! * rect.width, rect.y + y! * rect.height,
-      uv.x + x! * uv.width, uv.y + y! * uv.height, ...bounds, ...params,
-      scene.x + x! * scene.width, scene.y + y! * scene.height, ...row, ...color);
+function quad(vertices: Vertices, rect: Rect, uv: Rect, bounds: number[], params: number[], scene: Rect, row: number[], color: number[]) {
+  const required = vertices.length + CORNERS.length * STRIDE;
+  if (vertices.data.length < required) {
+    const data = new Float32Array(2 ** Math.ceil(Math.log2(Math.max(1024, required))));
+    data.set(vertices.data.subarray(0, vertices.length)); vertices.data = data;
   }
+  const data = vertices.data;
+  let at = vertices.length;
+  for (let index = 0; index < CORNERS.length; index++) {
+    const corner = CORNERS[index]!, x = corner[0], y = corner[1];
+    // These are the original values, converted once at the same Float32
+    // boundary as the upload. Retain storage instead of rebuilding/spreading
+    // a number array for every batch of every moving frame.
+    data[at++] = rect.x + x * rect.width; data[at++] = rect.y + y * rect.height;
+    data[at++] = uv.x + x * uv.width; data[at++] = uv.y + y * uv.height;
+    data[at++] = bounds[0]!; data[at++] = bounds[1]!; data[at++] = bounds[2]!; data[at++] = bounds[3]!;
+    data[at++] = params[0]!; data[at++] = params[1]!; data[at++] = params[2]!; data[at++] = params[3]!;
+    data[at++] = scene.x + x * scene.width; data[at++] = scene.y + y * scene.height;
+    data[at++] = row[0]!; data[at++] = row[1]!; data[at++] = row[2]!; data[at++] = row[3]!;
+    data[at++] = color[0]!; data[at++] = color[1]!; data[at++] = color[2]!; data[at++] = color[3]!;
+  }
+  vertices.length = at;
 }
 
 /** Rasterize lettering only when its font/layout changes. Every moving frame
@@ -186,8 +203,8 @@ export class StreamGlyphCache {
   private horizontal: Program[] = [];
   private vertical: Program[] = [];
   private metadata: Program;
-  private vertices: number[] = [];
-  private vertexData = new Float32Array(0);
+  private vertices: Vertices = { data: new Float32Array(0), length: 0 };
+  private vertexCapacity = 0;
   private counters = { frames: 0, sourceFrames: 0, rasterizations: 0, glyphHits: 0, rowHits: 0, rowMisses: 0,
     evictions: 0, fontInvalidations: 0, allocations: 0, uploadBytes: 0, vertexBytes: 0, gradientUploads: 0 };
   // Nested CPU timings: rows includes newGlyphs, newCells and atlasUpload.
@@ -197,7 +214,7 @@ export class StreamGlyphCache {
   get diagnostics() {
     return { ...this.counters, atlasBytes: this.pages.length * this.pageSize ** 2 * 4, glyphBytes: this.glyphBytes,
       targetBytes: [...this.targets.values()].reduce((total, target) => total + target.width * target.height * 4, 0),
-      cells: this.cells.size, glyphs: this.glyphs.size, rows: this.retainedRows.size,
+      cells: this.cells.size, glyphs: this.glyphs.size, rows: this.retainedRows.size, vertexCapacityBytes: this.vertices.data.byteLength,
       ...(this.profile ? { timings: { ...this.timings } } : {}) };
   }
 
@@ -462,17 +479,16 @@ export class StreamGlyphCache {
     return rows;
   }
 
-  private submit(program: Program, vertices: number[], target: Target) {
+  private submit(program: Program, vertices: Vertices, target: Target) {
     if (!vertices.length) return;
     const gl = this.gl;
     gl.useProgram(program.program); gl.uniform2f(program.uniforms.target!, target.width, target.height);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-    if (this.vertexData.length < vertices.length) {
-      this.vertexData = new Float32Array(2 ** Math.ceil(Math.log2(Math.max(1024, vertices.length))));
-      gl.bufferData(gl.ARRAY_BUFFER, this.vertexData.byteLength, gl.DYNAMIC_DRAW);
+    if (this.vertexCapacity < vertices.data.byteLength) {
+      this.vertexCapacity = vertices.data.byteLength;
+      gl.bufferData(gl.ARRAY_BUFFER, this.vertexCapacity, gl.DYNAMIC_DRAW);
     }
-    this.vertexData.set(vertices);
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.vertexData.subarray(0, vertices.length));
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, vertices.data.subarray(0, vertices.length));
     this.counters.vertexBytes += vertices.length * 4;
     for (let index = 0; index < this.maxAttributes; index++) gl.disableVertexAttribArray(index);
     let offset = 0;
@@ -653,6 +669,7 @@ export class StreamGlyphCache {
     this.programs.forEach(program => gl.deleteProgram(program.program)); this.programs = [];
     if (this.buffer) gl.deleteBuffer(this.buffer);
     if (this.gradient) gl.deleteTexture(this.gradient);
+    this.vertices.data = new Float32Array(0); this.vertices.length = 0; this.vertexCapacity = 0;
     this.raster.width = 0; this.raster.height = 0;
   }
 }
