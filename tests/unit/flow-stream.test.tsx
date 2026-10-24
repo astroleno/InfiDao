@@ -518,6 +518,47 @@ test.each(['current', 'liquid-live'] as const)('streamed suffixes keep glyph pro
   }
 });
 
+test.each([false, true])('manual fast=%s completes visible ink while slow input retains the reveal and water profile', async fast => {
+  let clock = 0, serial = 0;
+  const callbacks = new Map<number, FrameRequestCallback>();
+  const raf = jest.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => { callbacks.set(++serial, callback); return serial; });
+  const cancel = jest.spyOn(window, 'cancelAnimationFrame').mockImplementation(id => { callbacks.delete(id); });
+  const now = jest.spyOn(performance, 'now').mockImplementation(() => clock);
+  const view = render(<FlowStream {...props} reducedMotion={false} onResume={jest.fn()} />);
+  const panel = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+  Object.defineProperty(panel, 'clientHeight', { value: 844 });
+  Object.defineProperty(panel, 'clientWidth', { value: 390 });
+  const step = (time: number) => act(() => {
+    clock = time;
+    const pending = [...callbacks.values()]; callbacks.clear(); pending.forEach(callback => callback(time));
+  });
+  try {
+    view.container.querySelectorAll<HTMLElement>('[data-flow-entrance], [data-flow-optic]').forEach(element => {
+      Object.defineProperty(element, 'offsetTop', { configurable: true, value: 200 });
+      Object.defineProperty(element, 'offsetHeight', { configurable: true, value: 50 });
+    });
+    await act(async () => { document.documentElement.style.setProperty('--flow-classic-family', String(++serial)); });
+    step(0); step(100);
+    const part = view.container.querySelector('[data-flow-entrance]')!;
+    expect(part).toHaveAttribute('data-ink-phase', 'entering');
+    const word = screen.getByRole('button', { name: '止' });
+    fireEvent.wheel(panel, { deltaY: fast ? 100 : 2 });
+    panel.scrollTop = fast ? 40 : 2; fireEvent.scroll(panel); step(116);
+    expect(part).toHaveAttribute('data-ink-phase', fast ? 'settled' : 'entering');
+    expect(part).toHaveAttribute('data-entry-phase', 'entering');
+    expect(screen.getByRole('button', { name: '止' })).toBe(word);
+    const drawn = jest.mocked(StreamGlass).mock.results.at(-1)!.value.draw as jest.Mock;
+    const call = drawn.mock.calls.at(-1)!;
+    expect(call[4]).toMatchObject({ liquid: true, contacts: true, perlin: true });
+    const progress = (call[0] as Array<{ ink?: number[] }>).flatMap(run => run.ink || [1]);
+    if (fast) expect(progress.every(value => value === 1)).toBe(true);
+    else expect(progress.some(value => value > 0 && value < 1)).toBe(true);
+  } finally {
+    view.unmount(); raf.mockRestore(); cancel.mockRestore(); now.mockRestore();
+    document.documentElement.style.removeProperty('--flow-classic-family');
+  }
+});
+
 test('switching the liquid candidate preserves entrance, ink progress, pause and the mounted reader', async () => {
   let clock = 0, serial = 0;
   const callbacks = new Map<number, FrameRequestCallback>();

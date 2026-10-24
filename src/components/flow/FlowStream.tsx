@@ -10,7 +10,7 @@ import { ScrollNoiseMotion, SettlingScrollNoiseMotion } from '@/lib/flow-browser
 import { StreamGlass, type OpticalRun } from '@/lib/flow-browser/stream-glass';
 import { StreamSceneIndex } from '@/lib/flow-browser/stream-scene';
 import { StreamFramePlanner } from '@/lib/flow-browser/stream-frame-plan';
-import { StreamScrollMotion } from '@/lib/flow-browser/stream-scroll-motion';
+import { StreamManualScroll, StreamScrollMotion } from '@/lib/flow-browser/stream-scroll-motion';
 import { bendSourcePoint, bindBendInteraction, type BendSettings } from '@/lib/flow-browser/bend';
 import type { PersonalNote } from '@/lib/flow-browser/storage';
 import { LinkedText } from './LinkedText';
@@ -77,6 +77,7 @@ export function FlowStream(props: Props) {
   const continuedAt = useRef('');
   const [notesFor, setNotesFor] = useState<string | null>(null);
   const [scrollMotion] = useState(() => new StreamScrollMotion(props.restore.top));
+  const [manualScroll] = useState(() => new StreamManualScroll());
   const [meaningFor, setMeaningFor] = useState<string | null>(null);
   const meaningResume = useRef(false);
   const meaningPress = useRef<{ timer: number; key: string; resume: boolean; top: number; trigger: HTMLElement | null } | null>(null);
@@ -128,13 +129,14 @@ export function FlowStream(props: Props) {
     }
     const limit = Math.max(panel.scrollTop, panel.scrollHeight - panel.clientHeight);
     scrollMotion.reset(Math.max(0, Math.min(limit, wantedTop)), panel.scrollTop);
+    manualScroll.reset();
     if (contentRef.current) {
       const remainder = scrollMotion.position(panel.scrollTop) - panel.scrollTop;
       contentRef.current.style.translate = remainder ? `0 ${-remainder}px` : '';
     }
     intended.current = false;
     measure.current();
-  }, [props.restore, scrollMotion]);
+  }, [props.restore, scrollMotion, manualScroll]);
 
   useEffect(() => { if (props.notesFrameId) setNotesFor(props.notesFrameId); }, [props.notesFrameId]);
 
@@ -151,6 +153,7 @@ export function FlowStream(props: Props) {
     const cancel = () => {
       if (meaningPress.current) window.clearTimeout(meaningPress.current.timer);
       meaningPress.current = null;
+      manualScroll.reset();
     };
     window.addEventListener('blur', cancel);
     document.addEventListener('visibilitychange', cancel);
@@ -159,7 +162,7 @@ export function FlowStream(props: Props) {
       window.removeEventListener('blur', cancel);
       document.removeEventListener('visibilitychange', cancel);
     };
-  }, []);
+  }, [manualScroll]);
 
   useLayoutEffect(() => { measure.current(); }, [props.entries, props.sourceOpen, notesFor]);
 
@@ -191,6 +194,7 @@ export function FlowStream(props: Props) {
     const probe = (window as Window & { __INFIDAO_FLOW_RENDER_PROBE__?: (frame: Record<string, unknown>) => void }).__INFIDAO_FLOW_RENDER_PROBE__;
     const layoutProbe = { count: 0, totalMs: 0, lastMs: 0, reason: '' };
     let drawMs = 0;
+    let fastManualScroll = false;
     let pendingMeasure: 'resize' | 'font' | null = null, measuredSize = '';
     const layoutSize = () => `${content.clientWidth}:${content.clientHeight}:${panel.clientWidth}:${panel.clientHeight}`;
     let drawn: { settings: BendSettings; hits: Hit[] } | null = null;
@@ -213,6 +217,7 @@ export function FlowStream(props: Props) {
       const height = panel.clientHeight;
       if (!height) return false;
       const scrollTop = scrollMotion.position(panel.scrollTop), activeElement = document.activeElement;
+      fastManualScroll = manualScroll.sample(scrollTop, time, height);
       const canvasOwnsGlyphs = !live.current.reducedMotion && glassRef.current?.dataset.optics === 'ready';
       const variant = live.current.motionVariant || 'liquid-live';
       let stagger = 0, moving = false;
@@ -231,6 +236,7 @@ export function FlowStream(props: Props) {
       for (const part of workParts) {
         if (part.bottom < passedUntil) { finishPart(part); continue; }
         const previousOffset = Math.round(part.motion.offset * 1000), previousInk = part.ink.revision;
+        if (fastManualScroll) part.ink.finish();
         if (part.element.contains(activeElement)) {
           if (part.motion.waiting) part.motion.finish();
           else part.motion.pause(time);
@@ -372,6 +378,7 @@ export function FlowStream(props: Props) {
         probe({ time, cpuMs, totalWords: words.length, visibleWords: cachedRuns.length,
           indexedWordsVisited: frameWordsVisited, activeParts: activeParts.size, visibleParts: visibleParts.length,
           scrollTop: top, nativeScrollTop: panel.scrollTop, scrollRemainder: remainder,
+          fastManualScroll,
           drawMs, sceneMs: cpuMs - drawMs, layout: { ...layoutProbe }, render: glass?.diagnostics });
       }
     };
@@ -533,7 +540,7 @@ export function FlowStream(props: Props) {
       measure.current = () => {};
       entrance.current = { pause: () => {}, resume: () => {} };
     };
-  }, [scrollMotion]);
+  }, [scrollMotion, manualScroll]);
 
   useEffect(() => {
     if (previousFlow.current.paused !== props.paused) {
@@ -551,6 +558,7 @@ export function FlowStream(props: Props) {
 
   const pause = () => {
     intended.current = false;
+    manualScroll.reset();
     entrance.current.pause();
     if (panelRef.current) props.onScroll(scrollMotion.position(panelRef.current.scrollTop));
     props.onPause();
@@ -588,6 +596,7 @@ export function FlowStream(props: Props) {
     const selection = window.getSelection();
     if (selection && !selection.isCollapsed && (panelRef.current?.contains(selection.anchorNode) || panelRef.current?.contains(selection.focusNode))) return;
     if (target instanceof Element && target.closest('textarea, input, select, [contenteditable="true"]')) return;
+    if (panelRef.current) manualScroll.input(scrollMotion.position(panelRef.current.scrollTop), performance.now());
     intended.current = true;
     if (!props.onResume) { entrance.current.pause(); props.onPause(); return; }
     if (props.reducedMotion) return;
@@ -673,6 +682,8 @@ export function FlowStream(props: Props) {
       }}
       onPointerMove={event => {
         if (pointer.current && Math.hypot(event.clientX - pointer.current.x, event.clientY - pointer.current.y) > 6) {
+          const dx = event.clientX - pointer.current.x, dy = event.clientY - pointer.current.y;
+          if (Math.abs(dy) > Math.abs(dx) * 1.4 && panelRef.current) manualScroll.input(scrollMotion.position(panelRef.current.scrollTop), performance.now());
           pointer.current.moved = true;
           cancelMeaningPress();
         }

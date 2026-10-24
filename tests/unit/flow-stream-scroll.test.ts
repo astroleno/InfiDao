@@ -1,4 +1,4 @@
-import { StreamScrollMotion } from '@/lib/flow-browser/stream-scroll-motion';
+import { StreamManualScroll, StreamScrollMotion } from '@/lib/flow-browser/stream-scroll-motion';
 
 test.each([1, .5])('each frame advances smoothly when native scroll rounds to %s px', quantum => {
   const motion = new StreamScrollMotion();
@@ -51,4 +51,44 @@ test('long frame gaps retain the existing 48ms movement cap and time cannot run 
   motion.frame(0, 100, true, 100); motion.applied(0);
   expect(motion.frame(0, 1100, true, 100)).toBeCloseTo(.576); motion.applied(.576);
   expect(motion.frame(.576, 1090, true, 100)).toBeCloseTo(.576);
+});
+
+test('rapid forward and reverse manual travel complete ink across short inertia gaps', () => {
+  const manual = new StreamManualScroll();
+  manual.input(0, 0);
+  expect(manual.sample(30, 16, 844)).toBe(true);
+  expect(manual.sample(30, 100, 844)).toBe(true);
+  expect(manual.sample(30, 200, 844)).toBe(false);
+  manual.input(30, 210);
+  expect(manual.sample(-80, 226, 844)).toBe(true);
+  expect(manual.sample(-110, 242, 844)).toBe(true);
+});
+
+test('slow manual flow and automatic or restored jumps keep the original reveal', () => {
+  const manual = new StreamManualScroll();
+  expect(manual.sample(0, 0, 844)).toBe(false);
+  expect(manual.sample(10000, 16, 844)).toBe(false);
+  manual.input(10000, 20);
+  expect(manual.sample(10000.2, 36, 844)).toBe(false);
+  expect(manual.sample(10003.2, 52, 844)).toBe(false);
+  expect(manual.sample(10006.2, 68, 844)).toBe(false);
+});
+
+test('small screens use the speed floor and large screens require a viewport per second', () => {
+  const mobile = new StreamManualScroll(), desktop = new StreamManualScroll();
+  mobile.input(0, 0); desktop.input(0, 0);
+  expect(mobile.sample(8, 16, 320)).toBe(false);
+  expect(mobile.sample(20, 32, 320)).toBe(true);
+  expect(desktop.sample(12, 16, 1200)).toBe(false);
+  expect(desktop.sample(34, 32, 1200)).toBe(true);
+});
+
+test('pause, restore, expired input and backwards time discard manual fast travel', () => {
+  const manual = new StreamManualScroll();
+  manual.input(0, 0); expect(manual.sample(40, 16, 844)).toBe(true);
+  manual.reset(); expect(manual.sample(9000, 32, 844)).toBe(false);
+  manual.input(9000, 40); expect(manual.sample(9040, 56, 844)).toBe(true);
+  expect(manual.sample(10000, 1300, 844)).toBe(false);
+  manual.input(10000, 1400); expect(manual.sample(10040, 1416, 844)).toBe(true);
+  expect(manual.sample(10100, 1400, 844)).toBe(false);
 });
