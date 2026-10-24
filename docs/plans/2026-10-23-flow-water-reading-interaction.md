@@ -45,4 +45,4 @@
 
 现有线上运行目录为 `infidao-security-20261022`，采用 Next.js、bundle-analyzer、eslint-config-next `15.5.28`；本地原锁定版本为 `15.5.18`。发布前对齐线上已有安全补丁版本，保留其业务源码、环境与 Nginx 配置要求。接口与阅读模块设计保持本方案，新增验收为依赖版本一致、完整自动检查与构建、候选服务及公网资源绑定和回滚资料。原有 Playwright 依赖改动单独保留，不纳入此次提交。
 
-完整结果见[验证记录](../qa/2026-10-23-flow-water-reading-and-native-filter.md)；公网构建与切换结果随本轮部署记录补充。
+完整结果见[验证记录](../qa/2026-10-23-flow-water-reading-and-native-filter.md)。`f9701ea` 已提交推送，2026-10-24 公网构建、切换与页面复验通过，见[部署记录](../qa/web-flow-migration/2026-10-24-water-reading-public-release.md)。因 CDN 证书不匹配，本次使用既有同源字体路径；稳定 60 FPS 与 CDN 证书问题保持未完成。

@@ -1036,5 +1036,7 @@
     "lintAtProjectRoot": "pass",
     "productionBuild": "pass",
     "unrelatedPreexistingPlaywrightChangeExcluded": true
-  }
+  },
+  "publicDeploymentRecord": "docs/qa/evidence/2026-10-24-water-reading-public-release.json",
+  "publishedRelease": "infidao-d2c2f62162c15f25"
 }

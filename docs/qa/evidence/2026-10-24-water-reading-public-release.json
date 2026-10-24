@@ -1,0 +1,572 @@
+{
+  "schema": 1,
+  "date": "2026-10-24",
+  "status": "published-functional-verification-passed-60fps-user-deferred",
+  "publicUrl": "https://aitoshuu.me/infidao",
+  "source": {
+    "schemaVersion": 1,
+    "site": "InfiDao",
+    "releaseId": "infidao-d2c2f62162c15f25",
+    "gitHead": "f9701eaae845da40a51b879c79d9a5a36545db86",
+    "sourceMode": "commit",
+    "sourceDigest": "d2c2f62162c15f254239325684cc8eb328c862abe8348d56d3f7adf0ff5163e3",
+    "sourceFiles": 634,
+    "sourceArchive": {
+      "packagePath": "origin-source.tar.gz",
+      "bytes": 21190925,
+      "sha256": "2b15ad8e199eecd73bdd7adc2e0a26d322f6dc580802da2746781c2deb72e3fd"
+    },
+    "cdnBase": "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0",
+    "objectPrefix": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/",
+    "fontVersion": "6260e75c0bc7134351a0",
+    "entries": [
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/020dc1576aea903b72e8.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/020dc1576aea903b72e8.woff",
+        "bytes": 236896,
+        "sha256": "020dc1576aea903b72e84c8dc68980bf456af6f5a1b275523e071a8f18367c7c",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/12ecaa387577e006ae0f.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/12ecaa387577e006ae0f.woff",
+        "bytes": 224536,
+        "sha256": "12ecaa387577e006ae0f95382d8d456a445d2b1f9ed74afb43e95883bad70b27",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/419d02169907afd14d7e.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/419d02169907afd14d7e.woff",
+        "bytes": 165568,
+        "sha256": "419d02169907afd14d7efff8afb07919060406d41be423ab75fd16afcb8a7739",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/432e4f76963af046bdee.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/432e4f76963af046bdee.woff",
+        "bytes": 91280,
+        "sha256": "432e4f76963af046bdee09fae43f932d2a94e38d57c115a718c281c4765f159b",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/49deefee994379707891.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/49deefee994379707891.woff",
+        "bytes": 237840,
+        "sha256": "49deefee994379707891631ab2fe57f62bd10aa16ac7f4a09213e70d96e1cc12",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/4afaee2a55ac163430c5.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/4afaee2a55ac163430c5.woff",
+        "bytes": 240772,
+        "sha256": "4afaee2a55ac163430c57e6d54aafa05d513fa8a79d3f96485b881766ec9344d",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/4d6fe78392ef6ee18701.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/4d6fe78392ef6ee18701.woff",
+        "bytes": 233008,
+        "sha256": "4d6fe78392ef6ee18701cc2abf09d57e5f24d55a34a1cbb25e7feac2c32dc9d6",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/57d337c0ade846a638d0.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/57d337c0ade846a638d0.woff",
+        "bytes": 172336,
+        "sha256": "57d337c0ade846a638d07ee14c0db48e986307739c70995265ab06b0b5206e0a",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/866a45ad452a53cafa4f.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/866a45ad452a53cafa4f.woff",
+        "bytes": 170720,
+        "sha256": "866a45ad452a53cafa4f7b7e37265ffa511f6139805b83454e8b745a50d0391b",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/9cf9f8f73475a87f76d5.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/9cf9f8f73475a87f76d5.woff",
+        "bytes": 185016,
+        "sha256": "9cf9f8f73475a87f76d5355f413734ebc27f3bc675b29c02bd75727d219868e2",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/base-serif-c2701e3fde99183cf3b9.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/base-serif-c2701e3fde99183cf3b9.woff",
+        "bytes": 242916,
+        "sha256": "c2701e3fde99183cf3b987c45183d2f9308369087073757acee81d5b879acd7c",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/base-supplement-7ae6002e9d58b6a75354.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/base-supplement-7ae6002e9d58b6a75354.woff",
+        "bytes": 16648,
+        "sha256": "7ae6002e9d58b6a75354da1770ac42cd895649b703f11ad3bbc2b727ef82f36b",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/d2522468f01d6cfeb3eb.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/d2522468f01d6cfeb3eb.woff",
+        "bytes": 216048,
+        "sha256": "d2522468f01d6cfeb3eb8d9acaf9dbb26325cb4c95ac4c9988b2166c172ad189",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/de71b830a8cf014574e2.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/de71b830a8cf014574e2.woff",
+        "bytes": 239620,
+        "sha256": "de71b830a8cf014574e237283359bb61a8ffbce2c3662ef5388f17be3c281205",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/e3ca3b207f931e9b1c2a.woff",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/e3ca3b207f931e9b1c2a.woff",
+        "bytes": 124748,
+        "sha256": "e3ca3b207f931e9b1c2aa38a64f01dccff02c05833f44b63236792a87d21bc80",
+        "mime": "font/woff",
+        "cacheControl": "public, max-age=31536000, immutable"
+      },
+      {
+        "channel": "fonts",
+        "packagePath": "cdn/flow-assets/v-6260e75c0bc7134351a0/manifest.json",
+        "objectKey": "releases/aitoshuu-me/infidao-d2c2f62162c15f25/flow-assets/v-6260e75c0bc7134351a0/manifest.json",
+        "bytes": 23612,
+        "sha256": "46fb9c490f185581230c140654286858fab810180288ea809e5b53ae49fefbb4",
+        "mime": "application/json; charset=utf-8",
+        "cacheControl": "public, max-age=31536000, immutable"
+      }
+    ]
+  },
+  "dependencySecurityAlignment": {
+    "next": "15.5.28",
+    "bundleAnalyzer": "15.5.28",
+    "eslintConfigNext": "15.5.28",
+    "commit": "7ac8bb6",
+    "lockSha256": "9b4a4b03f173cbe70ad880675aa153f21c02091c4f8a793230fd55831564f2e2"
+  },
+  "automaticChecks": {
+    "flowSuites": 55,
+    "flowTests": 463,
+    "sharedNativeTests": 124,
+    "types": "pass",
+    "lint": "pass",
+    "productionBuild": "pass"
+  },
+  "originBuild": {
+    "releaseId": "infidao-d2c2f62162c15f25",
+    "built": true,
+    "assembled": true,
+    "sourceMode": "commit",
+    "gitHead": "f9701eaae845da40a51b879c79d9a5a36545db86",
+    "codeSha256": "b3ceba2c1ac476ef58770629247d2c5e6ec61d85d7d1cd449f2d1aadf9adc274",
+    "next": "15.5.28",
+    "browserSchema": 4,
+    "dependencyLockSha256": "9b4a4b03f173cbe70ad880675aa153f21c02091c4f8a793230fd55831564f2e2",
+    "rollbackTarget": "/opt/infidao-releases/infidao-security-20261022"
+  },
+  "candidate": {
+    "releaseId": "infidao-d2c2f62162c15f25",
+    "base": "http://127.0.0.1:3119",
+    "passed": true,
+    "commit": "f9701eaae845da40a51b879c79d9a5a36545db86",
+    "codeSha256": "b3ceba2c1ac476ef58770629247d2c5e6ec61d85d7d1cd449f2d1aadf9adc274",
+    "browserSchema": 4,
+    "next": "15.5.28",
+    "htmlBytes": 13969,
+    "resources": [
+      {
+        "path": "/_next/static/css/9df75816a61f5f69.css",
+        "bytes": 41077,
+        "sha256": "61f422aa02a8b712eb56b80b58774d1ac29f311bede67850636c18c2a8dc626c",
+        "contentType": "text/css; charset=UTF-8"
+      },
+      {
+        "path": "/_next/static/css/3beed69e62c315a8.css",
+        "bytes": 36458,
+        "sha256": "0126aa9d97f76e457ed372b7dc1697d562d2d9839cd65e209fdf172050bd5371",
+        "contentType": "text/css; charset=UTF-8"
+      },
+      {
+        "path": "/_next/static/chunks/webpack-ebedc99ffc00a3b5.js",
+        "bytes": 3414,
+        "sha256": "7972b9525d98b8ccde0f0befcd16890a6f41e54d97e029d3253c9b0990ce43ec",
+        "contentType": "application/javascript; charset=UTF-8"
+      },
+      {
+        "path": "/_next/static/chunks/lib-7f18c3b1-ac194475008f0135.js",
+        "bytes": 173019,
+        "sha256": "6c4317e1f6813c70833646f125d4acf0ae73929f9d04c250c2876ec032eff91b",
+        "contentType": "application/javascript; charset=UTF-8"
+      },
+      {
+        "path": "/_next/static/chunks/commons-50833e41ef7dd803.js",
+        "bytes": 264706,
+        "sha256": "c750ec55cb4b700170f94fe213d5f35550abdb32303e2ddffad4190726bbd546",
+        "contentType": "application/javascript; charset=UTF-8"
+      },
+      {
+        "path": "/_next/static/chunks/shared-3d082aaa29aa5a45.js",
+        "bytes": 307305,
+        "sha256": "d86e255a8e83499fb722c1cd241f622c1b6e53037e5f61eadd1dd48ae014217d",
+        "contentType": "application/javascript; charset=UTF-8"
+      },
+      {
+        "path": "/_next/static/chunks/main-app-4855f7b5ad541362.js",
+        "bytes": 549,
+        "sha256": "d9f3543368239198b84a5113bbe617abc5c923ae3a0666455ce036bb6fc4b1ac",
+        "contentType": "application/javascript; charset=UTF-8"
+      },
+      {
+        "path": "/_next/static/chunks/app/layout-cec43afc73a27484.js",
+        "bytes": 3657,
+        "sha256": "70c7c5d03bfc488244a4496596260591342be897fd78fafc559401a91bd6e835",
+        "contentType": "application/javascript; charset=UTF-8"
+      },
+      {
+        "path": "/_next/static/chunks/lib-39a88171-38f8796108674e34.js",
+        "bytes": 241171,
+        "sha256": "3606bd77f0041dac762709619ad34eed0b9bd1c014d513d3177ee51b22bc1a54",
+        "contentType": "application/javascript; charset=UTF-8"
+      },
+      {
+        "path": "/_next/static/chunks/app/infidao/page-e8863e9fb10a99e3.js",
+        "bytes": 92248,
+        "sha256": "48cd7ae02a9ae88373751d4e7f6c118fc87f612446283fedb3c605c650269568",
+        "contentType": "application/javascript; charset=UTF-8"
+      },
+      {
+        "path": "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+        "bytes": 112594,
+        "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+        "contentType": "application/javascript; charset=UTF-8"
+      }
+    ],
+    "originFonts": 15,
+    "fontBase": "/flow-assets/v-6260e75c0bc7134351a0",
+    "fontDelivery": "same-origin",
+    "cdnCertificateMismatch": true,
+    "encodingChecks": [
+      {
+        "requested": "br",
+        "served": "identity",
+        "bytes": 3414
+      },
+      {
+        "requested": "gzip",
+        "served": "gzip",
+        "bytes": 3414
+      },
+      {
+        "requested": "identity",
+        "served": "identity",
+        "bytes": 3414
+      }
+    ],
+    "modelRequests": 0,
+    "checkedAt": "2026-10-24T02:41:43.236Z"
+  },
+  "publication": {
+    "publication": {
+      "releaseId": "infidao-d2c2f62162c15f25",
+      "published": true,
+      "sourceCommit": "f9701eaae845da40a51b879c79d9a5a36545db86",
+      "rollbackTarget": "infidao-security-20261022",
+      "modelRequests": 0,
+      "qaStopped": true,
+      "originalSitesHealthy": true,
+      "environmentAndNginxUnchanged": true,
+      "publishedAt": "2026-10-24T02:42:44Z"
+    },
+    "runtime": {
+      "releaseId": "infidao-d2c2f62162c15f25",
+      "base": "https://aitoshuu.me",
+      "passed": true,
+      "commit": "f9701eaae845da40a51b879c79d9a5a36545db86",
+      "codeSha256": "b3ceba2c1ac476ef58770629247d2c5e6ec61d85d7d1cd449f2d1aadf9adc274",
+      "browserSchema": 4,
+      "next": "15.5.28",
+      "htmlBytes": 13969,
+      "resources": [
+        {
+          "path": "/_next/static/css/9df75816a61f5f69.css",
+          "bytes": 41077,
+          "sha256": "61f422aa02a8b712eb56b80b58774d1ac29f311bede67850636c18c2a8dc626c",
+          "contentType": "text/css; charset=UTF-8"
+        },
+        {
+          "path": "/_next/static/css/3beed69e62c315a8.css",
+          "bytes": 36458,
+          "sha256": "0126aa9d97f76e457ed372b7dc1697d562d2d9839cd65e209fdf172050bd5371",
+          "contentType": "text/css; charset=UTF-8"
+        },
+        {
+          "path": "/_next/static/chunks/webpack-ebedc99ffc00a3b5.js",
+          "bytes": 3414,
+          "sha256": "7972b9525d98b8ccde0f0befcd16890a6f41e54d97e029d3253c9b0990ce43ec",
+          "contentType": "application/javascript; charset=UTF-8"
+        },
+        {
+          "path": "/_next/static/chunks/lib-7f18c3b1-ac194475008f0135.js",
+          "bytes": 173019,
+          "sha256": "6c4317e1f6813c70833646f125d4acf0ae73929f9d04c250c2876ec032eff91b",
+          "contentType": "application/javascript; charset=UTF-8"
+        },
+        {
+          "path": "/_next/static/chunks/commons-50833e41ef7dd803.js",
+          "bytes": 264706,
+          "sha256": "c750ec55cb4b700170f94fe213d5f35550abdb32303e2ddffad4190726bbd546",
+          "contentType": "application/javascript; charset=UTF-8"
+        },
+        {
+          "path": "/_next/static/chunks/shared-3d082aaa29aa5a45.js",
+          "bytes": 307305,
+          "sha256": "d86e255a8e83499fb722c1cd241f622c1b6e53037e5f61eadd1dd48ae014217d",
+          "contentType": "application/javascript; charset=UTF-8"
+        },
+        {
+          "path": "/_next/static/chunks/main-app-4855f7b5ad541362.js",
+          "bytes": 549,
+          "sha256": "d9f3543368239198b84a5113bbe617abc5c923ae3a0666455ce036bb6fc4b1ac",
+          "contentType": "application/javascript; charset=UTF-8"
+        },
+        {
+          "path": "/_next/static/chunks/app/layout-cec43afc73a27484.js",
+          "bytes": 3657,
+          "sha256": "70c7c5d03bfc488244a4496596260591342be897fd78fafc559401a91bd6e835",
+          "contentType": "application/javascript; charset=UTF-8"
+        },
+        {
+          "path": "/_next/static/chunks/lib-39a88171-38f8796108674e34.js",
+          "bytes": 241171,
+          "sha256": "3606bd77f0041dac762709619ad34eed0b9bd1c014d513d3177ee51b22bc1a54",
+          "contentType": "application/javascript; charset=UTF-8"
+        },
+        {
+          "path": "/_next/static/chunks/app/infidao/page-e8863e9fb10a99e3.js",
+          "bytes": 92248,
+          "sha256": "48cd7ae02a9ae88373751d4e7f6c118fc87f612446283fedb3c605c650269568",
+          "contentType": "application/javascript; charset=UTF-8"
+        },
+        {
+          "path": "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+          "bytes": 112594,
+          "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+          "contentType": "application/javascript; charset=UTF-8"
+        }
+      ],
+      "originFonts": 15,
+      "fontBase": "/flow-assets/v-6260e75c0bc7134351a0",
+      "fontDelivery": "same-origin",
+      "cdnCertificateMismatch": true,
+      "encodingChecks": [
+        {
+          "requested": "br",
+          "served": "br",
+          "bytes": 3414
+        },
+        {
+          "requested": "gzip",
+          "served": "gzip",
+          "bytes": 3414
+        },
+        {
+          "requested": "identity",
+          "served": "identity",
+          "bytes": 3414
+        }
+      ],
+      "modelRequests": 0,
+      "checkedAt": "2026-10-24T02:42:44.230Z"
+    },
+    "current": "/opt/infidao-releases/infidao-d2c2f62162c15f25",
+    "services": "active\nactive\n"
+  },
+  "publicBrowser": {
+    "date": "2026-10-24",
+    "url": "https://aitoshuu.me/infidao",
+    "release": "infidao-d2c2f62162c15f25",
+    "mode": "existing curated fallback, no model generation",
+    "backend": "cached",
+    "bookmark": "false",
+    "dots": 0,
+    "focus": "关闭阅读选项",
+    "inlineMeaning": 0,
+    "menuOpen": true,
+    "menus": 1,
+    "overflow": false,
+    "source": "论语 · 子路",
+    "storageWarning": false,
+    "variant": "liquid-live",
+    "longPress": {
+      "closeFocused": true,
+      "modal": "true",
+      "open": true
+    },
+    "meaningClosed": {
+      "closed": true,
+      "focusText": "无",
+      "paused": "true"
+    },
+    "bookmarkAfterToggle": "true",
+    "afterReload": {
+      "bookmark": "true",
+      "source": "论语 · 子路",
+      "storageWarning": false,
+      "variant": "liquid-live"
+    },
+    "final": {
+      "bookmark": "false",
+      "entries": 3,
+      "font": true,
+      "fontLinks": [
+        "/flow-assets/v-6260e75c0bc7134351a0/manifest.json",
+        "/flow-assets/v-6260e75c0bc7134351a0/base-serif-c2701e3fde99183cf3b9.woff",
+        "/flow-assets/v-6260e75c0bc7134351a0/base-supplement-7ae6002e9d58b6a75354.woff"
+      ],
+      "overflow": false,
+      "storageWarning": false
+    }
+  },
+  "fontDelivery": {
+    "mode": "same-origin",
+    "cosUploadedObjects": 17,
+    "fontResourceEntries": 16,
+    "fontBytes": 2821564,
+    "cdnHttps": "failed-hostname-certificate-mismatch",
+    "tlsVerificationBypassed": false,
+    "dnsAndCdnConfigurationChanged": false
+  },
+  "remaining": {
+    "stable60Fps": "not-passed-user-approved-later-iteration",
+    "controlFps": 29.563655415013844,
+    "formalPresentationAndPhysicalPhone": "not-completed",
+    "cdnCertificate": "not-resolved"
+  },
+  "preservedFailures": [
+    "A screenshot failed with ENOSPC; only owned rebuildable caches were cleared.",
+    "The initial nested snapshot lint and broad Jest pattern were corrected; original failures remain in functional evidence.",
+    "The CDN build was stopped before publication because HTTPS certificate verification failed locally and at the origin.",
+    "The first candidate startup failed with EACCES due to restrictive file modes; runtime/public asset read permissions were corrected before candidate and public re-verification passed."
+  ],
+  "artifacts": [
+    {
+      "file": ".tmp/flow-public-20261024/package/manifests/release-manifest.json",
+      "bytes": 7970,
+      "sha256": "573cbea216562db0e6407b34de954cfcddf1a8a98bbe18fa03bc3fab10204ac7"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/cos-upload.log",
+      "bytes": 72,
+      "sha256": "1e08ffb5c11b9c45627e91ac2071912ecc0a0d17dc9155f058e7ac5eefd6ccb2"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/cdn-verify.log",
+      "bytes": 1951,
+      "sha256": "3a430df604a8a3bf288374ef5327c9579a3b6468e04998fddf907a75f436b37a"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/origin-build.json",
+      "bytes": 2492,
+      "sha256": "83db3d9b6cd0ab16ff77fab214809bc194a33ee0e7968d200d8c3c61805a481d"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/candidate-runtime-check.json",
+      "bytes": 3502,
+      "sha256": "4b4f8683e97a3149c3452a0fd00de31300ed92783def9a187aa71b45a74b39ba"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/candidate-start-failed.json",
+      "bytes": 411,
+      "sha256": "049d709401a3277e0a4e9c7667d54ca278b618f4786d7a6743618cecfb396579"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/candidate-start-failure.txt",
+      "bytes": 2732,
+      "sha256": "fc7c95e6ddb1d497ca82730f29cbc0df810caade57816b9a56606b93ed232906"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/publication-result.json",
+      "bytes": 4180,
+      "sha256": "19f8c7f14040ead9fc5f5e31d2c9da27ff4af1048eceb1841d70d6b8c20a0021"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/local-patch-smoke.json",
+      "bytes": 499,
+      "sha256": "4fd42e332cc2ad8de38c958239b1f7e82c69cdf911ee8970061277a44daafc61"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/local-patch-menu.png",
+      "bytes": 22827,
+      "sha256": "4d460eef4e78610cfc1b2899cfb7fe6030401c77d68dac21b6e52ff07eafb312"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/local-patch-meaning.png",
+      "bytes": 20647,
+      "sha256": "cf8532e1700bac53309c3450db7358a5dc6264af7deccd3a367da64cf91afe50"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/public-browser.json",
+      "bytes": 1157,
+      "sha256": "c77c0b36c963be2ca6431539a8502c8a3182ae73208abcd6a0062e55ae0f9901"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/public-menu.png",
+      "bytes": 23272,
+      "sha256": "e1160cc1748ce6382718cd2c36bd0d7ebf4b006529a262701cc1e37b9006add2"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/public-meaning.png",
+      "bytes": 21251,
+      "sha256": "5f5e52a30c7bb5844f7c5e082affa2f3b19e9b5e9052b979c1054b568ae0ed2f"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/unrelated-changes-preserved.json",
+      "bytes": 195,
+      "sha256": "ba5485d2e7a1da7064ef5b71d38bfcd6616736c735c0c593354da3a1eb5e2539"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/upload/release-support.tar.gz",
+      "bytes": 7866,
+      "sha256": "d7bb50694643e9e9be286849a98a2e6d191d5d3b4a74c4768241812a3ff72b89"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/upload/release-support-same-origin.tar.gz",
+      "bytes": 3861,
+      "sha256": "343341b9261d9f5f0ee6c6e1d7be0ea8154815255a58f0ffe707072900085695"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/upload/verify-runtime.mjs",
+      "bytes": 3571,
+      "sha256": "565bc0bb29d6e6017cf4916302aca4c3b40cda133d08889e0e51902eb86d71e6"
+    }
+  ]
+}
