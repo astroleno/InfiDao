@@ -1,3 +1,12 @@
+.experience,
+.stream {
+  --flow-size-body: 20px;
+  --flow-size-control: 16px;
+  --flow-size-caption: 12px;
+  --flow-weight-regular: 400;
+  --flow-weight-medium: 500;
+}
+
 .experience {
   --flow-muted: var(--optical-muted);
   --flow-label: var(--optical-muted);
@@ -9,6 +18,8 @@
   color: var(--beam);
   background: var(--void);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: var(--flow-size-control);
+  font-weight: var(--flow-weight-regular);
   isolation: isolate;
   overscroll-behavior: none;
 }
@@ -52,7 +63,7 @@
   gap: 16px;
   pointer-events: none;
   color: var(--flow-muted);
-  font-size: 11px;
+  font-size: var(--flow-size-caption);
   letter-spacing: 0.18em;
 }
 
@@ -115,7 +126,7 @@
   padding: 0;
   margin: 0 auto 28px;
   font-size: clamp(30px, 4.4vw, 40px);
-  font-weight: 400;
+  font-weight: var(--flow-weight-regular);
   line-height: 1.85;
   text-align: center;
   text-wrap: balance;
@@ -125,8 +136,8 @@
 .streamReflection {
   max-width: 620px;
   margin: 0 auto;
-  font-size: clamp(20px, 2vw, 22px);
-  font-weight: 400;
+  font-size: var(--flow-size-body);
+  font-weight: var(--flow-weight-regular);
   line-height: 1.9;
   text-wrap: balance;
   color: #edf0f5;
@@ -135,7 +146,7 @@
 .streamReflection > p:last-child { margin: 0; white-space: pre-line; }
 .streamReflection { margin-top: 24px; }
 .streamQuote + .streamReflection { margin-top: 0; }
-.stream .sectionLabel { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 11px; letter-spacing: .14em; }
+.stream .sectionLabel { font-family: ui-sans-serif, system-ui, sans-serif; font-size: var(--flow-size-caption); letter-spacing: .14em; }
 .streamTools { position: relative; width: 44px; height: 44px; margin: 14px auto 0; }
 .streamToolsTrigger {
   display: grid; place-items: center; width: 44px; height: 44px; padding: 0;
@@ -152,7 +163,7 @@
 .streamActionMenu[hidden] { display: none; }
 .streamActionMenu[data-placement="below"] { top: 100%; bottom: auto; }
 .streamActionMenu .textButton { min-height: 44px; padding: 0 13px; color: var(--beam); white-space: nowrap; }
-.streamActionStatus { position: absolute; top: 13px; left: 100%; color: var(--flow-muted); font-size: 12px; white-space: nowrap; }
+.streamActionStatus { position: absolute; top: 13px; left: 100%; color: var(--flow-muted); font-size: var(--flow-size-caption); white-space: nowrap; }
 @media (hover: hover) and (pointer: fine) {
   .streamToolsTrigger { opacity: 0; }
   .streamNode:hover .streamToolsTrigger,
@@ -161,11 +172,11 @@
   .streamToolsTrigger:hover { color: var(--beam); }
 }
 .streamSourceText { margin: 28px auto; }
-.streamSourceText .fullSource { font-size: 21px; line-height: 2; }
-.streamProvenance { margin: 18px 0 0; color: var(--flow-muted); font-size: 11px; line-height: 1.8; }
+.streamSourceText .fullSource { font-size: var(--flow-size-body); line-height: 2; }
+.streamProvenance { margin: 18px 0 0; color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.8; }
 .streamWaiting { min-height: 44px; margin: 16px 0 0; text-align: center; }
 .streamWaiting > div { justify-content: center; }
-.streamError { color: var(--flow-muted); font-size: 12px; line-height: 1.8; }
+.streamError { color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.8; }
 .streamEnd { text-align: center; }
 .stream [data-flow-optic] {
   display: inline-block;
@@ -184,7 +195,7 @@
 @media (max-width: 600px) {
   .streamContent { padding: max(150px, 24dvh) 0 44dvh; }
   .streamQuote { font-size: 30px; margin-bottom: 24px; }
-  .streamMeaning, .streamReflection { font-size: 20px; line-height: 1.9; }
+  .streamMeaning, .streamReflection { font-size: var(--flow-size-body); line-height: 1.9; }
   .streamNode { padding-bottom: 56px; }
 }
 
@@ -219,13 +230,13 @@
 }
 .readingMenuPanel[hidden] { display: none; }
 .readingMenuHeading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 36px; }
-.readingMenuHeading h2 { margin: 0; color: var(--flow-muted); font-size: 12px; font-weight: 400; letter-spacing: .14em; }
-.readingMenuSource { margin: -16px 0 12px; color: var(--flow-muted); font-size: 12px; line-height: 1.8; letter-spacing: .06em; }
-.readingMenuClose { display: grid; place-items: center; min-width: 44px; min-height: 44px; margin-right: -12px; border: 0; background: none; color: var(--flow-muted); font: inherit; font-size: 25px; cursor: pointer; }
+.readingMenuHeading h2 { margin: 0; color: var(--flow-muted); font-size: var(--flow-size-caption); font-weight: var(--flow-weight-regular); letter-spacing: .14em; }
+.readingMenuSource { margin: -16px 0 12px; color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.8; letter-spacing: .06em; }
+.readingMenuClose { display: grid; place-items: center; min-width: 44px; min-height: 44px; margin-right: -12px; border: 0; background: none; color: var(--flow-muted); font: inherit; font-size: var(--flow-size-body); cursor: pointer; }
 .readingMenuClose:focus-visible { outline: 1px solid var(--flow-focus); outline-offset: -4px; border-radius: 8px; }
 .readingMenuPanel .textButton {
   min-height: 52px; width: 100%; padding: 12px 0; text-align: left;
-  color: var(--beam); font-size: 15px; letter-spacing: .06em; white-space: normal;
+  color: var(--beam); font-size: var(--flow-size-control); letter-spacing: .06em; white-space: normal;
   border-bottom: 1px solid rgba(225, 236, 248, .08); border-radius: 0;
 }
 .readingMenuPanel .textButton:disabled { color: var(--flow-muted); opacity: .5; cursor: default; }
@@ -241,7 +252,7 @@
   color: var(--optical-muted);
   background: rgba(5, 6, 6, 0.9);
   font: inherit;
-  font-size: 11px;
+  font-size: var(--flow-size-control);
   letter-spacing: 0.08em;
   cursor: pointer;
   transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
@@ -305,14 +316,14 @@
 .fallbackLabel {
   margin: 0;
   color: var(--flow-muted);
-  font-size: 12px;
+  font-size: var(--flow-size-caption);
   letter-spacing: 0.08em;
 }
 
 .provenance {
   margin-top: 4px;
   color: var(--flow-label);
-  font-size: 12px;
+  font-size: var(--flow-size-caption);
 }
 
 .readingScroll {
@@ -338,13 +349,13 @@
   max-width: 640px;
   margin: 0 auto;
   color: var(--optical-text);
-  font-size: 16px;
+  font-size: var(--flow-size-body);
   line-height: 1.9;
 }
 
 .meaning > p:not(.sectionLabel),
 .reflection > p:not(.sectionLabel) { margin: 8px 0 0; white-space: pre-line; }
-.reflection { margin-top: 24px; color: #b7bdc6; font-size: 15px; }
+.reflection { margin-top: 24px; color: #b7bdc6; font-size: var(--flow-size-body); }
 
 .meaningBackdrop {
   position: absolute;
@@ -368,17 +379,17 @@
   animation: meaning-enter 180ms cubic-bezier(.22, 1, .36, 1) both;
 }
 .meaningHeader { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-.meaningHeader h2 { margin: 7px 0 0; color: var(--flow-muted); font-size: 12px; line-height: 1.6; font-weight: 400; }
+.meaningHeader h2 { margin: 7px 0 0; color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.6; font-weight: var(--flow-weight-regular); }
 .meaningClose { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; margin: -10px -10px 0 0; border: 0; border-radius: 8px; background: transparent; color: var(--flow-muted); cursor: pointer; }
 .meaningClose svg { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
 .meaningClose:focus-visible, .meaningBody:focus-visible { outline: 1px solid var(--flow-focus); outline-offset: 3px; }
-.meaningBody { min-height: 0; overflow: auto; overscroll-behavior: contain; margin-top: 18px; padding: 2px; color: var(--optical-text); font-size: 17px; line-height: 1.95; }
+.meaningBody { min-height: 0; overflow: auto; overscroll-behavior: contain; margin-top: 18px; padding: 2px; color: var(--optical-text); font-size: var(--flow-size-body); line-height: 1.95; }
 .meaningBody > p { margin: 0; white-space: pre-line; }
 @keyframes meaning-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
 .sectionLabel {
   color: var(--flow-label);
-  font-size: 12px;
+  font-size: var(--flow-size-caption);
 }
 
 .readerActions,
@@ -397,7 +408,7 @@
   padding: 0 14px;
   border-radius: 999px;
   font: inherit;
-  font-size: 12px;
+  font-size: var(--flow-size-control);
   cursor: pointer;
   transition: color 150ms ease, background 150ms ease, border-color 150ms ease;
 }
@@ -444,7 +455,7 @@
   margin: 18px auto 26px;
   overflow: auto;
   color: var(--optical-text);
-  font-size: 15px;
+  font-size: var(--flow-size-body);
   line-height: 2.05;
   overscroll-behavior: contain;
 }
@@ -469,7 +480,7 @@
   max-width: 800px;
   margin: 24px auto;
   color: var(--flow-muted);
-  font-size: 12px;
+  font-size: var(--flow-size-caption);
 }
 
 .pathTrail span + span::before {
@@ -492,13 +503,14 @@
 .notesPanel h2 {
   margin: 0 0 6px;
   color: var(--beam);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--flow-size-control);
+  font-weight: var(--flow-weight-medium);
 }
 
 .muted {
   margin: 0 0 12px;
   color: var(--flow-muted);
+  font-size: var(--flow-size-caption);
   letter-spacing: 0;
 }
 
@@ -514,7 +526,7 @@
   color: var(--beam);
   background: rgba(255, 255, 255, 0.035);
   font: inherit;
-  font-size: 16px;
+  font-size: var(--flow-size-control);
   line-height: 1.7;
 }
 
@@ -533,7 +545,7 @@
   padding: 12px 0;
   border-bottom: 1px solid var(--halo);
   color: var(--optical-text);
-  font-size: 13px;
+  font-size: var(--flow-size-body);
   line-height: 1.8;
 }
 
@@ -585,23 +597,23 @@
 
 .classicText {
   font-family: var(--flow-classic-family, "RunZhiJiaKangXiZidian", "InfiDaoSerifSupplement", "Songti SC", "Noto Serif CJK SC", serif);
-  font-weight: 400;
+  font-weight: var(--flow-weight-regular);
 }
 
 .tokenGroup { white-space: nowrap; }
 .quoteClause { display: inline-block; max-width: 100%; vertical-align: top; }
-.wordHelp { margin: 0 auto 20px; max-width: 680px; color: var(--flow-muted); font-size: 12px; line-height: 1.7; text-align: center; }
+.wordHelp { margin: 0 auto 20px; max-width: 680px; color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.7; text-align: center; }
 .connectedNode { max-width: 680px; margin-inline: auto; padding-block: 36px; }
 .connectedNode + .connectedNode { border-top: 1px solid var(--halo); }
 .connectedNode:first-of-type { padding-top: 0; }
-.nodeSource { margin: 0 auto 14px; color: var(--flow-muted); font-size: 12px; text-align: center; }
+.nodeSource { margin: 0 auto 14px; color: var(--flow-muted); font-size: var(--flow-size-caption); text-align: center; }
 .connectedNode:first-of-type .nodeSource { display: none; }
-.connectedTrail { max-width: 680px; margin: 0 auto 24px; color: var(--flow-muted); font-size: 12px; }
+.connectedTrail { max-width: 680px; margin: 0 auto 24px; color: var(--flow-muted); font-size: var(--flow-size-caption); }
 .connectedTrail > summary { width: fit-content; min-height: 32px; cursor: pointer; line-height: 2; }
 .connectedTrail > summary:focus-visible { outline: 2px solid var(--flow-focus); outline-offset: 3px; }
 .connectedTrail .pathTrail { margin-block: 10px; }
 .continueReading { max-width: 680px; margin: 12px auto 0; text-align: center; overflow-anchor: none; }
-.continueReading .muted { font-size: 12px; }
+.continueReading .muted { font-size: var(--flow-size-caption); }
 .connectedNode .readerActions { margin-bottom: 0; }
 
 .experience button:focus-visible,
@@ -630,7 +642,7 @@
   padding: 9px 15px;
   color: var(--flow-muted);
   background: rgba(6, 7, 7, 0.68);
-  font-size: 11px;
+  font-size: var(--flow-size-caption);
   text-align: center;
   backdrop-filter: blur(12px);
 }
@@ -639,7 +651,7 @@
 .prismLight { position: absolute; top: 46%; left: 50%; width: 1px; height: 1px; transition: opacity 260ms ease; }
 .lightPoint { position: absolute; left: -2px; top: -2px; width: 4px; height: 4px; border-radius: 50%; background: var(--beam); box-shadow: 0 0 10px 2px rgba(245, 249, 255, 0.72), 0 0 34px 8px rgba(215, 236, 255, 0.14); animation: beam-breathe 2600ms ease-in-out infinite; }
 .prismRay { position: absolute; left: -1px; bottom: 0; width: 2px; height: 104px; transform-origin: 50% 100%; transform: rotate(calc(var(--ray-angle) * var(--prism-spread))) scaleY(var(--prism-spread)); background: linear-gradient(0deg, transparent, var(--wavelength) 30%, transparent); opacity: calc(var(--prism-spread) * 0.5); filter: blur(2px); transition: transform 400ms ease, opacity 400ms ease; animation: prism-focus 2600ms ease-in-out infinite; }
-.lightCaption { position: absolute; top: calc(46% + 48px); right: 20px; left: 20px; margin: 0; color: var(--flow-muted); font-size: 12px; text-align: center; }
+.lightCaption { position: absolute; top: calc(46% + 48px); right: 20px; left: 20px; margin: 0; color: var(--flow-muted); font-size: var(--flow-size-caption); text-align: center; }
 .lightQuote { position: absolute; top: 46%; left: 50%; width: min(82vw, 740px); margin: 0; transform: translate(-50%, -50%); color: var(--beam); font-size: clamp(24px, 4vw, 38px); line-height: 1.8; text-align: center; text-wrap: balance; opacity: 0; filter: blur(5px); transition: opacity 200ms ease, filter 300ms ease; }
 .opticalLoading[data-has-quote] .lightQuote { opacity: 1; filter: none; }
 .opticalLoading[data-has-quote] .prismLight { opacity: 0; }
@@ -662,12 +674,12 @@
   padding: 8px 0;
   border-bottom: 1px solid var(--halo);
   color: var(--flow-muted);
-  font-size: 13px;
+  font-size: var(--flow-size-caption);
   line-height: 1.65;
 }
 .inlineWaiting p { margin: 0; }
 .inlineWaiting button { flex-shrink: 0; }
-.compactWaiting { display: flex; align-items: center; gap: 8px; min-height: 28px; color: var(--flow-muted); font-size: 12px; line-height: 1.5; }
+.compactWaiting { display: flex; align-items: center; gap: 8px; min-height: 28px; color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.5; }
 .compactWaiting p { min-width: 0; margin: 0; overflow-wrap: anywhere; }
 .compactWaiting button { flex-shrink: 0; padding-inline: 4px; }
 .notice { z-index: 8; bottom: max(20px, env(safe-area-inset-bottom)); color: var(--optical-text); }
@@ -735,8 +747,8 @@
 .seedSheet h2 {
   margin: 0 0 7px;
   color: var(--beam);
-  font-size: 20px;
-  font-weight: 500;
+  font-size: var(--flow-size-body);
+  font-weight: var(--flow-weight-medium);
 }
 
 .seedSheet .muted {
@@ -746,7 +758,7 @@
 .seedError {
   margin: 12px 0 0;
   color: var(--optical-text);
-  font-size: 13px;
+  font-size: var(--flow-size-caption);
   line-height: 1.7;
 }
 
@@ -765,7 +777,7 @@
   clip-path: inset(50%);
 }
 
-.firstHint { position: absolute; z-index: 4; bottom: max(22px, env(safe-area-inset-bottom)); left: 0; right: 0; display: flex; align-items: center; justify-content: center; color: var(--flow-muted); font-size: 12px; background: linear-gradient(transparent, #020303); }
+.firstHint { position: absolute; z-index: 4; bottom: max(22px, env(safe-area-inset-bottom)); left: 0; right: 0; display: flex; align-items: center; justify-content: center; color: var(--flow-muted); font-size: var(--flow-size-caption); background: linear-gradient(transparent, #020303); }
 .noteBody { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .noteBody textarea { margin-bottom: 8px; }
 .librarySheet { display: flex; flex-direction: column; width: min(100%, 640px); overflow: clip; }
@@ -778,10 +790,10 @@
 .libraryList { min-height: 0; overflow-y: auto; overflow-wrap: anywhere; overscroll-behavior: contain; scrollbar-color: var(--halo) transparent; }
 .libraryRow { display: block; width: 100%; border: 0; border-bottom: 1px solid var(--halo); padding: 18px 0; text-align: left; color: inherit; background: transparent; cursor: pointer; font: inherit; }
 .libraryRow > span { display: block; }
-.libraryQuote { margin: 0 0 8px; font-size: 17px; line-height: 1.8; font-family: var(--flow-classic-family, "Songti SC", serif); }
-.libraryNote { padding: 18px 0; border-bottom: 1px solid var(--halo); font-size: 14px; line-height: 1.8; }
+.libraryQuote { margin: 0 0 8px; font-size: var(--flow-size-body); line-height: 1.8; font-family: var(--flow-classic-family, "Songti SC", serif); }
+.libraryNote { padding: 18px 0; border-bottom: 1px solid var(--halo); font-size: var(--flow-size-body); line-height: 1.8; }
 .libraryNote .noteBody > p { white-space: pre-wrap; }
-.libraryEmpty { padding: 28px 0; color: var(--flow-muted); font-size: 14px; }
+.libraryEmpty { padding: 28px 0; color: var(--flow-muted); font-size: var(--flow-size-control); }
 .knowledgeLibrary { padding-bottom: 16px; }
 .knowledgeSearch { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
 .knowledgeSearch input, .knowledgeSearch select { min-height: 44px; border: 1px solid var(--halo); border-radius: 4px; background: var(--void); color: var(--flow-focus); font: inherit; padding: 9px 12px; color-scheme: dark; }
@@ -793,12 +805,13 @@
 .knowledgeContext { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
 .knowledgeContext .textButton { padding-inline: 0; }
 .knowledgeContext > span { flex: 1; }
-.knowledgeDetail h3 { margin: 6px 0 12px; font-size: 22px; line-height: 1.7; font-weight: 400; text-wrap: balance; }
-.knowledgeDetail p, .knowledgeRelation p { margin: 8px 0; line-height: 1.9; }
-.knowledgeDetail blockquote { margin: 16px 0; color: var(--flow-muted); line-height: 1.9; }
+.knowledgeDetail h3 { margin: 6px 0 12px; font-size: var(--flow-size-body); line-height: 1.7; font-weight: var(--flow-weight-regular); text-wrap: balance; }
+.knowledgeDetail p, .knowledgeRelation p { margin: 8px 0; font-size: var(--flow-size-body); line-height: 1.9; }
+.knowledgeDetail .muted, .knowledgeRelation .muted { font-size: var(--flow-size-caption); }
+.knowledgeDetail blockquote { margin: 16px 0; color: var(--flow-muted); font-size: var(--flow-size-body); line-height: 1.9; }
 .knowledgeRelation { padding: 16px 0; border-bottom: 1px solid var(--halo); }
 .knowledgeLink { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; min-height: 44px; border: 0; padding: 4px 0; color: var(--flow-focus); background: transparent; font: inherit; text-align: left; cursor: pointer; }
-.knowledgeLink > span:last-child { font-size: 18px; line-height: 1.8; }
+.knowledgeLink > span:last-child { font-size: var(--flow-size-body); line-height: 1.8; }
 .experience button:disabled { opacity: 0.55; cursor: default; }
 
 @media (hover: hover) {
@@ -831,7 +844,7 @@
 }
 
 @media (min-width: 900px) {
-  .topBar { padding: 0 4vw; font-size: 12px; }
+  .topBar { padding: 0 4vw; font-size: var(--flow-size-caption); }
   .readingLayer { right: 0; left: 0; padding-right: 10vw; padding-left: 10vw; }
   .readerQuote { font-size: clamp(30px, 3vw, 36px); }
 }
