@@ -1,0 +1,1040 @@
+{
+  "schema": 1,
+  "date": "2026-10-24",
+  "baselineCommit": "84027e4147e1367269a934cfbb11b22e92b68315",
+  "status": "functional-verification-passed-60fps-explicitly-deferred-by-user",
+  "release": {
+    "id": "1e996602bde15fed",
+    "commit": "84027e4147e1367269a934cfbb11b22e92b68315",
+    "worktreeDirty": true,
+    "codeSha256": "bf104040df4cd55734d6017805b9ba02bcd8f0badbcf081193a1ac7a9720c8d4",
+    "corpusVersion": "guji-core-v1",
+    "corpusSha256": "3ac315b83fbb75f5076e444a09823d243d1237995ba2244eecb43af76c0ce3ec",
+    "curatedVersion": "curated-9dcbdbbc52ea63b7",
+    "fontVersion": "6260e75c0bc7134351a0",
+    "fontManifestSha256": "46fb9c490f185581230c140654286858fab810180288ea809e5b53ae49fefbb4",
+    "fontBasePath": "/flow-assets/v-6260e75c0bc7134351a0",
+    "fontPreloads": [
+      "base-serif-c2701e3fde99183cf3b9.woff",
+      "base-supplement-7ae6002e9d58b6a75354.woff"
+    ],
+    "storageSchema": {
+      "browser": 4,
+      "server": 1
+    }
+  },
+  "sourceHashes": {
+    "src/components/flow/FlowExperience.tsx": "d5f3947c59e9a7497df5f437dbec291dca61cf4042b8e9492899798fd599037b",
+    "src/components/flow/FlowMenu.tsx": "447ac6fcbc66265740b86d83358aca204bf678da5385c532e3ca848b5263dcf3",
+    "src/components/flow/FlowStream.tsx": "81a0d13029a27762e6ff71b23679465a733b7c3de570178f75861444b26b5078",
+    "src/components/flow/MeaningPopover.tsx": "88a61168f8458f0b7cc2221cff6e125f46c617952b2fcbac84de921886700822",
+    "src/components/flow/useFlowDialog.ts": "8d4851ff006ad78c96b6d4844fced362c9ab6e9a0ac764504ff152277c50af02",
+    "src/components/flow/flow.module.css": "e047a02928249801db16c70085fa7cd1bce9e964a80699d7580242beccb3f347",
+    "src/lib/flow-browser/motion-candidate.ts": "65c8ba1a04d29933bb224471c117fc9a3a6400e0ae035e2f85d4a275f80b2090",
+    "src/lib/flow-browser/motion-profile.ts": "7de9d70a9f226b765d036a55092ffa47fde670bedcedeb5d3961ac67953c499d",
+    "src/lib/flow-browser/stream-frame-plan.ts": "e0679e1c8b0f8c4b72c9da55bf70310f2ef208bd0d2bbea29e4e21ac50a4a985",
+    "src/lib/flow-browser/stream-glass.ts": "a74b0c1952b5ea2296d427c51f6cc0ea5a48d9a2efbe466b0f4fb219a95ba2ea",
+    "src/lib/flow-browser/stream-scroll-motion.ts": "60e4c51d488042fe4d5c3970fa96039c9a2fb35c7fc873096d48950461410a24",
+    "tests/unit/flow-motion-candidate.test.tsx": "380b698b95bf0317b3176a9498bb9752d74e9a6336e219eabf7507820231fc7d",
+    "tests/unit/flow-reading-menu.test.tsx": "d2a0cc5b624e5eafee2f0ee15130b91327600f3666dfb0a7e2f8188c26523239",
+    "tests/unit/flow-meaning-popover.test.tsx": "ebd1ed109f37e9f4c4d2520dced9b03de797f49a81f7867a45f181a2bdbe9927",
+    "tests/unit/flow-stream-scroll.test.ts": "bc3f79ed84a6671028b4604820c8336befbc760a405c66779b326e0f6a087b8e",
+    "tests/unit/flow-stream.test.tsx": "ecf7cd04453ce7e55bc5668368c98db25fafa88cf042b58db4e1e220ae1e40ed",
+    "tests/unit/flow-stream-glass.test.ts": "1e37578247827aa91ca2fb6dace385e04fa19b9a4a6d1b23ec724b0cc5c37f9a",
+    "tests/unit/flow-stream-gpu-fallback.test.ts": "fb52f0c28d7ab393563d05c3d373b912d628e265f38d638637c16b46543ba182",
+    "tests/unit/flow-stream-scene.test.ts": "36669869670df4f75c27be36d27d813cb756a1281fe15eea142e8e5a84aba391"
+  },
+  "userDecisions": {
+    "defaultWater": true,
+    "inlineMeaning": false,
+    "longPressMeaning": true,
+    "persistentMeaning": true,
+    "leftSwipeMenu": true,
+    "paragraphEllipsis": false,
+    "deliverVerifiedFunctionsAndSyncPublic": true,
+    "continue60FpsInLaterIteration": true,
+    "decidedAt": "2026-10-24"
+  },
+  "automaticChecks": {
+    "flowSuites": 55,
+    "flowTests": 463,
+    "sharedNativeTests": 124,
+    "appAndScriptsTypes": "pass",
+    "lint": "pass",
+    "productionBuild": "pass"
+  },
+  "nativeQuality": {
+    "cases": 400,
+    "maxChannelError": 0,
+    "changedPixels": 0,
+    "missingPixels": 0,
+    "scope": "Native current material and unchanged StreamGlass/frame-planner source; not the final menu page layout."
+  },
+  "nativeIntermediateDiagnostics": [
+    {
+      "scenario": "baseline-desktop-fast-first",
+      "fps": 4.7942120785088544,
+      "cpuP95Ms": 9.800000000745058,
+      "maxIntervalMs": 450,
+      "viewport": [
+        1440,
+        900,
+        2
+      ],
+      "canvas": [
+        1789,
+        1118
+      ],
+      "articles": 6,
+      "visibleAtEnd": "visible",
+      "focusedAtEnd": true,
+      "errors": [],
+      "blockedRequests": [],
+      "pipeline": "canvas"
+    },
+    {
+      "scenario": "baseline-desktop-fast-repeat",
+      "fps": 4.895456890481097,
+      "cpuP95Ms": 4,
+      "maxIntervalMs": 566.7000000000007,
+      "viewport": [
+        1440,
+        900,
+        2
+      ],
+      "canvas": [
+        1789,
+        1118
+      ],
+      "articles": 6,
+      "visibleAtEnd": "visible",
+      "focusedAtEnd": true,
+      "errors": [],
+      "blockedRequests": [],
+      "pipeline": "canvas"
+    },
+    {
+      "scenario": "period-desktop-fast-first",
+      "fps": 15.957514712828567,
+      "cpuP95Ms": 3.600000001490116,
+      "maxIntervalMs": 999.9000000000001,
+      "viewport": [
+        1440,
+        900,
+        2
+      ],
+      "canvas": [
+        1789,
+        1118
+      ],
+      "articles": 6,
+      "visibleAtEnd": "visible",
+      "focusedAtEnd": true,
+      "errors": [],
+      "blockedRequests": [],
+      "pipeline": "canvas"
+    },
+    {
+      "scenario": "period-desktop-fast-repeat",
+      "fps": 17.824640682859478,
+      "cpuP95Ms": 3,
+      "maxIntervalMs": 167.20000000000073,
+      "viewport": [
+        1440,
+        900,
+        2
+      ],
+      "canvas": [
+        1789,
+        1118
+      ],
+      "articles": 6,
+      "visibleAtEnd": "visible",
+      "focusedAtEnd": true,
+      "errors": [],
+      "blockedRequests": [],
+      "pipeline": "canvas"
+    },
+    {
+      "scenario": "baseline-desktop-fast-first",
+      "fps": 6.02507939297325,
+      "cpuP95Ms": 7.300000000745058,
+      "maxIntervalMs": 416.70000000000005,
+      "viewport": [
+        1440,
+        900,
+        2
+      ],
+      "canvas": [
+        1789,
+        1118
+      ],
+      "articles": 6,
+      "visibleAtEnd": "visible",
+      "focusedAtEnd": true,
+      "errors": [],
+      "blockedRequests": [],
+      "pipeline": "canvas"
+    },
+    {
+      "scenario": "baseline-desktop-fast-repeat",
+      "fps": 6.103896103896106,
+      "cpuP95Ms": 3.699999999254942,
+      "maxIntervalMs": 516.6999999999989,
+      "viewport": [
+        1440,
+        900,
+        2
+      ],
+      "canvas": [
+        1789,
+        1118
+      ],
+      "articles": 6,
+      "visibleAtEnd": "visible",
+      "focusedAtEnd": true,
+      "errors": [],
+      "blockedRequests": [],
+      "pipeline": "canvas"
+    },
+    {
+      "scenario": "period-desktop-fast-first",
+      "fps": 11.695014364528515,
+      "cpuP95Ms": 4.399999998509884,
+      "maxIntervalMs": 1016.5999999999985,
+      "viewport": [
+        1440,
+        900,
+        2
+      ],
+      "canvas": [
+        1789,
+        1118
+      ],
+      "articles": 6,
+      "visibleAtEnd": "visible",
+      "focusedAtEnd": true,
+      "errors": [],
+      "blockedRequests": [],
+      "pipeline": "canvas"
+    },
+    {
+      "scenario": "period-desktop-fast-repeat",
+      "fps": 14.71483661457276,
+      "cpuP95Ms": 4,
+      "maxIntervalMs": 199.29999999999927,
+      "viewport": [
+        1440,
+        900,
+        2
+      ],
+      "canvas": [
+        1789,
+        1118
+      ],
+      "articles": 6,
+      "visibleAtEnd": "visible",
+      "focusedAtEnd": true,
+      "errors": [],
+      "blockedRequests": [],
+      "pipeline": "canvas"
+    },
+    {
+      "scenario": "period-mobile-fast-first",
+      "fps": 22.231766162241367,
+      "cpuP95Ms": 3.300000000745058,
+      "maxIntervalMs": 100.09999999999945,
+      "viewport": [
+        390,
+        844,
+        2
+      ],
+      "canvas": [
+        585,
+        1266
+      ],
+      "articles": 6,
+      "visibleAtEnd": "visible",
+      "focusedAtEnd": true,
+      "errors": [],
+      "blockedRequests": [],
+      "pipeline": "canvas"
+    },
+    {
+      "scenario": "period-mobile-fast-repeat",
+      "fps": 22.0125786163522,
+      "cpuP95Ms": 3.100000001490116,
+      "maxIntervalMs": 132.89999999999964,
+      "viewport": [
+        390,
+        844,
+        2
+      ],
+      "canvas": [
+        585,
+        1266
+      ],
+      "articles": 6,
+      "visibleAtEnd": "visible",
+      "focusedAtEnd": true,
+      "errors": [],
+      "blockedRequests": [],
+      "pipeline": "canvas"
+    },
+    {
+      "scenario": "period-desktop-long-fast-first",
+      "fps": 12.203493249942795,
+      "cpuP95Ms": 3.5,
+      "maxIntervalMs": 1016.7,
+      "viewport": [
+        1440,
+        900,
+        2
+      ],
+      "canvas": [
+        1789,
+        1118
+      ],
+      "articles": 180,
+      "visibleAtEnd": "visible",
+      "focusedAtEnd": true,
+      "errors": [],
+      "blockedRequests": [],
+      "pipeline": "canvas"
+    },
+    {
+      "scenario": "period-desktop-long-fast-repeat",
+      "fps": 14.875260852826438,
+      "cpuP95Ms": 3.300000000745058,
+      "maxIntervalMs": 216.60000000000036,
+      "viewport": [
+        1440,
+        900,
+        2
+      ],
+      "canvas": [
+        1789,
+        1118
+      ],
+      "articles": 180,
+      "visibleAtEnd": "visible",
+      "focusedAtEnd": true,
+      "errors": [],
+      "blockedRequests": [],
+      "pipeline": "canvas"
+    }
+  ],
+  "beforeMenuWaterProduction": {
+    "release": "4b0c1d2f0083cfe6",
+    "default": {
+      "variant": "liquid-live",
+      "backend": "cached",
+      "inlineMeaning": 0,
+      "comparisonSwitch": false,
+      "articles": 6,
+      "words": 193,
+      "font": true,
+      "overflow": false,
+      "errors": [],
+      "blocked": []
+    },
+    "meaning": {
+      "dialog": "true",
+      "backgroundInert": true,
+      "closeFocused": true,
+      "heightFits": true,
+      "inlineMeaning": 0
+    },
+    "meaningClosed": {
+      "focus": true,
+      "scroll": true,
+      "panel": true,
+      "inert": false
+    },
+    "loss": {
+      "focus": true,
+      "opacity": "1"
+    },
+    "restored": {
+      "backend": "cached",
+      "word": true
+    },
+    "reducedMotion": {
+      "opacity": "1",
+      "paused": "true"
+    },
+    "performance": [
+      {
+        "scenario": "mobile-short-fast-first",
+        "fps": 29,
+        "cpuP95Ms": 4,
+        "maxIntervalMs": 51.40000000000009,
+        "viewport": [
+          390,
+          844,
+          2
+        ],
+        "canvas": [
+          585,
+          1266
+        ],
+        "articles": 6,
+        "visibleAtEnd": "visible",
+        "focusedAtEnd": true,
+        "errors": [],
+        "blockedRequests": [],
+        "pipeline": "cached"
+      },
+      {
+        "scenario": "mobile-short-fast-repeat",
+        "fps": 28.994251428762965,
+        "cpuP95Ms": 3.5,
+        "maxIntervalMs": 51,
+        "viewport": [
+          390,
+          844,
+          2
+        ],
+        "canvas": [
+          585,
+          1266
+        ],
+        "articles": 6,
+        "visibleAtEnd": "visible",
+        "focusedAtEnd": true,
+        "errors": [],
+        "blockedRequests": [],
+        "pipeline": "cached"
+      },
+      {
+        "scenario": "desktop-short-fast-first",
+        "fps": 29.172014869392722,
+        "cpuP95Ms": 3.5,
+        "maxIntervalMs": 50,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "articles": 6,
+        "visibleAtEnd": "visible",
+        "focusedAtEnd": true,
+        "errors": [],
+        "blockedRequests": [],
+        "pipeline": "cached"
+      },
+      {
+        "scenario": "desktop-short-fast-repeat",
+        "fps": 51.833333333333336,
+        "cpuP95Ms": 2.5,
+        "maxIntervalMs": 266.59999999999945,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "articles": 6,
+        "visibleAtEnd": "visible",
+        "focusedAtEnd": true,
+        "errors": [],
+        "blockedRequests": [],
+        "pipeline": "cached"
+      },
+      {
+        "scenario": "desktop-long-fast-first",
+        "fps": 59.999000016666386,
+        "cpuP95Ms": 2,
+        "maxIntervalMs": 17.699999999999818,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "articles": 180,
+        "visibleAtEnd": "visible",
+        "focusedAtEnd": true,
+        "errors": [],
+        "blockedRequests": [],
+        "pipeline": "cached"
+      },
+      {
+        "scenario": "desktop-long-fast-repeat",
+        "fps": 60.00100001666695,
+        "cpuP95Ms": 1.5,
+        "maxIntervalMs": 17.700000000000728,
+        "viewport": [
+          1440,
+          900,
+          2
+        ],
+        "canvas": [
+          1789,
+          1118
+        ],
+        "articles": 180,
+        "visibleAtEnd": "visible",
+        "focusedAtEnd": true,
+        "errors": [],
+        "blockedRequests": [],
+        "pipeline": "cached"
+      }
+    ],
+    "final": {
+      "errors": [],
+      "blocked": [],
+      "overflow": false
+    }
+  },
+  "beforeMenuPreviewSlowScroll": {
+    "current": {
+      "label": "continuous-current-water",
+      "frames": 175,
+      "fps": 29.080455928067657,
+      "maxIntervalMs": 52,
+      "movingIntervals": 174,
+      "stillIntervals": 0,
+      "minimumMove": 0.17519999999999847,
+      "maximumMove": 0.5760000000000076,
+      "allSamplesVisibleAndFocused": true
+    },
+    "before": {
+      "label": "before-integer-scroll",
+      "frames": 176,
+      "fps": 29.174446519071754,
+      "maxIntervalMs": 51.80000000000109,
+      "movingIntervals": 72,
+      "stillIntervals": 103,
+      "minimumMove": 0,
+      "maximumMove": 1,
+      "allSamplesVisibleAndFocused": true
+    },
+    "meaning": {
+      "dialog": "释义大学 · 经一章 · 释义左右方向键选词，Home 和 End 到首尾，回车接续，Tab 离开选词。先明白止于何处，才能安定下来；安定之后，才有从容思考的余地。",
+      "playing": false,
+      "focused": "关闭释义",
+      "backgroundInert": true,
+      "panelSame": true,
+      "inlineMeanings": 0,
+      "selected": ""
+    },
+    "close": {
+      "playing": true,
+      "backgroundInert": false,
+      "panelSame": true,
+      "wordSame": true,
+      "focusReturned": true,
+      "selected": ""
+    }
+  },
+  "finalBrowserRecheck": {
+    "state": "passed",
+    "production": {
+      "date": "2026-10-24",
+      "release": "1e996602bde15fed",
+      "default": {
+        "variant": "liquid-live",
+        "backend": "cached",
+        "dots": 0,
+        "menus": 1,
+        "inlineMeaning": 0,
+        "comparisonSwitch": false,
+        "font": true,
+        "overflow": false,
+        "errors": [],
+        "blocked": []
+      },
+      "meaning": {
+        "modal": "true",
+        "backgroundInert": true,
+        "closeFocused": true,
+        "fits": true
+      },
+      "meaningClosed": {
+        "focus": true,
+        "scroll": true,
+        "panel": true,
+        "inert": false
+      },
+      "menu": {
+        "buttons": [
+          {
+            "label": "×",
+            "disabled": false
+          },
+          {
+            "label": "释义",
+            "disabled": false
+          },
+          {
+            "label": "原文",
+            "disabled": false
+          },
+          {
+            "label": "收藏",
+            "disabled": false
+          },
+          {
+            "label": "注脚",
+            "disabled": false
+          },
+          {
+            "label": "添一念",
+            "disabled": false
+          },
+          {
+            "label": "温故",
+            "disabled": false
+          }
+        ],
+        "focused": "关闭阅读选项",
+        "inert": true,
+        "rect": {
+          "x": 90,
+          "y": 0,
+          "width": 300,
+          "height": 844,
+          "top": 0,
+          "right": 390,
+          "bottom": 844,
+          "left": 90
+        }
+      },
+      "narrowMenu": {
+        "overflow": false,
+        "rect": {
+          "x": 48,
+          "y": 0,
+          "width": 272,
+          "height": 740,
+          "top": 0,
+          "right": 320,
+          "bottom": 740,
+          "left": 48
+        },
+        "source": "大学 · 经一章"
+      },
+      "source": {
+        "shown": true,
+        "wordPreserved": true
+      },
+      "notes": {
+        "editor": true,
+        "wordPreserved": true
+      },
+      "thought": {
+        "label": null,
+        "editor": true
+      },
+      "library": {
+        "label": null,
+        "heading": "温故"
+      },
+      "bookmark": {
+        "before": "false",
+        "after": "true",
+        "restored": "false"
+      },
+      "loss": {
+        "focus": true,
+        "opacity": "1"
+      },
+      "restored": {
+        "backend": "cached",
+        "sameWord": true
+      },
+      "reduced": {
+        "opacity": "1",
+        "paused": "true"
+      },
+      "final": {
+        "errors": [],
+        "blocked": [],
+        "overflow": false,
+        "wordPreserved": true
+      }
+    },
+    "preview": {
+      "date": "2026-10-24",
+      "initial": {
+        "width": 390,
+        "height": 844,
+        "playing": true,
+        "menus": 1,
+        "dots": 0,
+        "menuOpen": false,
+        "meaningOpen": false,
+        "readerInert": false,
+        "footerInert": false,
+        "navInert": false,
+        "selected": "",
+        "top": 0.5,
+        "sameWords": true,
+        "errors": []
+      },
+      "mouseOpen": {
+        "width": 390,
+        "height": 844,
+        "playing": false,
+        "menus": 1,
+        "dots": 0,
+        "menuOpen": true,
+        "meaningOpen": false,
+        "readerInert": true,
+        "footerInert": true,
+        "navInert": true,
+        "selected": "",
+        "top": 1,
+        "sameWords": true,
+        "errors": []
+      },
+      "meaning": {
+        "width": 390,
+        "height": 844,
+        "playing": false,
+        "menus": 1,
+        "dots": 0,
+        "menuOpen": false,
+        "meaningOpen": true,
+        "readerInert": true,
+        "footerInert": true,
+        "navInert": true,
+        "selected": "",
+        "top": 1,
+        "sameWords": true,
+        "errors": []
+      },
+      "closeMeaning": {
+        "width": 390,
+        "height": 844,
+        "playing": true,
+        "menus": 1,
+        "dots": 0,
+        "menuOpen": false,
+        "meaningOpen": false,
+        "readerInert": false,
+        "footerInert": false,
+        "navInert": false,
+        "selected": "",
+        "top": 1,
+        "sameWords": true,
+        "errors": []
+      },
+      "touchOpen": {
+        "width": 390,
+        "height": 844,
+        "playing": false,
+        "menus": 1,
+        "dots": 0,
+        "menuOpen": true,
+        "meaningOpen": false,
+        "readerInert": true,
+        "footerInert": true,
+        "navInert": true,
+        "selected": "",
+        "top": 1,
+        "sameWords": true,
+        "errors": []
+      },
+      "touchClose": {
+        "width": 390,
+        "height": 844,
+        "playing": false,
+        "menus": 1,
+        "dots": 0,
+        "menuOpen": false,
+        "meaningOpen": false,
+        "readerInert": false,
+        "footerInert": false,
+        "navInert": false,
+        "selected": "",
+        "top": 1,
+        "sameWords": true,
+        "errors": []
+      },
+      "outsideClose": {
+        "width": 390,
+        "height": 844,
+        "playing": false,
+        "menus": 1,
+        "dots": 0,
+        "menuOpen": false,
+        "meaningOpen": false,
+        "readerInert": false,
+        "footerInert": false,
+        "navInert": false,
+        "selected": "",
+        "top": 1,
+        "sameWords": true,
+        "errors": []
+      }
+    }
+  },
+  "limitations": [
+    "FPS values describe renderer callbacks, not certified presentation.",
+    "Earlier browser data retains its earlier build identity.",
+    "60Hz control calibration, 30s x 5 formal runs, actual presentation attribution and physical phone checks remain incomplete.",
+    "Earlier native diagnostic clips still show roughly 1s first/long-history gaps. Stable 60 FPS has not passed.",
+    "The 1e browser build used pre-existing local package changes; the 15.5.28 review build excludes the unrelated Playwright dependency.",
+    "The disk-full screenshot attempt and storage-unavailable notice do not certify persistent browser storage."
+  ],
+  "preservedFailures": [
+    "Earlier local blur/GPU experiments with pixel differences were rejected and not adopted.",
+    "Two earlier modal checks used an ambiguous hidden-dialog selector; corrected explicit-meaning-dialog checks passed on release 4b0c1d2f0083cfe6.",
+    "Initial swipe type-check detected possibly undefined touch input; corrected and rerun.",
+    "Final preview swipe script stopped before navigation because the original browser task space was absent.",
+    "The absent browser task space was replaced with a user-approved new verification page; functional checks completed.",
+    "A screenshot failed with ENOSPC; only owned rebuildable caches were cleared and final screenshots retained.",
+    "Nested snapshot lint was excluded by parent ignore rules; identical-source root lint passed.",
+    "The initial Jest flow- regex matched the temporary parent path, running all 123 suites: 122 passed and two pre-existing legacy layout assertions failed. The intended exact 55 Flow suites subsequently passed."
+  ],
+  "artifacts": [
+    {
+      "file": ".tmp/flow-current-filter-20261023/native-product-expanded-quality.json",
+      "bytes": 381016,
+      "sha256": "71190fe0b2b30adbc6de4d7d89b96a33eb6bf5fef332652dd5f97c69dcc85395"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/native-product-expanded-fonts.json",
+      "bytes": 573,
+      "sha256": "3800e1f472056b387f9375af4d8f2ecb8efd78601ee3f2f93ea7fa493737d0b4"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/native-page-performance.json",
+      "bytes": 621473,
+      "sha256": "f05df8b6bfc08b7419bcd3a780e79fe069883007945a8caf2332645564ae78fb"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/period-page-performance.json",
+      "bytes": 769417,
+      "sha256": "631f556a766b956171749f24cb5d93bbc15391a04e793548b9d8b888331fad13"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/preview-water-behavior.json",
+      "bytes": 403200,
+      "sha256": "c42ac52c46a2bd89fcd16b174e8fa76c6b65dcb41370fc3c9a778e4d70297f07"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/water-final-browser.json",
+      "bytes": 1756865,
+      "sha256": "42db66ea4b86d9cfe4cba191b797c190e3b464553a4d46dfa41c4f141d0bf1a8"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/water-final-browser-invalid-dialog-selector.json",
+      "bytes": 1174671,
+      "sha256": "9354e44c37de5f41613ef587f07c45769b1b27b2d91129206235ca75343a6edb"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/control-start.json",
+      "bytes": 11623,
+      "sha256": "52d822d4c5e52e8e88f1b2e6f11f20c4b33cf089cad64d2e1d1330cce9422f01"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/control-focused-round2.json",
+      "bytes": 11467,
+      "sha256": "ad36f3fa6ba36194f296e4c3dd25b389864aa59681575d91a3fce9e1fe1fe91d"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/control-static-html.json",
+      "bytes": 60051,
+      "sha256": "d808a0f317ec7e739fa4f52f6513135f8aaf33ca19b0f90cdbcb56fd9489448b"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/tests-swipe-targeted.log",
+      "bytes": 489,
+      "sha256": "f495097a9c04af3472a934ce1b5fc43f9b51e7796f804c1ff29f20b55ca48020"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/types-swipe.log",
+      "bytes": 409,
+      "sha256": "e008ee22415c012c3e9b5b53e181549f90c0eef6aef742cbd349e9f2a3b4c8fa"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/types-swipe-fixed.log",
+      "bytes": 209,
+      "sha256": "fa0f5ed26a55ebf4865b8f9140df43883ad38557f7530a6aae317fb153a5a7b9"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/tests-swipe-final.log",
+      "bytes": 2552,
+      "sha256": "7b301a093aca1fe851e56a5efc07865653b7aa1503d947df73fff38387d00bd9"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/native-tests-swipe-final.log",
+      "bytes": 30456,
+      "sha256": "53ffadccd3e831b77c3a237888cfcb8ea227ca3d5bd19fd2a6bc245145a9c53a"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/types-swipe-final.log",
+      "bytes": 209,
+      "sha256": "fa0f5ed26a55ebf4865b8f9140df43883ad38557f7530a6aae317fb153a5a7b9"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/lint-swipe-final.log",
+      "bytes": 91,
+      "sha256": "8d1aeb8bde3c02311671fe644c44102a6f4e11b4e0179c7bf43a854587eeb55b"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/build-swipe-final.log",
+      "bytes": 2790,
+      "sha256": "a612e17ca2b14084100a88553b16fe6c2e2f95de207857d1b8ab36678545cbb8"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/build-swipe-verified.log",
+      "bytes": 2792,
+      "sha256": "6bd7114098a759fa3786d0d8ec6723bd1033c8b61d4feb9b0ec090ab8b17f8c6"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/final-swipe-release.json",
+      "bytes": 732,
+      "sha256": "55601b092bce814351329ea17fbcc932798596d478926a735033c98a7ba1a74b"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/preview-swipe-check.mjs",
+      "bytes": 4272,
+      "sha256": "76a09cbc4ce9293495c2d581559b66e1079588ad6d883c3718f2077d9d7645dd"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/final-source-hashes.json",
+      "bytes": 2122,
+      "sha256": "f078d31e1b9265d8772c0b8d3d89cbb79d95a867556557c31a6d4c2b5a5e630d"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/flow-tests-exact.log",
+      "bytes": 4730,
+      "sha256": "64e2c1340dad42d10911115b8d72af05e3fd3ddcbdf6466e6377572b16b7a849"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/flow-release-tests.log",
+      "bytes": 353,
+      "sha256": "b31e4a15854fc1781d6660687ef5374b359f9c7c1f04a48374a3cda99da5460c"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/native-tests.log",
+      "bytes": 13021,
+      "sha256": "ede511693b345e3ff1572b3c59cb30743c40a2fd27594f2b772a9fd80b27195d"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/types.log",
+      "bytes": 209,
+      "sha256": "fa0f5ed26a55ebf4865b8f9140df43883ad38557f7530a6aae317fb153a5a7b9"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/lint-root.log",
+      "bytes": 91,
+      "sha256": "8d1aeb8bde3c02311671fe644c44102a6f4e11b4e0179c7bf43a854587eeb55b"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/lint.log",
+      "bytes": 238,
+      "sha256": "1d602f606750d362ca59b0e7b4a43a5936856c2c6e0c73a5558780da24d9142d"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/flow-tests.log",
+      "bytes": 23227,
+      "sha256": "2e0fc9f1e1899efd4bf77721ef7a7ad555079af5f986c931a0a13291bc1e2e39"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/build.log",
+      "bytes": 3143,
+      "sha256": "0c5e3b2403d64aedabe4af45a1ac14f618cd06b2afc0fc4dfb62d5a8e1a195f1"
+    },
+    {
+      "file": ".tmp/flow-public-20261024/next-security-integrity.json",
+      "bytes": 3904,
+      "sha256": "b93d0f8f84c25519f844a87f4a0ff2db95c9f4610d119ec2793f0171cf47a9c8"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/preview-swipe-behavior.json",
+      "bytes": 4511,
+      "sha256": "478d13929554902c9a6ceb60c22e82efe9bb7b492fd2ee405a777faa55373382"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/water-swipe-final-browser.json",
+      "bytes": 2134,
+      "sha256": "8246cee8da3b80c657ffeff54863f94d8a030529c96e8a41338aa398e813510e"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/control-swipe-final.json",
+      "bytes": 20744,
+      "sha256": "be2c27a4e00066ca8cf92d4d3b253fc3d73725d028307a8b14c9edd6f140fa16"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/production-menu-20261024-mobile.png",
+      "bytes": 31701,
+      "sha256": "4ef66d13c25b25aa922b3df1e3423929f0337abea0aff5940be124e181e801f0"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/production-menu-20261024-narrow.png",
+      "bytes": 19873,
+      "sha256": "40a1b4c503a9a12fc958695b78a2ad35aebe40a42f333a74599d39ffe8760023"
+    },
+    {
+      "file": ".tmp/flow-current-filter-20261023/production-meaning-20261024-mobile.png",
+      "bytes": 129287,
+      "sha256": "cc0fe54b53e3c20f6dc4adfa645298392cf4df7768c89cde30f1a856474c1770"
+    }
+  ],
+  "controlCalibration": {
+    "frames": 238,
+    "fps": 29.563655415013844,
+    "p95Ms": 49.20000000000027,
+    "p99Ms": 50.399999999999636,
+    "maxMs": 50.900000000000546,
+    "allVisibleFocused": true,
+    "viewport": [
+      1440,
+      900,
+      2
+    ],
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+    "passed60Hz": false
+  },
+  "securityDependencyAlignment": {
+    "next": "15.5.28",
+    "analyzer": "15.5.28",
+    "eslintConfigNext": "15.5.28",
+    "reason": "Preserve the security dependency patch already running on the public origin.",
+    "release": {
+      "id": "cd87af91778a1ae3",
+      "commit": "84027e4147e1367269a934cfbb11b22e92b68315",
+      "worktreeDirty": true,
+      "codeSha256": "b3ceba2c1ac476ef58770629247d2c5e6ec61d85d7d1cd449f2d1aadf9adc274",
+      "corpusVersion": "guji-core-v1",
+      "corpusSha256": "3ac315b83fbb75f5076e444a09823d243d1237995ba2244eecb43af76c0ce3ec",
+      "curatedVersion": "curated-9dcbdbbc52ea63b7",
+      "fontVersion": "6260e75c0bc7134351a0",
+      "fontManifestSha256": "46fb9c490f185581230c140654286858fab810180288ea809e5b53ae49fefbb4",
+      "fontBasePath": "/flow-assets/v-6260e75c0bc7134351a0",
+      "fontPreloads": [
+        "base-serif-c2701e3fde99183cf3b9.woff",
+        "base-supplement-7ae6002e9d58b6a75354.woff"
+      ],
+      "storageSchema": {
+        "browser": 4,
+        "server": 1
+      }
+    },
+    "sameProductAndTestSourceHashes": true,
+    "exactPathFlowSuites": 54,
+    "exactPathFlowTests": 462,
+    "releaseManifestSuites": 1,
+    "releaseManifestTests": 1,
+    "nativeTests": 124,
+    "types": "pass",
+    "lintAtProjectRoot": "pass",
+    "productionBuild": "pass",
+    "unrelatedPreexistingPlaywrightChangeExcluded": true
+  }
+}

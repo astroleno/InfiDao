@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react';
 
-export function useFlowDialog(onClose: () => void, open = true, initialFocus?: string) {
+export function useFlowDialog(onClose: () => void, open = true, initialFocus?: string, returnFocus?: HTMLElement | null) {
   const ref = useRef<HTMLElement>(null);
   const close = useRef(onClose);
   close.current = onClose;
   useEffect(() => {
     if (!open) return;
     const dialog = ref.current;
-    const previous = document.activeElement as HTMLElement | null;
+    const previous = returnFocus ?? document.activeElement as HTMLElement | null;
     const isolated: Array<{ element: HTMLElement; inert: boolean; hidden: string | null }> = [];
     let branch = dialog?.parentElement;
     while (branch?.parentElement) {
@@ -40,6 +40,6 @@ export function useFlowDialog(onClose: () => void, open = true, initialFocus?: s
       }
       if (previous?.isConnected) previous.focus({ preventScroll: true });
     };
-  }, [open, initialFocus]);
+  }, [open, initialFocus, returnFocus]);
   return ref;
 }

@@ -57,6 +57,30 @@ test('refraction receives sharp faded strokes while focused foreground stays cle
   glass.destroy(); context.fillText.mockImplementation(() => {});
 });
 
+test('ordinary small filters shrink tightly while saturated blur retains its sampling phase and scaled lettering keeps its raster', () => {
+  const canvas = document.createElement('canvas'), glass = new StreamGlass(canvas, jest.fn());
+  glass.draw([{ ...run, y: 120, folded: true, blur: 9 }], 390, 844, false);
+  expect(context.rect).toHaveBeenCalledTimes(2);
+  expect(context.rect).toHaveBeenNthCalledWith(1, 155, 98, 80, 44);
+  expect(context.rect).toHaveBeenNthCalledWith(2, 121, 56, 148, 120);
+  expect(context.filter).toBe('blur(9px)');
+  context.rect.mockClear();
+  glass.draw([{ ...run, y: 120, folded: true, blur: 3, scale: .8 }], 390, 844, false);
+  expect(context.rect).not.toHaveBeenCalled();
+  expect(canvas.dataset.glyphs).toBe('canvas');
+  glass.destroy();
+});
+
+test('native glyph position metadata stays bounded and releases with font invalidation', () => {
+  const canvas = document.createElement('canvas'), glass = new StreamGlass(canvas, jest.fn(), true);
+  glass.draw(Array.from({ length: 300 }, (_, index) => ({ ...run, text: `知${String.fromCodePoint(0x4e00 + index)}` })), 390, 844, false);
+  expect(glass.diagnostics.nativePositions?.entries).toBeLessThanOrEqual(256);
+  expect(glass.diagnostics.nativePositions?.bytes).toBeLessThanOrEqual(32 * 1024);
+  glass.draw([], 390, 844, false, undefined, 1);
+  expect(glass.diagnostics.nativePositions).toEqual({ entries: 0, bytes: 0 });
+  glass.destroy();
+});
+
 test('resizing releases the old resources and reduced motion does not draw optical motion', () => {
   const canvas = document.createElement('canvas'), glass = new StreamGlass(canvas, jest.fn());
   glass.draw([run], 390, 844, false);

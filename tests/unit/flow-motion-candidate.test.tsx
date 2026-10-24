@@ -6,12 +6,12 @@ import { createFlowHistory } from '@/lib/flow-browser/history';
 beforeEach(() => history.replaceState(null, '', '/infidao'));
 afterEach(() => history.replaceState(null, '', '/infidao'));
 
-test('the reader stays on the current material unless the URL opts in', () => {
+test('the reader defaults to water while URLs retain explicit material overrides', () => {
   for (const search of ['', '?motion=unknown', '?motion=true', '?reading=liquid']) expect(readMotionCandidate(search)).toBeNull();
   expect(readMotionCandidate('?motion=liquid')).toBe('liquid-live');
   expect(readMotionCandidate('?motion=current')).toBe('current');
   const { result } = renderHook(useMotionCandidate);
-  expect(result.current).toMatchObject({ available: false, variant: 'current' });
+  expect(result.current).toMatchObject({ available: false, variant: 'liquid-live' });
   act(() => result.current.toggle());
   expect(location.search).toBe('');
 });
@@ -37,7 +37,7 @@ test('candidate availability follows browser navigation without persisting a pre
   history.replaceState(null, '', '/infidao?motion=liquid');
   const { result } = renderHook(useMotionCandidate);
   act(() => { history.replaceState(null, '', '/infidao'); window.dispatchEvent(new PopStateEvent('popstate')); });
-  expect(result.current).toMatchObject({ available: false, variant: 'current' });
+  expect(result.current).toMatchObject({ available: false, variant: 'liquid-live' });
 });
 
 test.each(['liquid', 'current'])('reader navigation preserves the explicit %s candidate selection', mode => {

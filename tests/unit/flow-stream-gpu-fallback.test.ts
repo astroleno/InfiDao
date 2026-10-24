@@ -12,6 +12,7 @@ jest.mock('@/lib/flow-browser/stream-glyph-cache', () => ({ StreamGlyphCache: je
 const context = {
   setTransform: jest.fn(), clearRect: jest.fn(), fillText: jest.fn(), fillRect: jest.fn(),
   save: jest.fn(), restore: jest.fn(), translate: jest.fn(), scale: jest.fn(), drawImage: jest.fn(),
+  beginPath: jest.fn(), rect: jest.fn(), clip: jest.fn(),
   createLinearGradient: jest.fn(() => ({ addColorStop: jest.fn() })),
   measureText: jest.fn(() => ({ width: 60, actualBoundingBoxLeft: 30, actualBoundingBoxRight: 30,
     actualBoundingBoxAscent: 20, actualBoundingBoxDescent: 4, fontBoundingBoxAscent: 20, fontBoundingBoxDescent: 4 })),

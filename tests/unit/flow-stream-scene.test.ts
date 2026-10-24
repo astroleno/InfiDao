@@ -1,5 +1,5 @@
 import { StreamSceneIndex } from '@/lib/flow-browser/stream-scene';
-import { StreamFramePlanner, planTargetRegion } from '@/lib/flow-browser/stream-frame-plan';
+import { StreamFramePlanner, nativeRasterUnambiguous, planNativeFilterClip, planTargetRegion } from '@/lib/flow-browser/stream-frame-plan';
 
 test('visible work depends on the viewport, while all historical rows remain indexed', () => {
   const index = new StreamSceneIndex<{ top: number; bottom: number; order: number }>();
@@ -56,4 +56,54 @@ test('active bounds shrink without losing capacity or leaving the old position u
   expect(narrow.capacity).toEqual(wide.capacity);
   expect(narrow.activeRect.width).toBe(240);
   expect(narrow.dirtyRect).toEqual(wide.activeRect);
+});
+
+test('native small-blur bounds retain the raster origin and the whole filter halo', () => {
+  expect(planNativeFilterClip({ x: 30, y: 40, width: 20, height: 30 }, 585, 1266, .45))
+    .toEqual({ x: 0, y: 0, width: 60, height: 80 });
+  expect(planNativeFilterClip({ x: 560, y: 1250, width: 40, height: 30 }, 585, 1266, 4))
+    .toEqual({ x: 0, y: 0, width: 585, height: 1266 });
+  expect(planNativeFilterClip({ x: -50, y: 40, width: 20, height: 30 }, 585, 1266, .45)?.width).toBe(0);
+});
+
+test('native downsampled filters and unknown bounds preserve their original drawing region', () => {
+  const bounds = { x: 30, y: 40, width: 20, height: 30 };
+  expect(planNativeFilterClip(bounds, 585, 1266, 4.01)).toBeUndefined();
+  expect(planNativeFilterClip(bounds, 585, 1266, 9)).toBeUndefined();
+  expect(planNativeFilterClip({ ...bounds, width: NaN }, 585, 1266, .45)).toBeUndefined();
+  expect(planNativeFilterClip(bounds, 585, 1266, Infinity)).toBeUndefined();
+});
+
+test('native raster safety checks every glyph advance and the baseline near float rounding ties', () => {
+  expect(nativeRasterUnambiguous(220, 170, 1.5, [0, 18], 585, 1266)).toBe(true);
+  expect(nativeRasterUnambiguous(220.375 - .00001, 170, 1.5, [0, 18], 585, 1266)).toBe(false);
+  expect(nativeRasterUnambiguous(220, 170.125, 1.5, [0], 585, 1266)).toBe(false);
+  expect(nativeRasterUnambiguous(220, 170, 1.5, [0, .25], 585, 1266)).toBe(false);
+  expect(nativeRasterUnambiguous(220.37, 170, 1.5, [0, 18], 585, 1266)).toBe(true);
+});
+
+test('unambiguous native filters shrink tightly and preserve the saturated sampling grid', () => {
+  const bounds = { x: 200, y: 160, width: 100, height: 30 };
+  expect(planNativeFilterClip(bounds, 585, 1266, .45, true))
+    .toEqual({ x: 190, y: 150, width: 120, height: 50 });
+  const saturated = planNativeFilterClip(bounds, 585, 1266, 9, true)!;
+  expect(Math.abs((2 * saturated.x + saturated.width - 585) % 36)).toBe(0);
+  expect(Math.abs((2 * saturated.y + saturated.height - 1266) % 36)).toBe(0);
+  expect(saturated.width).toBeLessThan(100 + 88 + 36);
+  expect(saturated.height).toBeLessThan(30 + 88 + 36);
+  expect(planNativeFilterClip(bounds, 585, 1266, 8.1, true)).toBeUndefined();
+});
+
+test('native sampling grids remain aligned at every clipped viewport edge', () => {
+  for (const [width, height] of [[585, 1266], [1789, 1118]]) for (const sigma of [7, 9]) {
+    const period = sigma === 9 ? 18 : 7;
+    for (const x of [-40, 0, 200, width! - 20]) for (const y of [-40, 0, 200, height! - 20]) {
+      const clip = planNativeFilterClip({ x, y, width: 80, height: 30 }, width!, height!, sigma, true)!;
+      expect(clip.x).toBeGreaterThanOrEqual(0); expect(clip.y).toBeGreaterThanOrEqual(0);
+      expect(clip.x + clip.width).toBeLessThanOrEqual(width!);
+      expect(clip.y + clip.height).toBeLessThanOrEqual(height!);
+      expect(Math.abs((2 * clip.x + clip.width - width!) % (period * 2))).toBe(0);
+      expect(Math.abs((2 * clip.y + clip.height - height!) % (period * 2))).toBe(0);
+    }
+  }
 });

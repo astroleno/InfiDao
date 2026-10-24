@@ -1,6 +1,6 @@
 import { bendSettings, type BendSettings } from './bend';
 import { StreamGlyphCache, type GpuGlyphSources } from './stream-glyph-cache';
-import { planTargetRegion, type StreamFramePlan, type TargetRegion } from './stream-frame-plan';
+import { nativeRasterUnambiguous, planNativeFilterClip, planTargetRegion, type StreamFramePlan, type TargetRegion } from './stream-frame-plan';
 const { liquidContactWeight } = require('../../../miniprogram/flow/stream-liquid') as {
   liquidContactWeight: (x: number, materialY: number, phase?: number) => number;
 };
@@ -56,6 +56,7 @@ export class StreamGlass {
   private failed = false;
   private disposed = false;
   private metrics = new Map<string, TextMetrics>();
+  private nativePositions = new Map<TextMetrics, Float32Array | null>();
   private fontRevision = -1;
   private lastRuns: OpticalRun[] | undefined;
   private sourceRevision = -1;
@@ -73,15 +74,55 @@ export class StreamGlass {
   get diagnostics() {
     return { pipeline: this.glyphPipeline, fontRevision: this.fontRevision, sourceRevision: this.sourceRevision,
       sourceRegion: this.sourceRegion, metrics: this.metrics.size, glyphs: this.glyphCache?.diagnostics,
+      ...(this.profile ? { nativePositions: { entries: this.nativePositions.size,
+        bytes: [...this.nativePositions.values()].reduce((bytes, values) => bytes + (values?.byteLength ?? 0), 0) } } : {}),
       fallbackCanvasBytes: [this.source, ...this.fallbackCanvases.values(), ...this.textLayers.map(layer => layer.canvas),
         ...this.surfaceFrames.map(frame => frame.canvas)].reduce((bytes, canvas) => bytes + canvas.width * canvas.height * 4, 0) };
   }
 
-  private paintText(context: CanvasRenderingContext2D, paint: TextPaint, filter = paint.filter) {
+  private stableNativeRaster(run: OpticalRun, metrics: TextMetrics, baseline: number, dpr: number) {
+    let advances = this.nativePositions.get(metrics);
+    if (advances === undefined) {
+      // Prefix advances match the unjoined CJK text used by the reader. Other
+      // shaping and unusually long runs retain the original raster origin.
+      const chars = Array.from(run.text);
+      advances = null;
+      if (chars.length <= 32 && /^[\p{Script=Han}，。！？、；：「」『』（）《》〈〉…—·\s]+$/u.test(run.text)) {
+        advances = new Float32Array(chars.length);
+        let prefix = '';
+        chars.forEach((char, index) => { advances![index] = index ? this.measure(run, prefix).width : 0; prefix += char; });
+      }
+      // At most 32 KiB of advance values. Font invalidation releases them with
+      // the corresponding metrics; this cache does not own glyph bitmaps.
+      if (this.nativePositions.size >= 256) this.nativePositions.delete(this.nativePositions.keys().next().value!);
+      this.nativePositions.set(metrics, advances);
+    }
+    return advances !== null && nativeRasterUnambiguous((run.x - metrics.width / 2) * dpr - this.sourceLeft,
+      baseline * dpr, dpr, advances, this.source.width, this.source.height);
+  }
+
+  private paintText(context: CanvasRenderingContext2D, paint: TextPaint, filter = paint.filter, dpr = 0) {
     const { run, metrics } = paint;
     const ascent = metrics.fontBoundingBoxAscent ?? metrics.actualBoundingBoxAscent;
     const descent = metrics.fontBoundingBoxDescent ?? metrics.actualBoundingBoxDescent;
     context.save();
+    if (dpr && run.scale === 1 && filter.startsWith('blur(')) {
+      const baseline = run.y + (ascent - descent) / 2;
+      const stableRaster = this.stableNativeRaster(run, metrics, baseline, dpr);
+      const clip = planNativeFilterClip({
+        x: (run.x - metrics.actualBoundingBoxLeft) * dpr - this.sourceLeft,
+        y: (baseline - metrics.actualBoundingBoxAscent) * dpr,
+        width: (metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight) * dpr,
+        height: (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent) * dpr,
+      }, this.source.width, this.source.height, parseFloat(filter.slice(5)), stableRaster);
+      if (clip) {
+        // Ambiguous rounding keeps the original origin. Saturated blur keeps
+        // its sampling phase; sigma and lettering are never quantized.
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.beginPath(); context.rect(clip.x, clip.y, clip.width, clip.height); context.clip();
+        context.setTransform(dpr, 0, 0, dpr, -this.sourceLeft, 0);
+      }
+    }
     context.translate(run.x, run.y);
     context.scale(run.scale, run.scale);
     context.font = run.font;
@@ -104,7 +145,7 @@ export class StreamGlass {
       if (batch && start.filter !== 'none') while (end < paints.length
         && paints[end]!.run.y === start.run.y && paints[end]!.filter === start.filter) end++;
       if (end === first + 1 || this.usedTextLayers >= 64) {
-        for (let i = first; i < end; i++) this.paintText(target, paints[i]!);
+        for (let i = first; i < end; i++) this.paintText(target, paints[i]!, undefined, this.sourceCropped ? 0 : dpr);
       } else {
         let top = Infinity, bottom = -Infinity;
         for (let i = first; i < end; i++) {
@@ -124,7 +165,7 @@ export class StreamGlass {
         if (!layer) {
           const canvas = document.createElement('canvas'), context = canvas.getContext('2d');
           if (!context) {
-            for (let i = first; i < end; i++) this.paintText(target, paints[i]!);
+            for (let i = first; i < end; i++) this.paintText(target, paints[i]!, undefined, this.sourceCropped ? 0 : dpr);
             first = end;
             continue;
           }
@@ -212,6 +253,7 @@ export class StreamGlass {
 
   private releaseFallback() {
     this.releaseTextLayers();
+    this.nativePositions.clear();
     this.source.width = 1; this.source.height = 1;
     if (this.context) { this.context.textAlign = 'center'; this.context.textBaseline = 'alphabetic'; }
     for (const canvas of this.fallbackCanvases.values()) { canvas.width = 0; canvas.height = 0; }
@@ -389,6 +431,7 @@ export class StreamGlass {
       }
       if (this.fontRevision !== fontRevision) {
         this.metrics.clear();
+        this.nativePositions.clear();
         this.fontRevision = fontRevision;
         this.lastRuns = undefined;
       }
@@ -535,6 +578,7 @@ export class StreamGlass {
     this.engine = null;
     this.releaseTextLayers();
     this.metrics.clear();
+    this.nativePositions.clear();
     this.lastRuns = undefined;
     this.lineBounds.clear();
     this.source.width = 0;

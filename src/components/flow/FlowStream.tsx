@@ -10,11 +10,13 @@ import { ScrollNoiseMotion, SettlingScrollNoiseMotion } from '@/lib/flow-browser
 import { StreamGlass, type OpticalRun } from '@/lib/flow-browser/stream-glass';
 import { StreamSceneIndex } from '@/lib/flow-browser/stream-scene';
 import { StreamFramePlanner } from '@/lib/flow-browser/stream-frame-plan';
+import { StreamScrollMotion } from '@/lib/flow-browser/stream-scroll-motion';
 import { bendSourcePoint, bindBendInteraction, type BendSettings } from '@/lib/flow-browser/bend';
 import type { PersonalNote } from '@/lib/flow-browser/storage';
 import { LinkedText } from './LinkedText';
 import { NotesPanel } from './NotesPanel';
-import { StreamActions } from './StreamActions';
+import { FlowMenu } from './FlowMenu';
+import { MeaningPopover } from './MeaningPopover';
 import styles from './flow.module.css';
 
 // Active-passage updates retain the native text subtree for every other
@@ -29,6 +31,7 @@ type Props = {
   reducedMotion: boolean;
   motionVariant?: StreamMotionVariant;
   motionSeed?: number;
+  navigation?: Pick<ComponentProps<typeof FlowMenu>, 'onThought' | 'onLibrary' | 'libraryDisabled' | 'motionCandidate'>;
   /** Comparison fixtures may start settled; reader materials never disable entry. */
   settleEntrance?: boolean;
   pending: boolean;
@@ -69,14 +72,26 @@ export function FlowStream(props: Props) {
   const articleScene = useRef(new StreamSceneIndex<{ top: number; bottom: number; order: number; entry: StreamEntry }>());
   const previousFlow = useRef({ paused: props.paused, revision: props.restore.revision });
   const intended = useRef(false);
-  const pointer = useRef<{ x: number; y: number; moved: boolean } | null>(null);
+  const pointer = useRef<{ x: number; y: number; moved: boolean; resume: boolean; key: string } | null>(null);
   const preparedAt = useRef('');
   const continuedAt = useRef('');
   const [notesFor, setNotesFor] = useState<string | null>(null);
+  const [scrollMotion] = useState(() => new StreamScrollMotion(props.restore.top));
+  const [meaningFor, setMeaningFor] = useState<string | null>(null);
+  const meaningResume = useRef(false);
+  const meaningPress = useRef<{ timer: number; key: string; resume: boolean; top: number; trigger: HTMLElement | null } | null>(null);
+  const meaningTrigger = useRef<HTMLElement | null>(null);
+  const menuResume = useRef(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuFor, setMenuFor] = useState<string | null>(null);
+  const suppressPressClick = useRef(false);
+  const opticalHit = useRef<(x: number, y: number) => HTMLElement | null | undefined>(() => undefined);
   const contentEntries = useMemo(() => props.entries.map(entry => ({
     entry,
     select: (selection: Parameters<ComponentProps<typeof LinkedText>['onSelect']>[0]) => {
       intended.current = false;
+      meaningResume.current = false;
+      setMeaningFor(null);
       live.current.onRead(entry);
       live.current.onBranch({ ...selection, pathId: entry.pathId });
     },
@@ -85,7 +100,8 @@ export function FlowStream(props: Props) {
   useLayoutEffect(() => {
     const panel = panelRef.current;
     if (!panel) return;
-    panel.scrollTop = props.restore.top;
+    let wantedTop = props.restore.top;
+    panel.scrollTop = wantedTop;
     // Source navigation lands on the quoted occurrence in the full original.
     if (props.restore.source && props.restore.frameId) {
       const article = Array.from(panel.querySelectorAll<HTMLElement>('[data-flow-frame]'))
@@ -94,7 +110,7 @@ export function FlowStream(props: Props) {
       if (target) {
         let top = 0, node: HTMLElement | null = target;
         while (node && node !== panel) { top += node.offsetTop; node = node.offsetParent as HTMLElement | null; }
-        panel.scrollTop = Math.max(0, top - panel.clientHeight * .42);
+        panel.scrollTop = wantedTop = Math.max(0, top - panel.clientHeight * .42);
       }
     // Older readers stored a nonzero offset within their own chain. A saved
     // passage also anchors offsets after a viewport or typography change.
@@ -106,22 +122,51 @@ export function FlowStream(props: Props) {
         while (node && node !== panel) { top += node.offsetTop; node = node.offsetParent as HTMLElement | null; }
         const focus = panel.scrollTop + panel.clientHeight * .42;
         if (!props.restore.top || focus < top || focus >= top + article.offsetHeight) {
-          panel.scrollTop = Math.max(0, top - panel.clientHeight * .25);
+          panel.scrollTop = wantedTop = Math.max(0, top - panel.clientHeight * .25);
         }
       }
     }
+    const limit = Math.max(panel.scrollTop, panel.scrollHeight - panel.clientHeight);
+    scrollMotion.reset(Math.max(0, Math.min(limit, wantedTop)), panel.scrollTop);
+    if (contentRef.current) {
+      const remainder = scrollMotion.position(panel.scrollTop) - panel.scrollTop;
+      contentRef.current.style.translate = remainder ? `0 ${-remainder}px` : '';
+    }
     intended.current = false;
     measure.current();
-  }, [props.restore]);
+  }, [props.restore, scrollMotion]);
 
   useEffect(() => { if (props.notesFrameId) setNotesFor(props.notesFrameId); }, [props.notesFrameId]);
+
+  useEffect(() => {
+    meaningResume.current = false;
+    setMeaningFor(null);
+    setMenuOpen(false);
+    setMenuFor(null);
+    if (meaningPress.current) window.clearTimeout(meaningPress.current.timer);
+    meaningPress.current = null;
+  }, [props.restore.revision]);
+
+  useEffect(() => {
+    const cancel = () => {
+      if (meaningPress.current) window.clearTimeout(meaningPress.current.timer);
+      meaningPress.current = null;
+    };
+    window.addEventListener('blur', cancel);
+    document.addEventListener('visibilitychange', cancel);
+    return () => {
+      cancel();
+      window.removeEventListener('blur', cancel);
+      document.removeEventListener('visibilitychange', cancel);
+    };
+  }, []);
 
   useLayoutEffect(() => { measure.current(); }, [props.entries, props.sourceOpen, notesFor]);
 
   useEffect(() => {
     const panel = panelRef.current, content = contentRef.current;
     if (!panel || !content) return;
-    let handle = 0, last = 0, remainder = 0, disposed = false;
+    let handle = 0, disposed = false;
     type Part = { element: HTMLElement; top: number; bottom: number; order: number; motion: EntranceMotion; ink: InkMotion; inkPhase: string };
     let parts: Part[] = [];
     const motions = new WeakMap<HTMLElement, EntranceMotion>();
@@ -167,9 +212,9 @@ export function FlowStream(props: Props) {
       frameWordsVisited = 0;
       const height = panel.clientHeight;
       if (!height) return false;
-      const scrollTop = panel.scrollTop, activeElement = document.activeElement;
+      const scrollTop = scrollMotion.position(panel.scrollTop), activeElement = document.activeElement;
       const canvasOwnsGlyphs = !live.current.reducedMotion && glassRef.current?.dataset.optics === 'ready';
-      const variant = live.current.motionVariant || 'current';
+      const variant = live.current.motionVariant || 'liquid-live';
       let stagger = 0, moving = false;
       const settleAll = !!live.current.settleEntrance || live.current.reducedMotion;
       if (settleAll && !settledAll) parts.forEach(finishPart);
@@ -312,25 +357,22 @@ export function FlowStream(props: Props) {
       handle = 0;
       if (pendingMeasure) remeasure(pendingMeasure);
       const p = live.current;
-      if (!p.paused && p.autoScroll !== false && !p.reducedMotion && !document.hidden && p.entries.length) {
-        const elapsed = last ? Math.min(48, time - last) : 0;
-        // Slow enough to read complete paragraphs. Preserve subpixel movement
-        // even in browsers which quantize scrollTop to device pixels.
-        remainder += elapsed * .012;
-        if (remainder >= 1) {
-          const move = Math.floor(remainder);
-          panel.scrollTop += move;
-          remainder -= move;
-        }
-        last = time;
-        schedule();
-      } else last = 0;
+      const playing = !p.paused && p.autoScroll !== false && !p.reducedMotion && !document.hidden && !!p.entries.length;
+      const top = scrollMotion.frame(panel.scrollTop, time, playing,
+        Math.max(panel.scrollTop, panel.scrollHeight - panel.clientHeight));
+      if (playing) panel.scrollTop = top;
+      // Keep native layout/scrolling, and compensate only the fraction which
+      // the browser rounded away. Optical projection uses that same position.
+      const remainder = scrollMotion.applied(panel.scrollTop);
+      content.style.translate = remainder ? `0 ${-remainder}px` : '';
+      if (playing) schedule();
       if (paint(time)) schedule();
       if (probe) {
         const cpuMs = performance.now() - started;
         probe({ time, cpuMs, totalWords: words.length, visibleWords: cachedRuns.length,
           indexedWordsVisited: frameWordsVisited, activeParts: activeParts.size, visibleParts: visibleParts.length,
-          scrollTop: panel.scrollTop, drawMs, sceneMs: cpuMs - drawMs, layout: { ...layoutProbe }, render: glass?.diagnostics });
+          scrollTop: top, nativeScrollTop: panel.scrollTop, scrollRemainder: remainder,
+          drawMs, sceneMs: cpuMs - drawMs, layout: { ...layoutProbe }, render: glass?.diagnostics });
       }
     };
     optics.current = schedule;
@@ -354,7 +396,7 @@ export function FlowStream(props: Props) {
       // Materialize the previous layout's lazy finish boundary before content
       // moves or new paragraphs are inserted. This is layout work, not RAF work.
       partIndex.finishBefore(passedUntil, finishPart);
-      passedUntil = panel.scrollTop;
+      passedUntil = scrollMotion.position(panel.scrollTop);
       planner.invalidate('layout');
       settledAll = false;
       width = content.clientWidth;
@@ -453,7 +495,7 @@ export function FlowStream(props: Props) {
     panel.addEventListener('focusout', schedule);
     document.addEventListener('visibilitychange', schedule);
     if (glassRef.current) glass = new StreamGlass(glassRef.current, () => { planner.invalidate('restore'); schedule(); }, !!probe);
-    const unbindBend = bindBendInteraction(panel, (clientX, clientY) => {
+    const targetAt = (clientX: number, clientY: number) => {
       if (!drawn || live.current.reducedMotion || glassRef.current?.dataset.optics !== 'ready') return undefined;
       const rect = panel.getBoundingClientRect(), shape = drawn.settings;
       if (!rect.width || !rect.height) return undefined;
@@ -465,7 +507,9 @@ export function FlowStream(props: Props) {
       const hit = drawn.hits.find(hit => hit.element.isConnected &&
         Math.abs(point.x - hit.x) <= hit.width / 2 && Math.abs(point.y - hit.y) <= hit.height / 2);
       return hit?.element || null;
-    }, () => { planner.invalidate('interaction'); schedule(); });
+    };
+    opticalHit.current = targetAt;
+    const unbindBend = bindBendInteraction(panel, targetAt, () => { planner.invalidate('interaction'); schedule(); });
     remeasure('mount');
     return () => {
       disposed = true;
@@ -478,6 +522,8 @@ export function FlowStream(props: Props) {
       document.removeEventListener('visibilitychange', schedule);
       glass?.destroy();
       unbindBend();
+      content.style.translate = '';
+      opticalHit.current = () => undefined;
       for (const { element } of words) {
         for (const name of ['transform', 'transform-origin', 'filter', 'opacity', 'visibility']) element.style.removeProperty(name);
         element.removeAttribute('data-flow-bent');
@@ -487,7 +533,7 @@ export function FlowStream(props: Props) {
       measure.current = () => {};
       entrance.current = { pause: () => {}, resume: () => {} };
     };
-  }, []);
+  }, [scrollMotion]);
 
   useEffect(() => {
     if (previousFlow.current.paused !== props.paused) {
@@ -506,9 +552,39 @@ export function FlowStream(props: Props) {
   const pause = () => {
     intended.current = false;
     entrance.current.pause();
+    if (panelRef.current) props.onScroll(scrollMotion.position(panelRef.current.scrollTop));
     props.onPause();
   };
+  const cancelMeaningPress = () => {
+    if (meaningPress.current) window.clearTimeout(meaningPress.current.timer);
+    meaningPress.current = null;
+  };
+  const showMeaning = (entry: StreamEntry, resume = !props.paused && !props.reducedMotion, trigger: HTMLElement | null = null) => {
+    if (!entry.frame.meaning) return;
+    cancelMeaningPress();
+    if (meaningFor === entryKey(entry)) return;
+    meaningResume.current = resume;
+    meaningTrigger.current = trigger;
+    pause();
+    props.onRead(entry);
+    setMeaningFor(entryKey(entry));
+  };
+  const closeMeaning = () => {
+    setMeaningFor(null);
+    const resume = meaningResume.current;
+    meaningResume.current = false;
+    if (resume && !live.current.reducedMotion) {
+      intended.current = true;
+      entrance.current.resume();
+      live.current.onResume?.();
+    }
+  };
+  const meaningAt = (target: EventTarget | null) => {
+    const article = target instanceof Element ? target.closest('[data-flow-heading]')?.closest<HTMLElement>('[data-stream-key]') : null;
+    return article ? props.entries.find(entry => entryKey(entry) === article.dataset.streamKey && !!entry.frame.meaning) : undefined;
+  };
   const resumeFromInput = (target: EventTarget | null) => {
+    cancelMeaningPress();
     const selection = window.getSelection();
     if (selection && !selection.isCollapsed && (panelRef.current?.contains(selection.anchorNode) || panelRef.current?.contains(selection.focusNode))) return;
     if (target instanceof Element && target.closest('textarea, input, select, [contenteditable="true"]')) return;
@@ -521,19 +597,21 @@ export function FlowStream(props: Props) {
   function onScroll() {
     const panel = panelRef.current;
     if (!panel) return;
+    if (meaningPress.current && Math.abs(scrollMotion.position(panel.scrollTop) - meaningPress.current.top) > 6) cancelMeaningPress();
     optics.current();
-    props.onScroll(panel.scrollTop);
-    const edge = panel.scrollTop + panel.clientHeight * .38;
+    const top = scrollMotion.position(panel.scrollTop);
+    props.onScroll(top);
+    const edge = top + panel.clientHeight * .38;
     const entry = articleScene.current.atOrBefore(edge)?.entry;
     const focused = document.activeElement;
     const editing = focused instanceof Element && panel.contains(focused) && focused.matches('textarea, input');
-    if (entry && entryKey(entry) !== props.activeKey && !editing && !props.sourceOpen && !notesFor) props.onRead(entry);
+    if (entry && entryKey(entry) !== props.activeKey && !editing && !props.sourceOpen && !notesFor && !menuOpen && !meaningFor) props.onRead(entry);
     if ((!intended.current && props.paused) || editing || props.pending || !props.canContinue) return;
     const tail = articleScene.current.last;
     if (!tail) return;
     const cursor = props.entries.at(-1);
     const key = cursor ? entryKey(cursor) : '';
-    const gap = tail.bottom - panel.scrollTop - panel.clientHeight * .82;
+    const gap = tail.bottom - top - panel.clientHeight * .82;
     if (gap < panel.clientHeight * .6 && preparedAt.current !== key) {
       preparedAt.current = key;
       props.onPrepareNext();
@@ -548,22 +626,84 @@ export function FlowStream(props: Props) {
   const waitingKey = props.connecting
     ? props.entries.find(item => item.frame.id === props.connecting?.frameId && (!props.connecting.pathId || item.pathId === props.connecting.pathId))
     : props.entries.at(-1);
+  const meaningEntry = contentEntries.find(({ entry }) => entryKey(entry) === meaningFor);
+  const menuEntry = props.entries.find(entry => entryKey(entry) === (menuFor || props.activeKey)) || props.entries[0];
+  const menuCurrent = !!menuEntry && entryKey(menuEntry) === props.activeKey;
 
-  return <section className={styles.stream} aria-label="连续经文流" data-flow-stream data-motion-variant={props.motionVariant || 'current'} data-paused={props.paused} data-pending={props.pending}>
+  return <section className={styles.stream} aria-label="连续经文流" data-flow-stream data-motion-variant={props.motionVariant || 'liquid-live'} data-paused={props.paused} data-pending={props.pending}>
     <canvas ref={glassRef} className={styles.streamGlass} data-flow-glass aria-hidden="true" />
     <div ref={panelRef} className={styles.streamViewport} tabIndex={0} aria-label="经文阅读" data-flow-viewport
-      aria-description={props.onResume ? '点击停驻阅读，滚轮、滑动或翻页键继续流动。' : undefined}
+      aria-description={`${props.onResume ? '点击停驻阅读，滚轮、上下滑动或翻页键继续流动。' : ''}向左滑动打开阅读选项。长按经文或按 Shift+F10 查看释义。`}
       onWheel={event => { if (!event.ctrlKey && event.deltaY) resumeFromInput(event.target); }}
-      onTouchMove={event => { if (event.touches.length === 1) resumeFromInput(event.target); }}
+      onTouchMove={event => {
+        if (event.touches.length !== 1) return;
+        const start = pointer.current, touch = event.touches[0];
+        if (!touch) return;
+        if (start && Math.abs(touch.clientX - start.x) > 6 && Math.abs(touch.clientX - start.x) > Math.abs(touch.clientY - start.y) * 1.4) return;
+        resumeFromInput(event.target);
+      }}
       onPointerDown={event => {
-        if (event.button !== 0) return;
-        pointer.current = { x: event.clientX, y: event.clientY, moved: false };
+        if (event.button !== 0 || event.isPrimary === false) return;
+        cancelMeaningPress();
+        suppressPressClick.current = false;
+        if (event.target instanceof Element && event.target.closest('textarea, input, select, [contenteditable="true"]')) {
+          pointer.current = null;
+          pause();
+          return;
+        }
+        const hit = opticalHit.current(event.clientX, event.clientY);
+        const target = hit === undefined ? event.target : hit;
+        const article = target instanceof Element ? target.closest<HTMLElement>('[data-stream-key]') : null;
+        const resume = !props.paused && !props.reducedMotion;
+        pointer.current = { x: event.clientX, y: event.clientY, moved: false, resume, key: article?.dataset.streamKey || props.activeKey };
+        const entry = meaningAt(target);
+        if (entry) {
+          const timer = window.setTimeout(() => {
+            const press = meaningPress.current;
+            if (!press || pointer.current?.moved) return;
+            const latest = live.current.entries.find(entry => entryKey(entry) === press.key);
+            if (!latest) return;
+            suppressPressClick.current = true;
+            showMeaning(latest, press.resume, press.trigger);
+          }, 450);
+          const trigger = target instanceof Element ? target.closest<HTMLElement>('button') : null;
+          meaningPress.current = { timer, key: entryKey(entry), resume, trigger, top: scrollMotion.position(event.currentTarget.scrollTop) };
+        }
         pause();
       }}
       onPointerMove={event => {
-        if (pointer.current && Math.hypot(event.clientX - pointer.current.x, event.clientY - pointer.current.y) > 6) pointer.current.moved = true;
+        if (pointer.current && Math.hypot(event.clientX - pointer.current.x, event.clientY - pointer.current.y) > 6) {
+          pointer.current.moved = true;
+          cancelMeaningPress();
+        }
       }}
-      onPointerCancel={() => { pointer.current = null; }}
+      onPointerUp={event => {
+        cancelMeaningPress();
+        const start = pointer.current;
+        if (!start || suppressPressClick.current) return;
+        const dx = event.clientX - start.x, dy = event.clientY - start.y;
+        if (dx > -36 || Math.abs(dx) < Math.abs(dy) * 1.4) return;
+        start.moved = true;
+        suppressPressClick.current = true;
+        menuResume.current = start.resume;
+        setMenuFor(start.key);
+        setMenuOpen(true);
+      }}
+      onPointerLeave={cancelMeaningPress}
+      onPointerCancel={() => { cancelMeaningPress(); pointer.current = null; suppressPressClick.current = false; }}
+      onClickCapture={event => {
+        // Touch browsers may dispatch the click after pointerup. Keep this
+        // press consumed until its click or the next pointer sequence; native
+        // keyboard activation has detail 0 and remains available.
+        if ((suppressPressClick.current || pointer.current?.moved) && event.detail !== 0) {
+          event.preventDefault(); event.stopPropagation(); pointer.current = null;
+        }
+        suppressPressClick.current = false;
+      }}
+      onContextMenu={event => {
+        const entry = meaningAt(event.target);
+        if (entry) { event.preventDefault(); showMeaning(entry, meaningPress.current?.resume ?? (!props.paused && !props.reducedMotion)); }
+      }}
       onClick={event => {
         if (pointer.current?.moved) { pointer.current = null; return; }
         pointer.current = null;
@@ -571,6 +711,10 @@ export function FlowStream(props: Props) {
       }}
       onScroll={onScroll}
       onKeyDown={event => {
+        if ((event.key === 'F10' && event.shiftKey) || event.key === 'ContextMenu') {
+          const entry = meaningAt(event.target);
+          if (entry) { event.preventDefault(); event.stopPropagation(); showMeaning(entry); return; }
+        }
         if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
         const editing = event.target instanceof Element && event.target.closest('input, textarea, select, [contenteditable="true"]');
         const activating = event.key === ' ' && event.target instanceof Element && event.target.closest('button, a');
@@ -581,28 +725,17 @@ export function FlowStream(props: Props) {
         {contentEntries.map(({ entry, select }, entryIndex) => {
           const key = entryKey(entry), item = entry.frame, current = key === props.activeKey;
           const connecting = props.connecting?.pathId && props.connecting.pathId !== entry.pathId ? null : props.connecting;
-          const bookmarked = props.bookmarkKeys.has(quoteKey(item));
           return <article key={key} data-flow-frame={item.id} data-flow-path={entry.pathId} data-stream-key={key} data-flow-ready={item.ready !== false}
             className={styles.streamNode} aria-label={`${item.source} · ${item.chapterLabel}`}>
             <blockquote className={styles.streamQuote} data-flow-heading data-flow-entrance="quote"
               data-entry-order={entryIndex * 3} data-entry-side={entryIndex % 2 ? 'right' : 'left'}>
               <RetainedLinkedText optical frame={item} surface="quote" onSelect={select} connecting={connecting} />
             </blockquote>
-            {item.meaning && <div className={styles.streamMeaning} data-flow-surface="meaning" aria-label="释义"
-              data-flow-entrance="meaning" data-entry-order={entryIndex * 3 + 1} data-entry-side={entryIndex % 2 ? 'left' : 'right'}>
-              <p><RetainedLinkedText optical frame={item} surface="meaning" onSelect={select} connecting={connecting} /></p>
-            </div>}
             {(item.ready !== false || item.settled?.reflection) && item.reflection && <div className={styles.streamReflection} data-flow-surface="reflection"
               aria-label="此刻回响" data-flow-entrance="reflection" data-entry-order={entryIndex * 3 + (item.meaning ? 2 : 1)}
               data-entry-side={(entryIndex + (item.meaning ? 0 : 1)) % 2 ? 'right' : 'left'}>
               <p><RetainedLinkedText optical frame={item} surface="reflection" onSelect={select} connecting={connecting} /></p>
             </div>}
-            <StreamActions source={`${item.source} · ${item.chapterLabel}`} sourceOpen={current && props.sourceOpen}
-              bookmarked={bookmarked} notesOpen={current && (notesFor === key || notesFor === item.id)}
-              noteCount={current ? props.notes.length : 0} onOpen={() => { props.onPause(); props.onRead(entry); }}
-              onSource={() => { props.onRead(entry); props.onToggleSource(); }}
-              onBookmark={() => { props.onRead(entry); props.onBookmark(); }}
-              onNotes={() => { props.onRead(entry); setNotesFor(notesFor === key || notesFor === item.id ? null : key); }} />
             {current && props.sourceOpen && <div className={styles.streamSourceText} data-flow-source>
               <p className={styles.sectionLabel}>{item.source} · {item.chapterLabel} · 完整原文</p>
               <p className={styles.fullSource}><RetainedLinkedText optical frame={item} surface="fullText" onSelect={select} connecting={connecting} /></p>
@@ -621,5 +754,22 @@ export function FlowStream(props: Props) {
         </div>
       </div>
     </div>
+    <FlowMenu {...props.navigation} open={menuOpen} onOpenChange={open => {
+      if (open) { menuResume.current = !props.paused && !props.reducedMotion; setMenuFor(props.activeKey); }
+      else setMenuFor(null);
+      setMenuOpen(open);
+    }} onOpen={() => { pause(); if (menuEntry) props.onRead(menuEntry); }} reading={menuEntry ? {
+      key: entryKey(menuEntry), source: `${menuEntry.frame.source} · ${menuEntry.frame.chapterLabel}`,
+      sourceOpen: menuCurrent && props.sourceOpen, bookmarked: props.bookmarkKeys.has(quoteKey(menuEntry.frame)),
+      notesOpen: menuCurrent && (notesFor === entryKey(menuEntry) || notesFor === menuEntry.frame.id), noteCount: menuCurrent ? props.notes.length : 0,
+      onMeaning: menuEntry.frame.meaning ? () => showMeaning(menuEntry, menuResume.current) : undefined,
+      onSource: () => { props.onRead(menuEntry); props.onToggleSource(); },
+      onBookmark: () => { props.onRead(menuEntry); props.onBookmark(); },
+      onNotes: () => { props.onRead(menuEntry); setNotesFor(notesFor === entryKey(menuEntry) || notesFor === menuEntry.frame.id ? null : entryKey(menuEntry)); },
+    } : undefined} />
+    {meaningEntry?.entry.frame.meaning && <MeaningPopover source={`${meaningEntry.entry.frame.source} · ${meaningEntry.entry.frame.chapterLabel}`} onClose={closeMeaning} returnFocus={meaningTrigger.current}>
+      <RetainedLinkedText frame={meaningEntry.entry.frame} surface="meaning" onSelect={meaningEntry.select}
+        connecting={props.connecting?.pathId && props.connecting.pathId !== meaningEntry.entry.pathId ? null : props.connecting} />
+    </MeaningPopover>}
   </section>;
 }

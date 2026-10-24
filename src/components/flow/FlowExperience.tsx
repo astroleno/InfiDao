@@ -12,7 +12,6 @@ import { SeedSheet } from './SeedSheet';
 import { FlowResume, FlowWaiting } from './FlowWaiting';
 import { LibrarySheet } from './LibrarySheet';
 import { FlowLoading } from './FlowLoading';
-import { FlowMenu } from './FlowMenu';
 import { prepareFlowFonts, type FontProgress } from '@/lib/flow-browser/fonts';
 import { readingStorage } from '@/lib/flow-browser/storage';
 import { noteContext, quoteKey, snapshotFrame, type SavedTarget } from '@/lib/flow-browser/library';
@@ -457,10 +456,9 @@ export function FlowExperience() {
       <div className={styles.topBar}>
         <h1 className={styles.brand}>六经注我</h1>
       </div>
-      <FlowMenu onThought={openSeed} onLibrary={openLibrary} libraryDisabled={!chain || loading} onOpen={() => pauseReading()}
-        motionCandidate={motion.available ? { enabled: motion.variant === 'liquid-live', onToggle: motion.toggle } : undefined} />
-
       <FlowStream entries={entries} activeKey={activeEntryRef.current ? entryKey(activeEntryRef.current) : ''}
+        navigation={{ onThought: openSeed, onLibrary: openLibrary, libraryDisabled: !chain || loading,
+          motionCandidate: motion.available ? { enabled: motion.variant === 'liquid-live', onToggle: motion.toggle } : undefined }}
         motionVariant={motion.variant}
         paused={paused || seedOpen || libraryOpen} reducedMotion={reducedMotion} pending={pending}
         connecting={connecting} restore={restorePosition}
@@ -476,7 +474,7 @@ export function FlowExperience() {
         onSaveNote={onSaveNote} onDeleteNote={onDeleteNote} onUndoNote={onUndoNote} onUpdateNote={onUpdateNote} />
 
       <FlowLoading active={!firstVisualReady && !flowError} progress={fontProgress} quote={currentFrame?.quote || preparingQuote} reducedMotion={reducedMotion} />
-      {hint && !loading && !pending && <div className={styles.firstHint}><span>点一下停驻，滑动继续；点词接续。</span><button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button></div>}
+      {hint && !loading && !pending && <div className={styles.firstHint}><span>点一下停驻，点词接续；上下滑动继续，长按释义，左滑菜单。</span><button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button></div>}
       {!entries.length && errorFeedback && <div className={styles.notice}>{errorFeedback}</div>}
       {storageWarning && <p className={styles.storageNotice} role="status">本机存储暂不可用；当前阅读仍可继续，刷新后可能无法恢复。</p>}
 

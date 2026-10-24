@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 export type ReaderMotion = 'current' | 'liquid-live';
 
-/** Only an explicit preview URL exposes the candidate controls. */
+/** Explicit comparison URLs expose material controls; reading defaults to water. */
 export function readMotionCandidate(search: string): ReaderMotion | null {
   const mode = new URLSearchParams(search).get('motion');
   return mode === 'liquid' ? 'liquid-live' : mode === 'current' ? 'current' : null;
@@ -25,7 +25,7 @@ export function useMotionCandidate() {
 
   return {
     available: mode !== null,
-    variant: mode ?? 'current',
+    variant: mode ?? 'liquid-live',
     toggle() {
       if (mode === null) return;
       const next = mode === 'liquid-live' ? 'current' : 'liquid-live';

@@ -1,7 +1,7 @@
 import { bendSettings } from './bend';
 import { ribbonProjection } from './ribbon-optics';
 
-/** Opt-in comparison profiles. The reader continues to use `current`. */
+/** Reader material and retained comparison profiles. The reader defaults to liquid-live. */
 export type StreamMotionVariant = 'current' | 'refine-before' | 'refine' | 'refine-strong' | 'liquid' | 'liquid-caustic' | 'liquid-contact' | 'liquid-flow' | 'liquid-settle' | 'liquid-live-before' | 'liquid-live' | 'unfold';
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
