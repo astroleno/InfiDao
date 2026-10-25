@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import type { FlowFrame, FlowSelection as TextSelection } from '@/lib/flow/contracts';
 import type { BrowserFlowBatch } from '@/lib/flow-browser/provider';
 import { createBrowserController, type FlowController, type ControllerState } from '@/lib/flow-browser/controller-host';
@@ -16,9 +17,11 @@ import { prepareFlowFonts, type FontProgress } from '@/lib/flow-browser/fonts';
 import { readingStorage } from '@/lib/flow-browser/storage';
 import { noteContext, quoteKey, snapshotFrame, type SavedTarget } from '@/lib/flow-browser/library';
 import { useMotionCandidate } from '@/lib/flow-browser/motion-candidate';
+import type { KeepsakeSource } from '@/lib/handwriting/contracts';
 import styles from './flow.module.css';
 
 type Selection = { pathId?: string; frameId: string; anchorId?: string; selection?: TextSelection; label: string };
+const ReadingKeepsakeSheet = dynamic(() => import('./ReadingKeepsakeSheet').then(module => module.ReadingKeepsakeSheet), { ssr: false });
 
 const { CELL, CENTER_PHASE } = require('../../../shared/flow/timeline') as { CELL: number; CENTER_PHASE: number };
 
@@ -53,6 +56,9 @@ export function FlowExperience() {
   const [notes, setNotes] = useState<PersonalNote[]>([]);
   const [savingNote, setSavingNote] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
+  const [keepsakeSource, setKeepsakeSource] = useState<KeepsakeSource | null>(null);
+  const keepsakePause = useRef(true);
+  const keepsakeOpening = useRef(0);
   const [bookmarkKeys, setBookmarkKeys] = useState<Set<string>>(new Set());
   const [hint, setHint] = useState(false);
   const [connecting, setConnecting] = useState<Selection | null>(null);
@@ -144,10 +150,10 @@ export function FlowExperience() {
   }
 
   useEffect(() => {
-    if (seedOpen || libraryOpen) controllerRef.current?.cancelPreparation();
+    if (seedOpen || libraryOpen || keepsakeSource) controllerRef.current?.cancelPreparation();
     // The single stream prepares one continuation as the reader approaches its end.
     // A pause alone is not an instruction to spend calls on another direction.
-  }, [seedOpen, libraryOpen]);
+  }, [seedOpen, libraryOpen, keepsakeSource]);
 
   useEffect(() => {
     let alive = true;
@@ -379,6 +385,35 @@ export function FlowExperience() {
     void controllerRef.current?.checkpoint();
     setLibraryOpen(true);
   }
+  async function openKeepsake(source: KeepsakeSource) {
+    const version = ++keepsakeOpening.current;
+    keepsakePause.current = libraryOpen ? libraryPause.current : pausedRef.current;
+    controllerRef.current?.cancelPreparation();
+    void controllerRef.current?.checkpoint();
+    pauseReading();
+    if (source.sourceRef.noteId && source.noteText !== undefined && /^\d+$/.test(source.sourceRef.noteRevision || '')) {
+      const { noteRevision } = await import('@/lib/handwriting/reading-draft');
+      const revision = await noteRevision({ updatedAt: Number(source.sourceRef.noteRevision), text: source.noteText });
+      if (version !== keepsakeOpening.current) return;
+      source = { ...source, sourceRef: { ...source.sourceRef, noteRevision: revision } };
+    }
+    setLibraryOpen(false);
+    setKeepsakeSource(source);
+  }
+  function currentKeepsake(note?: PersonalNote) {
+    const entry = activeEntryRef.current;
+    if (!entry) return;
+    const context = note?.context || noteContext(entry.frame);
+    openKeepsake({ sourceRef: { pathId: note?.pathId || entry.pathId, frameId: note?.frameId || entry.frame.id,
+      ...(note ? { noteId: note.id, noteRevision: String(note.updatedAt) } : {}) },
+      quote: context.quote, sourceLabel: context.source, chapterLabel: context.chapterLabel,
+      ...(note ? { noteText: note.text, date: note.createdAt } : {}) });
+  }
+  function closeKeepsake() {
+    keepsakeOpening.current++;
+    setKeepsakeSource(null);
+    pauseReading(keepsakePause.current || reducedRef.current);
+  }
   function closeLibrary() {
     if (!libraryRestored.current) {
       controllerRef.current?.cancel();
@@ -460,7 +495,7 @@ export function FlowExperience() {
         navigation={{ onThought: openSeed, onLibrary: openLibrary, libraryDisabled: !chain || loading,
           motionCandidate: motion.available ? { enabled: motion.variant === 'liquid-live', onToggle: motion.toggle } : undefined }}
         motionVariant={motion.variant}
-        paused={paused || seedOpen || libraryOpen} reducedMotion={reducedMotion} pending={pending}
+        paused={paused || seedOpen || libraryOpen || !!keepsakeSource} reducedMotion={reducedMotion} pending={pending}
         connecting={connecting} restore={restorePosition}
         canContinue={!!chain?.cursor && !chain.exhausted && !flowError && frames.every(item => item.ready !== false)}
         onContinue={continueReading} onPrepareNext={() => controllerRef.current?.prepareNext()}
@@ -471,7 +506,7 @@ export function FlowExperience() {
           : canResume ? <FlowResume onResume={() => void controllerRef.current?.retry()} /> : errorFeedback)}
         sourceOpen={sourceOpen} onToggleSource={onToggleSource} bookmarkKeys={bookmarkKeys} onBookmark={() => void toggleBookmark()}
         notesFrameId={notesFrameId} notes={notes} savingNote={savingNote}
-        onSaveNote={onSaveNote} onDeleteNote={onDeleteNote} onUndoNote={onUndoNote} onUpdateNote={onUpdateNote} />
+        onSaveNote={onSaveNote} onDeleteNote={onDeleteNote} onUndoNote={onUndoNote} onUpdateNote={onUpdateNote} onKeepsake={currentKeepsake} />
 
       <FlowLoading active={!firstVisualReady && !flowError} progress={fontProgress} quote={currentFrame?.quote || preparingQuote} reducedMotion={reducedMotion} />
       {hint && !loading && !pending && <div className={styles.firstHint}><span>点一下停驻，点词接续；上下滑动继续，长按释义，左滑菜单。</span><button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button></div>}
@@ -481,7 +516,8 @@ export function FlowExperience() {
       <span className={styles.srOnly} aria-live="polite">{currentFrame ? `${currentFrame.source}，${currentFrame.chapterLabel}。${currentFrame.quote}` : ''}</span>
       </div>
       <SeedSheet open={seedOpen} value={seed} busy={seedBusy} continuing={!!seedTarget.current} error={seedError} onChange={changeDraft} onSubmit={() => void startThought()} onClose={closeSeed} onCancel={cancelSeed} />
-      {libraryOpen && <LibrarySheet onClose={closeLibrary} onOpen={openSaved}
+      {keepsakeSource && <ReadingKeepsakeSheet source={keepsakeSource} onClose={closeKeepsake} />}
+      {libraryOpen && <LibrarySheet onClose={closeLibrary} onOpen={openSaved} onKeepsake={openKeepsake}
         context={activeEntryRef.current ? { pathId: activeEntryRef.current.pathId, frameId: activeEntryRef.current.frame.id } : undefined} onChanged={() => {
         if (activeEntryRef.current) void refreshNotes(activeEntryRef.current.chainId, activeEntryRef.current.frame.id);
         const version = ++bookmarkVersion.current;

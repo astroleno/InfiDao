@@ -790,6 +790,8 @@
 .libraryList { min-height: 0; overflow-y: auto; overflow-wrap: anywhere; overscroll-behavior: contain; scrollbar-color: var(--halo) transparent; }
 .libraryRow { display: block; width: 100%; border: 0; border-bottom: 1px solid var(--halo); padding: 18px 0; text-align: left; color: inherit; background: transparent; cursor: pointer; font: inherit; }
 .libraryRow > span { display: block; }
+.libraryOpen { display: block; width: 100%; border: 0; padding: 0; text-align: left; color: inherit; background: transparent; cursor: pointer; font: inherit; }
+.libraryOpen > span { display: block; }
 .libraryQuote { margin: 0 0 8px; font-size: var(--flow-size-body); line-height: 1.8; font-family: var(--flow-classic-family, "Songti SC", serif); }
 .libraryNote { padding: 18px 0; border-bottom: 1px solid var(--halo); font-size: var(--flow-size-body); line-height: 1.8; }
 .libraryNote .noteBody > p { white-space: pre-wrap; }

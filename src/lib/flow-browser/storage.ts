@@ -166,7 +166,31 @@ export function createReadingStorage(persistence: ReadingPersistence = indexedDB
     return result;
   }
   const savePath = (record: FlowPathRecord) => write([{ store: 'paths', key: record.pathId, value: record }]);
-  const saveNote = (note: PersonalNote) => write([{ store: 'notes', key: note.id, value: note }]);
+  async function invalidateNoteExports(id: string, revision?: string) {
+    if (typeof window === 'undefined' || !globalThis.indexedDB) return;
+    try {
+      const { invalidateKeepsakes } = await import('../handwriting/cache');
+      await invalidateKeepsakes({ noteId: id }, revision);
+    } catch {
+      // Export storage must not prevent the reader's independent memory fallback.
+      // A later draft also checks the exact source revision before loading images.
+      window.dispatchEvent(new CustomEvent('infidao-keepsakes-invalidated', { detail: { noteId: id } }));
+    }
+  }
+  const saveNote = async (note: PersonalNote) => {
+    const previous = await read('notes', note.id) as PersonalNote | null;
+    const next = previous && previous.text !== note.text && note.updatedAt <= previous.updatedAt
+      ? { ...note, updatedAt: previous.updatedAt + 1 } : note;
+    if (!previous || previous.text !== next.text || previous.updatedAt !== next.updatedAt) {
+      if (typeof window !== 'undefined' && globalThis.indexedDB) {
+        try {
+          const { noteRevision } = await import('../handwriting/reading-draft');
+          await invalidateNoteExports(next.id, await noteRevision(next));
+        } catch { await invalidateNoteExports(next.id); }
+      }
+    }
+    return write([{ store: 'notes', key: next.id, value: next }]);
+  };
   return {
     savePath, loadPath: (id: string): Promise<FlowPathRecord | null> => read('paths', id),
     graphNode: (id: string): Promise<GraphNode | null> => read('graphNodes', id),
@@ -229,6 +253,7 @@ export function createReadingStorage(persistence: ReadingPersistence = indexedDB
     async deleteNote(id: string) {
       const previous = await read('notes', id) as PersonalNote | null;
       if (!previous) return { deleted: false, persisted: true, previous: null };
+      await invalidateNoteExports(id);
       const result = await write([{ store: 'notes', key: id, remove: true }]);
       return { ...result, deleted: true, previous };
     },

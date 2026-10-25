@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/pretend1111/inko-skill",
+  "commit": "a1e2d4929d8e97807961a536d7f1e224f5e42b31",
+  "files": [
+    "scene.py",
+    "_common.py",
+    "_pen.py"
+  ],
+  "changes": "none; used only by the private renderer"
+}

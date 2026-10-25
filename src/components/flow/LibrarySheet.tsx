@@ -5,11 +5,12 @@ import { readingStorage } from '@/lib/flow-browser/storage';
 import { EditableNote } from './EditableNote';
 import { useFlowDialog } from './useFlowDialog';
 import { KnowledgeLibrary } from './KnowledgeLibrary';
+import type { KeepsakeSource } from '@/lib/handwriting/contracts';
 import styles from './flow.module.css';
 
 type Data = Awaited<ReturnType<typeof loadLibrary>>;
 const tabs = ['最近阅读', '关联', '收藏', '注脚'] as const;
-export function LibrarySheet({ onClose, onOpen, onChanged, context }: { onClose: () => void; onOpen: (target: SavedTarget) => Promise<boolean>; onChanged: () => void; context?: SavedTarget | undefined }) {
+export function LibrarySheet({ onClose, onOpen, onChanged, onKeepsake, context }: { onClose: () => void; onOpen: (target: SavedTarget) => Promise<boolean>; onChanged: () => void; onKeepsake?: ((source: KeepsakeSource) => void) | undefined; context?: SavedTarget | undefined }) {
   const ref = useFlowDialog(onClose);
   // Background reflow may change the reader's active passage while this dialog
   // is open. Keep the opening context so browsing a theme is not interrupted.
@@ -59,17 +60,18 @@ export function LibrarySheet({ onClose, onOpen, onChanged, context }: { onClose:
         {tab === '关联' && <KnowledgeLibrary context={readingContext} opening={opening} onOpen={open} />}
         {tab === '最近阅读' && data?.paths.slice(0, limit).map(path => {
           const frame = snapshotFrame(path);
-          return <button key={path.pathId} type="button" className={styles.libraryRow} disabled={opening} onClick={() => void open({ pathId: path.pathId })}>
+          return <article key={path.pathId} className={styles.libraryRow}><button type="button" className={styles.libraryOpen} disabled={opening} onClick={() => void open({ pathId: path.pathId })}>
             <span className={styles.libraryQuote}>{frame?.quote || path.sourceLabel}</span><span className={styles.muted}>{frame?.source} · {frame?.chapterLabel} · {new Date(path.updatedAt).toLocaleDateString('zh-CN')}</span>
-          </button>;
+          </button>{frame && onKeepsake && <button type="button" className={styles.textButton} onClick={() => onKeepsake({ sourceRef: { pathId: path.pathId, frameId: frame.id }, quote: frame.quote, sourceLabel: frame.source, chapterLabel: frame.chapterLabel, date: path.updatedAt })}>留成手写纪念卡</button>}</article>;
         })}
-        {tab === '收藏' && data?.bookmarks.slice(0, limit).map(item => <button key={item.key} type="button" className={styles.libraryRow} disabled={opening} onClick={() => void open({ pathId: item.pathId, frameId: item.frameId, snapshot: item.snapshot })}>
+        {tab === '收藏' && data?.bookmarks.slice(0, limit).map(item => <article key={item.key} className={styles.libraryRow}><button type="button" className={styles.libraryOpen} disabled={opening} onClick={() => void open({ pathId: item.pathId, frameId: item.frameId, snapshot: item.snapshot })}>
           <span className={styles.libraryQuote}>{item.quote}</span><span className={styles.muted}>{item.source} · {item.chapterLabel}</span>
-        </button>)}
+        </button>{onKeepsake && <button type="button" className={styles.textButton} onClick={() => onKeepsake({ sourceRef: { pathId: item.pathId, frameId: item.frameId }, quote: item.quote, sourceLabel: item.source, chapterLabel: item.chapterLabel, date: item.createdAt })}>留成手写纪念卡</button>}</article>)}
         {tab === '注脚' && data?.notes.slice(0, limit).map(note => <article key={note.id} className={styles.libraryNote}>
           <p className={styles.muted}>{note.context ? `${note.context.source} · ${note.context.chapterLabel}` : '原阅读记录不可用'}</p>
           {note.context && <p className={styles.libraryQuote}>{note.context.quote}</p>}
           <EditableNote note={note} onUpdate={update} />
+          {note.context && onKeepsake && <button type="button" className={styles.textButton} disabled={opening} onClick={() => onKeepsake({ sourceRef: { ...(note.pathId ? { pathId: note.pathId } : {}), frameId: note.frameId, noteId: note.id, noteRevision: String(note.updatedAt) }, quote: note.context!.quote, sourceLabel: note.context!.source, chapterLabel: note.context!.chapterLabel, noteText: note.text, date: note.createdAt })}>留成手写纪念卡</button>}
           {note.target ? <button type="button" className={styles.textButton} disabled={opening} onClick={() => void open(note.target!)}>回到经句</button> : <p className={styles.muted}>原阅读记录不可用，注脚仍可编辑和导出。</p>}
         </article>)}
       {tab !== '关联' && items.length > limit && <button type="button" className={styles.textButton} onClick={() => setLimit(value => value + 20)}>再看一些</button>}

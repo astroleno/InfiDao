@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
+    "worker:handwriting": "node scripts/handwriting/start.mjs",
     "build": "npm run build:wechat-flow-runtime && npm run build:flow-release && next build",
     "start": "next start",
     "lint": "eslint --ext .js,.mjs,.ts,.tsx src tests scripts --max-warnings=0",

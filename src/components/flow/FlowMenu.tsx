@@ -13,7 +13,7 @@ export function FlowMenu({ onThought, onLibrary, libraryDisabled, motionCandidat
   reading?: {
     key: string; source: string; sourceOpen: boolean; bookmarked: boolean; notesOpen: boolean; noteCount: number;
     onMeaning?: (() => void) | undefined;
-    onSource: () => void; onBookmark: () => void; onNotes: () => void;
+    onSource: () => void; onBookmark: () => void; onNotes: () => void; onKeepsake?: (() => void) | undefined;
   } | undefined;
 }) {
   const [internalOpen, setInternalOpen] = useState(false);
@@ -98,6 +98,7 @@ export function FlowMenu({ onThought, onLibrary, libraryDisabled, motionCandidat
         <button className={styles.textButton} type="button" aria-expanded={reading.sourceOpen} onClick={() => act(reading.onSource)}>{reading.sourceOpen ? '收起原文' : '原文'}</button>
         <button className={styles.textButton} type="button" aria-pressed={reading.bookmarked} onClick={() => act(reading.onBookmark)}>{reading.bookmarked ? '已收藏' : '收藏'}</button>
         <button className={styles.textButton} type="button" aria-expanded={reading.notesOpen} onClick={() => act(reading.onNotes)}>{reading.notesOpen ? '收起注脚' : '注脚'}{reading.noteCount ? ` · ${reading.noteCount}` : ''}</button>
+        {reading.onKeepsake && <button className={styles.textButton} type="button" aria-haspopup="dialog" onClick={() => act(reading.onKeepsake!)}>留成手写纪念卡</button>}
       </>}
       {onThought && <button className={styles.textButton} type="button" onClick={() => act(onThought)}>添一念</button>}
       {onLibrary && <button className={styles.textButton} type="button" disabled={libraryDisabled} onClick={() => act(onLibrary)}>温故</button>}

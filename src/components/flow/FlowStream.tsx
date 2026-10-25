@@ -58,6 +58,7 @@ type Props = {
   onDeleteNote: (id: string) => Promise<void>;
   onUndoNote: () => Promise<void>;
   onUpdateNote: (id: string, text: string) => Promise<void>;
+  onKeepsake?: ((note?: PersonalNote) => void) | undefined;
 };
 
 export function FlowStream(props: Props) {
@@ -754,7 +755,7 @@ export function FlowStream(props: Props) {
             </div>}
             {current && (notesFor === key || notesFor === item.id) && <NotesPanel key={key} draftKey={JSON.stringify([entry.chainId, item.id])}
               notes={props.notes} saving={props.savingNote} onSave={props.onSaveNote} onDelete={props.onDeleteNote}
-              onUndo={props.onUndoNote} onUpdate={props.onUpdateNote} />}
+              onUndo={props.onUndoNote} onUpdate={props.onUpdateNote} onKeepsake={props.onKeepsake} />}
             {waitingKey && key === entryKey(waitingKey) && props.waiting && <div className={styles.streamWaiting}>{props.waiting}</div>}
           </article>;
         })}
@@ -771,6 +772,7 @@ export function FlowStream(props: Props) {
       setMenuOpen(open);
     }} onOpen={() => { pause(); if (menuEntry) props.onRead(menuEntry); }} reading={menuEntry ? {
       key: entryKey(menuEntry), source: `${menuEntry.frame.source} · ${menuEntry.frame.chapterLabel}`,
+      onKeepsake: props.onKeepsake ? () => { props.onRead(menuEntry); props.onKeepsake?.(); } : undefined,
       sourceOpen: menuCurrent && props.sourceOpen, bookmarked: props.bookmarkKeys.has(quoteKey(menuEntry.frame)),
       notesOpen: menuCurrent && (notesFor === entryKey(menuEntry) || notesFor === menuEntry.frame.id), noteCount: menuCurrent ? props.notes.length : 0,
       onMeaning: menuEntry.frame.meaning ? () => showMeaning(menuEntry, menuResume.current) : undefined,

@@ -1,0 +1,33 @@
+.closing {
+  --closing-body: 20px;
+  --closing-control: 16px;
+  --closing-caption: 12px;
+  width: min(100%, 660px);
+  margin: 0 auto;
+  padding: max(24px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom));
+  color: var(--beam, #e9e6dc);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 400;
+}
+.header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; }
+.header h1 { margin: 8px 0 0; font-size: var(--closing-body); line-height: 1.7; font-weight: 500; }
+.eyebrow { margin: 0; font-size: var(--closing-caption); color: var(--optical-muted, #9a9b95); }
+.figure { margin: 0; }
+.paper { position: relative; width: min(100%, 420px); aspect-ratio: 2480 / 3508; margin: 0 auto; background: #fff; }
+.paper img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.figure figcaption { margin-top: 16px; font-size: var(--closing-caption); line-height: 1.7; text-align: center; color: var(--optical-muted, #9a9b95); }
+.actions { display: flex; justify-content: center; align-items: center; gap: 24px; margin-top: 20px; }
+.textButton, .saveButton, .paperButton { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; border: 0; border-radius: 4px; padding: 8px 12px; background: transparent; color: inherit; font: inherit; font-size: var(--closing-control); text-decoration: none; cursor: pointer; }
+.header .textButton { flex-shrink: 0; }
+.saveButton { border: 1px solid var(--halo, #494d48); }
+.textButton:hover, .saveButton:hover { background: rgba(255, 255, 255, .06); }
+.textButton:disabled { opacity: .5; cursor: default; }
+.footer { margin-top: 20px; font-size: var(--closing-caption); line-height: 1.8; text-align: center; color: var(--optical-muted, #9a9b95); }
+.footer p { margin: 0; }
+.footer a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px; color: inherit; }
+.closing :is(button, a):focus-visible { outline: 2px solid var(--optical-focus, #ece1bd); outline-offset: 3px; }
+.fallback { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 24px; color: #282820; text-align: center; }
+.fallback p { font-family: "Songti SC", serif; font-size: var(--closing-body); line-height: 1.9; }
+.fallback span { font-size: var(--closing-caption); }
+.paperButton { border: 1px solid #777; }
+@media (max-width: 400px) { .closing { padding-inline: 18px; } .header { gap: 8px; } .header .textButton { padding-inline: 4px; } }

@@ -3,12 +3,13 @@ import { isIP } from 'node:net';
 import { FlowError } from './contracts';
 
 const COOKIE_TTL = 7 * 24 * 60 * 60;
-let developmentSecret: string | undefined;
+// Next dev loads route bundles independently; their temporary signing key must agree.
+const development = globalThis as typeof globalThis & { __infidaoFlowSessionSecret?: string };
 function secret() {
   const configured = process.env.FLOW_SESSION_SECRET;
   if (configured && configured.length >= 32) return configured;
   if (process.env.NODE_ENV === 'production') throw new FlowError('SESSION_UNAVAILABLE', '在线阅读尚未配置好，已保存的经文仍可阅读。', 503);
-  return developmentSecret ??= randomBytes(32).toString('hex');
+  return development.__infidaoFlowSessionSecret ??= randomBytes(32).toString('hex');
 }
 const cookieName = () => process.env.NODE_ENV === 'production' ? '__Host-infidao_flow' : 'infidao_flow';
 const signature = (value: string) => createHmac('sha256', secret()).update(value).digest('base64url');
@@ -46,6 +47,19 @@ export function requestSession(request: Request) {
   checkFlowOrigin(request);
   const token = isNativeRequest(request) ? request.headers.get('authorization')?.replace(/^Bearer /, '') : cookieToken(request);
   const owner = verifySessionToken(token);
+  if (!owner) throw new FlowError('INVALID_SESSION', '这次阅读的连接已过期，请重试。', 401);
+  return owner;
+}
+
+/** Same-origin safe reads do not necessarily carry an Origin header. */
+export function requestReadSession(request: Request) {
+  const expected = process.env.FLOW_PUBLIC_ORIGIN || new URL(request.url).origin;
+  const origin = request.headers.get('origin');
+  const site = request.headers.get('sec-fetch-site');
+  if ((origin && origin !== expected) || site === 'cross-site' || site === 'same-site') {
+    throw new FlowError('ORIGIN_DENIED', '请从网站重新打开阅读。', 403);
+  }
+  const owner = verifySessionToken(cookieToken(request));
   if (!owner) throw new FlowError('INVALID_SESSION', '这次阅读的连接已过期，请重试。', 401);
   return owner;
 }

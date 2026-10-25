@@ -224,6 +224,9 @@ const nextConfig = {
   // Output configuration
   output: 'standalone',
   outputFileTracingRoot: __dirname,
+  outputFileTracingIncludes: {
+    '/api/handwriting/**': ['./scripts/handwriting/**/*.py', './scripts/handwriting/vendor/inko/LICENSE', './scripts/handwriting/vendor/inko/UPSTREAM.json'],
+  },
 
   // Power headers
   poweredByHeader: false,

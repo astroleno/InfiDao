@@ -1,0 +1,27 @@
+.sheet { width: min(100%, 720px); overflow-y: auto; }
+.fields { min-width: 0; margin: 20px 0; padding: 0; border: 0; }
+.fields legend, .preview h3 { margin: 0 0 12px; font-size: var(--flow-size-body); font-weight: var(--flow-weight-medium); }
+.parts { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.parts label, .consent { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: var(--flow-size-control); line-height: 1.7; }
+.sheet input[type="checkbox"] { width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--flow-focus); }
+.quote { margin: 18px 0 8px; font-family: var(--flow-classic-family, "Songti SC", serif); font-size: var(--flow-size-body); line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; }
+.label { display: grid; gap: 8px; min-width: 0; margin-block: 14px; font-size: var(--flow-size-control); }
+.label input, .label select, .label textarea { width: 100%; min-width: 0; min-height: 44px; padding: 10px 12px; border: 1px solid var(--halo); border-radius: 6px; background: var(--void); color: var(--beam); font: inherit; color-scheme: dark; }
+.label textarea { min-height: 130px; line-height: 1.8; resize: vertical; }
+.options { display: grid; grid-template-columns: 1fr 1.1fr .8fr; gap: 12px; }
+.preview { padding-block: 18px; border-top: 1px solid var(--halo); border-bottom: 1px solid var(--halo); }
+.preview pre { margin: 0; font: inherit; font-size: var(--flow-size-control); line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; }
+.preview p { margin: 14px 0 0; }
+.consent { align-items: flex-start; margin: 20px 0 12px; }
+.consent input { margin-top: 4px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.status { margin-top: 18px; font-size: var(--flow-size-control); }
+.result { margin: 24px 0; }
+.result img { display: block; width: 100%; height: auto; background: #f4efe4; }
+.result figcaption { padding-top: 8px; }
+.history { margin-block: 24px; }
+.history summary { min-height: 44px; cursor: pointer; }
+.footer { margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--halo); }
+.sheet :is(input, select, textarea, summary):focus-visible { outline: 2px solid var(--flow-focus); outline-offset: 3px; }
+.sheet fieldset:disabled { opacity: .75; }
+@media (max-width: 560px) { .options { grid-template-columns: 1fr; gap: 0; } }
