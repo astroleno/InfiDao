@@ -34,6 +34,20 @@ test('review cannot introduce targets or change a verified quotation', async () 
   expect(result[0]!.anchors).toEqual([{ ...frame.anchors[0], surface: 'reflection', start: 3, end: 5 }]);
   expect(result[0]!.reflectionSpans.map(span => span.text).join('')).toBe(result[0]!.reflection);
 });
+
+test('unsettled prose is explicitly a draft rather than the reviewer output to copy', async () => {
+  const accepted = { advance: '分辨本末与先后不同', id: 'f', relevant: true, meaning: '', reflection: '先后还需根据具体行动判断。', anchorIds: [] };
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [accepted] });
+  await reviewRelations([frame], '', '先后', [], new AbortController().signal);
+  const input = jest.mocked(flowJson).mock.calls.at(-1)![1] as { frames: Array<Record<string, unknown>> };
+  expect(input.frames[0]).toMatchObject({ draft: { meaning: frame.meaning, angle: frame.reflection } });
+  expect(input.frames[0]).not.toHaveProperty('reflection');
+  expect(input.frames[0]).not.toHaveProperty('meaning');
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [accepted] });
+  await reviewRelations([{ ...frame, settled: { meaning: true, reflection: true } }], '', '先后', [], new AbortController().signal);
+  const settled = jest.mocked(flowJson).mock.calls.at(-1)![1] as { frames: Array<Record<string, unknown>> };
+  expect(settled.frames[0]).toMatchObject({ meaning: frame.meaning, reflection: frame.reflection });
+});
 test('review preserves valid original and meaning links even when their labels are absent from reflection', async () => {
   const expanded: FlowFrame = { ...frame, anchors: [
     { ...frame.anchors[0]!, id: 'q', surface: 'quote', label: '本末' },
@@ -81,6 +95,12 @@ test('review sees the actual quote context beyond the old prefix and the activel
   const [prompt, input] = jest.mocked(flowJson).mock.calls.at(-1)!;
   expect(prompt).toContain('seed 仅是来路');
   expect(input).toMatchObject({ readingContext, frames: [{ original: expect.stringContaining(frame.quote) }] });
+  expect(input).toHaveProperty('seed', '');
+  expect(prompt).toContain('不能绕开所选词');
+  expect(prompt).toContain('reflection 只解释 advance 指出的新认识');
+  expect(prompt).not.toContain('家庭自主必须');
+  expect(prompt).toContain('不能把来路的人物、故事安到新引文上');
+  expect(prompt).toContain('20–40字');
   expect((input as any).frames[0].original.length).toBeLessThanOrEqual(640);
 });
 
@@ -128,4 +148,75 @@ test('rejected knowledge cannot leak from the generation proposal and root topic
   jest.mocked(flowJson).mockResolvedValueOnce({ frames: [{ id: 'f', relevant: true, reflection: '可以从先后辨别轻重。', knowledge: proposal, anchorIds: [] }] });
   const [root] = await reviewRelations([frame], '', '次序', [], new AbortController().signal);
   expect(root?.knowledge?.sense).toBeUndefined(); expect(root?.knowledge?.topics).toEqual(['次序']);
+});
+
+test('root metadata cannot claim that the reader selected a word', async () => {
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [{ id: 'f', relevant: true, reflection: '可以辨别轻重先后。',
+    knowledge: { topics: ['先后'], relation: { type: 'related', description: '所选“先后”说明事情安排的次序。' } }, anchorIds: [] }] });
+  const [root] = await reviewRelations([frame], '先后', '先后', [], new AbortController().signal);
+  expect(root?.knowledge).toBeUndefined();
+});
+
+test('review compares all candidates but delivers only the accepted alternative', async () => {
+  const alternative = { ...frame, id: 'alternative', quote: '知所先后，则近道矣。', anchors: [] };
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [{ id: 'alternative', relevant: true, meaning: '',
+    reflection: '分清本末之后，还需辨别实际行动的先后，轻重不会自动替你排好次序。', anchorIds: [] }] });
+  const result = await reviewRelations([frame, alternative], '', '先后', [], new AbortController().signal);
+  expect(result).toHaveLength(1); expect(result[0]!.id).toBe('alternative');
+  const [prompt, input] = jest.mocked(flowJson).mock.calls.at(-1)!;
+  expect(prompt).toContain('frames 最多1项');
+  expect((input as { frames: unknown[] }).frames).toHaveLength(2);
+});
+
+test('extra independently reviewed candidates cannot extend the single delivered result', async () => {
+  const accepted = { id: 'f', relevant: true, reflection: '从本末继续看行动次序。', anchorIds: [] };
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [accepted, { ...accepted, id: 'another' }] });
+  const result = await reviewRelations([frame, { ...frame, id: 'another' }], '', '先后', [], new AbortController().signal);
+  expect(result).toHaveLength(1); expect(result[0]!.id).toBe('f');
+});
+
+test('a root may leave its internal comparison empty when there are no previous readings', async () => {
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [{ advance: '', id: 'f', relevant: true, meaning: '',
+    reflection: '可以从先后辨别轻重。', anchorIds: [] }] });
+  const result = await reviewRelations([frame], '本末', '先后', [], new AbortController().signal);
+  expect(result).toHaveLength(1);
+  expect(result[0]).not.toHaveProperty('advance');
+});
+
+test('independent review sees bounded prior explanations and family decision boundaries', async () => {
+  const recent = ['甲', '乙', '丙', '丁'].map(quote => ({ source: '论语', quote, reflection: '重复的旧建议' + quote }));
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [{ advance: '尊重不等于交出个人决定权', id: 'f', relevant: true, meaning: '',
+    reflection: '尊重关切并不意味着把每个决定交给对方；说明理由，也要承担选择带来的后果。', anchorIds: [] }] });
+  await reviewRelations([frame], '家人总替我决定', '尊重与自主', [], new AbortController().signal, undefined, undefined, recent);
+  const [prompt, input] = jest.mocked(flowJson).mock.calls.at(-1)!;
+  expect(prompt).toContain('不能默认以放弃选择换和气');
+  expect(prompt).toContain('不是现代人拥有个人选择的必要条件');
+  expect(prompt).toContain('现代引申与古义明确区分');
+  expect(prompt).toContain('新区别、条件、代价或理解');
+  expect((input as { recentReadings: unknown[] }).recentReadings).toEqual(recent.slice(-3));
+});
+
+test('a follow-up without an explicit new understanding is withheld before streaming and rejected', async () => {
+  const published: FlowFrame[] = [], repeated = { id: 'f', relevant: true, meaning: '', reflection: '再次分清本末先后。', anchorIds: [] };
+  jest.mocked(flowJson).mockImplementationOnce(async (_prompt, _input, _signal, stream) => {
+    await stream!.onProgress({ frames: [repeated] });
+    return { frames: [repeated] };
+  });
+  await expect(reviewRelations([frame], '', '先后', [], new AbortController().signal, undefined,
+    async value => { published.push(value); }, [{ source: '大学', quote: '物有本末', reflection: '分清本末先后。' }]))
+    .rejects.toMatchObject({ code: 'RELATION_UNVERIFIED' });
+  expect(published).toEqual([]);
+});
+
+test('a novelty claim cannot publish a near-copy of an earlier reflection', async () => {
+  const reflection = '职责与亲近发生冲突时，可以先承认代价真实存在，再问自己愿意承担哪一种后果，而不是假装两件事都能兼顾。';
+  const repeated = { advance: '这是一个新的理解角度', id: 'f', relevant: true, meaning: '', reflection, anchorIds: [] };
+  const published: FlowFrame[] = [];
+  jest.mocked(flowJson).mockImplementationOnce(async (_prompt, _input, _signal, stream) => {
+    await stream!.onProgress({ frames: [repeated] }); return { frames: [repeated] };
+  });
+  await expect(reviewRelations([frame], '', '职责与亲近', [], new AbortController().signal, undefined,
+    async value => { published.push(value); }, [{ source: '孟子', quote: '前句', reflection }]))
+    .rejects.toMatchObject({ code: 'RELATION_UNVERIFIED' });
+  expect(published).toEqual([]);
 });

@@ -22,6 +22,33 @@ const item = (id: string, text: string) => ({ sourceId: id, quote: text, meaning
     target: { sourceId: 's2', quote: rows[1]!.text, meaning: '事物有根本与末节。' } }] });
 beforeEach(() => { jest.clearAllMocks(); resetFlowState(); jest.mocked(candidatesFor).mockResolvedValue(rows); jest.mocked(flowCorpus).mockResolvedValue(rows); });
 
+test('new branches and continuation pass completed recent readings to generation and independent review', async () => {
+  let sequence = 0;
+  const store = createSessionStore(new MemoryDocumentBackend(), { createId: () => `history-${sequence++}` });
+  const events: FlowEvent[] = [], signal = new AbortController().signal;
+  const emit = (event: FlowEvent) => events.push(event);
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s1', rows[0]!.text)] });
+  await runFlow({ op: 'open', requestId: 'history-root', seed: '本末', graph: true }, 'owner', signal, emit, store);
+  const root = (events.at(-1) as { chain: FlowChain }).chain, original = root.frames[0]!;
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] });
+  await runFlow({ op: 'branch', requestId: 'history-branch', chainId: root.chainId, fromFrameId: original.id,
+    anchorId: original.anchors[0]!.id, graph: true }, 'owner', signal, emit, store);
+  const child = (events.at(-1) as { chain: FlowChain }).chain;
+  const expected = [{ source: original.source, quote: original.quote, reflection: original.reflection }];
+  expect(jest.mocked(flowJson).mock.calls.at(-1)![1]).toHaveProperty('recentReadings', expected);
+  expect(jest.mocked(flowJson).mock.calls.at(-1)![1]).toHaveProperty('seed', '');
+  expect(jest.mocked(flowJson).mock.calls.at(-1)![0]).toContain('初稿省略 knowledge');
+  expect(child.seed).toBe(root.seed);
+  expect(jest.mocked(reviewRelations).mock.calls.at(-1)![7]).toEqual(expected);
+  expect((await store.getChain('owner', child.chainId)).recentReadings).toEqual(expected);
+  expect(child).not.toHaveProperty('recentReadings');
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [{ ...item('s3', rows[2]!.text), anchors: [] }] });
+  await runFlow({ op: 'next', requestId: 'history-next', chainId: child.chainId, cursor: child.cursor!, graph: true }, 'owner', signal, emit, store);
+  expect(jest.mocked(flowJson).mock.calls.at(-1)![1]).toHaveProperty('recentReadings', [...expected,
+    { source: child.frames[0]!.source, quote: child.frames[0]!.quote, reflection: child.frames[0]!.reflection }]);
+  expect(jest.mocked(flowJson).mock.calls.at(-1)![1]).toHaveProperty('seed', '');
+});
+
 test('a delivered meaning is already stored and can start a child before its parent finishes review', async () => {
   let sequence = 0;
   const store = createSessionStore(new MemoryDocumentBackend(), { createId: () => `live-${sequence++}` });

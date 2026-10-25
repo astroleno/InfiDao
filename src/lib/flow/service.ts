@@ -9,7 +9,8 @@ import { linkSurfaces } from "./anchors";
 import { lexicalBreaks, selectedLexeme, planLexeme } from "./lexemes";
 import { measureFlowPhase, withFlowTimings, recordFlowCounts } from './timings';
 import { reserveFlowModels } from './model-budget';
-import { compactCandidates, quotationKey, repeatsQuotation } from './context';
+import { compactCandidates, familyDecisionGuidance, quotationKey, repeatsQuotation } from './context';
+import { recentReadingsFor } from './reading-history';
 export { anchoredSpans } from "./anchors";
 import { FLOW_PROMPT_VERSION, FLOW_VERSION, FlowError, generatedBatchSchema,
   type FlowAnchor, type FlowChain, type FlowEvent, type FlowFrame, type FlowRequest, type FlowReadingContext, type GeneratedBatch } from "./contracts";
@@ -91,16 +92,17 @@ const NODE_PROMPT = `你为“六经注我”准备一小批经文节点。候�
 句意、联系、义项和方向统一使用简体中文；引用的经文及其中的词保持原字，不做繁简转换。
 只从 candidates 选择与 focus 紧密相关的 1–3 段。不能为了凑数选择无关原文；没有合适内容时 frames=[]。
 quote 必须是候选 text 的逐字连续子串（含原标点），2–80 字；不能改字、补字、拼接或虚构出处。
-先判断经句是否需要白话帮助：有生僻词、古今义差异或省略关系才写 meaning，用一两句简体白话、最多60字只说必要原义；经句本身易懂时 meaning=""，不逐句复述、不为了凑齐字段翻译。reflection 用40–90字自然接到当前一念或主动选择的词，避免重复引文和释义，不加“释义”“此刻回响”等标题。避免泛化安慰和诊断，不把联系冒充古义。提供一个可选择的理解角度，不能用“你正因…才…”“你正是…”替用户断定原因，不能假定输入之外的处境。
-每段最多预备一个最自然的关联词，也可以 anchors=[]。读者可以对任何词即时生成，不必为各段预制路线。anchor.surface 只能是英文枚举 quote、meaning、reflection，不能翻译成中文；label 原样出现在对应文字中。正文与短解不要写“点击”“入口”等界面说明。target 选择另一个真实候选 sourceId 和原文子串，并给出其简短原义。
+这是交给独立核验者的精简初稿。经句易懂时 meaning=""，否则最多45字说明必要古义；reflection 用20–45字提出一个具体理解角度，核验者再形成完整短解。不复述引文和释义，不加标题，不写泛化安慰、诊断或未经输入支持的心理归因；现代联系不能冒充古义。
+每段通常 anchors=[]；仅在目标原文能直接兑现一个新增方向时预备一个关联词，不为凑入口延长初稿。读者可以对任何词即时生成，不必为各段预制路线。anchor.surface 只能是英文枚举 quote、meaning、reflection，不能翻译成中文；label 原样出现在对应文字中。正文与短解不要写“点击”“入口”等界面说明。target 选择另一个真实候选 sourceId 和原文子串，并给出其简短原义。
 联系可以相近或形成对照，但不能凭同一个字牵强联系，不能声称没有证据的思想传承。同一句话的另一个出处或截取不构成新分支。用户面对被冒犯的边界时不能把入口全部导向责己；倾听讨论不能曲解为审判对方是否言行一致。terms 是能检索该方向的古典概念和短语，1–6项且各不超过20字，方向必须具体。
-每段另给 knowledge：topics 为1–4个简短、具体的主题词（如“本末先后”“修身”，不能把用户原话或搜索长句充作主题）；有 readingContext 时 sense 只说明当前主动选词在原语境中的义项，没有主动选词时省略。relation 说明当前阅读方向与本经句的具体联系，type 只能为 related（一般关联）、similar（相近）、contrast（对照）、elaboration（展开）、application（应用）、cause（明确因果）；description 用一两句说明理由，不重复引文，不虚构思想传承或因果，无法明确分类时用 related。入口也给 topics 与 relationType，说明该入口到 target 的关系；与本段来路关系分别核对。
+初稿省略 knowledge；独立核验者依据原文和 readingContext 形成最终义项、主题与联系说明，避免两次生成同一说明。若预备入口，仍给 topics 与 relationType，单独说明该入口到 target 的关系，不能用本段来路关系替代。
 每个入口都要单独兑现 direction：若方向是公正、是非或维护边界，target 原义不能只有反省自己、增加实绩或争取认可。对照关系要在方向中说清，无法成立就省略该入口。单字 label 不得从完整词里拆出另一种意思（例如“回报”中的“报”须按当前词义理解）。用户被冒功而生气，不代表嫉妒他人获认可或自身不够好；短解不得补写未经提供的心理动机。
+recentReadings 是这条来路最近已读的原文与短解。新节点要增加一个有原义支持的区别、条件、代价或可行理解；不能换句经文又重说相同建议。换人物、换故事再讲同一个原则不算推进。先比较来路已讲明的主张，再挑能补充未讲条件、冲突或代价的候选；必要时在同章选另一句展开这些差别。reflection 只展开新增的理解，已经讲过的建议直接省略，不以复述来路或再给同一建议凑字数。主动点词后优先推进该词的具体问题，不在每段重复原处境。引用来路中的词须明确它属于来路，不声称新引文也含该词。
 若给出 head，第一段必须严格保留 head.sourceId 和 head.quote。后续尽量提供不同典籍、不同观察角度。
-返回 JSON {"frames":[{"sourceId":"候选ID","quote":"原文子串","meaning":"原义","reflection":"短解","relevance":0.9,"knowledge":{"topics":["具体主题"],"relation":{"type":"related","description":"本次联系的具体理由"}},"anchors":[{"surface":"meaning","label":"原义里原样出现的词","sense":"此处义项","direction":"具体关联","terms":["古典检索词"],"topics":["具体主题"],"relationType":"related","target":{"sourceId":"另一个候选ID","quote":"其原文子串","meaning":"其原义"}}]}]}。`;
+返回 JSON {"frames":[{"sourceId":"候选ID","quote":"原文子串","meaning":"原义","reflection":"仅说明本句新增的具体理解","relevance":0.9,"anchors":[]}]}。若确需预备关联词，anchors 每项为 {"surface":"meaning","label":"原样出现的词","sense":"此处义项","direction":"具体关联","terms":["古典检索词"],"topics":["具体主题"],"relationType":"related","target":{"sourceId":"另一个候选ID","quote":"其原文子串","meaning":"其原义"}}。`;
 
 async function generateNode(input: Record<string, unknown>, signal: AbortSignal): Promise<GeneratedBatch> {
-  const prompt = NODE_PROMPT + '\n有head时frames最多1项，仅解释head并保持引文不变。没有head时，给出最相关的主选和至多一个不同经句的备选（frames最多2项），按相关程度排序；备选的anchors=[]，只写原义和具体联系。它们是同一次核验的候选，最终只交付一个节点，不为备选凑数。' +
+  const prompt = NODE_PROMPT + '\n' + familyDecisionGuidance(typeof input.seed === 'string' && !input.readingContext ? input.seed : '') + '\n默认只输出最相关的一个主选。有head时frames最多1项，仅解释head并保持引文不变。没有head且主选联系存在原义歧义时，才提供至多一个有实质区别的备选（frames最多2项），主选在前；备选的anchors=[]，省略knowledge，只写简短原义和具体联系。它们是同一次核验的候选，最终只交付一个节点，不为备选凑数。' +
     '\nreadingContext是本次主动选择的词及其语境，focus是它要继续理解的问题；seed仅为来路，不得覆盖新方向。以原义明确的相近观点或有理由的对照回应当前词，不能只搜索同字。候选text是完整原文中的局部片段。avoidQuote和avoidQuotes是本次不能直接复写的经句（含已核实的异写）；主选不能返回相同、截短或扩长的引文，也不能换出处、标点或异写重复。经典汇编可能重收同一句，另一个sourceId不代表新内容。' +
     (input.graph ? '\ngraph=true：这是可循环的阅读图。visitedQuotes是更早读过的节点，不是排除清单；若当前词与旧经句有明确语义联系，可以重访该句，reflection必须说明本次具体联系。预备anchor也可以指向更早经句，包括来路中的经句，也允许同一个sourceId内另一条不同的经句，但不能指向本节点本身。不要为了循环而牵强连线，也不必为了新颖刻意避开相关旧句。' : '') +
     '\n长度是硬性要求：quote和target.quote各为2–80字，meaning、reflection、sense及target.meaning各不超过100字，direction不超过80字。候选原文可能很长，只选完整可读的短句，不抄整段。';
@@ -268,7 +270,8 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
         }
       }
       assertCurrent();
-      state = { owner, terms, seen: [], nodes: head ? { [head.id]: head } : {}, branches: {}, updated: Date.now(), generationKey: operationKey,
+      const recentReadings = parent ? await recentReadingsFor(parent, owner, store, parentFrame) : [];
+      state = { owner, terms, seen: [], nodes: head ? { [head.id]: head } : {}, branches: {}, updated: Date.now(), generationKey: operationKey, recentReadings,
         ...(fromQuote ? { fromQuote } : {}), ...(priorQuotes.length ? { priorQuotes } : {}), ...(readingContext ? { readingContext } : {}),
         chain: { chainId: randomUUID(), version: parent?.chain.version || [FLOW_VERSION, FLOW_PROMPT_VERSION, (await flowCorpus())[0]?.corpusVersion || 'unknown', flowModelConfig().model].join(':'),
           seed, seedOrigin: seed ? 'user' : 'example', focus, parentChainId: parent?.chain.chainId || null,
@@ -278,6 +281,7 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
     }
     if (!state) throw new FlowError('CHAIN_EXPIRED', '这条链的在线会话已结束，已保存的经文仍可阅读。', 410);
     assertCurrent();
+    const recentReadings = await recentReadingsFor(state, owner, store);
     if (head) emit({ type: 'head', requestId: request.requestId, chain: clone(state.chain) });
     // The graph may return to an old passage, including another quotation in
     // the same chapter. Only the current quotation/automatic batch is excluded;
@@ -292,9 +296,12 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
     if (!candidates.length && recalled.length && previousQuotes.length) throw new FlowError('RELATION_UNVERIFIED', '当前方向还没有找到合适的联系，可以换个词继续。', 422);
     const repeated = (frame: FlowFrame) => repeatsQuotation(frame.quote, previousQuotes);
     const parsed = candidates.length ? await measureFlowPhase('generate', () => generateNode({
-      seed: state!.chain.seed, focus: state!.chain.focus, head: head ? { sourceId: head.sourceId, quote: head.quote } : null,
+      // Keep the original seed in the public chain, but do not let it replace
+      // the reader's current word as the model's question on later branches.
+      seed: state!.readingContext ? '' : state!.chain.seed, focus: state!.chain.focus, head: head ? { sourceId: head.sourceId, quote: head.quote } : null,
       ...(graph ? { graph: true, visitedQuotes: state!.priorQuotes || [] } : {}),
       ...(state!.readingContext ? { readingContext: state!.readingContext } : {}),
+      ...(recentReadings.length ? { recentReadings } : {}),
       avoidQuote: state!.fromQuote || null,
       avoidQuotes: [...new Set(previousQuotes.flatMap(quotationSpellings))],
       candidates: compact.input,
@@ -321,7 +328,7 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
       assertCurrent();
       emit({ type: first ? 'head' : 'progress', requestId: request.requestId, chain: clone(state.chain) });
     };
-    const reviewed = await measureFlowPhase('review', () => reviewRelations(verified, state!.chain.seed, state!.chain.focus, candidates, signal, state!.readingContext, publish));
+    const reviewed = await measureFlowPhase('review', () => reviewRelations(verified, state!.chain.seed, state!.chain.focus, candidates, signal, state!.readingContext, publish, recentReadings));
     const frames = reviewed.slice(0, 1);
     recordFlowCounts({ accepted: frames.length });
     if (frames.some(repeated)) throw new FlowError('RELATION_UNVERIFIED', '这次接续与已读经文重复，可以换一个词继续。', 422);

@@ -103,7 +103,10 @@ export function createFlowBudget(backend: AtomicDocumentBackend, key: string, li
 const memory = new MemoryDocumentBackend();
 export async function serverFlowBudget() {
   const limits = flowBudgetLimits();
-  const namespace = process.env.FLOW_REDIS_NAMESPACE || (process.env.NODE_ENV === 'production' ? '' : 'infidao-dev');
+  // Private canaries can keep real session semantics without spending or
+  // changing public counters. The public process leaves this override unset.
+  const namespace = process.env.FLOW_BUDGET_NAMESPACE ?? process.env.FLOW_REDIS_NAMESPACE ??
+    (process.env.NODE_ENV === 'production' ? '' : 'infidao-dev');
   if (!/^[a-zA-Z0-9_-]{1,64}$/.test(namespace)) throw new FlowError('BUDGET_UNCONFIGURED', '在线阅读尚未配置好。', 503);
   const backend = process.env.FLOW_REDIS_URL ? createRedisDocumentBackend(await flowRedis()) : process.env.NODE_ENV !== 'production' ? memory : null;
   if (!backend) throw new FlowError('BUDGET_UNCONFIGURED', '在线阅读尚未配置好。', 503);

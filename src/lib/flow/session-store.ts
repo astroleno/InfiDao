@@ -1,5 +1,6 @@
 import { FlowError, type FlowChain, type FlowFrame, type FlowReadingContext } from './contracts';
 import { retainSemantics, type SemanticEntry } from './semantic-index';
+import type { RecentReading } from './reading-history';
 
 export const SESSION_TTL_MS = 6 * 60 * 60 * 1000;
 export const OPERATION_LEASE_MS = 45_000;
@@ -8,6 +9,7 @@ export type StoredChain = {
   nodes: Record<string, FlowFrame>; branches: Record<string, string>;
   initial?: FlowChain; fromQuote?: string; priorQuotes?: string[]; generationKey: string; updated: number;
   readingContext?: FlowReadingContext;
+  recentReadings?: RecentReading[];
 };
 export type OperationLease = { key: string; holder: string; version: number; expiresAt: number };
 type Operation = { version: number; holder: string; expiresAt: number; updated: number; chainId?: string; result?: FlowChain };

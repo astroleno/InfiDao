@@ -1,5 +1,5 @@
 /** @jest-environment node */
-import { createFlowBudget, flowBudgetLimits, type FlowBudgetLimits } from '@/lib/flow/request-budget';
+import { createFlowBudget, flowBudgetLimits, serverFlowBudget, type FlowBudgetLimits } from '@/lib/flow/request-budget';
 import { MemoryDocumentBackend } from '@/lib/flow/session-store';
 import { chargeFlowModel, reserveFlowModels, withFlowModelBudget } from '@/lib/flow/model-budget';
 
@@ -135,4 +135,29 @@ test('declining a preparation leaves the final two calls available to manual con
   await expect(request.reserveModels(2, 3)).rejects.toMatchObject({ code: 'BUDGET_REACHED' });
   await request.reserveModels(2); await request.chargeModel(); await request.chargeModel();
   expect(JSON.parse((await f.backend.read('test:budget')).value!).counters.site.models).toBe(2);
+});
+
+test('a private budget namespace cannot reset or increase the original public counters', async () => {
+  const original = process.env;
+  process.env = { ...original, NODE_ENV: 'development', FLOW_REDIS_NAMESPACE: 'isolated-budget-test',
+    FLOW_MODEL_CALLS_DAY_OWNER: '1', FLOW_MODEL_CALLS_DAY_IP: '1', FLOW_MODEL_CALLS_DAY_SITE: '1' };
+  delete process.env.FLOW_REDIS_URL;
+  delete process.env.FLOW_BUDGET_NAMESPACE;
+  try {
+    const publicLease = await (await serverFlowBudget()).acquire('owner', 'ip');
+    await publicLease.chargeModel(); await publicLease.release();
+    process.env.FLOW_BUDGET_NAMESPACE = 'isolated-budget-test-private';
+    process.env.FLOW_MODEL_CALLS_DAY_OWNER = '2'; process.env.FLOW_MODEL_CALLS_DAY_IP = '2'; process.env.FLOW_MODEL_CALLS_DAY_SITE = '2';
+    const privateLease = await (await serverFlowBudget()).acquire('owner', 'ip');
+    await privateLease.chargeModel(); await privateLease.chargeModel();
+    await expect(privateLease.chargeModel()).rejects.toMatchObject({ code: 'BUDGET_REACHED' });
+    await privateLease.release();
+    delete process.env.FLOW_BUDGET_NAMESPACE;
+    process.env.FLOW_MODEL_CALLS_DAY_OWNER = '1'; process.env.FLOW_MODEL_CALLS_DAY_IP = '1'; process.env.FLOW_MODEL_CALLS_DAY_SITE = '1';
+    const unchangedPublicLease = await (await serverFlowBudget()).acquire('owner', 'ip');
+    await expect(unchangedPublicLease.chargeModel()).rejects.toMatchObject({ code: 'BUDGET_REACHED' });
+    await unchangedPublicLease.release();
+    process.env.FLOW_BUDGET_NAMESPACE = 'invalid:namespace';
+    await expect(serverFlowBudget()).rejects.toMatchObject({ code: 'BUDGET_UNCONFIGURED' });
+  } finally { process.env = original; }
 });

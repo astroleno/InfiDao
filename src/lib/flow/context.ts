@@ -1,5 +1,13 @@
 import type { PassageRecord } from '@/types';
 
+// The detailed modern decision guidance belongs to a reader's family question,
+// not every later classical word or story mentioning a parent.
+export function familyDecisionGuidance(seed: string) {
+  if (!/(家人|父母|父亲|母亲|爸|妈|长辈|亲人|不孝)/u.test(seed) ||
+    !/(决定|选择|自主|安排|替我|干涉|听从|服从|不孝)/u.test(seed)) return '';
+  return '家庭自主必须在 reflection 正面回应今天的选择边界：由自己承担后果的个人选择，意见未被接受也不必自动放弃；涉及共同承担的事务则需协商。尊重、倾听和说明理由不等于交出决定权，不能默认以放弃选择换和气。meaning 负责必要古义；古书的特殊不从命情形不是现代人拥有个人选择的必要条件，不能暗示只有危害亲人等极端情形才可自主，也不能把个人偏好直接等同于义。原义若只是古代顺从规范，不能宣称它已经支持现代自主，尤其不能把“不违”等顺从用语改释为只是态度尊重。应选择更贴切的候选，或把现代引申与古义明确区分，明确称为今天的对照或应用，不假定年龄与法律身份。';
+}
+
 export function quotationKey(text: string) {
   return text.normalize('NFKC').replace(/[\p{P}\p{Z}\s]/gu, '').replace(/缗蛮(?=黄鸟)/gu, '绵蛮');
 }
@@ -59,8 +67,10 @@ export function sourceExcerpt(text: string, terms: string[], required = '', limi
   return best;
 }
 
+export const CANDIDATE_EXCERPT_LIMIT = 480;
+
 export function compactCandidates(rows: PassageRecord[], terms: string[], head?: { sourceId: string; quote: string }, avoidQuotes: string[] = []) {
-  const excerpts = new Map(rows.map(row => [row.id, sourceExcerpt(row.text, terms, row.id === head?.sourceId ? head.quote : '', 720, avoidQuotes)]));
+  const excerpts = new Map(rows.map(row => [row.id, sourceExcerpt(row.text, terms, row.id === head?.sourceId ? head.quote : '', CANDIDATE_EXCERPT_LIMIT, avoidQuotes)]));
   rows = rows.filter(row => excerpts.get(row.id));
   const selected: PassageRecord[] = [], seen = new Set<string>(), books = new Map<string, number>();
   const add = (row: PassageRecord) => {

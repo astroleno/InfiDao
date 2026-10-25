@@ -1,8 +1,16 @@
 /** @jest-environment node */
-import { compactCandidates, sourceExcerpt } from '@/lib/flow/context';
+import { CANDIDATE_EXCERPT_LIMIT, compactCandidates, familyDecisionGuidance, sourceExcerpt } from '@/lib/flow/context';
 import type { PassageRecord } from '@/types';
 
 const row = (id: string, source: string, text: string) => ({ id, source, text, chapter: id } as PassageRecord);
+
+test('modern family choice guidance follows the reader question rather than classical family references', () => {
+  expect(familyDecisionGuidance('家人总替我决定，怕说不就是不孝')).toContain('不能默认以放弃选择换和气');
+  expect(familyDecisionGuidance('父母替我安排生活，我想自己选择')).toContain('不是现代人拥有个人选择的必要条件');
+  expect(familyDecisionGuidance('舜为父亲承担什么代价')).toBe('');
+  expect(familyDecisionGuidance('同事总替我决定工作分工')).toBe('');
+  expect(familyDecisionGuidance('')).toBe('');
+});
 
 test('finds relevant text after the old prefix limit and retains source bytes', () => {
   const text = '旧章起首。'.repeat(700) + '君子以文会友，以友辅仁。' + '别章文字。'.repeat(500);
@@ -40,7 +48,8 @@ test('shortlists at most twelve passages, retaining head, high ranks and book di
   expect(result.passages).toHaveLength(12); expect(result.passages[0]!.id).toBe('s39');
   expect(result.passages.some(passage => passage.id === 's0')).toBe(true);
   expect(new Set(result.passages.map(passage => passage.source)).size).toBeGreaterThan(5);
-  expect(result.input.reduce((sum, passage) => sum + passage.text.length, 0)).toBeLessThanOrEqual(12 * 720);
+  expect(CANDIDATE_EXCERPT_LIMIT).toBe(480);
+  expect(result.input.reduce((sum, passage) => sum + passage.text.length, 0)).toBeLessThanOrEqual(12 * 480);
   for (const input of result.input) expect(rows.find(passage => passage.id === input.sourceId)!.text).toContain(input.text);
 });
 

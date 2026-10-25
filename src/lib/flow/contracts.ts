@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const FLOW_VERSION = "flow-v1";
-export const FLOW_PROMPT_VERSION = "connected-text-v13-knowledge";
+export const FLOW_PROMPT_VERSION = "connected-text-v14-reading-depth";
 export const flowRelationTypeSchema = z.enum(['related', 'similar', 'contrast', 'elaboration', 'application', 'cause']);
 export type FlowRelationType = z.infer<typeof flowRelationTypeSchema>;
 export const flowKnowledgeSchema = z.object({

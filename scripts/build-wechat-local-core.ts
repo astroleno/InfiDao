@@ -40,7 +40,9 @@ async function main() {
     }]))) + ';\n');
   const groups: string[][] = [[]]; let bytes = 0;
   for (const row of corpus) {
-    const json = JSON.stringify(row), size = Buffer.byteLength(json) + 2;
+    // Native readers still receive canonical boundaries at build time; the
+    // online retrieval path computes them only for the frames it delivers.
+    const json = JSON.stringify({ ...row, lexicalBreaks: lexicalBreaks(row.text) }), size = Buffer.byteLength(json) + 2;
     if (size > MAX_BYTES) throw new Error('A corpus record exceeds the package budget');
     if (bytes + size > MAX_BYTES) { groups.push([]); bytes = 0; }
     groups[groups.length - 1]!.push(json); bytes += size;
