@@ -171,6 +171,14 @@ const nextConfig = {
     ]
   },
 
+  // Preserve the branded public entry in the address bar.
+  async rewrites() {
+    return [
+      { source: '/InfiDao', destination: '/infidao' },
+      { source: '/InfiDao/:path*', destination: '/infidao/:path*' },
+    ]
+  },
+
   // Headers for security and performance
   async headers() {
     return [

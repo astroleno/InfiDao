@@ -1,0 +1,30 @@
+[Unit]
+Description=InfiDao handwriting keepsake worker
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=infidao
+Group=infidao
+WorkingDirectory=/opt/infidao-current/app
+EnvironmentFile=/etc/infidao/handwriting.env
+Environment=NODE_ENV=production
+Environment=OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+ExecStart=/opt/infidao-runtime/handwriting-venv/bin/python /opt/infidao-current/app/scripts/handwriting/worker.py
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=180
+UMask=0077
+MemoryMax=512M
+MemorySwapMax=256M
+CPUQuota=75%
+Nice=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/infidao/handwriting
+
+[Install]
+WantedBy=multi-user.target

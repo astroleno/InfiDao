@@ -1,6 +1,30 @@
-# Include only in the HTTPS aitoshuu.me server block after the loopback app is healthy.
+# Include in the HTTPS aitoshuu.me and tongye.me server blocks after the app is healthy.
 # This file must not end in .conf inside BaoTa's auto-included vhost directory.
 # proxy_pass has no URI suffix, so Next receives the original route and query string.
+location = /InfiDao {
+    proxy_pass http://127.0.0.1:3109;
+    proxy_cache off;
+    proxy_hide_header Cache-Control;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_redirect off;
+    set $fv_cache_control "no-cache";
+}
+
+location ^~ /InfiDao/ {
+    proxy_pass http://127.0.0.1:3109;
+    proxy_cache off;
+    proxy_hide_header Cache-Control;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_redirect off;
+    set $fv_cache_control "no-cache";
+}
+
 location = /infidao {
     proxy_pass http://127.0.0.1:3109;
     # BaoTa enables proxy_cache globally; never cache the release entry page.
@@ -142,6 +166,21 @@ location = /api/flow {
     gzip off;
     proxy_read_timeout 240s;
     proxy_send_timeout 240s;
+    set $fv_cache_control "no-store";
+}
+
+location ^~ /api/handwriting/ {
+    proxy_pass http://127.0.0.1:3109;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_cache off;
+    proxy_buffering off;
+    proxy_read_timeout 60s;
+    proxy_redirect off;
     set $fv_cache_control "no-store";
 }
 

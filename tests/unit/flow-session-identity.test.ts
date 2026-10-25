@@ -1,5 +1,5 @@
 /** @jest-environment node */
-import { createSessionToken, verifySessionToken, issueSession, requestSession, requestIPKey } from '@/lib/flow/session-identity';
+import { createSessionToken, verifySessionToken, issueSession, requestSession, requestReadSession, requestIPKey } from '@/lib/flow/session-identity';
 const environment = { ...process.env };
 beforeEach(() => { Object.assign(process.env, { NODE_ENV: 'production', FLOW_SESSION_SECRET: 'unit-test-secret-with-at-least-32-characters', FLOW_PUBLIC_ORIGIN: 'https://reading.example', FLOW_NATIVE_HTTP_ENABLED: '1' }); });
 afterEach(() => { process.env = { ...environment }; });
@@ -30,4 +30,18 @@ test('proxy addresses affect limits only when trusted; arbitrary forwarded-for i
   process.env.FLOW_TRUST_PROXY = '1';
   expect(requestIPKey(request({ 'x-real-ip': '192.0.2.1' }))).not.toBe(requestIPKey(request({ 'x-real-ip': '192.0.2.2' })));
   expect(requestIPKey(request({ 'x-forwarded-for': '192.0.2.1' }))).toBe(requestIPKey(request()));
+});
+test('an explicit alias accepts its own origin and keeps both domains separate', () => {
+  process.env.FLOW_ALLOWED_ORIGINS = 'https://tongye.me';
+  const alias = (headers: Record<string, string> = {}) => new Request('https://tongye.me/api/flow/session', {
+    method: 'POST', headers: { host: 'tongye.me', origin: 'https://tongye.me', ...headers },
+  });
+  const issued = issueSession(alias());
+  const cookie = issued.cookie.split(';')[0]!;
+  expect(requestSession(alias({ cookie }))).toBe(issued.owner);
+  expect(requestReadSession(new Request('https://tongye.me/api/handwriting/capabilities', { headers: { cookie } }))).toBe(issued.owner);
+  expect(() => issueSession(alias({ origin: 'https://reading.example' }))).toThrow('重新打开');
+  expect(() => issueSession(alias({ host: 'attacker.example' }))).toThrow('重新打开');
+  expect(() => requestReadSession(new Request('https://attacker.example/api/handwriting/jobs', { headers: { cookie } }))).toThrow('重新打开');
+  expect(() => requestSession(alias({ cookie, 'sec-fetch-site': 'cross-site' }))).toThrow('重新打开');
 });

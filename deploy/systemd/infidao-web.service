@@ -10,6 +10,7 @@ User=infidao
 Group=infidao
 WorkingDirectory=/opt/infidao-current/app
 EnvironmentFile=/etc/infidao/app.env
+EnvironmentFile=-/etc/infidao/handwriting.env
 ExecStart=/opt/infidao-runtime/node-v24.21.0/bin/node /opt/infidao-current/app/server.js
 Restart=on-failure
 RestartSec=5
@@ -20,7 +21,7 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectHome=true
 ProtectSystem=full
-ReadWritePaths=/var/lib/infidao/app /opt/infidao-current/app/.next/cache
+ReadWritePaths=/var/lib/infidao/app /var/lib/infidao/handwriting /opt/infidao-current/app/.next/cache
 
 [Install]
 WantedBy=multi-user.target

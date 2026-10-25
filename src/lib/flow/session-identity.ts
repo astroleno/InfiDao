@@ -29,11 +29,21 @@ export function isNativeRequest(request: Request) {
   return request.headers.get('x-flow-client') === 'native' && !request.headers.get('origin') &&
     (process.env.NODE_ENV !== 'production' || process.env.FLOW_NATIVE_HTTP_ENABLED === '1');
 }
+function requestOrigins(request: Request) {
+  const primary = process.env.FLOW_PUBLIC_ORIGIN || (process.env.NODE_ENV !== 'production' ? new URL(request.url).origin : '');
+  const host = (request.headers.get('host') || new URL(request.url).host).toLowerCase();
+  return [primary, ...(process.env.FLOW_ALLOWED_ORIGINS || '').split(',').map(value => value.trim())].filter(origin => {
+    try {
+      const parsed = new URL(origin);
+      return parsed.origin === origin && parsed.host === host &&
+        (parsed.protocol === 'https:' || (process.env.NODE_ENV !== 'production' && parsed.protocol === 'http:'));
+    } catch { return false; }
+  });
+}
 export function checkFlowOrigin(request: Request) {
   if (isNativeRequest(request)) return;
-  const expected = process.env.FLOW_PUBLIC_ORIGIN || (process.env.NODE_ENV !== 'production' ? new URL(request.url).origin : '');
   const origin = request.headers.get('origin');
-  if (!expected || !origin || origin !== expected || request.headers.get('sec-fetch-site') === 'cross-site') {
+  if (!origin || !requestOrigins(request).includes(origin) || request.headers.get('sec-fetch-site') === 'cross-site') {
     throw new FlowError('ORIGIN_DENIED', '请从网站重新打开阅读。', 403);
   }
 }
@@ -53,10 +63,10 @@ export function requestSession(request: Request) {
 
 /** Same-origin safe reads do not necessarily carry an Origin header. */
 export function requestReadSession(request: Request) {
-  const expected = process.env.FLOW_PUBLIC_ORIGIN || new URL(request.url).origin;
+  const allowed = requestOrigins(request);
   const origin = request.headers.get('origin');
   const site = request.headers.get('sec-fetch-site');
-  if ((origin && origin !== expected) || site === 'cross-site' || site === 'same-site') {
+  if (!allowed.length || (origin && !allowed.includes(origin)) || site === 'cross-site' || site === 'same-site') {
     throw new FlowError('ORIGIN_DENIED', '请从网站重新打开阅读。', 403);
   }
   const owner = verifySessionToken(cookieToken(request));

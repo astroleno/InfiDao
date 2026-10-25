@@ -56,7 +56,9 @@ WantedBy=multi-user.target
 - `scene.zip`、原始 PNG/PDF 和元数据只保存在私有目录。HTTP 素材必须验证当前会话归属，前端不接触服务端密钥或上游签名链接。
 - 引用上游渲染器的 MIT 许可证与固定版本见 `vendor/inko/`。仅载入其渲染函数，不运行上游 CLI 或编辑器。
 
-公网部署时，需让既有站点代理将 `/api/handwriting/` 同源请求转发至 InfiDao Web 服务，并保持不缓存；增加独立 Worker 与持久目录后再发布。此接入未自动修改公网代理。
+公网部署使用 `deploy/systemd/infidao-handwriting.service`，制作配置单独存于权限为 `600` 的 `/etc/infidao/handwriting.env`，由 Web 与 Worker 读取。该文件包括 `INKO_API_KEY`、`HANDWRITING_DATA_DIR` 和 `HANDWRITING_PYTHON`；既有会话签名密钥继续从原应用配置读取。先创建归属于 `infidao` 的私有数据目录，再启动两个服务。
+
+既有代理将 `/api/handwriting/` 同源请求转发至 InfiDao Web 服务，并保持不缓存。`deploy/nginx/infidao-locations.inc` 同时支持 `/infidao` 与保留地址的 `/InfiDao` 入口。多个域名需在 Web 环境显式配置 `FLOW_ALLOWED_ORIGINS=https://aitoshuu.me,https://tongye.me`；允许的 Origin 还必须与请求 Host 一致，不能通过改写浏览器 Origin 绕过校验。
 
 ## 验证
 
