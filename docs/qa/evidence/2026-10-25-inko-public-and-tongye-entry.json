@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-25",
+  "release": {
+    "releaseId": "infidao-a44b449cd8288727",
+    "built": true,
+    "assembled": true,
+    "sourceMode": "commit",
+    "gitHead": "fecf2d2a5ecbd7b1b8294506dab73e726e502310",
+    "sourceDigest": "a44b449cd82887271e94999eda681d854f69fedd6e32115e280b26efc975d2b5",
+    "sourceFiles": 678,
+    "codeSha256": "0a84c6139c95f9eb9dc9d764c5c985414c218203c9136e8834625a1c659269ba",
+    "next": "15.5.28",
+    "rollbackTarget": "/opt/infidao-releases/infidao-128c88ab806c7bf4",
+    "transport": "github-commit-archive"
+  },
+  "publication": {
+    "published": true,
+    "releaseId": "infidao-a44b449cd8288727",
+    "commit": "fecf2d2a5ecbd7b1b8294506dab73e726e502310",
+    "rollbackTarget": "infidao-128c88ab806c7bf4",
+    "entry": "https://tongye.me/InfiDao",
+    "modelRequests": 0,
+    "originalSitesHealthy": true,
+    "publishedAt": "2026-10-25T06:13:50Z"
+  },
+  "entries": [
+    {
+      "url": "https://tongye.me/InfiDao",
+      "status": 200,
+      "redirect": false,
+      "verifiedResources": 11,
+      "verifiedFonts": 15,
+      "verifiedPreparedFiles": 6,
+      "workerReady": true,
+      "availableStyles": 3000,
+      "crossOriginRejected": true
+    },
+    {
+      "url": "https://aitoshuu.me/infidao",
+      "status": 200,
+      "redirect": false,
+      "verifiedResources": 11,
+      "verifiedFonts": 15,
+      "verifiedPreparedFiles": 6,
+      "workerReady": true,
+      "availableStyles": 3000,
+      "crossOriginRejected": true
+    }
+  ],
+  "generation": {
+    "id": "357c72c2-d696-4fc1-9f62-d11c75ec00c1",
+    "pages": 1,
+    "elapsedMs": 18635,
+    "cloudMs": 9135,
+    "costCents": 0,
+    "otherOwnerDenied": 404
+  },
+  "cleanup": {
+    "passed": true,
+    "checkedAt": "2026-10-25T06:19:04.416Z",
+    "origin": "https://tongye.me",
+    "fixtureJobId": "357c72c2-d696-4fc1-9f62-d11c75ec00c1",
+    "recoveredAfterPromotion": 200,
+    "recoveredStatus": "ready",
+    "assetBeforeDelete": 200,
+    "deleteStatus": 200,
+    "jobAfterDelete": 404,
+    "assetAfterDelete": 404,
+    "privateFolderRemoved": true,
+    "services": {
+      "web": "active",
+      "worker": "active",
+      "redis": "active"
+    },
+    "workerBootEnabled": true,
+    "modelRequests": 0,
+    "newGenerations": 0
+  },
+  "runtime": {
+    "checkedAt": "2026-10-25T06:19:27.332062+00:00",
+    "currentRelease": "/opt/infidao-releases/infidao-a44b449cd8288727",
+    "appEnvSha256": "e4ded1956dec377fb2e10903e6c43ae20f39731d9465f0fa9924c383eff2f22f",
+    "model": "deepseek-flash",
+    "modelBaseOrigin": "api.deepseek.com",
+    "modelDailyCaps": {
+      "owner": 30,
+      "ip": 60,
+      "site": 200
+    },
+    "handwritingEnvMode": "0o600",
+    "privateDirectoryMode": "0o700",
+    "qaSessionRemoved": true,
+    "stagedSecretRemoved": true
+  },
+  "browser": {
+    "passed": true,
+    "mode": "headless, reduced motion; not a foreground frame-rate acceptance",
+    "closingEntry": "https://tongye.me/InfiDao/keepsake",
+    "readerEntry": "https://tongye.me/InfiDao",
+    "returnHref": "/InfiDao",
+    "cardRotation": true,
+    "desktopPngWidth": 2480,
+    "mobileOverflow": false,
+    "errors": [],
+    "actualModelRequests": 0,
+    "blockedModelRequests": 0
+  },
+  "localChecks": {
+    "handwritingJest": 81,
+    "handwritingPython": 17,
+    "originAndContractsJest": 12,
+    "countsMayOverlap": true,
+    "applicationTypeCheck": "passed",
+    "changedFileLint": "passed"
+  },
+  "limitations": [
+    "Foreground stable 60 FPS acceptance remains pending by explicit user decision.",
+    "Some traditional characters are missing in the upstream lyric-1 model; original text is preserved.",
+    "Cookies and local reading records remain independent between the two domains.",
+    "Fonts use the same origin; the existing assets.aitoshuu.me certificate issue was not repaired."
+  ],
+  "artifacts": [
+    {
+      "name": "server-proof/build-result.json",
+      "bytes": 490,
+      "sha256": "77f524d98f303dc6297e224a964f4b0363db5cd430d93d3a95a56aec10eb0221"
+    },
+    {
+      "name": "server-proof/candidate-runtime-check.json",
+      "bytes": 2651,
+      "sha256": "e722a88d370d1d1de279defd294a87c9552f9bfd683d938edaa0c3a71dc08ceb"
+    },
+    {
+      "name": "server-proof/cleanup-result.json",
+      "bytes": 516,
+      "sha256": "06f219a613f75e8d4622769a1e2c4fb6018cf4169f43b167b3b7a9b4beb35f6c"
+    },
+    {
+      "name": "server-proof/public-aitoshuu-check.json",
+      "bytes": 2469,
+      "sha256": "ec500ccd8ced0301229f3c17a665dbd6c4eb485d5fb69130717b70674401586b"
+    },
+    {
+      "name": "server-proof/public-tongye-check.json",
+      "bytes": 2465,
+      "sha256": "6a5644862527fe117e22dda11283e02a581cf77f04f2a8b1ad8ceb4bea638139"
+    },
+    {
+      "name": "server-proof/publication-result.json",
+      "bytes": 306,
+      "sha256": "8f8bbd9d0772945a348fa85ab72932e96db38bb25d56455778b19c5e483fbe56"
+    },
+    {
+      "name": "server-proof/runtime-summary.json",
+      "bytes": 481,
+      "sha256": "d1393b1f4344585468a3411d963c3e58b263e977cf5def02a98e19debffd7fc8"
+    },
+    {
+      "name": "public-visual.json",
+      "bytes": 379,
+      "sha256": "1229c9c5d070f284ee18bd87719a242603ed1a7539235d47e8d15f54af4fa033"
+    },
+    {
+      "name": "public-tongye-keepsake.png",
+      "bytes": 87495,
+      "sha256": "d615f01b1b54afc061b4edaea4c8c29cead012afd128eff78dc41d270e30c8dd"
+    },
+    {
+      "name": "package/manifests/release-manifest.json",
+      "bytes": 7970,
+      "sha256": "c33ceadd3e5db6c5f2790cd907de90ae80287bc9ed4e439cbfdc0c95b730f184"
+    }
+  ]
+}
