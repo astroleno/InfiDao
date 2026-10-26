@@ -1,12 +1,15 @@
 import { preserveMotionCandidate } from './motion-candidate';
+import { PUBLIC_READER_PATH } from './public-route';
 
 const STATE_KEY = 'flowPathId';
 
 function readerUrl(pathId?: string) {
-  const url = new URL('/infidao', window.location.origin);
+  const url = new URL(window.location.href);
+  url.pathname = PUBLIC_READER_PATH;
+  url.searchParams.delete('reading');
   if (pathId) url.searchParams.set('reading', pathId);
   preserveMotionCandidate(url, window.location.search);
-  return url.pathname + url.search;
+  return url.pathname + url.search + url.hash;
 }
 
 function currentPathId() {

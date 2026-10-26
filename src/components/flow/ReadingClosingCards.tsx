@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { CLOSING_ASSET_ROOT, CLOSING_PRESETS, CLOSING_ROTATION_KEY, nextClosingPreset } from '@/lib/handwriting/closing-presets';
+import { PUBLIC_READER_PATH } from '@/lib/flow-browser/public-route';
 import styles from './closing-cards.module.css';
 
 /** A static closing moment. Mount only when the reader asks to pause and keep a sentence. */
@@ -11,14 +12,12 @@ export function ReadingClosingCards({ onClose }: { onClose?: (() => void) | unde
   const [index, setIndex] = useState<number | null>(null);
   const [imageFailed, setImageFailed] = useState(false);
   const [imageAttempt, setImageAttempt] = useState(0);
-  const [readingHref, setReadingHref] = useState('/infidao');
   const initialized = useRef(false);
   const preset = index === null ? null : CLOSING_PRESETS[index]!;
 
   useEffect(() => {
     if (initialized.current) return;
     initialized.current = true;
-    if (window.location.pathname.startsWith('/InfiDao')) setReadingHref('/InfiDao');
     let previous: string | null = null;
     try { previous = sessionStorage.getItem(CLOSING_ROTATION_KEY); } catch { /* The current visit still works without storage. */ }
     const next = nextClosingPreset(previous);
@@ -37,7 +36,7 @@ export function ReadingClosingCards({ onClose }: { onClose?: (() => void) | unde
     <header className={styles.header}>
       <div><p className={styles.eyebrow}>六经注我</p><h1 id="reading-closing-title">读到这里，留一句。</h1></div>
       {onClose ? <button type="button" className={styles.textButton} onClick={onClose}>返回阅读</button>
-        : <Link className={styles.textButton} href={readingHref}>返回阅读</Link>}
+        : <Link className={styles.textButton} href={PUBLIC_READER_PATH}>返回阅读</Link>}
     </header>
     <figure className={styles.figure}>
       <div className={styles.paper} aria-busy={!preset}>

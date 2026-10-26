@@ -20,3 +20,18 @@ test('a persisted ancestor outside the current browser trail replaces rather tha
   expect(location.search).toBe('?reading=older-parent'); expect(onNavigate).toHaveBeenCalledWith('older-parent');
   controller.dispose();
 });
+
+test('reader navigation retains the branded path, existing query parameters and fragment', () => {
+  history.replaceState(null, '', '/InfiDao?source=shared&reading=old#passage');
+  const controller = createFlowHistory(jest.fn());
+  controller.initialize('root');
+  expect(location.pathname).toBe('/InfiDao');
+  expect(location.search).toBe('?source=shared');
+  expect(location.hash).toBe('#passage');
+  controller.push('child');
+  expect(location.pathname).toBe('/InfiDao');
+  expect(new URLSearchParams(location.search).get('source')).toBe('shared');
+  expect(new URLSearchParams(location.search).get('reading')).toBe('child');
+  expect(location.hash).toBe('#passage');
+  controller.dispose();
+});
