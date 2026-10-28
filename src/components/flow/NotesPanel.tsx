@@ -78,20 +78,22 @@ export function NotesPanel({ notes, saving, onSave, onDelete, onUndo, onUpdate, 
 
   return (
     <section ref={panelRef} className={styles.notesPanel} aria-labelledby="flow-notes-title">
-      <h2 id="flow-notes-title">自己的注脚</h2>
+      <h2 id="flow-notes-title" tabIndex={-1} data-flow-notes-target>自己的注脚</h2>
       <p className={styles.muted}>只保存在这台设备。制作手写纪念卡时，可单独确认发送所选注脚。</p>
       <label className={styles.srOnly} htmlFor="flow-note-input">写下自己的注脚</label>
       <textarea id="flow-note-input" value={draft.text} maxLength={1000} onChange={event => { draft.change(event.target.value); setMessage(''); }} placeholder="记下你自己的联想……" />
       <button className={styles.quietButton} type="button" disabled={!draft.text.trim() || saving} onClick={() => void submit()}>
         {saving ? '保存中' : '保存注脚'}
       </button>
-      {notes.map(note => (
-        <article key={note.id} className={styles.noteItem}>
-          {onUpdate ? <EditableNote note={note} onUpdate={onUpdate} /> : <p>{note.text}</p>}
+      {notes.map(note => {
+        const actions = <>
           {onKeepsake && <button className={styles.textButton} type="button" onClick={() => onKeepsake(note)}>留成手写纪念卡</button>}
           <button data-note-id={note.id} className={styles.textButton} type="button" disabled={deleting} onClick={() => void remove(note.id)}>删除</button>
-        </article>
-      ))}
+        </>;
+        return <article key={note.id} className={styles.noteItem}>
+          {onUpdate ? <EditableNote note={note} onUpdate={onUpdate} actions={actions} /> : <><p>{note.text}</p><div className={styles.noteActions}>{actions}</div></>}
+        </article>;
+      })}
       {removed && <button ref={undoRef} className={styles.textButton} type="button" onClick={() => void undo()}>撤销删除</button>}
       <p className={styles.muted} role="status">{draft.message || message}</p>
     </section>

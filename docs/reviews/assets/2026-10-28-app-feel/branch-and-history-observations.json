@@ -1,0 +1,44 @@
+{
+  "before": {
+    "top": 0,
+    "path": "d14c1693-0905-4393-9f93-c72c6e69c410"
+  },
+  "arrival": {
+    "top": 0,
+    "path": "c4153981-53e7-4e63-84d6-051c9c6ccebf",
+    "trail": 2,
+    "notice": "沿「止」已接续去读",
+    "paused": "true"
+  },
+  "entered": {
+    "focus": "BLOCKQUOTE",
+    "rect": {
+      "x": 70.203125,
+      "y": 211.23291015625,
+      "width": 249.59375,
+      "height": 111,
+      "top": 211.23291015625,
+      "right": 319.796875,
+      "bottom": 322.23291015625,
+      "left": 70.203125
+    },
+    "top": 296.5,
+    "path": "c4153981-53e7-4e63-84d6-051c9c6ccebf"
+  },
+  "firstBack": {
+    "path": "c4153981-53e7-4e63-84d6-051c9c6ccebf",
+    "trail": 2,
+    "focus": "更多阅读选项",
+    "top": 296.5
+  },
+  "secondBack": {
+    "path": "d14c1693-0905-4393-9f93-c72c6e69c410",
+    "trail": 1,
+    "top": 0
+  },
+  "forward": {
+    "path": "c4153981-53e7-4e63-84d6-051c9c6ccebf",
+    "trail": 2,
+    "dialogs": 0
+  }
+}

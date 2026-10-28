@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { registerFlowOverlay } from '@/lib/flow-browser/overlay-history';
 
 export function useFlowDialog(onClose: () => void, open = true, initialFocus?: string, returnFocus?: HTMLElement | null) {
   const ref = useRef<HTMLElement>(null);
@@ -7,6 +8,7 @@ export function useFlowDialog(onClose: () => void, open = true, initialFocus?: s
   useEffect(() => {
     if (!open) return;
     const dialog = ref.current;
+    const unregister = registerFlowOverlay(() => close.current());
     const previous = returnFocus ?? document.activeElement as HTMLElement | null;
     const isolated: Array<{ element: HTMLElement; inert: boolean; hidden: string | null }> = [];
     let branch = dialog?.parentElement;
@@ -33,12 +35,15 @@ export function useFlowDialog(onClose: () => void, open = true, initialFocus?: s
     const focus = (event: FocusEvent) => { if (!dialog?.contains(event.target as Node)) focusable()[0]?.focus(); };
     document.addEventListener('keydown', keydown); document.addEventListener('focusin', focus);
     return () => {
+      unregister();
       document.removeEventListener('keydown', keydown); document.removeEventListener('focusin', focus);
       for (const { element, inert, hidden } of isolated) {
         if (!inert) element.removeAttribute('inert');
         if (hidden === null) element.removeAttribute('aria-hidden'); else element.setAttribute('aria-hidden', hidden);
       }
-      if (previous?.isConnected) previous.focus({ preventScroll: true });
+      // A menu action may already have opened the next task. Do not steal its
+      // focus during the old dialog's cleanup.
+      if (previous?.isConnected && (!document.activeElement || dialog?.contains(document.activeElement) || document.activeElement === document.body)) previous.focus({ preventScroll: true });
     };
   }, [open, initialFocus, returnFocus]);
   return ref;

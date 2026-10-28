@@ -216,22 +216,27 @@
   border: 0; color: var(--beam); background: transparent; cursor: pointer;
   pointer-events: auto; touch-action: pan-y; -webkit-tap-highlight-color: transparent;
 }
-.readingMenuTrigger span { width: 3px; height: 42px; border-radius: 3px; background: currentColor; opacity: .26; transition: opacity 160ms ease, height 160ms ease; }
-.readingMenuTrigger:hover span, .readingMenuTrigger:focus-visible span { opacity: .8; height: 50px; }
+.readingMenuTrigger span { width: 3px; height: 42px; border-radius: 3px; background: currentColor; opacity: .26; transition: opacity 160ms ease, transform 160ms ease; }
+.readingMenuTrigger:focus-visible span { opacity: .8; transform: scaleY(1.19); }
+@media (hover: hover) and (pointer: fine) { .readingMenuTrigger:hover span { opacity: .8; transform: scaleY(1.19); } }
 .readingMenu .readingMenuTrigger:focus-visible { outline: 1px solid var(--flow-focus); outline-offset: -8px; border-radius: 14px; }
 .readingMenu[data-open="true"] .readingMenuTrigger { visibility: hidden; }
-.readingMenuScrim { position: absolute; inset: 0; background: rgba(0, 0, 0, .38); pointer-events: auto; animation: readingMenuFade 180ms ease-out; }
+.readingMenuScrim { position: absolute; inset: 0; background: rgba(0, 0, 0, .38); }
 .readingMenuPanel {
   position: absolute; z-index: 1; inset: 0 0 0 auto; width: min(300px, calc(100% - 48px)); box-sizing: border-box;
   display: flex; flex-direction: column; gap: 8px; padding: max(28px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) 24px;
   border-left: 1px solid rgba(225, 236, 248, .1); background: #090d0e; box-shadow: -16px 0 48px rgba(0, 0, 0, .22);
   pointer-events: auto; touch-action: pan-y; overflow-y: auto; overscroll-behavior: contain;
-  animation: readingMenuIn 220ms cubic-bezier(.2, .7, .2, 1);
+  will-change: transform;
 }
 .readingMenuPanel[hidden] { display: none; }
-.readingMenuHeading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 36px; }
+.readingMenuHeading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
 .readingMenuHeading h2 { margin: 0; color: var(--flow-muted); font-size: var(--flow-size-caption); font-weight: var(--flow-weight-regular); letter-spacing: .14em; }
-.readingMenuSource { margin: -16px 0 12px; color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.8; letter-spacing: .06em; }
+.readingMenuSource { margin: 0 0 8px; color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.8; letter-spacing: .06em; }
+.readingMenuGroup { display: flex; flex-direction: column; margin-bottom: 20px; }
+.readingMenuGroupLabel { margin: 0 0 8px; color: var(--flow-muted); font-size: var(--flow-size-caption); letter-spacing: .1em; }
+.readingMenuOrigin { margin-bottom: 16px; overflow-wrap: anywhere; }
+.readingMenuOrigin .muted { margin-bottom: 0; line-height: 1.8; }
 .readingMenuClose { display: grid; place-items: center; min-width: 44px; min-height: 44px; margin-right: -12px; border: 0; background: none; color: var(--flow-muted); font: inherit; font-size: var(--flow-size-body); cursor: pointer; }
 .readingMenuClose:focus-visible { outline: 1px solid var(--flow-focus); outline-offset: -4px; border-radius: 8px; }
 .readingMenuPanel .textButton {
@@ -240,8 +245,6 @@
   border-bottom: 1px solid rgba(225, 236, 248, .08); border-radius: 0;
 }
 .readingMenuPanel .textButton:disabled { color: var(--flow-muted); opacity: .5; cursor: default; }
-@keyframes readingMenuIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-@keyframes readingMenuFade { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .readingMenuPanel, .readingMenuScrim { animation: none; } .readingMenuTrigger span { transition: none; } }
 
 .topButton {
@@ -410,8 +413,10 @@
   font: inherit;
   font-size: var(--flow-size-control);
   cursor: pointer;
-  transition: color 150ms ease, background 150ms ease, border-color 150ms ease;
+  transition: color 150ms ease, background 150ms ease, border-color 150ms ease, transform 120ms ease-out;
 }
+
+.experience :is(.quietButton, .primaryButton, .textButton, .meaningClose, .readingMenuClose):active:not(:disabled) { transform: scale(.97); }
 
 .quietButton {
   border: 1px solid var(--halo);
@@ -506,6 +511,8 @@
   font-size: var(--flow-size-control);
   font-weight: var(--flow-weight-medium);
 }
+.notesPanel h2:focus { outline: none; }
+.notesPanel h2:focus-visible { outline: 1px solid var(--flow-focus); outline-offset: 6px; }
 
 .muted {
   margin: 0 0 12px;
@@ -518,6 +525,7 @@
 .seedSheet textarea {
   display: block;
   width: 100%;
+  box-sizing: border-box;
   min-height: 78px;
   resize: vertical;
   border: 1px solid var(--halo);
@@ -537,10 +545,9 @@
 }
 
 .noteItem {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 18px;
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
   margin-top: 14px;
   padding: 12px 0;
   border-bottom: 1px solid var(--halo);
@@ -553,6 +560,8 @@
   margin: 0;
   white-space: pre-wrap;
 }
+.noteActions { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; margin-top: 8px; }
+.noteActions .textButton { min-width: 44px; min-height: 44px; padding-inline: 0; white-space: normal; text-align: left; }
 
 .linkedToken {
   display: inline;
@@ -777,8 +786,15 @@
   clip-path: inset(50%);
 }
 
-.firstHint { position: absolute; z-index: 4; bottom: max(22px, env(safe-area-inset-bottom)); left: 0; right: 0; display: flex; align-items: center; justify-content: center; color: var(--flow-muted); font-size: var(--flow-size-caption); background: linear-gradient(transparent, #020303); }
-.noteBody { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.firstHint { position: absolute; z-index: 4; bottom: max(22px, env(safe-area-inset-bottom)); left: max(18px, env(safe-area-inset-left)); right: max(18px, env(safe-area-inset-right)); display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.8; background: linear-gradient(transparent, #020303); }
+.firstHint > span { max-width: 480px; }
+.firstHint .textButton { flex-shrink: 0; padding-inline: 8px; }
+.readingFeedback { position: absolute; z-index: 5; left: 50%; bottom: calc(var(--flow-visible-bottom, 0px) + max(28px, env(safe-area-inset-bottom))); width: max-content; max-width: calc(100% - 40px); padding: 10px 18px; border: 1px solid var(--halo); border-radius: 999px; background: rgba(9, 13, 14, .96); color: var(--beam); font-size: var(--flow-size-caption); line-height: 1.7; pointer-events: none; opacity: 0; visibility: hidden; transform: translate(-50%, 4px); transition: opacity 160ms ease-out, transform 160ms ease-out, visibility 160ms; }
+.readingFeedback[data-visible="true"] { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+.branchArrival { position: absolute; z-index: 4; left: 50%; bottom: calc(var(--flow-visible-bottom, 0px) + max(88px, env(safe-area-inset-bottom))); display: flex; align-items: center; gap: 8px; width: max-content; max-width: calc(100% - 40px); padding: 2px 4px 2px 16px; border: 1px solid var(--halo); border-radius: 999px; background: #090d0e; color: var(--flow-muted); font-size: var(--flow-size-caption); transform: translateX(-50%); }
+.branchArrival > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.branchArrival .textButton { flex-shrink: 0; min-height: 44px; color: var(--beam); }
+.noteBody { width: 100%; min-width: 0; overflow-wrap: anywhere; }
 .noteBody textarea { margin-bottom: 8px; }
 .librarySheet { display: flex; flex-direction: column; width: min(100%, 640px); overflow: clip; }
 .librarySheet > :not(.libraryList) { flex-shrink: 0; }
@@ -792,6 +808,7 @@
 .libraryRow > span { display: block; }
 .libraryOpen { display: block; width: 100%; border: 0; padding: 0; text-align: left; color: inherit; background: transparent; cursor: pointer; font: inherit; }
 .libraryOpen > span { display: block; }
+.libraryOrigin { margin-top: 6px; color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.8; }
 .libraryQuote { margin: 0 0 8px; font-size: var(--flow-size-body); line-height: 1.8; font-family: var(--flow-classic-family, "Songti SC", serif); }
 .libraryNote { padding: 18px 0; border-bottom: 1px solid var(--halo); font-size: var(--flow-size-body); line-height: 1.8; }
 .libraryNote .noteBody > p { white-space: pre-wrap; }
@@ -868,6 +885,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .readingFeedback { transition: none; transform: translateX(-50%); }
+  .experience :is(.quietButton, .primaryButton, .textButton, .meaningClose, .readingMenuClose):active:not(:disabled) { transform: none; }
   .lightPoint, .prismRay { animation: none; }
   .prismRay { display: none; }
   .opticalLoading, .lightQuote, .lightPoint { transition: none; }

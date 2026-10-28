@@ -1,0 +1,295 @@
+{
+  "reviewDate": "2026-10-28",
+  "url": "https://aitoshuu.me/InfiDao",
+  "sourceHead": "480493827443e382434c825afdf58f69401d75f9",
+  "release": {
+    "id": "infidao-570e028e8b3ee676",
+    "commit": "21526585a1b1e32be87d41fb0f61a57dfffe0292",
+    "worktreeDirty": null,
+    "codeSha256": "466ffe9b008b791b30048c67e1c447fd46e1c1fafc4c63a999c527a8caa5e8c1",
+    "corpusVersion": "guji-core-v1",
+    "corpusSha256": "3ac315b83fbb75f5076e444a09823d243d1237995ba2244eecb43af76c0ce3ec",
+    "curatedVersion": "curated-9dcbdbbc52ea63b7",
+    "fontVersion": "6260e75c0bc7134351a0",
+    "fontManifestSha256": "46fb9c490f185581230c140654286858fab810180288ea809e5b53ae49fefbb4",
+    "fontBasePath": "/flow-assets/v-6260e75c0bc7134351a0",
+    "fontPreloads": [
+      "base-serif-c2701e3fde99183cf3b9.woff",
+      "base-supplement-7ae6002e9d58b6a75354.woff"
+    ],
+    "storageSchema": {
+      "browser": 4,
+      "server": 1
+    }
+  },
+  "method": "Root collected shared live-browser evidence; two isolated agents reviewed it independently with source and approved design documents.",
+  "desktop": {
+    "width": 1450,
+    "height": 713,
+    "material": "liquid-live",
+    "meaning": {
+      "dialog": null,
+      "opacity": "1",
+      "background": "rgb(11, 14, 18)",
+      "paused": "true"
+    },
+    "scrollInput": {
+      "start": {
+        "top": 681,
+        "paused": "false",
+        "compensation": ""
+      },
+      "end": {
+        "top": 668,
+        "paused": "false",
+        "compensation": ""
+      }
+    },
+    "scrollInputLimit": "The displacement includes wheel settling and is not an automatic-speed or FPS measurement."
+  },
+  "branch": {
+    "selectedQuote": "身有所忿懥，则不得其正",
+    "selectedWord": "正",
+    "result": {
+      "url": "https://aitoshuu.me/InfiDao?reading=d7d2021b-aefb-4031-916d-d05ec663f528",
+      "paused": "true",
+      "trailLength": 2,
+      "scrollTop": 668.5,
+      "articles": [
+        {
+          "id": "d376c0a7-53d6-4ac3-b0cd-76deec594968",
+          "source": "大学 · 第1章 正文",
+          "top": -468.8875732421875,
+          "bottom": 107.1124267578125,
+          "ready": "true",
+          "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。"
+        },
+        {
+          "id": "bdc125f8-b255-45a1-b814-ecc65d08ed56",
+          "source": "大学 · 第1章 正文",
+          "top": 107.1124267578125,
+          "bottom": 461.1124267578125,
+          "ready": "true",
+          "quote": "身有所忿懥，则不得其正"
+        },
+        {
+          "id": "f41782e8-9da7-43a6-8455-3f685d59d383",
+          "source": "大学 · 第1章 正文",
+          "top": 461.1124267578125,
+          "bottom": 963.1124267578125,
+          "ready": "true",
+          "quote": "欲修其身者，先正其心。欲正其心者，先诚其意。"
+        }
+      ],
+      "status": [
+        ""
+      ]
+    },
+    "browserBackWithMeaning": {
+      "before": {
+        "trailLength": 2,
+        "dialogs": [
+          "大学 · 第1章 正文 · 释义"
+        ],
+        "focused": "关闭释义"
+      },
+      "after": {
+        "trailLength": 1,
+        "dialogs": [],
+        "focused": "更多阅读选项",
+        "paused": "true"
+      }
+    }
+  },
+  "notes": {
+    "desktopOpening": {
+      "width": 1450,
+      "height": 713,
+      "paused": "true",
+      "input": {
+        "x": 379,
+        "y": 719.1124267578125,
+        "width": 692,
+        "height": 80.390625,
+        "top": 719.1124267578125,
+        "right": 1071,
+        "bottom": 799.5030517578125,
+        "left": 379
+      },
+      "focus": {
+        "id": "",
+        "label": "更多阅读选项"
+      },
+      "scrollTop": 101.5
+    },
+    "mobileOpening": {
+      "width": 390,
+      "height": 844,
+      "paused": "true",
+      "input": {
+        "x": 70.203125,
+        "y": 371.27349853515625,
+        "width": 249.59375,
+        "height": 80.390625,
+        "top": 371.27349853515625,
+        "right": 319.796875,
+        "bottom": 451.66412353515625,
+        "left": 70.203125
+      },
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "更多阅读选项"
+      },
+      "scrollTop": 488
+    },
+    "mobileSaved": {
+      "width": 390,
+      "height": 844,
+      "rowRect": {
+        "x": 70.203125,
+        "y": 509.66412353515625,
+        "width": 249.59375,
+        "height": 697.2968139648438,
+        "top": 509.66412353515625,
+        "right": 319.796875,
+        "bottom": 1206.9609375,
+        "left": 70.203125
+      },
+      "children": [
+        {
+          "tag": "DIV",
+          "text": "评审样例：我想在繁忙中留一点安静。编辑",
+          "rect": {
+            "x": 70.203125,
+            "y": 521.6641235351562,
+            "width": 9.59375,
+            "height": 672.2968139648438,
+            "top": 521.6641235351562,
+            "right": 79.796875,
+            "bottom": 1193.9609375,
+            "left": 70.203125
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "text": "留成手写纪念卡",
+          "rect": {
+            "x": 97.796875,
+            "y": 521.6641235351562,
+            "width": 142,
+            "height": 44,
+            "top": 521.6641235351562,
+            "right": 239.796875,
+            "bottom": 565.6641235351562,
+            "left": 97.796875
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "text": "删除",
+          "rect": {
+            "x": 257.796875,
+            "y": 521.6641235351562,
+            "width": 62,
+            "height": 44,
+            "top": 521.6641235351562,
+            "right": 319.796875,
+            "bottom": 565.6641235351562,
+            "left": 257.796875
+          }
+        }
+      ],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": null
+      },
+      "scrollWidth": 390
+    },
+    "sampleText": "评审样例：我想在繁忙中留一点安静。",
+    "sampleRemoved": true
+  },
+  "mobile": {
+    "metrics": {
+      "width": 390,
+      "height": 844,
+      "dpr": 2,
+      "coarse": true,
+      "hover": false
+    },
+    "keepsake": {
+      "width": 390,
+      "height": 844,
+      "dialog": "手写纪念卡",
+      "focused": {
+        "tag": "BUTTON",
+        "label": null
+      },
+      "button": [
+        {
+          "disabled": true
+        }
+      ],
+      "consent": [
+        {
+          "checked": false
+        }
+      ]
+    },
+    "library": {
+      "width": 390,
+      "height": 844,
+      "tablist": [
+        {
+          "text": "最近阅读",
+          "selected": "true"
+        },
+        {
+          "text": "关联",
+          "selected": "false"
+        },
+        {
+          "text": "收藏",
+          "selected": "false"
+        },
+        {
+          "text": "注脚",
+          "selected": "false"
+        }
+      ],
+      "rows": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。大学 · 第1章 正文 · 2026/10/28留成手写纪念卡欲修其身者，先正其心。欲正其心者，先诚其意。大学 · 第1章 正文 · 2026/10/28留成手写纪念卡"
+    },
+    "thought": {
+      "width": 390,
+      "height": 844,
+      "input": {
+        "x": 35,
+        "y": 658.609375,
+        "width": 320,
+        "height": 80.390625,
+        "top": 658.609375,
+        "right": 355,
+        "bottom": 739,
+        "left": 35
+      },
+      "focus": {
+        "tag": "TEXTAREA",
+        "id": "flow-seed-input"
+      },
+      "softwareKeyboardSimulated": false
+    }
+  },
+  "limits": {
+    "physicalPhone": false,
+    "softwareKeyboard": false,
+    "sixtyFpsAcceptance": false,
+    "fullLongReadRerun": false,
+    "paidHandwritingJobSubmitted": false,
+    "implementationChanged": false
+  },
+  "captureCorrections": [
+    "Initial meaning screenshot was taken during entry opacity; final image replaced after finite animations ended; computed opacity=1 and background rgb(11,14,18).",
+    "Viewport emulation did not persist across CLI rounds. Initial thought/notes captures at 1450px were replaced inside a single verified 390px touch-emulation round."
+  ]
+}

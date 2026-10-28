@@ -1,0 +1,79 @@
+{
+  "opening": {
+    "width": 390,
+    "height": 844,
+    "focus": "自己的注脚",
+    "rect": {
+      "x": 70.203125,
+      "y": 210.90478515625,
+      "width": 249.59375,
+      "height": 24,
+      "top": 210.90478515625,
+      "right": 319.796875,
+      "bottom": 234.90478515625,
+      "left": 70.203125
+    },
+    "state": {
+      "__NA": true,
+      "__PRIVATE_NEXTJS_INTERNALS_TREE": [
+        "",
+        {
+          "children": [
+            "infidao",
+            {
+              "children": [
+                "__PAGE__",
+                {},
+                "/InfiDao",
+                "refresh"
+              ]
+            }
+          ]
+        },
+        null,
+        null,
+        true
+      ],
+      "flowPathId": "d14c1693-0905-4393-9f93-c72c6e69c410",
+      "flowTrail": [
+        "d14c1693-0905-4393-9f93-c72c6e69c410"
+      ]
+    },
+    "paused": "true"
+  },
+  "saved": {
+    "body": {
+      "x": 70.203125,
+      "y": 439.29541015625,
+      "width": 249.59375,
+      "height": 108,
+      "top": 439.29541015625,
+      "right": 319.796875,
+      "bottom": 547.29541015625,
+      "left": 70.203125
+    },
+    "actions": {
+      "x": 70.203125,
+      "y": 555.29541015625,
+      "width": 249.59375,
+      "height": 44,
+      "top": 555.29541015625,
+      "right": 319.796875,
+      "bottom": 599.29541015625,
+      "left": 70.203125
+    },
+    "bodySize": "20px",
+    "width": 390,
+    "height": 844,
+    "scrollWidth": 390,
+    "fixture": {
+      "requests": [
+        {
+          "op": "open"
+        }
+      ],
+      "errors": []
+    },
+    "apiRequests": 0
+  }
+}

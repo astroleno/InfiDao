@@ -22,7 +22,7 @@ export type FlowController = {
   restart: (selection?: FlowSelection) => Promise<unknown>;
   restore: (pathId: string, options?: { navigation?: string; record?: FlowPathRecord; resumeIncomplete?: boolean }) => Promise<unknown>;
   openSaved: (target: SavedTarget) => Promise<boolean>;
-  returnToParent: () => void;
+  returnToParent: (parentPathId?: string) => void;
   curated: (seed?: string) => Promise<unknown>;
   checkpoint: () => Promise<void>;
   cancel: (manual?: boolean) => void;
@@ -91,6 +91,6 @@ export function createBrowserController(host: Host) {
       await controller.restore(record.pathId, { record: { ...record, snapshot: savedSnapshot(record, target) }, navigation: target.source ? 'source' : 'saved', resumeIncomplete: false });
       return token === opening && controller.getState().record?.pathId === record.pathId && controller.getState().version === version + 1;
     },
-    returnToParent() { const id = controller.getState().record?.parentPathId; if (id) history.returnTo(id); },
+    returnToParent(parentPathId?: string) { const id = parentPathId || controller.getState().record?.parentPathId; if (id) history.returnTo(id); },
     dispose() { opening++; history.dispose(); dispose(); } };
 }

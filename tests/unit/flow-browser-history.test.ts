@@ -35,3 +35,29 @@ test('reader navigation retains the branded path, existing query parameters and 
   expect(location.hash).toBe('#passage');
   controller.dispose();
 });
+
+test('reader-owned traversal is restored once before the framework can replace its state', () => {
+  history.replaceState(null, '', '/InfiDao');
+  const router = jest.fn(), onNavigate = jest.fn();
+  window.addEventListener('popstate', router);
+  const controller = createFlowHistory(onNavigate);
+  try {
+    controller.initialize('reader-root'); controller.push('reader-child');
+    window.dispatchEvent(new PopStateEvent('popstate', { state: { __NA: true, flowPathId: 'reader-root', flowTrail: ['reader-root'] } }));
+    expect(onNavigate).toHaveBeenLastCalledWith('reader-root');
+    expect(router).not.toHaveBeenCalled();
+    history.replaceState({ __NA: true }, '', '/elsewhere');
+    window.dispatchEvent(new PopStateEvent('popstate', { state: { __NA: true } }));
+    expect(router).toHaveBeenCalledTimes(1);
+  } finally { controller.dispose(); window.removeEventListener('popstate', router); }
+});
+
+test('a directly opened saved path receives reader metadata while retaining framework state', () => {
+  history.replaceState({ __NA: true, framework: 'keep' }, '', '/InfiDao?reading=saved-path');
+  const controller = createFlowHistory(jest.fn());
+  try {
+    expect(history.state).toMatchObject({ __NA: true, framework: 'keep', flowPathId: 'saved-path', flowTrail: ['saved-path'] });
+    controller.push('next-path');
+    expect(history.state.flowTrail).toEqual(['saved-path', 'next-path']);
+  } finally { controller.dispose(); }
+});

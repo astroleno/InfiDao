@@ -62,6 +62,7 @@ export function LibrarySheet({ onClose, onOpen, onChanged, onKeepsake, context }
           const frame = snapshotFrame(path);
           return <article key={path.pathId} className={styles.libraryRow}><button type="button" className={styles.libraryOpen} disabled={opening} onClick={() => void open({ pathId: path.pathId })}>
             <span className={styles.libraryQuote}>{frame?.quote || path.sourceLabel}</span><span className={styles.muted}>{frame?.source} · {frame?.chapterLabel} · {new Date(path.updatedAt).toLocaleDateString('zh-CN')}</span>
+            {path.parentEntry && <span className={styles.libraryOrigin}>{path.parentEntry.thought ? `来自一念：${path.parentEntry.thought}` : path.parentEntry.label ? `沿「${path.parentEntry.label}」而来` : '从前一段经文继续'}</span>}
           </button>{frame && onKeepsake && <button type="button" className={styles.textButton} onClick={() => onKeepsake({ sourceRef: { pathId: path.pathId, frameId: frame.id }, quote: frame.quote, sourceLabel: frame.source, chapterLabel: frame.chapterLabel, date: path.updatedAt })}>留成手写纪念卡</button>}</article>;
         })}
         {tab === '收藏' && data?.bookmarks.slice(0, limit).map(item => <article key={item.key} className={styles.libraryRow}><button type="button" className={styles.libraryOpen} disabled={opening} onClick={() => void open({ pathId: item.pathId, frameId: item.frameId, snapshot: item.snapshot })}>

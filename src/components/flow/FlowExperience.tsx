@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import type { FlowFrame, FlowSelection as TextSelection } from '@/lib/flow/contracts';
 import type { BrowserFlowBatch } from '@/lib/flow-browser/provider';
@@ -8,7 +8,7 @@ import { createBrowserController, type FlowController, type ControllerState } fr
 import { observeFlowViewport } from '@/lib/flow-browser/viewport';
 import { createPathId, deleteNote, listNotes, loadPath, restoreNote, saveNote, loadDraft, saveDraft, type FlowPathRecord, type PersonalNote, type ReadingSnapshot } from '@/lib/flow-browser/storage';
 import { connectedRecords, entryKey, streamEntries, type StreamEntry } from '@/lib/flow-browser/continuity';
-import { FlowStream } from './FlowStream';
+import { FlowStream, type FlowArrival } from './FlowStream';
 import { SeedSheet } from './SeedSheet';
 import { FlowResume, FlowWaiting } from './FlowWaiting';
 import { LibrarySheet } from './LibrarySheet';
@@ -17,6 +17,7 @@ import { prepareFlowFonts, type FontProgress } from '@/lib/flow-browser/fonts';
 import { readingStorage } from '@/lib/flow-browser/storage';
 import { noteContext, quoteKey, snapshotFrame, type SavedTarget } from '@/lib/flow-browser/library';
 import { useMotionCandidate } from '@/lib/flow-browser/motion-candidate';
+import { enableFlowOverlayHistory } from '@/lib/flow-browser/overlay-history';
 import type { KeepsakeSource } from '@/lib/handwriting/contracts';
 import styles from './flow.module.css';
 
@@ -30,6 +31,8 @@ function initialSnapshot(paused: boolean): ReadingSnapshot {
 }
 
 export function FlowExperience() {
+  // Tool effects register after layout, including effect replay/reconnection.
+  useLayoutEffect(() => enableFlowOverlayHistory(), []);
   const motion = useMotionCandidate();
   const experienceRef = useRef<HTMLElement>(null);
   const [chain, setChain] = useState<BrowserFlowBatch | null>(null);
@@ -62,6 +65,9 @@ export function FlowExperience() {
   const [bookmarkKeys, setBookmarkKeys] = useState<Set<string>>(new Set());
   const [hint, setHint] = useState(false);
   const [connecting, setConnecting] = useState<Selection | null>(null);
+  const [arrival, setArrival] = useState<FlowArrival | null>(null);
+  const [feedback, setFeedback] = useState<{ text: string; revision: number } | null>(null);
+  const feedbackRevision = useRef(0);
   const [notesFrameId, setNotesFrameId] = useState<string | null>(null);
   const libraryPause = useRef(true);
   const seedPause = useRef(false);
@@ -110,6 +116,14 @@ export function FlowExperience() {
     setPaused(next);
   }
 
+  function notify(text: string) { setFeedback({ text, revision: ++feedbackRevision.current }); }
+
+  useEffect(() => {
+    if (!feedback) return;
+    const timer = window.setTimeout(() => setFeedback(null), 2800);
+    return () => window.clearTimeout(timer);
+  }, [feedback]);
+
   async function present(record: FlowPathRecord, context: { current: () => boolean; navigation: string }) {
     const nextRecords = await connectedRecords(record, loadPath);
     if (!context.current()) return;
@@ -117,6 +131,13 @@ export function FlowExperience() {
     const preserve = context.navigation === 'push' && !!record.parentPathId &&
       recordsRef.current.some(item => item.pathId === record.parentPathId);
     const previousSnapshot = captureSnapshot();
+    const selection = lastSelectionRef.current;
+    const target = nextEntries.find(entry => entry.pathId === record.pathId);
+    const origin = record.parentEntry;
+    setArrival(preserve && target && origin ? {
+      id: record.pathId, sourceKey: `${record.parentPathId}:${origin.fromFrameId}`, targetKey: entryKey(target),
+      label: selection?.label ? `沿「${selection.label}」已接续` : origin.thought ? '沿这一念已接续' : '经文已接续',
+    } : null);
     lastSelectionRef.current = null;
     setConnecting(null);
     if (!preserve) setNotesFrameId(null);
@@ -271,6 +292,7 @@ export function FlowExperience() {
     const selectedEntry = entriesRef.current.find(item => item.frame.id === selection.frameId && (!selection.pathId || selection.pathId === item.pathId));
     if (selectedEntry) handleReadEntry(selectedEntry);
     pauseReading();
+    setArrival(null);
     lastSelectionRef.current = selection;
     setConnecting(selection);
     await controller.branch(selection);
@@ -290,6 +312,7 @@ export function FlowExperience() {
   function continueReading() {
     lastSelectionRef.current = null;
     setConnecting(null);
+    setArrival(null);
     void controllerRef.current?.next();
   }
 
@@ -445,7 +468,12 @@ export function FlowExperience() {
         else next.add(key);
         return next;
       });
-      if (!result.persisted) setStorageWarning(true);
+      if (!result.persisted) {
+        setStorageWarning(true);
+        notify(previous ? '取消仅本次生效，刷新后可能恢复，请稍后重试。' : '收藏仅本次可用，请稍后重试。');
+      } else notify(previous ? '已取消收藏' : '已收藏');
+    } catch {
+      notify('收藏未成功，请重试。');
     } finally { savingBookmark.current = false; }
   }
 
@@ -471,6 +499,14 @@ export function FlowExperience() {
   }
 
   const currentFrame = active || frames[0] || null;
+  const readingOrigins = records.flatMap(record => {
+    const origin = record.parentEntry, parentPathId = record.parentPathId;
+    return parentPathId && origin ? [{
+      pathId: record.pathId,
+      label: origin.thought ? `来自一念：${origin.thought}` : origin.label ? `沿「${origin.label}」而来` : '从前一段经文继续',
+      onReturn: () => { pauseReading(); controllerRef.current?.returnToParent(parentPathId); },
+    }] : [];
+  });
   const awaitingQuote = busy || !frames.some(item => item.ready === false);
   const canResume = flowError?.code === 'INCOMPLETE' && !pending &&
     controllerRef.current?.getState().record?.completion === 'stopped';
@@ -493,10 +529,11 @@ export function FlowExperience() {
       </div>
       <FlowStream entries={entries} activeKey={activeEntryRef.current ? entryKey(activeEntryRef.current) : ''}
         navigation={{ onThought: openSeed, onLibrary: openLibrary, libraryDisabled: !chain || loading,
+          origins: readingOrigins,
           motionCandidate: motion.available ? { enabled: motion.variant === 'liquid-live', onToggle: motion.toggle } : undefined }}
         motionVariant={motion.variant}
         paused={paused || seedOpen || libraryOpen || !!keepsakeSource} reducedMotion={reducedMotion} pending={pending}
-        connecting={connecting} restore={restorePosition}
+        connecting={connecting} arrival={arrival} restore={restorePosition}
         canContinue={!!chain?.cursor && !chain.exhausted && !flowError && frames.every(item => item.ready !== false)}
         onContinue={continueReading} onPrepareNext={() => controllerRef.current?.prepareNext()}
         onPause={() => pauseReading()} onResume={() => { if (!seedOpen && !libraryOpen && !reducedMotion) pauseReading(false); }}
@@ -509,7 +546,8 @@ export function FlowExperience() {
         onSaveNote={onSaveNote} onDeleteNote={onDeleteNote} onUndoNote={onUndoNote} onUpdateNote={onUpdateNote} onKeepsake={currentKeepsake} />
 
       <FlowLoading active={!firstVisualReady && !flowError} progress={fontProgress} quote={currentFrame?.quote || preparingQuote} reducedMotion={reducedMotion} />
-      {hint && !loading && !pending && <div className={styles.firstHint}><span>点一下停驻，点词接续；上下滑动继续，长按释义，左滑菜单。</span><button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button></div>}
+      {hint && !loading && !pending && <div className={styles.firstHint}><span>点空白停驻，点词接续。上下滑动继续流动；长按看释义，左滑可添一念、写注脚。</span><button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button></div>}
+      <div className={styles.readingFeedback} role="status" aria-label="收藏状态" data-visible={!!feedback}>{feedback?.text || ''}</div>
       {!entries.length && errorFeedback && <div className={styles.notice}>{errorFeedback}</div>}
       {storageWarning && <p className={styles.storageNotice} role="status">本机存储暂不可用；当前阅读仍可继续，刷新后可能无法恢复。</p>}
 

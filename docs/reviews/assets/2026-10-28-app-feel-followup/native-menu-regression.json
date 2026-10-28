@@ -1,0 +1,540 @@
+{
+  "method": "Browser-hit-tested trusted CDP mouse input in Ego background; no DOM event injection",
+  "samples": [
+    {
+      "kind": "exit-hold-tap",
+      "down": {
+        "open": false,
+        "hidden": false,
+        "x": 81.8264,
+        "width": 300,
+        "path": "menu-followup-20261028",
+        "eventCount": 48
+      },
+      "held": {
+        "open": false,
+        "hidden": false,
+        "x": 81.8264,
+        "width": 300,
+        "path": "menu-followup-20261028",
+        "eventCount": 48
+      },
+      "events": [
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "detail": 0,
+          "at": 1030530.3000000007,
+          "x": 350,
+          "y": 320,
+          "target": "backdrop",
+          "open": false,
+          "hidden": false,
+          "panelX": 81.8264
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "detail": 0,
+          "at": 1030714.6999999993,
+          "x": 350,
+          "y": 320,
+          "target": "backdrop",
+          "open": false,
+          "hidden": false,
+          "panelX": 81.8264
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "detail": 1,
+          "at": 1030715,
+          "x": 350,
+          "y": 320,
+          "target": "backdrop",
+          "open": false,
+          "hidden": false,
+          "panelX": 81.8264
+        }
+      ]
+    },
+    {
+      "kind": "native-interruption",
+      "opening": true,
+      "before": {
+        "open": true,
+        "hidden": false,
+        "x": 220.675,
+        "width": 300,
+        "path": "menu-followup-20261028",
+        "eventCount": 55
+      },
+      "held": {
+        "open": true,
+        "hidden": false,
+        "x": 220.675,
+        "width": 300,
+        "path": "menu-followup-20261028",
+        "eventCount": 55
+      },
+      "moved": {
+        "open": true,
+        "hidden": false,
+        "x": 140.675,
+        "width": 300,
+        "path": "menu-followup-20261028",
+        "eventCount": 56
+      },
+      "events": [
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "detail": 0,
+          "at": 1031216.4000000004,
+          "x": 350,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 220.675
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "detail": 0,
+          "at": 1031409.3000000007,
+          "x": 270,
+          "y": 320,
+          "target": "backdrop",
+          "open": true,
+          "hidden": false,
+          "panelX": 220.675
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "detail": 0,
+          "at": 1031412.9000000004,
+          "x": 270,
+          "y": 320,
+          "target": "backdrop",
+          "open": true,
+          "hidden": false,
+          "panelX": 140.675
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "detail": 1,
+          "at": 1031413.1999999993,
+          "x": 270,
+          "y": 320,
+          "target": "backdrop",
+          "open": true,
+          "hidden": false,
+          "panelX": 140.675
+        }
+      ]
+    },
+    {
+      "kind": "native-interruption",
+      "opening": false,
+      "before": {
+        "open": false,
+        "hidden": false,
+        "x": 72.4588,
+        "width": 300,
+        "path": "menu-followup-20261028",
+        "eventCount": 63
+      },
+      "held": {
+        "open": false,
+        "hidden": false,
+        "x": 72.4588,
+        "width": 300,
+        "path": "menu-followup-20261028",
+        "eventCount": 63
+      },
+      "moved": {
+        "open": false,
+        "hidden": false,
+        "x": 0,
+        "width": 300,
+        "path": "menu-followup-20261028",
+        "eventCount": 64
+      },
+      "events": [
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "detail": 0,
+          "at": 1031994.5,
+          "x": 350,
+          "y": 320,
+          "target": "backdrop",
+          "open": false,
+          "hidden": false,
+          "panelX": 72.4588
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "detail": 0,
+          "at": 1032209.4000000004,
+          "x": 270,
+          "y": 320,
+          "target": "backdrop",
+          "open": false,
+          "hidden": false,
+          "panelX": 72.4588
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "detail": 0,
+          "at": 1032213.1999999993,
+          "x": 270,
+          "y": 320,
+          "target": "backdrop",
+          "open": false,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "detail": 1,
+          "at": 1032216.1999999993,
+          "x": 270,
+          "y": 320,
+          "target": "backdrop",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        }
+      ]
+    },
+    {
+      "kind": "release-momentum",
+      "open": false,
+      "holdMs": 400,
+      "expected": false,
+      "actual": {
+        "open": false,
+        "hidden": true,
+        "x": 0,
+        "width": 0,
+        "path": "menu-followup-20261028",
+        "eventCount": 71
+      },
+      "events": [
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "detail": 0,
+          "at": 1032325.0999999996,
+          "x": 368,
+          "y": 422,
+          "target": "other",
+          "open": false,
+          "hidden": true,
+          "panelX": 0
+        },
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "detail": 0,
+          "at": 1032327.6999999993,
+          "x": 368,
+          "y": 422,
+          "target": "other",
+          "open": false,
+          "hidden": true,
+          "panelX": 0
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "detail": 0,
+          "at": 1032342.8000000007,
+          "x": 308,
+          "y": 422,
+          "target": "reader",
+          "open": false,
+          "hidden": true,
+          "panelX": 0
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "detail": 0,
+          "at": 1032748.0999999996,
+          "x": 308,
+          "y": 422,
+          "target": "reader",
+          "open": false,
+          "hidden": false,
+          "panelX": 240
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "detail": 1,
+          "at": 1032752.3000000007,
+          "x": 308,
+          "y": 422,
+          "target": "reader",
+          "open": false,
+          "hidden": false,
+          "panelX": 240
+        }
+      ]
+    },
+    {
+      "kind": "release-momentum",
+      "open": false,
+      "holdMs": 0,
+      "expected": true,
+      "actual": {
+        "open": true,
+        "hidden": false,
+        "x": 0,
+        "width": 300,
+        "path": "menu-followup-20261028",
+        "eventCount": 76
+      },
+      "events": [
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "detail": 0,
+          "at": 1033092.6999999993,
+          "x": 368,
+          "y": 422,
+          "target": "other",
+          "open": false,
+          "hidden": true,
+          "panelX": 0
+        },
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "detail": 0,
+          "at": 1033097.3000000007,
+          "x": 368,
+          "y": 422,
+          "target": "other",
+          "open": false,
+          "hidden": true,
+          "panelX": 0
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "detail": 0,
+          "at": 1033126.6999999993,
+          "x": 308,
+          "y": 422,
+          "target": "reader",
+          "open": false,
+          "hidden": true,
+          "panelX": 0
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "detail": 0,
+          "at": 1033133.6999999993,
+          "x": 308,
+          "y": 422,
+          "target": "reader",
+          "open": false,
+          "hidden": false,
+          "panelX": 240
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "detail": 1,
+          "at": 1033136.4000000004,
+          "x": 308,
+          "y": 422,
+          "target": "reader",
+          "open": true,
+          "hidden": false,
+          "panelX": 240
+        }
+      ]
+    },
+    {
+      "kind": "release-momentum",
+      "open": true,
+      "holdMs": 400,
+      "expected": true,
+      "actual": {
+        "open": true,
+        "hidden": false,
+        "x": 0,
+        "width": 300,
+        "path": "menu-followup-20261028",
+        "eventCount": 81
+      },
+      "events": [
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "detail": 0,
+          "at": 1033776.4000000004,
+          "x": 200,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "detail": 0,
+          "at": 1033779.8000000007,
+          "x": 200,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "detail": 0,
+          "at": 1033809.5999999996,
+          "x": 260,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "detail": 0,
+          "at": 1034215,
+          "x": 260,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 60
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "detail": 1,
+          "at": 1034215.8000000007,
+          "x": 260,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 60
+        }
+      ]
+    },
+    {
+      "kind": "release-momentum",
+      "open": true,
+      "holdMs": 0,
+      "expected": false,
+      "actual": {
+        "open": false,
+        "hidden": true,
+        "x": 0,
+        "width": 0,
+        "path": "menu-followup-20261028",
+        "eventCount": 86
+      },
+      "events": [
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "detail": 0,
+          "at": 1034742.5,
+          "x": 200,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "detail": 0,
+          "at": 1034745.0999999996,
+          "x": 200,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "detail": 0,
+          "at": 1034776.0999999996,
+          "x": 260,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "detail": 0,
+          "at": 1034778.6999999993,
+          "x": 260,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 60
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "detail": 1,
+          "at": 1034783,
+          "x": 260,
+          "y": 320,
+          "target": "menu",
+          "open": false,
+          "hidden": false,
+          "panelX": 60
+        }
+      ]
+    }
+  ],
+  "initial": {
+    "open": false,
+    "hidden": true,
+    "x": 0,
+    "width": 0,
+    "path": "menu-followup-20261028",
+    "eventCount": 39
+  },
+  "final": {
+    "open": false,
+    "hidden": true,
+    "x": 0,
+    "width": 0,
+    "path": "menu-followup-20261028",
+    "eventCount": 86
+  },
+  "apiAttempts": [],
+  "passed": true
+}

@@ -1,0 +1,54 @@
+{
+  "branch": {
+    "path": "b95c57a6-1ff0-4118-ad29-f74f560a21c2",
+    "trail": 2
+  },
+  "lastStage": "refresh",
+  "dragging": {
+    "width": 300,
+    "x": 240,
+    "modal": null
+  },
+  "verticalNoOpen": true,
+  "quickReopen": true,
+  "reverseCancel": true,
+  "keyboardClose": true,
+  "panels": [
+    {
+      "name": "添一念",
+      "before": {
+        "path": "b95c57a6-1ff0-4118-ad29-f74f560a21c2",
+        "trail": 2
+      },
+      "after": {
+        "path": "b95c57a6-1ff0-4118-ad29-f74f560a21c2",
+        "trail": 2,
+        "focus": "更多阅读选项"
+      }
+    },
+    {
+      "name": "温故",
+      "before": {
+        "path": "b95c57a6-1ff0-4118-ad29-f74f560a21c2",
+        "trail": 2
+      },
+      "after": {
+        "path": "b95c57a6-1ff0-4118-ad29-f74f560a21c2",
+        "trail": 2,
+        "focus": "更多阅读选项"
+      }
+    },
+    {
+      "name": "纪念卡",
+      "after": {
+        "path": "b95c57a6-1ff0-4118-ad29-f74f560a21c2",
+        "trail": 2
+      }
+    }
+  ],
+  "refresh": {
+    "path": "89011c2b-99ff-4280-930e-6f76bab9fbfa",
+    "trail": 1,
+    "dialogs": 0
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "method": "Local Ego background; curated records and synthetic fetch, network API endpoints blocked as a second guard.",
+  "entered": {
+    "path": "5404cab3-9dcc-4d72-8108-0c4ae456374c",
+    "trail": [
+      "89011c2b-99ff-4280-930e-6f76bab9fbfa",
+      "d0c31c41-582e-43db-81d9-8e18e2217a5b",
+      "5404cab3-9dcc-4d72-8108-0c4ae456374c"
+    ],
+    "top": 906.5,
+    "frame": "curated-6e66306a-f13e-4f57-bd44-247925fe5014:still"
+  },
+  "lastStage": "complete",
+  "refreshed": {
+    "path": "5404cab3-9dcc-4d72-8108-0c4ae456374c",
+    "trail": [
+      "89011c2b-99ff-4280-930e-6f76bab9fbfa",
+      "d0c31c41-582e-43db-81d9-8e18e2217a5b",
+      "5404cab3-9dcc-4d72-8108-0c4ae456374c"
+    ],
+    "top": 906.5,
+    "storageWarning": false
+  },
+  "leafOrigin": "沿「本末」而来回到来处",
+  "leafReturn": {
+    "path": "d0c31c41-582e-43db-81d9-8e18e2217a5b",
+    "trail": [
+      "89011c2b-99ff-4280-930e-6f76bab9fbfa",
+      "d0c31c41-582e-43db-81d9-8e18e2217a5b"
+    ],
+    "calls": [
+      {
+        "method": "go",
+        "args": [
+          -2
+        ]
+      }
+    ]
+  },
+  "ancestorOrigin": {
+    "path": "4f123a9b-b1a7-4dd2-9a80-22c56c0b62fe",
+    "menu": "沿「而后」而来回到来处",
+    "expectedLabel": "而后",
+    "expectedParent": "89011c2b-99ff-4280-930e-6f76bab9fbfa"
+  },
+  "testCorrection": "The earlier script assumed the optical pointer selected 止. This assertion uses the actual saved parentEntry; the menu belongs to the ancestor, not the leaf.",
+  "ancestorReturn": {
+    "path": "89011c2b-99ff-4280-930e-6f76bab9fbfa",
+    "trail": [
+      "89011c2b-99ff-4280-930e-6f76bab9fbfa"
+    ],
+    "calls": [
+      {
+        "method": "go",
+        "args": [
+          -3
+        ]
+      }
+    ]
+  },
+  "heldSpring": {
+    "method": "Direct native mouse click at observed button bounds; DOM pointer interruption at animation frame boundary",
+    "holdMs": 180,
+    "cases": [
+      {
+        "done": true,
+        "error": "No intermediate spring"
+      },
+      {
+        "done": true,
+        "opening": false,
+        "before": 81.8264,
+        "held": 81.8264,
+        "moved": 121.826,
+        "holdDrift": 0,
+        "dragError": 0.0004000000000132786
+      }
+    ],
+    "passed": false
+  },
+  "longNote": {
+    "length": 720,
+    "width": 390,
+    "scrollWidth": 390,
+    "body": {
+      "x": 70.203125,
+      "y": 435.44342041015625,
+      "width": 249.59375,
+      "height": 2160,
+      "top": 435.44342041015625,
+      "right": 319.796875,
+      "bottom": 2595.4434204101562,
+      "left": 70.203125
+    }
+  },
+  "notes390": {
+    "width": 390,
+    "scrollWidth": 390,
+    "body": 249.59375,
+    "controls": [
+      {
+        "text": "编辑",
+        "rect": {
+          "x": 70.203125,
+          "y": 473.0654296875,
+          "width": 44,
+          "height": 44,
+          "top": 473.0654296875,
+          "right": 114.203125,
+          "bottom": 517.0654296875,
+          "left": 70.203125
+        }
+      },
+      {
+        "text": "留成手写纪念卡",
+        "rect": {
+          "x": 134.203125,
+          "y": 473.0654296875,
+          "width": 114,
+          "height": 44,
+          "top": 473.0654296875,
+          "right": 248.203125,
+          "bottom": 517.0654296875,
+          "left": 134.203125
+        }
+      },
+      {
+        "text": "删除",
+        "rect": {
+          "x": 268.203125,
+          "y": 473.0654296875,
+          "width": 44,
+          "height": 44,
+          "top": 473.0654296875,
+          "right": 312.203125,
+          "bottom": 517.0654296875,
+          "left": 268.203125
+        }
+      }
+    ]
+  },
+  "notes320": {
+    "width": 320,
+    "scrollWidth": 320,
+    "body": 204.796875,
+    "controls": [
+      {
+        "text": "编辑",
+        "rect": {
+          "x": 57.6015625,
+          "y": 577.6044921875,
+          "width": 44,
+          "height": 44,
+          "top": 577.6044921875,
+          "right": 101.6015625,
+          "bottom": 621.6044921875,
+          "left": 57.6015625
+        }
+      },
+      {
+        "text": "留成手写纪念卡",
+        "rect": {
+          "x": 121.6015625,
+          "y": 577.6044921875,
+          "width": 114,
+          "height": 44,
+          "top": 577.6044921875,
+          "right": 235.6015625,
+          "bottom": 621.6044921875,
+          "left": 121.6015625
+        }
+      },
+      {
+        "text": "删除",
+        "rect": {
+          "x": 57.6015625,
+          "y": 625.6044921875,
+          "width": 44,
+          "height": 44,
+          "top": 625.6044921875,
+          "right": 101.6015625,
+          "bottom": 669.6044921875,
+          "left": 57.6015625
+        }
+      }
+    ]
+  },
+  "syntheticNoteRemoved": true,
+  "realFlowResourceRequests": 0
+}

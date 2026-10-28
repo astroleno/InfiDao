@@ -1,17 +1,17 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import type { PersonalNote } from '@/lib/flow-browser/storage';
 import styles from './flow.module.css';
 import { useNoteDraft } from './useNoteDraft';
 
-export function EditableNote({ note, onUpdate }: { note: PersonalNote; onUpdate: (id: string, text: string) => Promise<void> }) {
+export function EditableNote({ note, onUpdate, actions }: { note: PersonalNote; onUpdate: (id: string, text: string) => Promise<void>; actions?: ReactNode }) {
   const [editing, setEditing] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   function close() { setEditing(false); requestAnimationFrame(() => trigger.current?.focus()); }
   return <div className={styles.noteBody}>
     {editing ? <NoteEditor note={note} onUpdate={onUpdate} onClose={close} /> : <>
       <p>{note.text}</p>
-      <button ref={trigger} type="button" className={styles.textButton} onClick={() => setEditing(true)}>编辑</button>
+      <div className={styles.noteActions}><button ref={trigger} type="button" className={styles.textButton} onClick={() => setEditing(true)}>编辑</button>{actions}</div>
     </>}
   </div>;
 }
@@ -31,8 +31,9 @@ function NoteEditor({ note, onUpdate, onClose }: { note: PersonalNote; onUpdate:
   return <>
       <label className={styles.srOnly} htmlFor={`edit-${note.id}`}>编辑注脚</label>
       <textarea id={`edit-${note.id}`} autoFocus disabled={busy} value={draft.text} maxLength={1000} onChange={event => draft.change(event.target.value)} />
-      <button type="button" className={styles.textButton} disabled={busy || !draft.text.trim()} onClick={() => void save()}>{busy ? '保存中' : '保存修改'}</button>
+      <div className={styles.noteActions}><button type="button" className={styles.textButton} disabled={busy || !draft.text.trim()} onClick={() => void save()}>{busy ? '保存中' : '保存修改'}</button>
       <button type="button" className={styles.textButton} disabled={busy} onClick={() => { void draft.clear(draft.text).then(onClose); }}>取消</button>
+      </div>
       {(error || draft.message) && <p className={styles.seedError} role="status">{error || draft.message}</p>}
   </>;
 }

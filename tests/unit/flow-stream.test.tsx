@@ -116,6 +116,19 @@ test('branching keeps the prefix mounted; old words send their actual owner', ()
   expect(onBranch).toHaveBeenCalledWith(expect.objectContaining({ pathId: 'root-path', frameId: 'first' }));
 });
 
+test('a menu gesture retains its pressed passage when the pointer crosses another passage', () => {
+  const onRead = jest.fn();
+  const view = render(<FlowStream {...props} entries={[entry, second]} activeKey={entryKey(second)} onRead={onRead} />);
+  const start = view.container.querySelector('[data-flow-frame="first"]')!;
+  const crossed = view.container.querySelector('[data-flow-frame="second"]')!;
+  fireEvent(start, new MouseEvent('pointerdown', { bubbles: true, button: 0, clientX: 380, clientY: 200 }));
+  fireEvent(crossed, new MouseEvent('pointermove', { bubbles: true, clientX: 180, clientY: 205 }));
+  fireEvent(crossed, new MouseEvent('pointerup', { bubbles: true, button: 0, clientX: 180, clientY: 205 }));
+  expect(screen.getByRole('dialog', { name: '阅读选项' })).toBeInTheDocument();
+  expect(onRead).toHaveBeenLastCalledWith(entry);
+  expect(onRead).not.toHaveBeenCalledWith(second);
+});
+
 test('settled reflections remain clickable during generation and later progress does not replace them', () => {
   const partial: StreamEntry = { ...entry, frame: { ...first, ready: false, meaning: '方向。', reflection: '',
     textBreaks: { meaning: [2, 3], reflection: [] }, settled: { meaning: true, reflection: false } } };
@@ -289,6 +302,42 @@ test('editing a note keeps horizontal text selection outside the menu gesture', 
   fireEvent(editor, new MouseEvent('pointerup', { bubbles: true, button: 0, clientX: 220, clientY: 302 }));
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   expect(editor).toBeEnabled();
+});
+
+test('opening notes hands focus to their visible heading rather than opening a keyboard', async () => {
+  const onScroll = jest.fn(), view = render(<FlowStream {...props} onScroll={onScroll} />);
+  const viewport = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+  Object.defineProperty(viewport, 'clientHeight', { value: 844 });
+  Object.defineProperty(viewport, 'scrollHeight', { value: 3000 });
+  fireEvent.click(screen.getByRole('button', { name: '更多阅读选项' }));
+  fireEvent.click(screen.getByRole('button', { name: '注脚' }));
+  const heading = screen.getByRole('heading', { name: '自己的注脚' });
+  jest.spyOn(heading, 'getBoundingClientRect').mockReturnValue({ top: 1100 } as DOMRect);
+  await act(async () => { await new Promise<void>(resolve => requestAnimationFrame(() => resolve())); });
+  expect(heading).toHaveFocus();
+  expect(screen.getByRole('textbox')).not.toHaveFocus();
+  expect(viewport.scrollTop).toBe(889);
+  expect(onScroll).toHaveBeenLastCalledWith(889);
+});
+
+test('offscreen branch arrival offers an explicit handoff without moving the old reading point', async () => {
+  const onRead = jest.fn(), view = render(<FlowStream {...props} entries={[entry, second]} onRead={onRead} />);
+  const viewport = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+  Object.defineProperty(viewport, 'clientHeight', { value: 844 });
+  Object.defineProperty(viewport, 'scrollHeight', { value: 3000 });
+  const target = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+  jest.spyOn(target, 'getBoundingClientRect').mockReturnValue({ top: 1400, height: 100 } as DOMRect);
+  viewport.scrollTop = 31;
+  view.rerender(<FlowStream {...props} entries={[entry, second]} onRead={onRead}
+    arrival={{ id: 'arrival-child', sourceKey: entryKey(entry), targetKey: entryKey(second), label: '沿「止」已接续' }} />);
+  await act(async () => { await new Promise<void>(resolve => requestAnimationFrame(() => resolve())); });
+  expect(viewport.scrollTop).toBe(31);
+  const go = screen.getByRole('button', { name: '去读' });
+  fireEvent.click(go);
+  expect(onRead).toHaveBeenLastCalledWith(second);
+  expect(target).toHaveFocus();
+  expect(viewport.scrollTop).toBe(1220);
+  expect(screen.queryByRole('button', { name: '去读' })).not.toBeInTheDocument();
 });
 
 test('tab focus and programmatic layout changes do not spend a continuation; reading consumes only one', () => {

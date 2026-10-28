@@ -23,6 +23,8 @@ import styles from './flow.module.css';
 // passage. The same buttons keep their identity and keyboard focus.
 const RetainedLinkedText = memo(LinkedText);
 
+export type FlowArrival = { id: string; sourceKey: string; targetKey: string; label: string };
+
 type Props = {
   entries: StreamEntry[];
   activeKey: string;
@@ -31,11 +33,12 @@ type Props = {
   reducedMotion: boolean;
   motionVariant?: StreamMotionVariant;
   motionSeed?: number;
-  navigation?: Pick<ComponentProps<typeof FlowMenu>, 'onThought' | 'onLibrary' | 'libraryDisabled' | 'motionCandidate'>;
+  navigation?: Pick<ComponentProps<typeof FlowMenu>, 'onThought' | 'onLibrary' | 'libraryDisabled' | 'motionCandidate' | 'origins'>;
   /** Comparison fixtures may start settled; reader materials never disable entry. */
   settleEntrance?: boolean;
   pending: boolean;
   connecting: FlowSelection | null;
+  arrival?: FlowArrival | null;
   waiting?: ReactNode;
   restore: { revision: number; top: number; frameId?: string; entryKey?: string; source?: boolean };
   canContinue: boolean;
@@ -77,6 +80,9 @@ export function FlowStream(props: Props) {
   const preparedAt = useRef('');
   const continuedAt = useRef('');
   const [notesFor, setNotesFor] = useState<string | null>(null);
+  const [arrivalVisible, setArrivalVisible] = useState(false);
+  const arrivalShown = useRef(false);
+  const arrivalDismissed = useRef('');
   const [scrollMotion] = useState(() => new StreamScrollMotion(props.restore.top));
   const [manualScroll] = useState(() => new StreamManualScroll());
   const [meaningFor, setMeaningFor] = useState<string | null>(null);
@@ -86,6 +92,7 @@ export function FlowStream(props: Props) {
   const menuResume = useRef(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuFor, setMenuFor] = useState<string | null>(null);
+  const menuGestureFor = useRef<string | null>(null);
   const suppressPressClick = useRef(false);
   const opticalHit = useRef<(x: number, y: number) => HTMLElement | null | undefined>(() => undefined);
   const contentEntries = useMemo(() => props.entries.map(entry => ({
@@ -146,6 +153,7 @@ export function FlowStream(props: Props) {
     setMeaningFor(null);
     setMenuOpen(false);
     setMenuFor(null);
+    menuGestureFor.current = null;
     if (meaningPress.current) window.clearTimeout(meaningPress.current.timer);
     meaningPress.current = null;
   }, [props.restore.revision]);
@@ -166,6 +174,60 @@ export function FlowStream(props: Props) {
   }, [manualScroll]);
 
   useLayoutEffect(() => { measure.current(); }, [props.entries, props.sourceOpen, notesFor]);
+
+  function positionAt(target: HTMLElement, focus = true) {
+    const panel = panelRef.current;
+    if (!panel) return;
+    pause();
+    const top = Math.max(0, Math.min(panel.scrollHeight - panel.clientHeight,
+      panel.scrollTop + target.getBoundingClientRect().top - panel.getBoundingClientRect().top - panel.clientHeight * .25));
+    panel.scrollTop = top;
+    scrollMotion.reset(top, panel.scrollTop);
+    if (contentRef.current) contentRef.current.style.translate = `0 ${-(top - panel.scrollTop)}px`;
+    manualScroll.reset();
+    props.onScroll(top);
+    measure.current();
+    optics.current();
+    if (focus) target.focus({ preventScroll: true });
+  }
+
+  useEffect(() => {
+    if (!notesFor) return;
+    const handle = requestAnimationFrame(() => {
+      if (document.querySelector('[aria-modal="true"]')) return;
+      const target = panelRef.current?.querySelector<HTMLElement>('[data-flow-notes-target]');
+      if (target) positionAt(target);
+    });
+    return () => cancelAnimationFrame(handle);
+    // A single handoff after the menu releases focus, not after each save.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notesFor, props.activeKey]);
+
+  function checkArrival() {
+    const arrival = live.current.arrival;
+    const panel = panelRef.current;
+    if (!arrival || !panel || arrivalDismissed.current === arrival.id) {
+      if (arrivalShown.current) { arrivalShown.current = false; setArrivalVisible(false); }
+      return;
+    }
+    const target = arrival && panel ? Array.from(panel.querySelectorAll<HTMLElement>('[data-stream-key]'))
+      .find(node => node.dataset.streamKey === arrival.targetKey)?.querySelector<HTMLElement>('[data-flow-heading]') : null;
+    let show = false;
+    if (target) {
+      const bounds = panel.getBoundingClientRect(), rect = target.getBoundingClientRect();
+      const visible = rect.top >= bounds.top + panel.clientHeight * .18 &&
+        rect.top + Math.min(rect.height, 100) <= bounds.top + panel.clientHeight * .68;
+      show = !visible;
+      if (visible) arrivalDismissed.current = arrival.id;
+    }
+    if (arrivalShown.current !== show) { arrivalShown.current = show; setArrivalVisible(show); }
+  }
+  useEffect(() => {
+    const handle = requestAnimationFrame(checkArrival);
+    return () => cancelAnimationFrame(handle);
+    // Recheck geometry when the first quote or its following text arrives.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.arrival, props.entries]);
 
   useEffect(() => {
     const panel = panelRef.current, content = contentRef.current;
@@ -611,6 +673,7 @@ export function FlowStream(props: Props) {
     optics.current();
     const top = scrollMotion.position(panel.scrollTop);
     props.onScroll(top);
+    checkArrival();
     const edge = top + panel.clientHeight * .38;
     const entry = articleScene.current.atOrBefore(edge)?.entry;
     const focused = document.activeElement;
@@ -643,7 +706,7 @@ export function FlowStream(props: Props) {
   return <section className={styles.stream} aria-label="连续经文流" data-flow-stream data-motion-variant={props.motionVariant || 'liquid-live'} data-paused={props.paused} data-pending={props.pending}>
     <canvas ref={glassRef} className={styles.streamGlass} data-flow-glass aria-hidden="true" />
     <div ref={panelRef} className={styles.streamViewport} tabIndex={0} aria-label="经文阅读" data-flow-viewport
-      aria-description={`${props.onResume ? '点击停驻阅读，滚轮、上下滑动或翻页键继续流动。' : ''}向左滑动打开阅读选项。长按经文或按 Shift+F10 查看释义。`}
+      aria-description={`${props.onResume ? '点空白停驻阅读，滚轮、上下滑动或翻页键继续流动。' : ''}向左滑动打开阅读选项。长按经文或按 Shift+F10 查看释义。`}
       onWheel={event => { if (!event.ctrlKey && event.deltaY) resumeFromInput(event.target); }}
       onTouchMove={event => {
         if (event.touches.length !== 1) return;
@@ -689,18 +752,7 @@ export function FlowStream(props: Props) {
           cancelMeaningPress();
         }
       }}
-      onPointerUp={event => {
-        cancelMeaningPress();
-        const start = pointer.current;
-        if (!start || suppressPressClick.current) return;
-        const dx = event.clientX - start.x, dy = event.clientY - start.y;
-        if (dx > -36 || Math.abs(dx) < Math.abs(dy) * 1.4) return;
-        start.moved = true;
-        suppressPressClick.current = true;
-        menuResume.current = start.resume;
-        setMenuFor(start.key);
-        setMenuOpen(true);
-      }}
+      onPointerUp={cancelMeaningPress}
       onPointerLeave={cancelMeaningPress}
       onPointerCancel={() => { cancelMeaningPress(); pointer.current = null; suppressPressClick.current = false; }}
       onClickCapture={event => {
@@ -766,12 +818,40 @@ export function FlowStream(props: Props) {
         </div>
       </div>
     </div>
-    <FlowMenu {...props.navigation} open={menuOpen} onOpenChange={open => {
-      if (open) { menuResume.current = !props.paused && !props.reducedMotion; setMenuFor(props.activeKey); }
-      else setMenuFor(null);
+    {arrivalVisible && props.arrival && <div className={styles.branchArrival} data-flow-arrival role="status">
+      <span>{props.arrival.label}</span>
+      <button type="button" className={styles.textButton} onClick={() => {
+        const arrival = props.arrival;
+        const entry = props.entries.find(item => entryKey(item) === arrival?.targetKey);
+        const target = Array.from(panelRef.current?.querySelectorAll<HTMLElement>('[data-stream-key]') || [])
+          .find(node => node.dataset.streamKey === arrival?.targetKey)?.querySelector<HTMLElement>('[data-flow-heading]');
+        if (!entry || !target || !arrival) return;
+        arrivalDismissed.current = arrival.id;
+        arrivalShown.current = false; setArrivalVisible(false);
+        props.onRead(entry); setNotesFor(null);
+        target.tabIndex = -1;
+        positionAt(target);
+      }}>去读</button>
+    </div>}
+    <FlowMenu {...props.navigation} gestureSurface={panelRef} onGestureStart={target => {
+      cancelMeaningPress();
+      if (menuOpen) return;
+      const start = target && panelRef.current?.contains(target) ? pointer.current : null;
+      menuResume.current = start?.resume ?? (!props.paused && !props.reducedMotion);
+      const key = start?.key || target?.closest<HTMLElement>('[data-stream-key]')?.dataset.streamKey || props.activeKey;
+      menuGestureFor.current = key;
+      setMenuFor(key);
+      const entry = props.entries.find(item => entryKey(item) === key);
+      if (entry) props.onRead(entry);
+      pause();
+    }} open={menuOpen} onOpenChange={open => {
+      if (open) {
+        if (menuGestureFor.current) setMenuFor(menuGestureFor.current);
+        else { menuResume.current = !props.paused && !props.reducedMotion; setMenuFor(props.activeKey); }
+      } else { setMenuFor(null); menuGestureFor.current = null; }
       setMenuOpen(open);
     }} onOpen={() => { pause(); if (menuEntry) props.onRead(menuEntry); }} reading={menuEntry ? {
-      key: entryKey(menuEntry), source: `${menuEntry.frame.source} · ${menuEntry.frame.chapterLabel}`,
+      key: entryKey(menuEntry), pathId: menuEntry.pathId, source: `${menuEntry.frame.source} · ${menuEntry.frame.chapterLabel}`,
       onKeepsake: props.onKeepsake ? () => { props.onRead(menuEntry); props.onKeepsake?.(); } : undefined,
       sourceOpen: menuCurrent && props.sourceOpen, bookmarked: props.bookmarkKeys.has(quoteKey(menuEntry.frame)),
       notesOpen: menuCurrent && (notesFor === entryKey(menuEntry) || notesFor === menuEntry.frame.id), noteCount: menuCurrent ? props.notes.length : 0,
