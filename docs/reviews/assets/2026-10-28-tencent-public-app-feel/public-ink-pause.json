@@ -1,0 +1,32 @@
+{
+  "origin": "https://tongye.me",
+  "viewport": [
+    1440,
+    900,
+    2
+  ],
+  "first": {
+    "at": 7262.800000000745,
+    "maskedWords": 0,
+    "menuOpen": true,
+    "paused": "true",
+    "scroll": 27
+  },
+  "second": {
+    "at": 8472.900000000373,
+    "maskedWords": 0,
+    "menuOpen": true,
+    "paused": "true",
+    "scroll": 27
+  },
+  "resumed": {
+    "at": 9125.199999999255,
+    "maskedWords": 0,
+    "menuOpen": false,
+    "paused": "true",
+    "scroll": 27
+  },
+  "maskedAfterTwoSeconds": false,
+  "apiAttempts": [],
+  "errors": []
+}

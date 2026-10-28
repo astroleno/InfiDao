@@ -1,0 +1,478 @@
+{
+  "method": "Browser-hit-tested trusted CDP mouse input in Ego background; no DOM event injection",
+  "samples": [
+    {
+      "kind": "exit-hold-tap",
+      "down": {
+        "open": false,
+        "hidden": false,
+        "x": 113.82,
+        "width": 300,
+        "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+        "eventCount": 9
+      },
+      "held": {
+        "open": false,
+        "hidden": false,
+        "x": 113.82,
+        "width": 300,
+        "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+        "eventCount": 9
+      },
+      "events": [
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "x": 350,
+          "y": 320,
+          "target": "backdrop",
+          "open": false,
+          "hidden": false,
+          "panelX": 113.82
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "x": 350,
+          "y": 320,
+          "target": "backdrop",
+          "open": false,
+          "hidden": false,
+          "panelX": 113.82
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "x": 350,
+          "y": 320,
+          "target": "backdrop",
+          "open": false,
+          "hidden": false,
+          "panelX": 113.82
+        }
+      ]
+    },
+    {
+      "kind": "native-interruption",
+      "opening": true,
+      "before": {
+        "open": true,
+        "hidden": false,
+        "x": 198.31,
+        "width": 299.9999694824219,
+        "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+        "eventCount": 16
+      },
+      "held": {
+        "open": true,
+        "hidden": false,
+        "x": 198.31,
+        "width": 299.9999694824219,
+        "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+        "eventCount": 16
+      },
+      "moved": {
+        "open": true,
+        "hidden": false,
+        "x": 118.31,
+        "width": 300,
+        "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+        "eventCount": 17
+      },
+      "events": [
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "x": 350,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 198.31
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "x": 270,
+          "y": 320,
+          "target": "backdrop",
+          "open": true,
+          "hidden": false,
+          "panelX": 198.31
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "x": 270,
+          "y": 320,
+          "target": "backdrop",
+          "open": true,
+          "hidden": false,
+          "panelX": 118.31
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "x": 270,
+          "y": 320,
+          "target": "backdrop",
+          "open": true,
+          "hidden": false,
+          "panelX": 118.31
+        }
+      ]
+    },
+    {
+      "kind": "native-interruption",
+      "opening": false,
+      "before": {
+        "open": false,
+        "hidden": false,
+        "x": 84.3267,
+        "width": 300,
+        "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+        "eventCount": 24
+      },
+      "held": {
+        "open": false,
+        "hidden": false,
+        "x": 84.3267,
+        "width": 300,
+        "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+        "eventCount": 24
+      },
+      "moved": {
+        "open": false,
+        "hidden": false,
+        "x": 4.32665,
+        "width": 300,
+        "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+        "eventCount": 25
+      },
+      "events": [
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "x": 350,
+          "y": 320,
+          "target": "backdrop",
+          "open": false,
+          "hidden": false,
+          "panelX": 84.3267
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "x": 270,
+          "y": 320,
+          "target": "backdrop",
+          "open": false,
+          "hidden": false,
+          "panelX": 84.3267
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "x": 270,
+          "y": 320,
+          "target": "backdrop",
+          "open": false,
+          "hidden": false,
+          "panelX": 4.32665
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "x": 270,
+          "y": 320,
+          "target": "backdrop",
+          "open": true,
+          "hidden": false,
+          "panelX": 4.32665
+        }
+      ]
+    },
+    {
+      "kind": "release-momentum",
+      "open": false,
+      "holdMs": 400,
+      "expected": false,
+      "actual": {
+        "open": false,
+        "hidden": true,
+        "x": 0,
+        "width": 0,
+        "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+        "eventCount": 32
+      },
+      "events": [
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "x": 368,
+          "y": 422,
+          "target": "other",
+          "open": false,
+          "hidden": true,
+          "panelX": 0
+        },
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "x": 368,
+          "y": 422,
+          "target": "other",
+          "open": false,
+          "hidden": true,
+          "panelX": 0
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "x": 308,
+          "y": 422,
+          "target": "reader",
+          "open": false,
+          "hidden": true,
+          "panelX": 0
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "x": 308,
+          "y": 422,
+          "target": "reader",
+          "open": false,
+          "hidden": false,
+          "panelX": 240
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "x": 308,
+          "y": 422,
+          "target": "reader",
+          "open": false,
+          "hidden": false,
+          "panelX": 240
+        }
+      ]
+    },
+    {
+      "kind": "release-momentum",
+      "open": false,
+      "holdMs": 0,
+      "expected": true,
+      "actual": {
+        "open": true,
+        "hidden": false,
+        "x": 0,
+        "width": 300,
+        "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+        "eventCount": 37
+      },
+      "events": [
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "x": 368,
+          "y": 422,
+          "target": "other",
+          "open": false,
+          "hidden": true,
+          "panelX": 0
+        },
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "x": 368,
+          "y": 422,
+          "target": "other",
+          "open": false,
+          "hidden": true,
+          "panelX": 0
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "x": 308,
+          "y": 422,
+          "target": "reader",
+          "open": false,
+          "hidden": true,
+          "panelX": 0
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "x": 308,
+          "y": 422,
+          "target": "reader",
+          "open": false,
+          "hidden": false,
+          "panelX": 240
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "x": 308,
+          "y": 422,
+          "target": "reader",
+          "open": true,
+          "hidden": false,
+          "panelX": 240
+        }
+      ]
+    },
+    {
+      "kind": "release-momentum",
+      "open": true,
+      "holdMs": 400,
+      "expected": true,
+      "actual": {
+        "open": true,
+        "hidden": false,
+        "x": 0,
+        "width": 300,
+        "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+        "eventCount": 42
+      },
+      "events": [
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "x": 200,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "x": 200,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "x": 260,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "x": 260,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 60
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "x": 260,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 60
+        }
+      ]
+    },
+    {
+      "kind": "release-momentum",
+      "open": true,
+      "holdMs": 0,
+      "expected": false,
+      "actual": {
+        "open": false,
+        "hidden": true,
+        "x": 0,
+        "width": 0,
+        "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+        "eventCount": 47
+      },
+      "events": [
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "x": 200,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "x": 200,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "x": 260,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 0
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "x": 260,
+          "y": 320,
+          "target": "menu",
+          "open": true,
+          "hidden": false,
+          "panelX": 60
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "x": 260,
+          "y": 320,
+          "target": "menu",
+          "open": false,
+          "hidden": false,
+          "panelX": 60
+        }
+      ]
+    }
+  ],
+  "initial": {
+    "open": false,
+    "hidden": true,
+    "x": 0,
+    "width": 0,
+    "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+    "eventCount": 0
+  },
+  "final": {
+    "open": false,
+    "hidden": true,
+    "x": 0,
+    "width": 0,
+    "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+    "eventCount": 47
+  },
+  "apiAttempts": [],
+  "passed": true
+}

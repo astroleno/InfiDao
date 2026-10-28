@@ -1,0 +1,36 @@
+{
+  "origin": "https://aitoshuu.me",
+  "root": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+  "child": "29a66f2f-96db-432f-b0a7-93f6d6020ac9",
+  "visualSelection": {
+    "word": "止",
+    "x": 127,
+    "y": 230,
+    "confirmedArrival": "沿「止」已接续"
+  },
+  "arrival": {
+    "path": "29a66f2f-96db-432f-b0a7-93f6d6020ac9",
+    "scroll": 296.5,
+    "focusedHeading": true,
+    "y": 211.24029541015625
+  },
+  "menuOrigin": "阅读选项\n×\n\n沿「止」而来\n\n回到来处\n\n大学 · 经一章\n\n释义\n原文\n收藏\n注脚\n留成手写纪念卡\n\n自己的阅读\n\n添一念\n温故",
+  "firstBack": "29a66f2f-96db-432f-b0a7-93f6d6020ac9",
+  "secondBack": {
+    "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+    "scroll": 0
+  },
+  "forward": {
+    "path": "29a66f2f-96db-432f-b0a7-93f6d6020ac9",
+    "menuOpen": false
+  },
+  "notes": {
+    "saved": true,
+    "edited": true,
+    "deleted": true,
+    "undoRestored": true,
+    "finalDeleted": true
+  },
+  "apiAttempts": [],
+  "errors": []
+}

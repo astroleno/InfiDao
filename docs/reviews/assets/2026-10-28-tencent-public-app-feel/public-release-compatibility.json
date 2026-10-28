@@ -1,0 +1,127 @@
+{
+  "at": "2026-10-28T10:48:13.551Z",
+  "releases": [
+    {
+      "origin": "https://aitoshuu.me",
+      "id": "infidao-4d067cad8e780407",
+      "commit": "9dd9a94f3d5eb9983cc2ffc34c0e54ed4f32ea4c",
+      "worktreeDirty": null,
+      "codeSha256": "d912147d24521d046ad8a5b97b3724a2b47c6207e0673d5fafc6d7497f34be7f",
+      "corpusVersion": "guji-core-v1",
+      "corpusSha256": "3ac315b83fbb75f5076e444a09823d243d1237995ba2244eecb43af76c0ce3ec",
+      "curatedVersion": "curated-9dcbdbbc52ea63b7",
+      "fontVersion": "6260e75c0bc7134351a0",
+      "fontManifestSha256": "46fb9c490f185581230c140654286858fab810180288ea809e5b53ae49fefbb4",
+      "fontBasePath": "/flow-assets/v-6260e75c0bc7134351a0",
+      "fontPreloads": [
+        "base-serif-c2701e3fde99183cf3b9.woff",
+        "base-supplement-7ae6002e9d58b6a75354.woff"
+      ],
+      "storageSchema": {
+        "browser": 4,
+        "server": 1
+      }
+    },
+    {
+      "origin": "https://tongye.me",
+      "id": "infidao-4d067cad8e780407",
+      "commit": "9dd9a94f3d5eb9983cc2ffc34c0e54ed4f32ea4c",
+      "worktreeDirty": null,
+      "codeSha256": "d912147d24521d046ad8a5b97b3724a2b47c6207e0673d5fafc6d7497f34be7f",
+      "corpusVersion": "guji-core-v1",
+      "corpusSha256": "3ac315b83fbb75f5076e444a09823d243d1237995ba2244eecb43af76c0ce3ec",
+      "curatedVersion": "curated-9dcbdbbc52ea63b7",
+      "fontVersion": "6260e75c0bc7134351a0",
+      "fontManifestSha256": "46fb9c490f185581230c140654286858fab810180288ea809e5b53ae49fefbb4",
+      "fontBasePath": "/flow-assets/v-6260e75c0bc7134351a0",
+      "fontPreloads": [
+        "base-serif-c2701e3fde99183cf3b9.woff",
+        "base-supplement-7ae6002e9d58b6a75354.woff"
+      ],
+      "storageSchema": {
+        "browser": 4,
+        "server": 1
+      }
+    }
+  ],
+  "previousAssets": [
+    {
+      "path": "/_next/static/chunks/app/infidao/page-c935aaf96ae9a6d4.js",
+      "status": 200,
+      "type": "application/javascript",
+      "bytes": 94566,
+      "sha256": "4ed0227df4c40a099b25d2cacaaf59e0d14ae6c66ee061badaedd7915c9f2014"
+    },
+    {
+      "path": "/_next/static/chunks/app/layout-9caeace9291df9d3.js",
+      "status": 200,
+      "type": "application/javascript",
+      "bytes": 3657,
+      "sha256": "e911dc9b6e29839a0c54388ccfc062ee12cdaaca2a6e619e6c79a981cecab487"
+    },
+    {
+      "path": "/_next/static/chunks/commons-561750de171eabdd.js",
+      "status": 200,
+      "type": "application/javascript",
+      "bytes": 292905,
+      "sha256": "2aedefb58d20c7168de96667de7ab6d411b55e0810e5e2848267d235dd0f90eb"
+    },
+    {
+      "path": "/_next/static/chunks/lib-3cc18104-3ccd67d43b4272f6.js",
+      "status": 200,
+      "type": "application/javascript",
+      "bytes": 241171,
+      "sha256": "8a965434199bd51bf80e7896e6505f500c82898e69e05a7d5b470f38b4a93d05"
+    },
+    {
+      "path": "/_next/static/chunks/lib-50abbcf0-296778ce794342dd.js",
+      "status": 200,
+      "type": "application/javascript",
+      "bytes": 173019,
+      "sha256": "a725fc0c7736dd54eb6414d0ed6f10d74e53e5731ebcf53dbfabb8565cc6099d"
+    },
+    {
+      "path": "/_next/static/chunks/main-app-2b52d59cc9d607b8.js",
+      "status": 200,
+      "type": "application/javascript",
+      "bytes": 549,
+      "sha256": "260538ba5ba8c84893bdc8fb7a7952fcd0387294ce2ac926369f09a8986cbdb4"
+    },
+    {
+      "path": "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+      "status": 200,
+      "type": "application/javascript",
+      "bytes": 112594,
+      "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683"
+    },
+    {
+      "path": "/_next/static/chunks/shared-c1807312d93902c7.js",
+      "status": 200,
+      "type": "application/javascript",
+      "bytes": 327780,
+      "sha256": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c"
+    },
+    {
+      "path": "/_next/static/chunks/webpack-8a873c7cc2baf872.js",
+      "status": 200,
+      "type": "application/javascript",
+      "bytes": 4834,
+      "sha256": "5f8822b5ddd0a7d1c20ead773dd0a830d038ac13d788057f57060f1efd765d9f"
+    },
+    {
+      "path": "/_next/static/css/9df75816a61f5f69.css",
+      "status": 200,
+      "type": "text/css",
+      "bytes": 41077,
+      "sha256": "61f422aa02a8b712eb56b80b58774d1ac29f311bede67850636c18c2a8dc626c"
+    },
+    {
+      "path": "/_next/static/css/a8f92e1f2a56cc5d.css",
+      "status": 200,
+      "type": "text/css",
+      "bytes": 38109,
+      "sha256": "dc99233a06239149ac40fb8a04b2cab0700c58a41ac3c2a8f2f93c8649125171"
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,24 @@
+{
+  "before": {
+    "path": "29a66f2f-96db-432f-b0a7-93f6d6020ac9",
+    "scroll": 0
+  },
+  "refreshed": {
+    "path": "29a66f2f-96db-432f-b0a7-93f6d6020ac9",
+    "scroll": 0
+  },
+  "originAfterSelectingChild": "阅读选项\n×\n\n沿「止」而来\n\n回到来处\n\n大学 · 经一章\n\n释义\n原文\n收藏\n注脚\n留成手写纪念卡\n\n自己的阅读\n\n添一念\n温故",
+  "bookmark": {
+    "skippedExisting": false,
+    "saved": "已收藏",
+    "removed": "已取消收藏"
+  },
+  "framesBefore": 3,
+  "url": "https://aitoshuu.me/InfiDao?reading=public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+  "framesAfter": 6,
+  "apiAttempts": [
+    "/api/flow/session"
+  ],
+  "errors": [],
+  "overflow": false
+}

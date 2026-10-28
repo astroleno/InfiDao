@@ -1,0 +1,52 @@
+{
+  "desktop": {
+    "viewport": [
+      1440,
+      900,
+      2
+    ],
+    "menu": {
+      "x": 1140,
+      "y": 0,
+      "width": 300,
+      "height": 900,
+      "top": 0,
+      "right": 1440,
+      "bottom": 900,
+      "left": 1140
+    },
+    "overflow": false
+  },
+  "mobile": {
+    "url": "https://tongye.me/InfiDao?reading=public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+    "canonical": "https://tongye.me/InfiDao",
+    "path": "public-appfeel-20261028-1566126c-b03b-4336-b5ca-bfc775e36239",
+    "menuHidden": true,
+    "overflow": false,
+    "apiAttempts": [],
+    "errors": [],
+    "touches": [
+      {
+        "type": "pointerdown",
+        "trusted": true,
+        "pointerType": "touch",
+        "x": 368,
+        "y": 422
+      },
+      {
+        "type": "pointermove",
+        "trusted": true,
+        "pointerType": "touch",
+        "x": 218,
+        "y": 422
+      },
+      {
+        "type": "pointerup",
+        "trusted": true,
+        "pointerType": "touch",
+        "x": 218,
+        "y": 422
+      }
+    ]
+  }
+}

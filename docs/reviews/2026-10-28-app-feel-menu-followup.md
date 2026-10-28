@@ -2,6 +2,8 @@
 
 日期：2026-10-28。承接[意见再复核](2026-10-28-app-feel-opinions-review.md)；用户已要求开始迭代、commit 并 push。
 
+后续：用户已要求腾讯同步并进行公网复审；运行版本、两域实测与剩余边界见[腾讯同步与公网复审](2026-10-28-tencent-public-app-feel-review.md)。本文保留本地交付时的状态。
+
 ## 本轮修复
 
 | Before | After | Why |
