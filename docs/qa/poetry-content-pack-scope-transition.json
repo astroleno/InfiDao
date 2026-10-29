@@ -1,0 +1,87 @@
+{
+  "poetry": {
+    "elapsedMs": 6129.982988,
+    "scope": {
+      "packIds": [
+        "core",
+        "poetry"
+      ],
+      "versions": {
+        "core": "guji-core-v1",
+        "poetry": "poetry-63eda33f1cb2bed8"
+      },
+      "unavailable": [],
+      "fingerprint": "8de84a73ddcfdff0a0024250"
+    },
+    "frames": [
+      {
+        "sourceId": "poetry-6963db27b517e46f00d81a1879d540df-0",
+        "source": "行路難三首 一",
+        "chapterLabel": "唐 · 李白",
+        "quote": "閑來垂釣碧溪上，忽復乘舟夢日邊。",
+        "meaning": "闲时在碧溪垂钓，忽然又梦见乘舟行经日边；暗用姜太公垂钓、伊尹梦日两个典故。",
+        "reflection": "“茫然”之后不是立刻振作，而是先有“闲来垂钓”的松弛，再有“忽复”的梦。再起之念未必由决心催生，它可能在一段不设目标的闲处里，以不期而至的意象出现。",
+        "work": {
+          "packId": "poetry",
+          "workId": "6963db27b517e46f00d81a1879d540df",
+          "revision": "8de4005b03e5d797b195e471",
+          "start": 0,
+          "end": 101,
+          "title": "行路難三首 一",
+          "author": "李白",
+          "dynasty": "唐",
+          "genre": "诗"
+        },
+        "provenance": "model"
+      }
+    ]
+  },
+  "priorSafeRejections": [
+    {
+      "word": "雨後",
+      "scope": [
+        "core"
+      ],
+      "error": "RELATION_UNVERIFIED"
+    },
+    {
+      "word": "清泉",
+      "scope": [
+        "core"
+      ],
+      "error": "RELATION_UNVERIFIED"
+    }
+  ],
+  "afterDisable": {
+    "elapsedMs": 6514.122921,
+    "parentPreserved": true,
+    "scope": {
+      "packIds": [
+        "core"
+      ],
+      "versions": {
+        "core": "guji-core-v1"
+      },
+      "unavailable": [],
+      "fingerprint": "47c0d2253cfbb2512337c633"
+    },
+    "frames": [
+      {
+        "sourceId": "rysxguji-mengzi-11-8",
+        "source": "孟子",
+        "chapterLabel": "第11章 卷十三 尽心上",
+        "quote": "故士穷不失义，达不离道。穷不失义，故士得己焉；达不离道，故民不失望焉。",
+        "meaning": "穷：困厄不得志。士在困厄中不丢失义，便守住自我；显达时不偏离道，百姓才不失望。",
+        "reflection": "“垂钓”式的等待之外，孟子给出另一层：困厄中先守住自己认定的义，再谈下一次尝试。这样“再试”就不只系于机遇何时翻转，也可问所守是否仍在自己心里立得住。",
+        "provenance": "model"
+      }
+    ]
+  },
+  "oldPoetryResume": true,
+  "oldChainRangeChange": "CONTENT_SCOPE_CHANGED",
+  "continuation": {
+    "status": "blocked-by-unchanged-owner-budget",
+    "code": "BUDGET_REACHED",
+    "elapsedMs": 32.249603999999636
+  }
+}

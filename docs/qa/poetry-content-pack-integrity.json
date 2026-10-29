@@ -1,0 +1,13 @@
+{
+  "pack": "poetry-63eda33f1cb2bed8",
+  "works": 1000,
+  "passages": 1051,
+  "origins": 1000,
+  "sourceFiles": 72,
+  "characters": 5497,
+  "verifiedGlyphs": 5497,
+  "sourceAndRangeCoverage": 1,
+  "artifactBytes": 4337664,
+  "sqlite": "3.50.4",
+  "node": "v22.22.0"
+}

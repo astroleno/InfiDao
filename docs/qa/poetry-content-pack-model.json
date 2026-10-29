@@ -1,0 +1,130 @@
+{
+  "runtime": "v24.22.1",
+  "budget": "original public budget namespace and unchanged 30/60/200 limits",
+  "sessionStorage": "task-isolated canary namespace",
+  "cases": [
+    {
+      "id": "aesthetic-rain-moon",
+      "seed": "刚下过雨，只想静静看看山里的月色，没有什么烦心事。想读王维《山居秋暝》。",
+      "status": 200,
+      "elapsedMs": 4731.274894,
+      "firstFrameMs": 4729.101078000001,
+      "errors": [],
+      "scope": {
+        "packIds": [
+          "core",
+          "poetry"
+        ],
+        "versions": {
+          "core": "guji-core-v1",
+          "poetry": "poetry-63eda33f1cb2bed8"
+        },
+        "unavailable": [],
+        "fingerprint": "8de84a73ddcfdff0a0024250"
+      },
+      "frames": [
+        {
+          "sourceId": "poetry-e809cc11ba34ec01868e203847f44040-0",
+          "quote": "明月松間照，清泉石上流。",
+          "source": "山居秋暝",
+          "work": {
+            "packId": "poetry",
+            "workId": "e809cc11ba34ec01868e203847f44040",
+            "revision": "1a6a4c96a95a29f7a7fd5eff",
+            "start": 0,
+            "end": 51,
+            "title": "山居秋暝",
+            "author": "王維",
+            "dynasty": "唐",
+            "genre": "诗"
+          },
+          "meaning": "",
+          "reflection": "“照”让月光停在松间，“流”让泉水越过石面，两句都不是死寂的静物。空山的清寂里，光在移动、水在发声，静因此有了呼吸和生趣。",
+          "provenance": "model"
+        }
+      ]
+    },
+    {
+      "id": "homesick-new-year",
+      "seed": "在外地过年，有点想家人，想读能说出这种思念的诗，不急着找解决办法。",
+      "status": 200,
+      "elapsedMs": 4324.310847,
+      "firstFrameMs": 4322.058253,
+      "errors": [],
+      "scope": {
+        "packIds": [
+          "core",
+          "poetry"
+        ],
+        "versions": {
+          "core": "guji-core-v1",
+          "poetry": "poetry-63eda33f1cb2bed8"
+        },
+        "unavailable": [],
+        "fingerprint": "8de84a73ddcfdff0a0024250"
+      },
+      "frames": [
+        {
+          "sourceId": "poetry-03f01ccb9b98d84e2060459fef048b00-0",
+          "quote": "亂山殘雪夜，孤燈異鄉人。",
+          "source": "歲除夜有懷",
+          "work": {
+            "packId": "poetry",
+            "workId": "03f01ccb9b98d84e2060459fef048b00",
+            "revision": "9ef6a16efaa7247c15016e37",
+            "start": 0,
+            "end": 51,
+            "title": "歲除夜有懷",
+            "author": "孟浩然",
+            "dynasty": "唐",
+            "genre": "诗"
+          },
+          "meaning": "乱山残雪的除夕夜，一盏孤灯照着身在异乡的人。",
+          "reflection": "“乱山残雪”先铺出荒寒的远路，“孤灯”再收拢到一点微光；节令是岁除，人却在异乡。思念不必说破，只在这一冷一暖的对照里，独夜便有了分量。",
+          "provenance": "model"
+        }
+      ]
+    },
+    {
+      "id": "ambiguous-separation-dream",
+      "seed": "亲人离开很久，梦里又见到他，醒来有些难过。想读一句陪伴，不想急着被劝放下。",
+      "status": 200,
+      "elapsedMs": 4342.809119,
+      "firstFrameMs": 4341.557580000001,
+      "errors": [],
+      "scope": {
+        "packIds": [
+          "core",
+          "poetry"
+        ],
+        "versions": {
+          "core": "guji-core-v1",
+          "poetry": "poetry-63eda33f1cb2bed8"
+        },
+        "unavailable": [],
+        "fingerprint": "8de84a73ddcfdff0a0024250"
+      },
+      "frames": [
+        {
+          "sourceId": "poetry-9ff14bbf785522aff43d83181557e46f-0",
+          "quote": "落月滿屋梁，猶疑照顏色。",
+          "source": "夢李白二首 一",
+          "work": {
+            "packId": "poetry",
+            "workId": "9ff14bbf785522aff43d83181557e46f",
+            "revision": "5ca43cd6b892233045aef760",
+            "start": 0,
+            "end": 103,
+            "title": "夢李白二首 一",
+            "author": "杜甫",
+            "dynasty": "唐",
+            "genre": "诗"
+          },
+          "meaning": "落月照满屋梁，恍惚间还疑心那月色映着故人的容颜。",
+          "reflection": "梦醒后不急着把“只是梦”说死。月光落在屋梁上，恍惚里故人的面容还能停留一会儿；这份犹疑本身，就是哀思可以安放的地方。",
+          "provenance": "model"
+        }
+      ]
+    }
+  ]
+}

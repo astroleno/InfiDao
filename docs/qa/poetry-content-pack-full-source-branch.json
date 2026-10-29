@@ -1,0 +1,53 @@
+{
+  "earlierRejectedWord": {
+    "label": "雨後",
+    "start": 3,
+    "end": 5,
+    "scope": [
+      "core"
+    ],
+    "error": "RELATION_UNVERIFIED",
+    "explanation": "没有合适候选时保留原句，不强行生成关联"
+  },
+  "fullSourceOutsideQuote": {
+    "selection": {
+      "start": 35,
+      "end": 37,
+      "label": "漁舟"
+    },
+    "elapsedMs": 4992.587442999999,
+    "contentScope": {
+      "packIds": [
+        "core",
+        "poetry"
+      ],
+      "versions": {
+        "core": "guji-core-v1",
+        "poetry": "poetry-63eda33f1cb2bed8"
+      },
+      "unavailable": [],
+      "fingerprint": "8de84a73ddcfdff0a0024250"
+    },
+    "frames": [
+      {
+        "sourceId": "poetry-39bb097b416925abb7782c3151b89663-0",
+        "source": "桃源行",
+        "quote": "漁舟逐水愛山春，兩岸桃花夾去津。",
+        "meaning": "渔舟顺水而行，因喜爱山间春色而深入；两岸桃花夹着远去的渡口。",
+        "reflection": "同是渔舟顺水，这里的“逐”与“爱”让船主动向春山深处去，是寻入；《山居秋暝》的渔舟却从莲叶摇动处顺流而下，是晚归。一个向里探，一个往外回，方向不同，水上的动静也各成一种意趣。",
+        "work": {
+          "packId": "poetry",
+          "workId": "39bb097b416925abb7782c3151b89663",
+          "revision": "34d4e226d025062008aa25e2",
+          "start": 0,
+          "end": 271,
+          "title": "桃源行",
+          "author": "王維",
+          "dynasty": "唐",
+          "genre": "诗"
+        },
+        "provenance": "model"
+      }
+    ]
+  }
+}

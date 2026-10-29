@@ -1,0 +1,54 @@
+{
+  "kind": "actual-model-reference-cross-check",
+  "records": 6,
+  "passed": true,
+  "scope": "Canonical source, exact quotation substring and work revision; no coordinates inferred from summary-only output",
+  "checked": [
+    {
+      "sourceId": "poetry-e809cc11ba34ec01868e203847f44040-0",
+      "source": "山居秋暝",
+      "quote": "明月松間照，清泉石上流。",
+      "canonicalSubstring": true,
+      "workId": "e809cc11ba34ec01868e203847f44040",
+      "revision": "1a6a4c96a95a29f7a7fd5eff"
+    },
+    {
+      "sourceId": "poetry-03f01ccb9b98d84e2060459fef048b00-0",
+      "source": "歲除夜有懷",
+      "quote": "亂山殘雪夜，孤燈異鄉人。",
+      "canonicalSubstring": true,
+      "workId": "03f01ccb9b98d84e2060459fef048b00",
+      "revision": "9ef6a16efaa7247c15016e37"
+    },
+    {
+      "sourceId": "poetry-9ff14bbf785522aff43d83181557e46f-0",
+      "source": "夢李白二首 一",
+      "quote": "落月滿屋梁，猶疑照顏色。",
+      "canonicalSubstring": true,
+      "workId": "9ff14bbf785522aff43d83181557e46f",
+      "revision": "5ca43cd6b892233045aef760"
+    },
+    {
+      "sourceId": "poetry-39bb097b416925abb7782c3151b89663-0",
+      "source": "桃源行",
+      "quote": "漁舟逐水愛山春，兩岸桃花夾去津。",
+      "canonicalSubstring": true,
+      "workId": "39bb097b416925abb7782c3151b89663",
+      "revision": "34d4e226d025062008aa25e2"
+    },
+    {
+      "sourceId": "poetry-6963db27b517e46f00d81a1879d540df-0",
+      "source": "行路難三首 一",
+      "quote": "閑來垂釣碧溪上，忽復乘舟夢日邊。",
+      "canonicalSubstring": true,
+      "workId": "6963db27b517e46f00d81a1879d540df",
+      "revision": "8de4005b03e5d797b195e471"
+    },
+    {
+      "sourceId": "rysxguji-mengzi-11-8",
+      "source": "孟子",
+      "quote": "故士穷不失义，达不离道。穷不失义，故士得己焉；达不离道，故民不失望焉。",
+      "canonicalSubstring": true
+    }
+  ]
+}

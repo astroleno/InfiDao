@@ -1,0 +1,32 @@
+{
+  "reviewer": "poetry_independent_review",
+  "scope": "用户已批准的同一只读评审 agent；来源规划与既有分支问题复核",
+  "finalCommit": "842bea107c4bffcf666842695308d2439babaec4",
+  "record": "主线程按本次会话中评审者的结果保存，未新增评测样本。",
+  "resolved": [
+    {
+      "issue": "父分支 edge 缺提示版本，与新 operation key 的跨版本身份不一致",
+      "before": "只读加载 cbc3c03 源码，branch 与 rebase 在检索前均得到 BRANCH_CHANGED。",
+      "after": "父边加入 FLOW_PROMPT_VERSION；旧边保留，新边可建立；本地模型桩复现通过。"
+    },
+    {
+      "issue": "改变范围后，已存 anchor 直接沿用旧诗词 terms 与 target，绕过目标范围规划",
+      "before": "parent=['core','poetry']，request=['core']，规划调用 0 次；核心检索收到旧唐宋原句。",
+      "after": "parentScopeChanged 时重新规划；planAnchor 核对存储入口对应文本坐标，再共用包含当前 targetScope 的上下文；旧 terms 与 target 不复用。"
+    },
+    {
+      "issue": "回归 fixture 的 initial=false 与 StoredChain 类型冲突",
+      "after": "真正省略 initial；包含项目全局声明的相关文件 TypeScript 语义诊断为空。"
+    }
+  ],
+  "validation": {
+    "suites": ["planning-scope", "flow-scope"],
+    "passedTests": 7,
+    "remainingRequiredFindings": 0,
+    "filesModifiedByReviewer": 0,
+    "newHoldoutCases": 0,
+    "networkCalls": 0,
+    "modelCalls": 0
+  },
+  "limits": "模型桩证明控制流与参数传递；不证明真实模型规划质量，不替代完整界面闭环，不构成新留出检索评测。真实腾讯来源切换另存 scope-transition 报告。"
+}

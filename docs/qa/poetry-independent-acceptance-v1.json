@@ -1,0 +1,78 @@
+{
+  "reportId": "poetry-independent-acceptance-v1",
+  "reviewer": "correctness (/root/poetry_independent_review)",
+  "decision": "blocked",
+  "evaluatedAt": "2026-10-29T15:15:31.745Z",
+  "evaluationRuns": 1,
+  "workingTreeBaseCommit": "7f19de0593ff26f102612e602bf80c30f109391f",
+  "freeze": {
+    "packVersion": "poetry-258e7119a039c89e",
+    "manifest": "data/poetry/selected-v3/manifest.json",
+    "works": 1000,
+    "passages": 1062,
+    "hashesUnchangedDuringEvaluation": true,
+    "sha256": {
+      "src/lib/content/store.ts": "96e96ecceb83b5c743803247224cd4b488e53cfacbde4731fa159e3faaf26a21",
+      "shared/content/text.cjs": "967c6b084a44cd5e24a115acde2d9968d7a84a37c2769fabd04ce95beb076da3",
+      "src/lib/search/service.ts": "78382947f6887ee0d14a3c241b93d1094abe70913877c5733889075b73093878",
+      "src/lib/flow/candidates.ts": "8f7bd5bfefac29ecb90b0ef4ad2f0ce70442316ec2755db00cb1df7386e1a523",
+      "data/content-packs/manifest.json": "acff93df334ad5875ca91654177b28168b88874dd312640c594cd19988618463",
+      "data/poetry/selected-v3/manifest.json": "84e668c80dd06d1c4421c9b5be86412c845998e1114fac7653979737a3ccc2e0"
+    }
+  },
+  "method": {
+    "sampleProtocol": "24 条查询与判据在实现冻结前由独立评审保留，未向主线程披露；冻结后一次执行，先确认规范作品覆盖，再检查排名。",
+    "retrieval": "searchPoetry(query,10)；searchPassages({query,topK:10,contentPacks:['core','poetry']})；核心依次比较关闭、开启、关闭。",
+    "authorOracle": "Top5 至少 3 个归一化作者准确；收录不足 3 首时要求全部。",
+    "titleOracle": "已收录的归一化准确篇名进入 Top3。",
+    "quoteOracle": "已收录的归一化原句进入 Top5，仍引用规范原文。",
+    "themeOracle": "Top5 至少一篇原文支持处境，人工判断而非只看字词。",
+    "coreOracle": "核心独立 Top1 在开启后的 Top10 保留；再次关闭结果完全一致。",
+    "referenceOracle": "读取 Top5 指定作品修订，核对原文、范围与 SHA-256。",
+    "networkDisabled": true,
+    "paidModelCalls": 0,
+    "filesModifiedByReviewer": 0,
+    "historicalSearchHoldoutV1Touched": false
+  },
+  "summary": {
+    "cases": 24, "pass": 20, "fail": 2, "outOfSelectedScope": 1, "baselineGapNotRegression": 1,
+    "author": "4/4", "coveredTitle": "4/4", "coveredQuote": "5/5", "theme": "3/5",
+    "coreRetentionWithNonemptyBaseline": "4/4", "coreResultsIdenticalAfterDisabling": "5/5",
+    "canonicalReferencesChecked": 76, "canonicalReferencesValid": 76,
+    "interpretation": "机械引用有效不证明源记录就是独立作品；Top10 留存通过不替代明确原句优先要求。无约定的总通过率门槛，不以平均抵销结构缺陷。"
+  },
+  "cases": [
+    {"id":"author-01","query":"杜甫","status":"pass","coveredWorks":40,"matchingAuthorsInTop5":5,"top5Titles":["望嶽","登高","旅夜書懷","天末憶李白","春夜喜雨"],"top1Id":"poetry-9887bd1ffb94a0dfeedd9ce4b026392d-0"},
+    {"id":"author-02","query":"王维","status":"pass","coveredWorks":40,"matchingAuthorsInTop5":5,"top5Titles":["老將行","送綦毋潛落第還鄉","輞川閑居贈裴秀才迪","漢江臨汎","送張判官赴河西"],"top1Id":"poetry-a6b3579de349e1766c467f945ea03e08-0"},
+    {"id":"author-03","query":"李清照","status":"pass","coveredWorks":5,"matchingAuthorsInTop5":5,"top5Titles":["声声慢","念奴娇","凤凰台上忆吹箫","永遇乐","醉花阴"],"top1Id":"poetry-42c6a0e3649ea984420e8d8e325acac6-0"},
+    {"id":"author-04","query":"辛弃疾","status":"pass","coveredWorks":12,"matchingAuthorsInTop5":5,"top5Titles":["菩萨蛮","祝英台令","水龙吟","鹧鸪天","摸鱼儿"],"top1Id":"poetry-2e1738f1e36b1bfdc490324fe2222930-0"},
+    {"id":"title-01","query":"春望","status":"pass","coveredWorks":1,"exactMatchRank":1,"match":"杜甫《春望》","matchId":"poetry-8ce5f36e07de00875cbec6676886c8a7-0"},
+    {"id":"title-02","query":"登鹳雀楼","status":"pass","coveredWorks":1,"exactMatchRank":1,"match":"王之渙《登鸛雀樓》","matchId":"poetry-7c6003884c7c4575533cf0d3618dcb5b-0"},
+    {"id":"title-03","query":"枫桥夜泊","status":"pass","coveredWorks":1,"exactMatchRank":1,"match":"張繼《楓橋夜泊》","matchId":"poetry-cedb67bbf0dc83598068d2845c4f0dfc-0"},
+    {"id":"title-04","query":"江雪","status":"pass","coveredWorks":1,"exactMatchRank":1,"match":"柳宗元《江雪》","matchId":"poetry-e040e33b407eec909764c2dfe79a0d1e-0"},
+    {"id":"quote-01","query":"长风破浪会有时","status":"pass","coveredWorks":1,"exactMatchRank":1,"match":"李白《行路難三首 一》","matchId":"poetry-6963db27b517e46f00d81a1879d540df-0","canonicalQuote":"長風破浪會有時，直挂雲帆濟滄海。"},
+    {"id":"quote-02","query":"海上生明月","status":"pass","coveredWorks":1,"exactMatchRank":1,"match":"張九齡《望月懷遠》","matchId":"poetry-538fe3b8897d9acc06eb3d0107e94dbb-0"},
+    {"id":"quote-03","query":"稻花香里说丰年","status":"out_of_selected_scope","coveredWorks":0,"returnedCombinedTitles":["遊山西村","女冠子"],"note":"该句未收录；其他作品不能冒充出处。"},
+    {"id":"quote-04","query":"山重水复疑无路","status":"pass","coveredWorks":1,"exactMatchRank":1,"match":"陸游《遊山西村》","matchId":"poetry-42d421de3a243d60670ce20ea3bc198c-0"},
+    {"id":"trad-01","query":"春蠶到死絲方盡","status":"pass","coveredWorks":1,"exactMatchRank":1,"match":"李商隱《無題》","matchId":"poetry-c8e2775bf8bb5cdd65def55a66e6e134-0"},
+    {"id":"trad-02","query":"獨在異鄉為異客","status":"pass","coveredWorks":1,"exactMatchRank":1,"match":"王維《九月九日憶山東兄弟》","matchId":"poetry-2f33434935954deac1f5bfb962337d1e-0"},
+    {"id":"theme-01","query":"想念远方的朋友","status":"pass","poetryTop5Titles":["念遠","述懷","绮寮怨","八归","凤箫吟・芳草"],"supportRank":4,"supportId":"poetry-661f19abff6689b10dd5d069881714d2-0","supportQuote":"应难奈，故人天际，望彻淮山，相思无雁足。"},
+    {"id":"theme-02","query":"不舍离开的故乡","status":"pass","poetryTop5Titles":["八声甘州","送謝景初廷評宰餘姚","哀郢","登壠","月夜憶舍弟"],"supportRank":1,"supportId":"poetry-c4a290c3aed987ac159fa5a35cdb25a4-0","supportQuote":"不忍登高临远，望故乡渺邈，归思难收。"},
+    {"id":"theme-03","query":"一个人夜里听雨","status":"pass","poetryTop5Titles":["风入松","安公子","秋夜聽雨奉懷子厚","秋夜讀書","水龙吟"],"supportRank":3,"supportId":"poetry-35762e3825343913f0f32bb9bfa0e807-0","supportQuote":"悄悄窗戶暗，青燈讀殘書。忽聽踈雨落，稍知凉氣初。"},
+    {"id":"theme-04","query":"仕途不顺仍想自勉","status":"fail","poetryResults":[],"combinedResults":[],"coverageNote":"已收录李白《行路難三首 一》，不能以覆盖外解释空结果。"},
+    {"id":"theme-05","query":"重见多年未见的老友","status":"fail","poetryTop5Titles":["長恨歌","庆宫春・高阳台","念奴娇","瑶花慢","双调・殿前欢里西瑛号懒云窝自叙有作奉和"],"combinedResults":[{"id":"poetry-3ed6d1a39bea3686cb781f52b0eb67ec-0","title":"長恨歌","score":0.3503142986630148,"textDescription":"汉皇重色至西南行、朝朝暮暮情的开头片段"}],"reason":"未兑现久别友人重逢；包内《贈衛八處士》未召回。"},
+    {"id":"core-01","query":"己所不欲勿施于人","status":"pass","coreTop1":"rysxguji-lunyu-12-3","combinedRankOfCoreTop1":1,"disabledIdentical":true},
+    {"id":"core-02","query":"学而时习之","status":"pass","coreTop1":"lunyu-1-1","combinedRankOfCoreTop1":1,"disabledIdentical":true},
+    {"id":"core-03","query":"君子坦荡荡","status":"pass","coreTop1":"rysxguji-lunyu-7-37","combinedRankOfCoreTop1":4,"disabledIdentical":true,"additionalIssue":"只通过预登记 Top10 留存判据，明确原句被部分词匹配诗词压过。"},
+    {"id":"core-04","query":"富贵不能淫","status":"pass","coreTop1":"rysxguji-mengzi-5-5","combinedRankOfCoreTop1":4,"disabledIdentical":true,"additionalIssue":"只通过预登记 Top10 留存判据，明确原句被部分词匹配诗词压过。"},
+    {"id":"core-05","query":"道虽迩不行不至","status":"baseline_gap_not_regression","coreResults":[],"combinedIds":["poetry-6d40fc6265fa909e49bb970e43aa7e76-0","poetry-4e9e24ff2a9f26a0d599c766e80ffbab-0","poetry-a960925e874d1d2dee8438326893f64e-0"],"disabledIdentical":true}
+  ],
+  "blockingFindings": [
+    {"id":"F1","priority":"P1","status":"unresolved_in_evaluated_v1","title":"上游合集误作单首且存在未解拆字","locations":["scripts/poetry/build-corpus.mjs:87","scripts/poetry/build-corpus.mjs:103","src/components/flow/PoetrySource.tsx:49"],"evidence":[{"workId":"7002d426fc2b26e1aed5cb81925ed7ab","revision":"e99989bdc43f0551f24423c2","title":"双调・水仙子夜雨","sourcePath":"元曲/yuanqu.json","sourceIndexZeroBased":9958,"utf16Length":582,"passages":2,"problem":"夜雨之后串入弹唱、红指甲、佳人钉履、春情、青玉花筒、重九、马嵬坡、惠山泉。"},{"workId":"f45a878a07d501afbd579b24aafc5065","revision":"bc19b5eea5fad9cd3a659cc3","title":"双调・殿前欢里西瑛号懒云窝自叙有作奉和","sourcePath":"元曲/yuanqu.json","sourceIndexZeroBased":6663,"utf16Length":475,"passages":2,"problem":"串入登凤凰台、登江山第一楼，并有拆字“富贵沾讠宛”。"}]},
+    {"id":"F2","priority":"P1","status":"unresolved_in_evaluated_v1","title":"跨包融合没有保留核心明确原句优先","location":"src/lib/search/service.ts:53","cause":"诗词 (0.65+score)/(60+rank) 压过核心 1/(60+rank)。","examples":["君子坦荡荡：核心第 1→第 4，前列酬劉侍郎使君、贈衛八處士、怀沙。","富贵不能淫：核心第 1→第 4，前列卜居、醉後走筆酬劉五主簿長句之贈兼簡張大賈二十四先輩昆季、除官赴闕至江州寄鄂岳李大夫。"]},
+    {"id":"F3","priority":"P2","status":"unresolved_in_evaluated_v1","title":"两个覆盖内现代处境未召回相关作品","location":"src/lib/content/store.ts:61","queries":["仕途不顺仍想自勉","重见多年未见的老友"]}
+  ],
+  "resolvedCodeReviewFindings": ["恢复时不重复追加 scope 后缀","全文点词携带来源 pathId/sourceRecord","不可用包仍可停用且降级不反复重启","非当前片段不误高亮","rebase 边包含来源及选择坐标","新链登记 scope，停用后 resume 发送 core，retry 检查范围","范围解析检查 SQLite 格式兼容"],
+  "limitations": ["同一评审读过代码并设计样本，不满足历史 no-current-review 全盲声明。","一次独立验收样本不证明整体语义泛化。","单人语义判断，没有多人一致性检查。","没有真实模型、浏览器闭环、腾讯性能或实体手机验证。","未逐篇人工审核全部作品，元曲结构问题必须扩大排查。","本失败记录不可改写成通过；修复后另建新冻结与新样本。历史 search-holdout-v1 未改、未重跑。"],
+  "recordNote": "主线程整理为紧凑 JSON；保留评审原始结论、冻结身份、全部 24 条案例状态、失败与证据边界，不将后续修复回写本轮结果。此包从未发布。"
+}

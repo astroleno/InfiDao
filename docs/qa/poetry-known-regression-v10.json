@@ -1,0 +1,45 @@
+{
+  "reportId":"poetry-known-regression-v10",
+  "reviewer":"poetry_independent_review",
+  "record":"主线程按只读评审原报告保存摘要；原查询及判据见v5报告，完整文字保留在本次会话。",
+  "decision":"pass_for_requested_visible_regressions",
+  "classification":"已见问题的修复回归，不是新留出",
+  "evaluatedAt":"2026-10-29T16:53:18.067Z",
+  "gitHeadAtExecution":"eead7b6bc60bc596ee8ce2230f7aa406c47c05d8",
+  "execution":{"queryCases":32,"runsPerQuery":1,"newHoldoutCases":0,"standardsChanged":false,"filesModified":0,"networkCalls":0,"modelCalls":0,"additionalAgents":0},
+  "freeze":{
+    "package":"poetry-63eda33f1cb2bed8","manifest":"data/poetry/selected-1000-v10/manifest.json","works":1000,"passages":1051,"shards":16,"actualManifestShardBytes":4337664,"beforeAfterHashesIdentical":true,
+    "sha256":{
+      "data/poetry/selected-1000-v10/manifest.json":"54ae00e1466ed7a21fad18c26379e151b3003e3cfa9e3440fea540d6b954ed60",
+      "src/lib/content/store.ts":"dc3f74f8bcee6a78354f191f7cd885a36ed314f296e43ef6b0838e65c85fb278",
+      "shared/content/text.cjs":"e6248ffca5b26d0e63a3f648cd0ee539facc73f8d9e51d54362dd1cff7136555",
+      "data/content-packs/manifest.json":"bb6ed11595cbc5fb92b47b66444ace62984450c79be733492bc15de7818255f1",
+      "src/lib/content/sqlite.ts":"7d1c5ba4832978b0aaaf0a7162d45060ebd082622ffe850e5818c5414088842e",
+      "src/lib/content/scope.ts":"cf3764f3c9a2106c1fe13affca798244ad1ff2a669437520928571586b5c0d9f",
+      "src/lib/search/service.ts":"84ae092ab659a02d6b7864b9590b8542b44a49e313a743d0f780a1607396a74b",
+      "src/types/index.ts":"7bd5d95bc7bc14f2d9015fbfbd32affc6612d7a5117defae33fb6aa064b9e30f"
+    }
+  },
+  "summary":{"passed":32,"failed":0,"originalV5CasesReplayed":"24/24","previousActualCompetitionCases":"2/2","previousV4Fixes":"5/5","previousAutumnTimeCase":"1/1","automaticContracts":"21/21","manualOriginalTextRelevance":"11/11","returnedPoetryReferenceChecks":"225/225，含重复返回"},
+  "criteria":{"author":"两路径Top5各至少3篇准确作者，不足3篇要求全部。","title":"完整题名及序号简繁、标点、空白归一，两路径Top3。","quote":"实收原句含长篇跨行，两路径Top5。","theme":"两路径Top5各至少1篇规范原文满足原复合条件，不限初选作品。","core":"准确核心保留且先于部分诗词，停用排序一致。","ood":"核心及融合都为空。","settings":"原始10条、融合10条；默认阈值仍0.35。"},
+  "originalV5Replayed":{
+    "authors":{"queries":["秦观","晏几道","王安石","劉禹錫"],"passed":"4/4，准确作者在每条路径Top5达标"},
+    "titles":{"queries":["新乐府　骊宫高　美天子重惜人之财力也","观书有感二首 其一","曉出浄慈送林子方二首 其二","山中再次胡德昭韵\t其二"],"passed":"4/4，两路第1，0.999"},
+    "quotes":{"queries":["十年一覺揚州夢贏得青樓薄倖名","白日登山望烽火黄昏饮马傍交河行人刁斗风沙暗公主琵琶幽怨多","二十四橋仍在波心蕩冷月無聲","三顾频烦天下计两朝开济老臣心"],"passed":"4/4，两路第1，0.999"},
+    "themes":[
+      {"query":"翻到一封很久以前的来信，越看越惦念远方的人","status":"pass","work":"史达祖《八归》","rankInBothPaths":3,"original":"故人天际，望彻淮山，相思无雁足。","judgment":"音信与远隔思念共同支持。"},
+      {"query":"朋友已经启程，我还站在岸边望着远去的船，舍不得转身","status":"pass","work":"韋應物《賦得暮雨送李胄》","rankInBothPaths":1,"original":"漠漠帆來重，冥冥鳥去遲。海門深不見，浦樹遠含滋。相送情無限，沾襟比散絲。"},
+      {"query":"准备了很久却又落选，心里不服气，也还想找机会再试一次","status":"pass","work":"李白《行路難三首 一》","rankInBothPaths":4,"original":"行路難，行路難，多岐路，今安在。長風破浪會有時，直挂雲帆濟滄海。","judgment":"第4名同时支持受阻与继续，不凭首名相同题字通过。"},
+      {"query":"今天不想安排任何事，只想泡杯茶，在树荫下听鸟叫","status":"pass","work":"王維《終南別業》","rankInBothPaths":4,"original":"興來每獨往，勝事空自知。行到水窮處，坐看雲起時。偶然值林叟，談笑無還期。"},
+      {"query":"和孩子比了比身高，才发现自己鬓角已经白了，日子过得真快","status":"pass","work":"杜甫《贈衛八處士》","rankInBothPaths":2,"original":"少壯能幾時，鬢髮各已蒼。……焉知二十載，重上君子堂。昔別君未婚，兒女忽成行。","judgment":"衰年、二十载与幼者长成同时有据，不要求作者家庭身份与用户相同。"},
+      {"query":"雨刚停，山路旁的草木像洗过一样，远处还有云雾，我只想安静看一会儿","status":"pass","work":"王維《積雨輞川莊作》","rankInBothPaths":1,"original":"積雨空林煙火遲……漠漠水田飛白鷺，陰陰夏木囀黃鸝。山中習靜觀朝槿，松下清齋折露葵。"}
+    ],
+    "core":{"queries":["君子怀德小人怀土","君子谋道不谋食","君子耻其言而过其行","见贤思齐焉见不贤而内自省也"],"passed":"4/4，准确核心第1，停用一致；本组仍无实际诗词竞争"},
+    "ood":{"queries":["查一下明早厦门海边日出是几点","家里的路由器连不上网，怎样重置并重新设置密码"],"passed":"2/2，两路为空"}
+  },
+  "previousCompetition":[{"query":"君子周而不比","exactCore":"rysxguji-lunyu-2-11","exactRank":1,"partialPoetry":"屈原《怀沙》","partialRank":2,"disabledIdentical":true},{"query":"君子不器","exactCore":"rysxguji-lunyu-2-9","exactRank":1,"partialPoetry":"韋應物《酬劉侍郎使君》","partialRank":2,"disabledIdentical":true}],
+  "previousFixes":[{"query":"新乐府 上阳白发人 愍怨旷也","result":"两路第1"},{"query":"春暖花开，越热闹反而越想念不在身边的人","result":"擣衣篇两路第1，春景与相思有据"},{"query":"要和朋友各奔东西了，想认真说一句珍重","result":"渭城曲两路第1"},{"query":"亲人离开很久了，梦里又见到他，醒来还是很难过","result":"江神子两路第3，兼保留活人送别与悼亡；不能据此推断用户亲人已死亡"},{"query":"站在江边看水一直流，想到很多事情都留不住","result":"朱服渔家傲两路第1"},{"query":"秋天一到，看到落叶就觉得这一年又快过去了","result":"新秋夜雨两路第4","original":"蟋蟀暮啾啾，光陰不少留。松簷半夜雨，風幌滿牀秋。……誰伴老人遊。"}],
+  "staticSupportReview":{"queryRunsAdded":0,"includedIn32":false,"accepted":[{"oldQuery":"很想自由自在地生活，不再为功名奔忙","work":"渭川田家","original":"即此羨閑逸，悵然吟式微。","qualification":"支持向往归隐，不解读成已经自在或已经彻底弃功名。"},{"oldQuery":"重走学生时代常走的路，景色熟悉，人已经变了","work":"生查子","original":"物色旧时同，情味中年别。"},{"oldQuery":"秋天一到，看到落叶就觉得这一年又快过去了","work":"新秋","original":"打窗落葉報秋期，病叟頽然兩鬢絲。縱酒已無年少夢。"}],"qualification":"增加符合原门槛的支持证据，没有改变Top5或复合条件，不额外声称未重跑查询的独立排名。"},
+  "findings":[],
+  "limitations":["v1至v5失败原结论全部保留；v5新竞争覆盖仍为0/2。","32例全部已公开，只证明当前已见行为修复；无新增留出或历史全盲通过声明。","不涉及真实模型、浏览器、设备、字体、性能或腾讯部署结论。","作者归属只对照固定源记录，不代表学术考订。"]
+}

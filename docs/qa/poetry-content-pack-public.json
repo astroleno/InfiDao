@@ -1,0 +1,294 @@
+{
+  "releaseId": "infidao-a38414c6b529d396",
+  "commit": "842bea107c4bffcf666842695308d2439babaec4",
+  "domains": [
+    {
+      "host": "aitoshuu.me",
+      "checks": [
+        "reader-origin-canonical-share",
+        "same-domain-case-query-and-subpath",
+        "catalog-1000-and-exact-revision-work",
+        "private-and-missing-paths-404"
+      ],
+      "assets": [
+        "/_next/static/css/5311532c53e5701e.css",
+        "/_next/static/css/2abb7fc0ec05176b.css",
+        "/_next/static/chunks/webpack-8a873c7cc2baf872.js",
+        "/_next/static/chunks/lib-dc3a0e9d-206a41bbee148929.js",
+        "/_next/static/chunks/commons-f3e7039b6f78a907.js",
+        "/_next/static/chunks/shared-c1807312d93902c7.js",
+        "/_next/static/chunks/main-app-0fd76423638d76ad.js",
+        "/_next/static/chunks/app/layout-33eebc7ddbb22458.js",
+        "/_next/static/chunks/lib-9c0800bf-f37b176105aff568.js",
+        "/_next/static/chunks/app/infidao/page-4cb6953456904114.js",
+        "/_next/static/chunks/polyfills-42372ed130431b0a.js"
+      ],
+      "provenance": {
+        "id": "infidao-a38414c6b529d396",
+        "commit": "842bea107c4bffcf666842695308d2439babaec4",
+        "worktreeDirty": null,
+        "codeSha256": "c648196b2eadb3e7cd2f7da8f14c1713eb3325befddaf982cec61b042c92d625",
+        "corpusVersion": "guji-core-v1",
+        "corpusSha256": "3ac315b83fbb75f5076e444a09823d243d1237995ba2244eecb43af76c0ce3ec",
+        "curatedVersion": "curated-9dcbdbbc52ea63b7",
+        "fontVersion": "094d7b612c674ac324e9",
+        "fontManifestSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+        "fontBasePath": "/flow-assets/v-094d7b612c674ac324e9",
+        "fontPreloads": [
+          "base-serif-c2701e3fde99183cf3b9.woff",
+          "base-supplement-7ae6002e9d58b6a75354.woff"
+        ],
+        "storageSchema": {
+          "browser": 4,
+          "server": 1
+        }
+      }
+    },
+    {
+      "host": "tongye.me",
+      "checks": [
+        "reader-origin-canonical-share",
+        "same-domain-case-query-and-subpath",
+        "catalog-1000-and-exact-revision-work",
+        "private-and-missing-paths-404"
+      ],
+      "assets": [
+        "/_next/static/css/5311532c53e5701e.css",
+        "/_next/static/css/2abb7fc0ec05176b.css",
+        "/_next/static/chunks/webpack-8a873c7cc2baf872.js",
+        "/_next/static/chunks/lib-dc3a0e9d-206a41bbee148929.js",
+        "/_next/static/chunks/commons-f3e7039b6f78a907.js",
+        "/_next/static/chunks/shared-c1807312d93902c7.js",
+        "/_next/static/chunks/main-app-0fd76423638d76ad.js",
+        "/_next/static/chunks/app/layout-33eebc7ddbb22458.js",
+        "/_next/static/chunks/lib-9c0800bf-f37b176105aff568.js",
+        "/_next/static/chunks/app/infidao/page-4cb6953456904114.js",
+        "/_next/static/chunks/polyfills-42372ed130431b0a.js"
+      ],
+      "provenance": {
+        "id": "infidao-a38414c6b529d396",
+        "commit": "842bea107c4bffcf666842695308d2439babaec4",
+        "worktreeDirty": null,
+        "codeSha256": "c648196b2eadb3e7cd2f7da8f14c1713eb3325befddaf982cec61b042c92d625",
+        "corpusVersion": "guji-core-v1",
+        "corpusSha256": "3ac315b83fbb75f5076e444a09823d243d1237995ba2244eecb43af76c0ce3ec",
+        "curatedVersion": "curated-9dcbdbbc52ea63b7",
+        "fontVersion": "094d7b612c674ac324e9",
+        "fontManifestSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+        "fontBasePath": "/flow-assets/v-094d7b612c674ac324e9",
+        "fontPreloads": [
+          "base-serif-c2701e3fde99183cf3b9.woff",
+          "base-supplement-7ae6002e9d58b6a75354.woff"
+        ],
+        "storageSchema": {
+          "browser": 4,
+          "server": 1
+        }
+      }
+    }
+  ],
+  "neighbors": [
+    {
+      "url": "https://aitoshuu.me/",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://aitoshuu.me/ArtDuo",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://aitoshuu.me/SonoScope",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://aitoshuu.me/FamilyTree",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://aitoshuu.me/Focuence",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://aitoshuu.me/OutSet",
+      "status": 308,
+      "location": "/OutSet/"
+    },
+    {
+      "url": "https://aitoshuu.me/CordIndex",
+      "status": 308,
+      "location": "/CordIndex/"
+    },
+    {
+      "url": "https://aitoshuu.me/CoScroll",
+      "status": 308,
+      "location": "/CoScroll/"
+    },
+    {
+      "url": "https://aitoshuu.me/LuBirth",
+      "status": 308,
+      "location": "/LuBirth/"
+    },
+    {
+      "url": "https://tongye.me/",
+      "status": 302,
+      "location": "https://tongye.me/experience/"
+    },
+    {
+      "url": "https://tongye.me/ArtDuo",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://tongye.me/SonoScope",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://tongye.me/FamilyTree",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://tongye.me/Focuence",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://tongye.me/OutSet",
+      "status": 308,
+      "location": "/OutSet/"
+    },
+    {
+      "url": "https://tongye.me/CordIndex",
+      "status": 308,
+      "location": "/CordIndex/"
+    },
+    {
+      "url": "https://tongye.me/CoScroll",
+      "status": 308,
+      "location": "/CoScroll/"
+    },
+    {
+      "url": "https://tongye.me/LuBirth",
+      "status": 308,
+      "location": "/LuBirth/"
+    }
+  ],
+  "oldAssets": [
+    {
+      "host": "aitoshuu.me",
+      "path": "/_next/static/css/9df75816a61f5f69.css",
+      "status": 200
+    },
+    {
+      "host": "aitoshuu.me",
+      "path": "/_next/static/css/2abb7fc0ec05176b.css",
+      "status": 200
+    },
+    {
+      "host": "aitoshuu.me",
+      "path": "/_next/static/chunks/webpack-8a873c7cc2baf872.js",
+      "status": 200
+    },
+    {
+      "host": "aitoshuu.me",
+      "path": "/_next/static/chunks/lib-2aeac41a-3e79cd0b4e0ec3cc.js",
+      "status": 200
+    },
+    {
+      "host": "aitoshuu.me",
+      "path": "/_next/static/chunks/commons-b433a252ac3177b9.js",
+      "status": 200
+    },
+    {
+      "host": "aitoshuu.me",
+      "path": "/_next/static/chunks/shared-c1807312d93902c7.js",
+      "status": 200
+    },
+    {
+      "host": "aitoshuu.me",
+      "path": "/_next/static/chunks/main-app-fef4d8c88d171a0f.js",
+      "status": 200
+    },
+    {
+      "host": "aitoshuu.me",
+      "path": "/_next/static/chunks/app/layout-6251d41b56b6953b.js",
+      "status": 200
+    },
+    {
+      "host": "aitoshuu.me",
+      "path": "/_next/static/chunks/lib-7af59d89-6c1b8c09caa17125.js",
+      "status": 200
+    },
+    {
+      "host": "aitoshuu.me",
+      "path": "/_next/static/chunks/app/infidao/page-55c97afc3668529c.js",
+      "status": 200
+    },
+    {
+      "host": "aitoshuu.me",
+      "path": "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+      "status": 200
+    },
+    {
+      "host": "tongye.me",
+      "path": "/_next/static/css/9df75816a61f5f69.css",
+      "status": 200
+    },
+    {
+      "host": "tongye.me",
+      "path": "/_next/static/css/2abb7fc0ec05176b.css",
+      "status": 200
+    },
+    {
+      "host": "tongye.me",
+      "path": "/_next/static/chunks/webpack-8a873c7cc2baf872.js",
+      "status": 200
+    },
+    {
+      "host": "tongye.me",
+      "path": "/_next/static/chunks/lib-2aeac41a-3e79cd0b4e0ec3cc.js",
+      "status": 200
+    },
+    {
+      "host": "tongye.me",
+      "path": "/_next/static/chunks/commons-b433a252ac3177b9.js",
+      "status": 200
+    },
+    {
+      "host": "tongye.me",
+      "path": "/_next/static/chunks/shared-c1807312d93902c7.js",
+      "status": 200
+    },
+    {
+      "host": "tongye.me",
+      "path": "/_next/static/chunks/main-app-fef4d8c88d171a0f.js",
+      "status": 200
+    },
+    {
+      "host": "tongye.me",
+      "path": "/_next/static/chunks/app/layout-6251d41b56b6953b.js",
+      "status": 200
+    },
+    {
+      "host": "tongye.me",
+      "path": "/_next/static/chunks/lib-7af59d89-6c1b8c09caa17125.js",
+      "status": 200
+    },
+    {
+      "host": "tongye.me",
+      "path": "/_next/static/chunks/app/infidao/page-55c97afc3668529c.js",
+      "status": 200
+    },
+    {
+      "host": "tongye.me",
+      "path": "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+      "status": 200
+    }
+  ]
+}

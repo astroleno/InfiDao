@@ -1,0 +1,56 @@
+{
+  "reportId":"poetry-independent-acceptance-v4",
+  "reviewer":"poetry_independent_review",
+  "decision":"blocked_by_required_retrieval_failures",
+  "evaluatedAt":"2026-10-29T16:20:27.597Z",
+  "execution":{"cases":24,"queryRunsPerCase":1,"standardsChangedAfterExecution":false,"filesModified":0,"networkEnabled":false,"paidModelCalls":0,"additionalAgents":0,"sealedAt":"2026-10-29T16:20:13.617Z","sealedAfterFreezeMessageReceived":true,"sealedBeforeRetrieval":true,"priorQueryReuse":"未复用v1-v3独立报告查询；李白曾用于主线程可见回归，因此该例不额外声称未见。","limitation":"同一agent已读前轮代码，获知修复方向，并静态核对题名/四篇原句，不是历史全盲协议。"},
+  "freeze": {
+    "gitBaseHead":"7f19de0593ff26f102612e602bf80c30f109391f","workingTreeWasDirty":true,
+    "manifest":"data/poetry/selected-1000-v6/manifest.json","packageVersion":"poetry-aae4e710f192a03e","works":1000,"passages":1051,"shards":16,"bytes":4329472,"beforeAfterHashesIdentical":true,
+    "sha256": {
+      "data/poetry/selected-1000-v6/manifest.json":"86e1c6695449bbbba741517e400951c3fce13b4e2509eddf67425f6fa1c9b592",
+      "src/lib/content/store.ts":"99fbf5e38958e0dc76b210965700f72ac5aa874e719edcb3fe2b089ce5a25386",
+      "shared/content/text.cjs":"7d0de4135449086d15723ee0e0ca77c4f490a12c7a13addd656e3017d22405f8",
+      "data/content-packs/manifest.json":"ed947c954a2f2b10fcb75ff5df2e393f88cbba3e4d99ad710ba1c17d9d822c40",
+      "src/lib/content/sqlite.ts":"7d1c5ba4832978b0aaaf0a7162d45060ebd082622ffe850e5818c5414088842e",
+      "src/lib/content/scope.ts":"cf3764f3c9a2106c1fe13affca798244ad1ff2a669437520928571586b5c0d9f",
+      "src/lib/search/service.ts":"b64b683142a5c13feaa974d933337636cb8232748d6a693dd3a5f255f6d00bf5",
+      "src/lib/flow/candidates.ts":"8f7bd5bfefac29ecb90b0ef4ad2f0ce70442316ec2755db00cb1df7386e1a523"
+    }
+  },
+  "preRegisteredGates":{"author":"4/4，两条Top5各至少3准确作者，少于3篇则全部。","title":"4/4，保留完整题名/序号，简繁标点空白归一后两条Top3。","quote":"实收原句全部两条Top5，含长篇跨行；允许简繁标点空白归一。","theme":"6/6，人工读原文，两条Top5各至少一篇满足主要情境，不以同字替代。","core":"4个实收原句，原核心非空，融合留存且准确先于部分诗词，停用排序相同。","competitiveCore":"至少2例真实诗词竞争。","ood":"2/2，两条均为空。","references":"修订、片段、范围与hash全对。","decision":"任一适用必需维度失败即阻塞，无总平均抵销。"},
+  "summary":{"cases":24,"passed":20,"failed":4,"outsideSelectedScope":0,"authors":"4/4","titles":"3/4","quotes":"4/4","themes":"3/6","core":"4/4","competitiveCore":"3/2所需","ood":"2/2","canonicalReferences":"161/161检查次数，不是161个不同片段"},
+  "cases":[
+    {"id":"author-01","query":"李白","status":"pass","selectedWorks":40,"correctAuthorsInBothTop5":5,"note":"该查询已在主线程可见回归使用，不单独计未见泛化。"},
+    {"id":"author-02","query":"苏轼","status":"pass","selectedWorks":20,"correctAuthorsInBothTop5":5},
+    {"id":"author-03","query":"陆游","status":"pass","selectedWorks":17,"correctAuthorsInBothTop5":5},
+    {"id":"author-04","query":"王昌龄","status":"pass","selectedWorks":17,"correctAuthorsInBothTop5":5},
+    {"id":"title-01","query":"清平调词三首 二","status":"pass","rankInBothPaths":1},
+    {"id":"title-02","query":"和张仆射塞下曲 三","status":"pass","rankInBothPaths":1},
+    {"id":"title-03","query":"新乐府 上阳白发人 愍怨旷也","status":"fail","expectedInPoetryTop5":false,"expectedInCombinedTop10":false,"top1":"朱服《渔家傲》","top1Score":0.8662583120167255,"matchedTerms":["时光"],"canonicalSource":{"workId":"76cc3a82cea06c9f4bbe6ddb8384c3dc","revision":"5dc62625145d46cf6c2222fc","author":"白居易","title":"新樂府 上陽白髮人\t愍怨曠也","sourcePath":"全唐诗/poet.tang.22000.json","sourceIndex":36,"passageId":"poetry-76cc3a82cea06c9f4bbe6ddb8384c3dc-0","rangeUtf16":[0,328],"textHash":"e6cf5b53ec92addf8d29c6cde22673bdfd984b06828b4c3778ddf9419b965a32"},"evidenceBoundary":"原始仅保存Top5，不断言其Top10均缺失。"},
+    {"id":"title-04","query":"塞下曲四首 二","status":"pass","rankInBothPaths":1},
+    {"id":"quote-01","query":"回眸一笑百媚生六宫粉黛无颜色","status":"pass","rankInBothPaths":1,"match":"長恨歌"},
+    {"id":"quote-02","query":"君不見黃河之水天上來奔流到海不復迴君不見高堂明鏡悲白髮朝如青絲暮成雪","status":"pass","rankInBothPaths":1,"match":"將進酒"},
+    {"id":"quote-03","query":"忽如一夜春风来千树万树梨花开","status":"pass","rankInBothPaths":1,"match":"白雪歌送武判官歸京"},
+    {"id":"quote-04","query":"竹喧歸浣女蓮動下漁舟","status":"pass","rankInBothPaths":1,"match":"山居秋暝"},
+    {"id":"theme-01","query":"春暖花开，越热闹反而越想念不在身边的人","status":"pass","supportRankInBothPaths":2,"support":"王維《早春行》","evidence":"紫梅發初遍，黃鳥歌猶澁。……游衍益相思，含啼向綵帷。憶君長入夢。","rankingIssue":"首名长相思一重山实际为枫叶、菊花、寒雁秋景，不代表首名相关性正确。"},
+    {"id":"theme-02","query":"晚上睡不着，看着窗外的月亮，想起远方的家人","status":"pass","supportRankInBothPaths":2,"support":"吴文英《鹧鸪天》","evidence":"明月生凉宝扇闲。乡梦窄，水天宽。……吴鸿好为传归信。","judgmentConfidence":"medium","limit":"不诊断失眠，不认定具体亲属身份。"},
+    {"id":"theme-03","query":"要和朋友各奔东西了，想认真说一句珍重","status":"fail","poetryTop5":["蟾宫曲竹夫人","客至","竹马子","東南行一百韻","夢李白二首 一"],"combinedTop5":["rysxguji-liji-13-20","蟾宫曲竹夫人","rysxguji-liji-13-40","客至","rysxguji-liji-18-92"],"expected":"送友远行结合劝慰、相知或祝愿，不只分别后泛泛怀人。","coverageEvidence":[{"work":"王勃《杜少府之任蜀州》","text":"與君離別意，同是宦遊人。海內存知己，天涯若比隣。"},{"work":"王維《送綦毋潛落第還鄉》","text":"置酒臨長道，同心與我違。……吾謀適不用，勿謂知音稀。"}]},
+    {"id":"theme-04","query":"眼看春天快过去了，花落了一地，忽然有点舍不得","status":"pass","supportRankInBothPaths":1,"support":"李商隱《春雨》","evidence":"遠路應悲春晼晚，殘宵猶得夢依稀。","limit":"支持春去伤春，不声称原文写满地落花或主要只为惜花。"},
+    {"id":"theme-05","query":"亲人离开很久了，梦里又见到他，醒来还是很难过","status":"fail","combinedCount":0,"poetryTopScore":0.3093621226491541,"expected":"本轮预登记要求悼亡或死别结合梦中相见，一般远行相思不算。","coverageEvidence":{"work":"苏轼《江神子・江城子》","workId":"7bd01e7551e260ddba3dd0c1cf1f7546","text":"十年生死两茫茫。……千里孤坟……夜来幽梦忽还乡……相顾无言，惟有泪千行。"},"scopeNote":"输入本身未明确死亡，保留此轮原判据和失败；实际生成不能据此推断读者亲人已故。"},
+    {"id":"theme-06","query":"站在江边看水一直流，想到很多事情都留不住","status":"fail","combinedCount":0,"poetryTopScore":0.31985287258591794,"expected":"流水与时间、人事变化、往事不返或无常关联。","coverageEvidence":["苏轼《念奴娇》大江东去，浪淘尽、千古风流人物。","李煜《相见欢·林花谢了春红》自是人生长恨水长东！"],"limit":"原始第2名含江海与人生一瞬的广义关联，不武断断言原始Top5全无相关原文；融合为空已失败。"},
+    {"id":"core-01","query":"君子周而不比","status":"pass","exactCoreId":"rysxguji-lunyu-2-11","coreCount":10,"combinedExactRank":1,"partialPoetryRank":2,"disabledIdentical":true},
+    {"id":"core-02","query":"君子不器","status":"pass","exactCoreId":"rysxguji-lunyu-2-9","coreCount":10,"combinedExactRank":1,"partialPoetryRank":2,"disabledIdentical":true},
+    {"id":"core-03","query":"君子成人之美","status":"pass","exactCoreId":"rysxguji-lunyu-12-17","coreCount":10,"combinedExactRank":1,"partialPoetryRank":2,"disabledIdentical":true},
+    {"id":"core-04","query":"巧言令色鲜矣仁","status":"pass","coreCount":5,"combinedExactRank":1,"partialPoetryRank":null,"disabledIdentical":true,"limit":"非竞争样本。"},
+    {"id":"ood-01","query":"查查北京现在的风力和气温","status":"pass","coreCount":0,"combinedCount":0},
+    {"id":"ood-02","query":"帮我看看今天上证指数收盘是多少","status":"pass","coreCount":0,"combinedCount":0,"limit":"只证明本例行为，不证明全部金融意图识别。"}
+  ],
+  "findings":[
+    {"priority":1,"caseIds":["title-03"],"title":"完整题名未统一内部空白","mechanism":"题名包含、精确排序与分值只normalize，保留制表符；原句才用compact，因此完整题名被主题覆盖。"},
+    {"priority":1,"caseIds":["theme-03","theme-05","theme-06"],"title":"送友、悼亡梦见和流水感时桥接不足","mechanism":"关系、动作与复合情境不足；都有实收原文，不能改覆盖外。"},
+    {"priority":2,"caseIds":["theme-01"],"title":"普通花开被无条件归春，秋菊占春景首位","binaryImpact":"不改原Top5通过判据，作为排序问题保留。"}
+  ],
+  "limitations":["同一已审代码agent，不是历史全盲协议；部分查询已见可见回归。","人工相关性判断非模型生成质量，夜月例为中等把握。","没有真实模型、浏览器、真机、性能、字体或部署结论。","历史核心泛化缺口仍在，不因本轮竞争通过而抹去。","来源署名只核固定上游，不是学术考订。","v4公开后只作可见回归，旧v1-v3失败原结论保留。"],
+  "nextRound":{"previousRoundLimitDeclared":false,"requiredProtocol":"另预登记、封存、冻结、单次执行，保留旧失败。"}
+}

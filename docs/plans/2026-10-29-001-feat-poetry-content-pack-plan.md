@@ -275,6 +275,8 @@ flowchart TB
 - [x] 在现有阅读选项加入轻量内容范围设置，展示作者、朝代与篇名，按需展开整首。
 - [ ] 贯通正文点词、收藏、注脚导出、温故、阅读图谱及旧记录恢复，验证新增字形。
 
+实现与自动测试已交付；来源开关、全文与离线缓存已经浏览器核验。此项仍缺诗词记录的收藏、注脚导出、温故和图谱人工闭环，保持未勾选。
+
 **需求与依赖：** R1、R3、R5、R6、R8；依赖 P3，最终语义体验与 P4 联合验收。
 
 **文件：** 调整 `src/components/flow/FlowMenu.tsx`、`src/components/flow/FlowExperience.tsx`、`src/components/flow/ReadingLayer.tsx`、`src/components/flow/LinkedText.tsx`、`src/components/flow/flow.module.css`、`src/lib/flow-browser/storage.ts`、`src/lib/flow-browser/library.ts`、`src/lib/flow-browser/graph.ts`、`src/lib/flow-browser/controller-host.ts`，以及实际需要的 `shared/flow/controller.js`、`shared/flow/classic-text.js` 和字体构建路径。测试扩展 `tests/unit/flow-reading-menu.test.tsx`、`tests/unit/flow-reading-continuity.test.tsx`、`tests/unit/flow-browser-storage.test.ts`、`tests/unit/flow-library.test.ts`、`tests/unit/flow-knowledge-graph.test.ts`、`tests/unit/flow-browser-glyph-parity.test.ts`、`tests/unit/flow-runtime-parity.test.ts`。
@@ -293,6 +295,8 @@ flowchart TB
 
 - [x] 完成用户确认的精选 1,000 首，生成逐条来源、数量、质量与性能报告；完整大库不纳入本轮发布。
 - [ ] 完成核心回归、诗词场景、旧记录兼容、内容范围切换、故障与回退验证。
+
+已完成核心回归、真实诗词输出与来源切换、腾讯发布及两域核验；已核对旧版完整性并预置切换失败的回退路径，没有实际执行生产回滚。真实模型下一次续读受原访客额度阻止，完整界面闭环待浏览器空间恢复。尚未满足全部验收，不以发布结果勾选本项。
 
 **需求与依赖：** R1—R8；依赖 P4、P5，复核 P1—P3 的完整规模行为。
 
@@ -374,4 +378,12 @@ flowchart TB
 
 浏览器已实测阅读来源开关及刷新持久化、停用后旧诗保留、同修订全文、缓存全文离线恢复，覆盖 320、390、1280 像素及横屏；全文页面测试使用 API 核验原文的固定阅读快照，不能作为真实模型质量证据。共享控制器的准备等待和存储等待两类切换竞态已用自动测试及独立复现核对。
 
-独立评审 v1—v3 曾发现元曲边界、精确引用、情境桥接等问题，失败报告原结论保留。公开后的样本仅进入可见回归；新一轮使用另行封存的查询，不以重跑旧样本证明泛化。最终独立检索、真实模型阅读、生产构建、提交推送与腾讯发布尚须在验收记录中补齐证据；这些必需项未通过前，计划继续为 active。
+独立评审 v1—v5 曾发现元曲边界、精确引用、情境桥接等问题，失败报告原结论保留。最终既有问题修复回归 32/32、引用 225/225 通过，不是新留出；25 条主线程可见回归通过，不据此宣称广泛现代语义泛化。
+
+运行提交 `842bea1` 已推送现有分支并发布腾讯 `infidao-a38414c6b529d396`。禁用缓存的完整测试连续两轮各 142 组、895 项通过，类型、Lint、稳定性两轮、核心产物重建一致性与质量门槛通过；新冻结生产包构建与 standalone smoke 通过。所选 1,000 首、16 个分片共 4,337,664 字节，字体覆盖 5,497/5,497。
+
+真实模型抽查覆盖赏景、思乡、梦与缺席、整首原选句外“漁舟”点词；最终停用诗词后从旧《行路难》接续《孟子》，旧诗恢复及范围冲突保护通过。候选验证发现并修复规划未收到来源范围、旧 anchor 复用范围计划和跨提示版本分支冲突；同一批准评审 agent 最终复核无剩余必修项。保留实际关系/引用拒绝和原始失败结果，未降低核验或提升额度。
+
+两个域名的版本、canonical、来源目录、指定修订全文、22 个新脚本/样式引用、22 个旧资源引用及 18 项邻站基线均通过。只重启 Web，Redis 与手写 worker、正式配置、持久数据及额度保持。旧应用完整保留，临时候选、私有传输、QA 命名空间及两处临时 SSH 授权已清理。
+
+仍未完成：诗词记录的完整人工界面闭环（验收空间 34 再次关闭，新空间授权待答）；原访客剩余模型额度不足而被拒绝的下一次真实续读；实体 iPhone Safari、微信与十分钟长读。真机未测单列，其余必需验收继续保留，计划保持 active。具体证据与限制见 [验收记录](../qa/poetry-content-pack-acceptance.md)。

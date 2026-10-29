@@ -1,0 +1,540 @@
+{
+  "node": "v22.22.0",
+  "platform": "darwin",
+  "pack": "poetry-63eda33f1cb2bed8",
+  "works": 1000,
+  "passages": 1051,
+  "enableMs": 22.934958999999992,
+  "searchP95": 9.382916000000023,
+  "workP95": 0.7311660000000302,
+  "peakRSS": 290504704,
+  "concurrency": 4,
+  "concurrentBatchMs": 17.58695799999998,
+  "maxShardBytes": 335872,
+  "totalBytes": 4337664,
+  "core": [
+    {
+      "query": "如何面对困境",
+      "ms": 240.351792,
+      "ids": [
+        "rysxguji-mengzi-10-20",
+        "rysxguji-lunyu-15-2",
+        "rysxguji-hanfeizi-34-2",
+        "rysxguji-hanfeizi-35-1",
+        "rysxguji-liji-30-21"
+      ]
+    },
+    {
+      "query": "如何处理朋友关系",
+      "ms": 33.35533299999997,
+      "ids": [
+        "rysxguji-liji-13-40",
+        "rysxguji-liji-13-20",
+        "rysxguji-liji-18-92",
+        "rysxguji-liji-2-10",
+        "rysxguji-liji-2-128"
+      ]
+    },
+    {
+      "query": "学习",
+      "ms": 28.800291000000016,
+      "ids": []
+    },
+    {
+      "query": "家庭自主",
+      "ms": 27.85095899999999,
+      "ids": []
+    },
+    {
+      "query": "诗经",
+      "ms": 28.530583000000036,
+      "ids": [
+        "rysxguji-shijing-1-1",
+        "rysxguji-shijing-1-2",
+        "rysxguji-shijing-1-3",
+        "rysxguji-shijing-1-4",
+        "rysxguji-shijing-1-5"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "query": "静夜思",
+      "top": [
+        {
+          "id": "poetry-ada9a92cae1afc927bb42284efd3a96b-0",
+          "title": "靜夜思",
+          "author": "李白",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-d0374874a697e2f066d28ac3e2c04308-0",
+          "title": "喜外弟盧綸見宿",
+          "author": "司空曙",
+          "score": 0.46249999950668313
+        },
+        {
+          "id": "poetry-5afd0b2c1b573283a62576d9891375f1-0",
+          "title": "章臺夜思",
+          "author": "韋莊",
+          "score": 0.4579956001936152
+        }
+      ]
+    },
+    {
+      "query": "李白",
+      "top": [
+        {
+          "id": "poetry-8e6f366d77d7e28434fda2e020f1e87f-0",
+          "title": "贈孟浩然",
+          "author": "李白",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-5a2f4d7bd8d4387ac31555999e256674-0",
+          "title": "登金陵鳳凰臺",
+          "author": "李白",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-9e1d68d82d1f44e59de9b33164590fa0-0",
+          "title": "子夜吳歌 春歌",
+          "author": "李白",
+          "score": 0.999
+        }
+      ]
+    },
+    {
+      "query": "明月",
+      "top": [
+        {
+          "id": "poetry-1097642b97f21a923b9b50c0ac3a6cda-0",
+          "title": "越调・天净沙渔父",
+          "author": "徐再思",
+          "score": 0.8778543016877707
+        },
+        {
+          "id": "poetry-b038db039106eba126fc38a943321334-0",
+          "title": "虞美人",
+          "author": "晏几道",
+          "score": 0.8767261232955087
+        },
+        {
+          "id": "poetry-a1be3eb5d117f239f1bf8c8da4d34dfd-340",
+          "title": "赴江陵途中寄贈王二十補闕李十一拾遺李二十六員外翰林三學士",
+          "author": "韓愈",
+          "score": 0.8686022899349447
+        }
+      ]
+    },
+    {
+      "query": "想家",
+      "top": [
+        {
+          "id": "poetry-86986ef3110510db7a3718db861eb7a6-0",
+          "title": "渡漢江",
+          "author": "宋之問",
+          "score": 0.8779508495793447
+        },
+        {
+          "id": "poetry-0056b03131a989ee27e3b4da4c342bcb-0",
+          "title": "渡漢江",
+          "author": "李頻",
+          "score": 0.8746182972709513
+        },
+        {
+          "id": "poetry-489bfd5a7c3b4b8c1cfb50aeda1fbc54-0",
+          "title": "蟬",
+          "author": "李商隱",
+          "score": 0.8666666664474146
+        }
+      ]
+    },
+    {
+      "query": "离别",
+      "top": [
+        {
+          "id": "poetry-31e5de6962cebf1a8a81b17b70f96220-0",
+          "title": "送方外上人",
+          "author": "劉長卿",
+          "score": 0.872613351047039
+        },
+        {
+          "id": "poetry-da7c46521837e352d1159806b231b3f8-0",
+          "title": "贈別二首 二",
+          "author": "杜牧",
+          "score": 0.8716506347060203
+        },
+        {
+          "id": "poetry-8e6f366d77d7e28434fda2e020f1e87f-0",
+          "title": "贈孟浩然",
+          "author": "李白",
+          "score": 0.865638580918312
+        }
+      ]
+    },
+    {
+      "query": "秋天",
+      "top": [
+        {
+          "id": "poetry-308a56f85fa9d790dbf2ceaae67995be-0",
+          "title": "双调・水仙子佳人钉履",
+          "author": "徐再思",
+          "score": 0.8666297521307782
+        },
+        {
+          "id": "poetry-dbdc6f025f474013245b06a767f0bbc6-0",
+          "title": "北青蘿",
+          "author": "李商隱",
+          "score": 0.8632582519203424
+        },
+        {
+          "id": "poetry-47b87cfb3d9cacbda507ef807e403605-0",
+          "title": "凤凰台上忆吹箫",
+          "author": "李清照",
+          "score": 0.8631910902914869
+        }
+      ]
+    },
+    {
+      "query": "春雨",
+      "top": [
+        {
+          "id": "poetry-8788fdb6423f2df3d1fe0712811e6eaf-0",
+          "title": "春雨",
+          "author": "李商隱",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-2c0bba2e416019935c30869b9f6d4691-0",
+          "title": "清平調 一",
+          "author": "李白",
+          "score": 0.8710818506301706
+        },
+        {
+          "id": "poetry-0cca788bf281771a0381f9c644df023a-0",
+          "title": "杏花天",
+          "author": "姜夔",
+          "score": 0.8682331241146489
+        }
+      ]
+    },
+    {
+      "query": "相思",
+      "top": [
+        {
+          "id": "poetry-cfadc5d92092ce30b74af97d886e817c-0",
+          "title": "相思",
+          "author": "王維",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-2d17c8c55c8bf289982702d445672614-0",
+          "title": "登柳州城樓寄漳汀封連四州",
+          "author": "柳宗元",
+          "score": 0.8745769575238228
+        },
+        {
+          "id": "poetry-c30a5857f4d971f69653d4dd8f014a32-0",
+          "title": "双调・大德歌夏",
+          "author": "关汉卿",
+          "score": 0.873249527812004
+        }
+      ]
+    },
+    {
+      "query": "苏轼",
+      "top": [
+        {
+          "id": "poetry-2313e660fb1f8812d6a33a6d8308387d-0",
+          "title": "題西林壁",
+          "author": "蘇軾",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-97a930718d29e951eb8b34ce2e9e6a9c-0",
+          "title": "卜算子",
+          "author": "苏轼",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-4d70e497976d139025487805a1a7baa5-1a0",
+          "title": "送宋君用遊輦下",
+          "author": "蘇軾",
+          "score": 0.999
+        }
+      ]
+    },
+    {
+      "query": "水调歌头",
+      "top": [
+        {
+          "id": "poetry-af50b45951c7b660f40a903de6ee0d61-0",
+          "title": "水调歌头",
+          "author": "苏轼",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-55bde5d9bc9e6a842d702a717c58fc0d-0",
+          "title": "六州歌头",
+          "author": "韩元吉",
+          "score": 0.3798511151406795
+        },
+        {
+          "id": "poetry-c65afa3dac6a6fee3656c9a5ec889d74-0",
+          "title": "天仙子",
+          "author": "张先",
+          "score": 0.3740192219755466
+        }
+      ]
+    },
+    {
+      "query": "一蓑烟雨任平生",
+      "top": [
+        {
+          "id": "poetry-03897849d6bc608edc64fe6ba2d4f983-0",
+          "title": "定风波",
+          "author": "苏轼",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-522d8fa0df26fbbd897ca41e27b75d7b-0",
+          "title": "庆宫春・高阳台",
+          "author": "姜夔",
+          "score": 0.38715752825097416
+        },
+        {
+          "id": "poetry-1c95db0f3d5ff3b074345ad80c00e485-0",
+          "title": "贺新郎",
+          "author": "刘克庄",
+          "score": 0.337102833772305
+        }
+      ]
+    },
+    {
+      "query": "长相思",
+      "top": [
+        {
+          "id": "poetry-8d25fdd72adfc04bad0870e0826e299a-0",
+          "title": "長相思",
+          "author": "馮延巳",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-c7c1c91536834735f7ab333aa61fe39f-0",
+          "title": "長相思",
+          "author": "李白",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-29337feef54263ee5548cc0af08e2148-0",
+          "title": "長相思",
+          "author": "白居易",
+          "score": 0.999
+        }
+      ]
+    },
+    {
+      "query": "离骚",
+      "top": [
+        {
+          "id": "poetry-bf6016cdc6ea6d7f66897ddbeade9c89-33b",
+          "title": "离骚",
+          "author": "屈原",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-f4c85609791ff67e470a37f8b01d6807-0",
+          "title": "遊南亭夜還敘志七十韻",
+          "author": "柳宗元",
+          "score": 0.6891763761639595
+        }
+      ]
+    },
+    {
+      "query": "屈原",
+      "top": [
+        {
+          "id": "poetry-ee9751746e5ee430a2321192ac7b8118-0",
+          "title": "云中君",
+          "author": "屈原",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-c445ee3d25a46574de546941db0869a8-19f",
+          "title": "涉江",
+          "author": "屈原",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-4e9e24ff2a9f26a0d599c766e80ffbab-197",
+          "title": "惜诵",
+          "author": "屈原",
+          "score": 0.999
+        }
+      ]
+    },
+    {
+      "query": "天净沙",
+      "top": [
+        {
+          "id": "poetry-9675c166aef849244136da6e29c4d036-0",
+          "title": "越调・天净沙春情",
+          "author": "徐再思",
+          "score": 0.6925210016893131
+        },
+        {
+          "id": "poetry-789ac5cdc51ef8fd1cdb7dfeb359ef16-0",
+          "title": "越调・天净沙秋思",
+          "author": "马致远",
+          "score": 0.6800000008697519
+        },
+        {
+          "id": "poetry-0508ef980537725eb49c1f189a450ab4-0",
+          "title": "越调・天净沙题情",
+          "author": "徐再思",
+          "score": 0.6788675140159747
+        }
+      ]
+    },
+    {
+      "query": "关汉卿",
+      "top": [
+        {
+          "id": "poetry-52b05c0c1cdc7e23de9e0587882f46f6-0",
+          "title": "双调・大德歌春",
+          "author": "关汉卿",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-47c69d3e24c1e0ae2acf6e146240b4d4-0",
+          "title": "双调・大德歌冬",
+          "author": "关汉卿",
+          "score": 0.999
+        },
+        {
+          "id": "poetry-26bbc2850af619d57d7aec6610d73c6e-0",
+          "title": "双调・大德歌秋",
+          "author": "关汉卿",
+          "score": 0.999
+        }
+      ]
+    },
+    {
+      "query": "山水",
+      "top": [
+        {
+          "id": "poetry-4b94895ce81fae0bb94a11c63ef7532b-0",
+          "title": "滁州西澗",
+          "author": "韋應物",
+          "score": 0.8756073772907257
+        },
+        {
+          "id": "poetry-414f6962f796caacf8c7486201c45bed-0",
+          "title": "長干曲四首 二",
+          "author": "崔顥",
+          "score": 0.869245009124279
+        },
+        {
+          "id": "poetry-723622c3cc836aa37f77b086b6a13348-0",
+          "title": "漁翁",
+          "author": "柳宗元",
+          "score": 0.8686052098870277
+        }
+      ]
+    },
+    {
+      "query": "闲适",
+      "top": [
+        {
+          "id": "poetry-7b15e52647b446e98c7771d55d26fd01-0",
+          "title": "輞川集 鹿柴",
+          "author": "王維",
+          "score": 0.8757247865200043
+        },
+        {
+          "id": "poetry-6f140a182a452237727aa97d40a50e63-0",
+          "title": "菩萨蛮",
+          "author": "陈克",
+          "score": 0.8711999580264091
+        },
+        {
+          "id": "poetry-d0ba60c609502f64d3539fd59faaef58-0",
+          "title": "終南別業",
+          "author": "王維",
+          "score": 0.8621267810463905
+        }
+      ]
+    },
+    {
+      "query": "边塞",
+      "top": [
+        {
+          "id": "poetry-581c6a28622f6580d51ff48876eeccea-0",
+          "title": "和張僕射塞下曲 二",
+          "author": "盧綸",
+          "score": 0.8753546267747879
+        },
+        {
+          "id": "poetry-56f2fe41019f923f61ccf8af9f4d0c1b-0",
+          "title": "塞下曲四首 二",
+          "author": "王昌齡",
+          "score": 0.873249527812004
+        },
+        {
+          "id": "poetry-dbc0caea92b4128c4b702b39ddea31c4-0",
+          "title": "和張僕射塞下曲 一",
+          "author": "盧綸",
+          "score": 0.8669030845165252
+        }
+      ]
+    },
+    {
+      "query": "时光",
+      "top": [
+        {
+          "id": "poetry-d25f9b5f26717aa54d09ab38e8f7a7bf-0",
+          "title": "在嶽詠蟬",
+          "author": "駱賓王",
+          "score": 0.874806946516037
+        },
+        {
+          "id": "poetry-c65afa3dac6a6fee3656c9a5ec889d74-0",
+          "title": "天仙子",
+          "author": "张先",
+          "score": 0.8684900060296058
+        },
+        {
+          "id": "poetry-c3722503a98d2093490884852fedd86e-0",
+          "title": "临江仙",
+          "author": "陈与义",
+          "score": 0.8679605305194854
+        }
+      ]
+    },
+    {
+      "query": "月",
+      "top": [
+        {
+          "id": "poetry-7c21be188d8112e329874c8174a94a3d-0",
+          "title": "绿意・疏影",
+          "author": "张炎",
+          "score": 0.6975293204188348
+        },
+        {
+          "id": "poetry-7df881843e22237ec247a865890fb0ae-0",
+          "title": "和張僕射塞下曲 三",
+          "author": "盧綸",
+          "score": 0.6968521296977997
+        },
+        {
+          "id": "poetry-b8cf34360a38dcb5dd1c29bfabcf7d9f-0",
+          "title": "月下笛",
+          "author": "张炎",
+          "score": 0.6899114042520523
+        }
+      ]
+    }
+  ],
+  "elapsedMs": 771.38125
+}
