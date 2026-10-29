@@ -145,8 +145,9 @@ export async function loadEmbeddingsForCorpus(
     }
   }
 
+  const passageIds = new Set(corpus.map(passage => passage.id));
   for (const record of artifact.items) {
-    if (!corpus.some((passage) => passage.id === record.id)) {
+    if (!passageIds.has(record.id)) {
       throw new RouteError(500, "EMBEDDING_ORPHANED", "Embedding data includes an unknown passage id.", {
         filePath,
         passageId: record.id,

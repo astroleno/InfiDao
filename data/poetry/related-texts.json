@@ -1,0 +1,312 @@
+{
+  "pack": "poetry-5e9c0447f24a3805",
+  "policy": "机械近文线索，仅用于召回多样性；原文、作者与作品身份分别保留，不据此核定归属或思想传承。",
+  "pairs": [
+    {
+      "works": [
+        {
+          "id": "016da0c981e29b10e2da0c07f4abf619",
+          "revision": "8da4a688c7ec611ccc8f306a",
+          "title": "生查子",
+          "author": "晏几道"
+        },
+        {
+          "id": "7cb953db0bd8303f499db87b20ef6d77",
+          "revision": "4787f9ab82b3d2b070f53859",
+          "title": "生查子",
+          "author": "王观"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "03f01ccb9b98d84e2060459fef048b00",
+          "revision": "9ef6a16efaa7247c15016e37",
+          "title": "歲除夜有懷",
+          "author": "孟浩然"
+        },
+        {
+          "id": "74e350877e6e6c852cfbd3f6eed41780",
+          "revision": "67c5649072f540142997f6a4",
+          "title": "巴山道中除夜書懷",
+          "author": "崔塗"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "054479db6c4ad0157f4a7f31fbec1a7f",
+          "revision": "519de24794e5426020f878c1",
+          "title": "玉楼春",
+          "author": "欧阳修"
+        },
+        {
+          "id": "605f76bf8e269da64e26206cf5773633",
+          "revision": "11384f668154cbaacad7310f",
+          "title": "木兰花・玉楼春",
+          "author": "晏殊"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "07445035ed9c607f93291a77f4db8c18",
+          "revision": "2ceb19ac1c4f25b80369e519",
+          "title": "賦得",
+          "author": "劉長卿"
+        },
+        {
+          "id": "b7ec7f92da861a8e868f8652ceeeca85",
+          "revision": "8af563d7cf5719ec8f9f3033",
+          "title": "春思",
+          "author": "皇甫冉"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "0c4b68b0d2ad9a356802360e07a8e090",
+          "revision": "d11989473c35399da543067f",
+          "title": "点绛唇",
+          "author": "苏过"
+        },
+        {
+          "id": "956409a63bfa3c23a3ebc9c356e48d9f",
+          "revision": "9491cb6c0cf096502307b5fd",
+          "title": "点绛唇",
+          "author": "汪藻"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "0d42649424b698cae1b395a99c67d6bd",
+          "revision": "3967450a5a85f3744f138aa2",
+          "title": "集靈臺二首 二",
+          "author": "張祜"
+        },
+        {
+          "id": "daaae3b5c661f7aff556e2eb16929338",
+          "revision": "f4e8a73a55584eb54ae54211",
+          "title": "虢國夫人",
+          "author": "杜甫"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "25f501b93717aad69d4971a30b81d26f",
+          "revision": "713a10280a46d5d41c331f61",
+          "title": "和晉陵陸丞早春遊望",
+          "author": "韋應物"
+        },
+        {
+          "id": "dd839ecf68e3fc014b6a4c3b6552cfcc",
+          "revision": "d9c5854e16562085666c3475",
+          "title": "和晉陵陸丞早春遊望",
+          "author": "杜審言"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "271e4d263ebda61acc58946155ad5d02",
+          "revision": "767722c473f25d1f80b40cbf",
+          "title": "新年作",
+          "author": "宋之問"
+        },
+        {
+          "id": "4a62cd5e2120ade810e75073dd2073f2",
+          "revision": "005b8d90e404db3b75d243a3",
+          "title": "新年作",
+          "author": "劉長卿"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "2c345567f51d7c4dd2d040009a650515",
+          "revision": "5a6b6882a816da853e0bd771",
+          "title": "訪羊尊師",
+          "author": "孫革"
+        },
+        {
+          "id": "373fcdc9a82ad7ff1ab5c54942240a6d",
+          "revision": "fc252d190884e73b850cb301",
+          "title": "尋隱者不遇",
+          "author": "賈島"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "2f73dc044aa3026ab0b44b9e74199bb2",
+          "revision": "bfb9d790d1eb161fb04dd5a0",
+          "title": "蝶恋花",
+          "author": "欧阳修"
+        },
+        {
+          "id": "ff24f9680d6c5fbc2af1160817d18607",
+          "revision": "0458b07c156739930e78a2b0",
+          "title": "凤栖梧・蝶恋花",
+          "author": "柳永"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "32d992db698ef41a0ff58212eaf15ab2",
+          "revision": "fbe07f8128539a8ae0cbbc64",
+          "title": "春宮怨",
+          "author": "杜荀鶴"
+        },
+        {
+          "id": "7afff689f9059433d844aa6c0fb489bf",
+          "revision": "044292357eab71f264d1518d",
+          "title": "春宮怨",
+          "author": "周朴"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "3cde06877c7013a3bd8cea1da6d2fedf",
+          "revision": "47da24903c30f6d3121c57e4",
+          "title": "赤壁",
+          "author": "杜牧"
+        },
+        {
+          "id": "5ec51821b756839c161a687a08577a4b",
+          "revision": "d5db7d8d826fd450151d71d1",
+          "title": "赤壁",
+          "author": "李商隱"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "4c3fd577058dd3bc3ea4261721ac66c6",
+          "revision": "3fbd466cb999b54f4cfaf45d",
+          "title": "清平調詞三首 二",
+          "author": "李白"
+        },
+        {
+          "id": "d0e7d12ce00c9067f96205a2be844b86",
+          "revision": "42f6c4c83be1e3db8a7ce489",
+          "title": "清平調 二",
+          "author": "李白"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "4f842f046f8b63f8a8b290878f64b6c0",
+          "revision": "a7305fc53420780421a8005c",
+          "title": "清平乐",
+          "author": "王安石"
+        },
+        {
+          "id": "6ddac883cc21a10d08e451d05468db8c",
+          "revision": "20b5444eff53ab8d4f31494e",
+          "title": "清平乐",
+          "author": "王安国"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "594e55c08435c57a8a3f3ecf886188e4",
+          "revision": "f4e1e155d6a8572f33f781e3",
+          "title": "故行宮",
+          "author": "王建"
+        },
+        {
+          "id": "93925b9f199d9ff3ac0cff72710fb303",
+          "revision": "fc71d30ceaddd6aaa50cf633",
+          "title": "行宮",
+          "author": "元稹"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "7c6003884c7c4575533cf0d3618dcb5b",
+          "revision": "59a2ee43196c7083e553eaa7",
+          "title": "登鸛雀樓",
+          "author": "王之渙"
+        },
+        {
+          "id": "e86b7d060d578448b43ae5920944655f",
+          "revision": "a7269ec2a23f26aa05af90f9",
+          "title": "登樓",
+          "author": "朱斌"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "9efa619a5b3cb084dbd4b6cc19146dea",
+          "revision": "94f88e28a6918d5331400f82",
+          "title": "长相思·一重山",
+          "author": "李煜"
+        },
+        {
+          "id": "e8c4a9152849af5d323abe30812b4c93",
+          "revision": "8230ce98dc6d32debf373361",
+          "title": "长相思·一重山",
+          "author": "纳兰性德"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    },
+    {
+      "works": [
+        {
+          "id": "bb2b11488c583e6fcce9af3bf064b3d1",
+          "revision": "332dbf0186779eb2fa0272ba",
+          "title": "李端公",
+          "author": "盧綸"
+        },
+        {
+          "id": "d35a011af9b91951a71385c38aa1f3bc",
+          "revision": "1037e16768b629fc5c94bfa0",
+          "title": "送李端",
+          "author": "嚴維"
+        }
+      ],
+      "relation": "similar-text-unverified"
+    }
+  ]
+}

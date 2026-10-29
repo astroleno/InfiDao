@@ -1,0 +1,12 @@
+{
+  "repository": "palemoky/chinese-poetry",
+  "commit": "041b8ab50bdf07bf498bba2d1666b1d1fd707f4e",
+  "license": "MIT",
+  "directories": ["全唐诗", "宋词", "五代诗词", "元曲", "楚辞", "曹操诗集", "纳兰性德", "水墨唐诗"],
+  "excluded": {
+    "全唐诗/error": "上游错误记录备份，不作为第二份正文导入",
+    "authors, intro, preface, 300, rank": "作者索引、序言、精选重复目录及排名不作为独立作品",
+    "诗经, 论语, 四书五经": "已由核心语料提供，避免跨内容包重收",
+    "幽梦影, 蒙学": "不属于本次诗词篇的目录范围"
+  }
+}

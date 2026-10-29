@@ -1,0 +1,23 @@
+{
+  "sources": [
+    {
+      "source": "https://github.com/notofonts/noto-cjk/blob/main/Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Regular.otf",
+      "sourceSha256": "2a2eae2628df83556c54018c41e20fa532c1b862c5256ae8b3f23feb918d12ca",
+      "addedCharacters": 2213,
+      "shards": 5,
+      "bytes": 2085620
+    },
+    {
+      "source": "https://ftp.iij.ad.jp/pub/osdn.jp/hanazono-font/68253/hanazono-20170904.zip",
+      "sourceSha256": "829543436cdf7b4c6730e2af5806fa406f8ddf0d4b656e0cd49c58d4db1c8d3c",
+      "addedCharacters": 6,
+      "shards": 1,
+      "bytes": 4412
+    }
+  ],
+  "requiredCharacters": 5497,
+  "addedCharacters": 2219,
+  "shards": 6,
+  "bytes": 2090032,
+  "unsupported": ""
+}

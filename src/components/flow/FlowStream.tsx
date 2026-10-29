@@ -16,6 +16,8 @@ import type { PersonalNote } from '@/lib/flow-browser/storage';
 import { LinkedText } from './LinkedText';
 import { NotesPanel } from './NotesPanel';
 import { FlowMenu } from './FlowMenu';
+import { PoetrySource } from './PoetrySource';
+import type { FlowFrame } from '@/lib/flow/contracts';
 import { MeaningPopover } from './MeaningPopover';
 import styles from './flow.module.css';
 
@@ -33,7 +35,7 @@ type Props = {
   reducedMotion: boolean;
   motionVariant?: StreamMotionVariant;
   motionSeed?: number;
-  navigation?: Pick<ComponentProps<typeof FlowMenu>, 'onThought' | 'onLibrary' | 'libraryDisabled' | 'motionCandidate' | 'origins'>;
+  navigation?: Pick<ComponentProps<typeof FlowMenu>, 'onThought' | 'onLibrary' | 'libraryDisabled' | 'motionCandidate' | 'origins' | 'poetry'>;
   /** Comparison fixtures may start settled; reader materials never disable entry. */
   settleEntrance?: boolean;
   pending: boolean;
@@ -52,6 +54,7 @@ type Props = {
   onBranch: (selection: FlowSelection & { label: string }) => void;
   sourceOpen: boolean;
   onToggleSource: () => void;
+  onSourceBranch?: (pathId: string, frame: FlowFrame, selection: import('@/lib/flow/contracts').FlowSelection, label: string) => void;
   bookmarkKeys: Set<string>;
   onBookmark: () => void;
   notesFrameId: string | null;
@@ -791,6 +794,7 @@ export function FlowStream(props: Props) {
           const connecting = props.connecting?.pathId && props.connecting.pathId !== entry.pathId ? null : props.connecting;
           return <article key={key} data-flow-frame={item.id} data-flow-path={entry.pathId} data-stream-key={key} data-flow-ready={item.ready !== false}
             className={styles.streamNode} aria-label={`${item.source} · ${item.chapterLabel}`}>
+            {item.work && <p className={styles.sectionLabel}>{item.work.title} · {item.work.dynasty} · {item.work.author}</p>}
             <blockquote className={styles.streamQuote} data-flow-heading data-flow-entrance="quote"
               data-entry-order={entryIndex * 3} data-entry-side={entryIndex % 2 ? 'right' : 'left'}>
               <RetainedLinkedText optical frame={item} surface="quote" onSelect={select} connecting={connecting} />
@@ -801,9 +805,11 @@ export function FlowStream(props: Props) {
               <p><RetainedLinkedText optical frame={item} surface="reflection" onSelect={select} connecting={connecting} /></p>
             </div>}
             {current && props.sourceOpen && <div className={styles.streamSourceText} data-flow-source>
+              {item.work && props.onSourceBranch ? <PoetrySource frame={item} onSelect={(frame, selection, label) => props.onSourceBranch!(entry.pathId, frame, selection, label)} /> : <>
               <p className={styles.sectionLabel}>{item.source} · {item.chapterLabel} · 完整原文</p>
               <p className={styles.fullSource}><RetainedLinkedText optical frame={item} surface="fullText" onSelect={select} connecting={connecting} /></p>
               {entry.kind === 'remote' && <p className={styles.streamProvenance}>原文来自六经资料库；释义与回响由 AI 生成，供参照。</p>}
+              </>}
             </div>}
             {current && (notesFor === key || notesFor === item.id) && <NotesPanel key={key} draftKey={JSON.stringify([entry.chainId, item.id])}
               notes={props.notes} saving={props.savingNote} onSave={props.onSaveNote} onDelete={props.onDeleteNote}

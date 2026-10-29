@@ -20,6 +20,7 @@ import { useMotionCandidate } from '@/lib/flow-browser/motion-candidate';
 import { enableFlowOverlayHistory } from '@/lib/flow-browser/overlay-history';
 import type { KeepsakeSource } from '@/lib/handwriting/contracts';
 import styles from './flow.module.css';
+import { currentContentPacks, writeContentPreference } from '@/lib/flow-browser/content-preference';
 
 type Selection = { pathId?: string; frameId: string; anchorId?: string; selection?: TextSelection; label: string };
 const ReadingKeepsakeSheet = dynamic(() => import('./ReadingKeepsakeSheet').then(module => module.ReadingKeepsakeSheet), { ssr: false });
@@ -36,6 +37,9 @@ export function FlowExperience() {
   const motion = useMotionCandidate();
   const experienceRef = useRef<HTMLElement>(null);
   const [chain, setChain] = useState<BrowserFlowBatch | null>(null);
+  const [poetryEnabled, setPoetryEnabled] = useState(false);
+  const [poetryAvailable, setPoetryAvailable] = useState(false);
+  const [poetryMessage, setPoetryMessage] = useState('');
   const [records, setRecords] = useState<FlowPathRecord[]>([]);
   const entries = useMemo(() => streamEntries(records), [records]);
   const frames = chain?.frames || [];
@@ -119,6 +123,27 @@ export function FlowExperience() {
   function notify(text: string) { setFeedback({ text, revision: ++feedbackRevision.current }); }
 
   useEffect(() => {
+    setPoetryEnabled(currentContentPacks().includes('poetry'));
+    const controller = new AbortController();
+    if (typeof fetch !== 'function') return () => controller.abort();
+    void fetch('/api/flow/content-packs', { signal: controller.signal }).then(response => response.json()).then(body => {
+      const pack = Array.isArray(body?.data) && body.data.find((item: { id: string }) => item.id === 'poetry');
+      if (!controller.signal.aborted) { setPoetryAvailable(!!pack?.available); if (!pack?.available) setPoetryMessage('诗词篇暂不可用，核心典籍仍可阅读。'); }
+    }).catch(() => { if (!controller.signal.aborted) setPoetryMessage('暂时无法读取诗词篇状态。'); });
+    return () => controller.abort();
+  }, []);
+
+  function togglePoetry() {
+    controllerRef.current?.cancel(true, { discardPending: true });
+    controllerRef.current?.cancelPreparation();
+    pauseReading();
+    const enabled = !poetryEnabled;
+    const persisted = writeContentPreference(enabled);
+    setPoetryEnabled(enabled);
+    setPoetryMessage((enabled ? '下次接续会加入诗词；眼前阅读保留。' : '下次接续仅使用核心典籍；已读诗词保留。') + (persisted ? '' : ' 设置仅本次有效。'));
+  }
+
+  useEffect(() => {
     if (!feedback) return;
     const timer = window.setTimeout(() => setFeedback(null), 2800);
     return () => window.clearTimeout(timer);
@@ -150,6 +175,7 @@ export function FlowExperience() {
       setSeedOpen(false);
     }
     const nextChain = record.chain as BrowserFlowBatch;
+    if (nextChain.contentScope?.unavailable.includes('poetry')) { setPoetryAvailable(false); setPoetryMessage('诗词篇暂不可用，本次使用核心典籍。已读诗词保留。'); }
     recordRef.current = record;
     snapshotRef.current = preserve ? previousSnapshot : record.snapshot;
     sourceOpenRef.current = snapshotRef.current.sourceOpen;
@@ -512,7 +538,7 @@ export function FlowExperience() {
     controllerRef.current?.getState().record?.completion === 'stopped';
   const errorFeedback = flowError && !canResume ? <div className={styles.streamError} role="status">
     <p>{flowError.message}</p>
-    {flowError.code !== 'BUDGET_REACHED' && (['CHAIN_EXPIRED', 'CORPUS_CHANGED', 'CONNECTION_REQUIRED'].includes(flowError.code)
+    {flowError.code !== 'BUDGET_REACHED' && (['CHAIN_EXPIRED', 'CORPUS_CHANGED', 'CONNECTION_REQUIRED', 'CONTENT_SCOPE_CHANGED'].includes(flowError.code)
       ? <button className={styles.textButton} type="button" onClick={() => {
         const selected = lastSelectionRef.current;
         if (selected?.pathId && selected.pathId !== recordRef.current?.pathId) void controllerRef.current?.branch(selected);
@@ -529,6 +555,7 @@ export function FlowExperience() {
       </div>
       <FlowStream entries={entries} activeKey={activeEntryRef.current ? entryKey(activeEntryRef.current) : ''}
         navigation={{ onThought: openSeed, onLibrary: openLibrary, libraryDisabled: !chain || loading,
+          poetry: { enabled: poetryEnabled, available: poetryAvailable, onToggle: togglePoetry, message: poetryMessage },
           origins: readingOrigins,
           motionCandidate: motion.available ? { enabled: motion.variant === 'liquid-live', onToggle: motion.toggle } : undefined }}
         motionVariant={motion.variant}
@@ -542,6 +569,7 @@ export function FlowExperience() {
         waiting={!seedOpen && (pending ? <FlowWaiting compact busy={awaitingQuote} label={connecting?.label} onCancel={() => controllerRef.current?.cancel()} />
           : canResume ? <FlowResume onResume={() => void controllerRef.current?.retry()} /> : errorFeedback)}
         sourceOpen={sourceOpen} onToggleSource={onToggleSource} bookmarkKeys={bookmarkKeys} onBookmark={() => void toggleBookmark()}
+        onSourceBranch={(pathId, frame, selection, label) => { pauseReading(); void controllerRef.current?.sourceBranch?.(pathId,frame,selection,label).catch(() => notify('原阅读记录暂不可用，当前经文仍在。')); }}
         notesFrameId={notesFrameId} notes={notes} savingNote={savingNote}
         onSaveNote={onSaveNote} onDeleteNote={onDeleteNote} onUndoNote={onUndoNote} onUpdateNote={onUpdateNote} onKeepsake={currentKeepsake} />
 

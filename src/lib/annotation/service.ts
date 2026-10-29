@@ -23,6 +23,9 @@ import {
   type AnnotationFallbackReason,
 } from "@/lib/annotation/telemetry";
 import { loadSearchIndex } from "@/lib/search/index-store";
+import { poetryPassage, searchPoetry } from '@/lib/content/store';
+import { resolveContentScope } from '@/lib/content/scope';
+import { RouteError } from '@/lib/utils/errors';
 import { rankLexicalCandidates } from "@/lib/search/lexical";
 import {
   buildAnnotationLinkFromGraphHint,
@@ -325,9 +328,18 @@ export async function createAnnotation({
   passageText,
   style = "modern",
   visitedPassageIds = [],
+  contentPacks,
 }: AnnotateRequest): Promise<AnnotationResult> {
   const startedAt = Date.now();
-  const index = await loadSearchIndex();
+  let index = await loadSearchIndex();
+  const scope = contentPacks ? await resolveContentScope(contentPacks) : undefined;
+  const poem = passageId.startsWith('poetry-') ? await poetryPassage(passageId) : undefined;
+  if (passageId.startsWith('poetry-') && (!poem || poem.text.trim() !== passageText.trim())) throw new RouteError(409, 'SOURCE_CHANGED', '这段诗词与来源不一致，请重新选择。');
+  if (scope?.packIds.includes('poetry') || poem) {
+    const recalled = scope?.packIds.includes('poetry') ? await searchPoetry(query + ' ' + passageText.slice(0,100), 12) : [];
+    const corpus = [...index.corpus, ...recalled.map(item => item.passage), ...(poem ? [poem] : [])];
+    index = { ...index, corpus: [...new Map(corpus.map(passage => [passage.id, passage])).values()] };
+  }
   const sourcePassage = index.corpus.find(passage => passage.id === passageId);
   const sourceLabel = sourcePassage ? formatPassageLabel(sourcePassage) : "所选段落";
   const trimmedQuery = query.trim();
@@ -347,6 +359,7 @@ export async function createAnnotation({
     passageText: trimmedPassageText,
     style,
     mode,
+    ...(scope || poem ? { contentScope: [scope?.fingerprint || 'core',poem?.corpusVersion || ''].join(':') } : {}),
     visitedPassageIds: normalizedVisitedPassageIds,
     ...(agentContext.growthContextHash !== undefined
       ? { growthContextHash: agentContext.growthContextHash }
@@ -381,7 +394,10 @@ export async function createAnnotation({
     };
   }
 
-  const fallbackCopy = buildFallbackAnnotationCopy(
+  const fallbackCopy = poem ? {
+    sixToMe: `《${poem.workTitle}》以「${compactText(poem.text, 60)}」呈现具体的景物与感受。可以沿着这些意象体会“${trimmedQuery}”，也保留其他读法。`,
+    meToSix: `带着“${trimmedQuery}”重读${poem.work?.author || '诗人'}的这段文字，留意眼前景物、距离与语气怎样变化。这里暂未生成经过核验的进一步解读。`,
+  } : buildFallbackAnnotationCopy(
     trimmedQuery,
     trimmedPassageText,
     style,
@@ -402,6 +418,7 @@ export async function createAnnotation({
   try {
     const llmAnnotation = await generateAnnotationFromLlm(
       {
+        ...(poem ? { poetry: true } : {}),
         query: trimmedQuery,
         passageLabel: sourceLabel,
         passageText: trimmedPassageText,

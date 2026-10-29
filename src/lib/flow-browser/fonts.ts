@@ -140,7 +140,7 @@ export async function prepareFlowFonts(frames: Array<{ quote: string; fullText?:
   // every shard back to a CDN which has already failed this preparation.
   baseUrl = loaded.baseUrl;
   const supported = new Set([...Array.from(manifest.baseCharacters || ''), ...manifest.shards.flatMap(shard => Array.from(shard.characters))]);
-  const missing = Array.from(new Set(Array.from(text).filter(char => !supported.has(char) && !hasGlyph(char))));
+  const missing = Array.from(new Set(Array.from(text).filter(char => !/[\r\n\t]/u.test(char) && !supported.has(char) && !hasGlyph(char))));
   if (missing.length) throw new Error('FONT_UNCOVERED');
 
   const baseCoverage = new Set(Array.from(manifest.baseCharacters || ''));

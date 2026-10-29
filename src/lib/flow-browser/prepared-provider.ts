@@ -1,4 +1,5 @@
 import type { BrowserFlowBatch, RemoteFlowProvider } from './provider';
+import { currentContentPacks } from './content-preference';
 import type { FlowEvent } from '../flow/contracts';
 
 type NextInput = { chainId: string; cursor: string };
@@ -11,7 +12,7 @@ export function withPreparedContinuation(provider: RemoteFlowProvider, now = Dat
     subscribe: (hooks: Hooks) => void };
   let slot: Slot | null = null;
   let attempted: string | null = null;
-  const keyOf = (input: NextInput) => JSON.stringify([input.chainId, input.cursor]);
+  const keyOf = (input: NextInput) => JSON.stringify([input.chainId, input.cursor, currentContentPacks()]);
   const cancelPreparation = () => {
     const previous = slot; slot = null;
     // A consumed request is now owned and cancelled by the reading controller.

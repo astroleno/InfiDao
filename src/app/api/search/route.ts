@@ -5,12 +5,15 @@ import { searchPassages } from "@/lib/search/service";
 import { buildSuccessResponse } from "@/lib/utils/errors";
 import { buildErrorResponse } from "@/lib/utils/errors";
 import { RouteError } from "@/lib/utils/errors";
+import { contentPackIdsSchema } from '@/lib/content/contracts';
+import { resolveContentScope } from '@/lib/content/scope';
 
 const SearchRequestSchema = z
   .object({
     query: z.string().trim().min(1).max(500),
     topK: z.number().int().min(1).max(10).optional(),
     threshold: z.number().min(0).max(1).optional(),
+    contentPacks: contentPackIdsSchema.optional(),
   })
   .strict();
 
@@ -95,7 +98,12 @@ export async function POST(request: Request): Promise<Response> {
       query: payload.query,
       ...(payload.topK !== undefined ? { topK: payload.topK } : {}),
       ...(payload.threshold !== undefined ? { threshold: payload.threshold } : {}),
+      ...(payload.contentPacks ? { contentPacks: payload.contentPacks } : {}),
     });
+    if (payload.contentPacks) {
+      const scope = await resolveContentScope(payload.contentPacks);
+      return buildSuccessResponse(results, { headers: { 'X-InfiDao-Content-Scope': scope.packIds.join(','), ...(scope.unavailable.length ? { 'X-InfiDao-Content-Unavailable': scope.unavailable.join(',') } : {}) } });
+    }
     return buildSuccessResponse(results);
   } catch (error) {
     return buildErrorResponse(error);

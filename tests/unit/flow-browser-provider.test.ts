@@ -1,5 +1,6 @@
 /** @jest-environment node */
 import { createRemoteFlowProvider } from '@/lib/flow-browser/provider';
+import { writeContentPreference } from '@/lib/flow-browser/content-preference';
 const chain = { chainId: 'a', kind: 'remote', frames: [{ id: 'f', quote: '知止𠮷', fullText: '知止𠮷', quoteStart: 0, quoteEnd: 4, ready: false, anchors: [] }] };
 const response = (chunks: Uint8Array[], status = 200) => ({ ok: status === 200, status, headers: { get: () => 'application/x-ndjson' },
   body: new ReadableStream({ start(controller) { for (const chunk of chunks) controller.enqueue(chunk); controller.close(); } }),
@@ -10,6 +11,18 @@ function fixture(chunks: Uint8Array[], status = 200) {
   return { fetcher, provider: createRemoteFlowProvider({ fetch: fetcher }) };
 }
 const wire = (events: unknown[]) => new TextEncoder().encode(events.map(value => JSON.stringify(value)).join('\n') + '\n');
+test('a newly received partial poetry chain remembers its scope when disabled before resume',async()=>{
+  writeContentPreference(true);
+  const scoped={...chain,contentScope:{packIds:['core','poetry'],versions:{core:'v1',poetry:'v1'},fingerprint:'both',unavailable:[]}};
+  const fetcher=jest.fn(async(url:any,init?:RequestInit)=>String(url).endsWith('/session')?{ok:true} as Response:response([wire([{type:'head',requestId:JSON.parse(init!.body as string).requestId,chain:scoped}]) ]));
+  const provider=createRemoteFlowProvider({fetch:fetcher});
+  try {
+    await expect(provider.open('',{requestId:'first'})).rejects.toMatchObject({code:'INCOMPLETE'});
+    writeContentPreference(false);
+    await expect(provider.resume({chainId:'a'},{requestId:'resume'})).rejects.toMatchObject({code:'INCOMPLETE'});
+    expect(JSON.parse(fetcher.mock.calls.at(-1)![1]!.body as string).contentPacks).toEqual(['core']);
+  } finally {writeContentPreference(false);}
+});
 test('streaming Chinese and supplementary characters survive every byte boundary; head arrives before done', async () => {
   const complete = { ...chain, frames: [{ ...chain.frames[0], ready: true }] };
   const bytes = wire([{ type: 'head', requestId: 'r', chain }, { type: 'frame', requestId: 'r', chain: complete }, { type: 'done', requestId: 'r', chain: complete }]);

@@ -53,6 +53,7 @@ function createFlowController(host) {
   let state = { record: host.initialRecord || null, busy: false, pending: false, error: null, storageWarning: false, version: 0 };
   let visible = true, disposed = false, active = null, retryOperation = null;
   const background = new Set();
+  const contexts = new Set();
   let writes = Promise.resolve();
   const now = host.now || Date.now;
   const notify = patch => {
@@ -71,11 +72,11 @@ function createFlowController(host) {
     chain: copy(host.captureChain?.(record.chain) || record.chain),
     snapshot: copy(host.capture?.() || record.snapshot), updatedAt: now() });
 
-  async function save(record, token) {
+  async function save(record, token, allowed = () => true) {
     return queueWrite(async () => {
-      if (token !== undefined && !current(token)) return false;
+      if (!allowed() || (token !== undefined && !current(token))) return false;
       warn(await host.storage.put(copy(record)));
-      return token === undefined || current(token);
+      return allowed() && (token === undefined || current(token));
     });
   }
 
@@ -95,7 +96,7 @@ function createFlowController(host) {
     // a newer click supersedes presentation. Incomplete detached paths remain
     // explicitly resumable instead of silently restarting on a later visit.
     if (retain && host.backgroundLimit) void context.queue.then(async () => {
-      if (context.record && incomplete(context.record.chain)) {
+      if (!context.discardPending && context.record && incomplete(context.record.chain)) {
         await save({ ...context.record, completion: 'stopped', updatedAt: now() });
       }
     }).catch(() => notify({ storageWarning: true }));
@@ -115,6 +116,7 @@ function createFlowController(host) {
     const context = { token: state.version, method, input, from: state.record, record: null,
       requestId: host.createId(), queue: Promise.resolve(), task: null, presented: false, lastBatch: '' };
     active = context;
+    contexts.add(context);
     return context;
   }
 
@@ -142,19 +144,19 @@ function createFlowController(host) {
 
   async function deliver(batch, context, stage, received = false) {
     const durable = !!host.backgroundLimit && (received || background.has(context));
-    if ((!available(context) && !durable) || !batch?.frames) return;
+    if (context.discardPending || (!available(context) && !durable) || !batch?.frames) return;
     if (!batch.frames.length && !['next', 'resume'].includes(context.method)) throw failure('EMPTY_CHAIN', '暂未找到可接续的经文。');
     const fingerprint = JSON.stringify(batch);
     if (fingerprint === context.lastBatch) return;
     const chain = host.prepare && current(context.token) ? await host.prepare(copy(batch)) : copy(batch);
-    if (!available(context) && !durable) return;
+    if (context.discardPending || (!available(context) && !durable)) return;
     const existing = context.record || (['next', 'resume'].includes(context.method) ? context.from : null);
     if (existing) {
       if (existing.chain.chainId !== chain.chainId) throw failure('CHAIN_CHANGED', '返回的经文链与当前阅读不一致。');
       const base = state.record?.pathId === existing.pathId ? captured(state.record) : existing;
       const merged = mergeChain(base.chain, chain);
       const record = { ...base, chain: merged, completion: incomplete(merged) ? 'pending' : 'complete', recoveryError: undefined, updatedAt: now() };
-      if (!await save(record, durable ? undefined : context.token)) return;
+      if (!await save(record, durable ? undefined : context.token, () => !context.discardPending)) return;
       context.record = record;
       if (current(context.token)) {
         state = { ...state, record };
@@ -172,11 +174,11 @@ function createFlowController(host) {
         ...(parent && context.parentEntry ? { parentEntry: copy(context.parentEntry) } : {}),
         completion: incomplete(chain) ? 'pending' : 'complete', createdAt: now(), updatedAt: now() };
       const stored = await queueWrite(async () => {
-        if (!current(context.token) && !durable) return false;
+        if (context.discardPending || (!current(context.token) && !durable)) return false;
         const latestParent = parent && state.record?.pathId === parent.pathId ? captured(state.record) : parent;
         const result = latestParent ? await host.storage.commitBranch(copy(latestParent), copy(record)) : await host.storage.put(copy(record));
         warn(result);
-        return durable || current(context.token);
+        return !context.discardPending && (durable || current(context.token));
       });
       if (!stored) return;
       context.record = record;
@@ -220,7 +222,8 @@ function createFlowController(host) {
         const saved = await host.storage.child(context.from.pathId, entry.fromFrameId, entry.anchorId, entry.selection || input.selection);
         warn(host.storage.status?.());
         if (!current(context.token)) return;
-        if (saved && !incomplete(saved.chain)) {
+        const sameScope = !host.contentPacks || JSON.stringify((saved?.chain.contentScope?.packIds || ['core']).slice().sort()) === JSON.stringify(host.contentPacks().slice().sort());
+        if (saved && sameScope && !incomplete(saved.chain)) {
           saved.chain = host.prepare ? await host.prepare(saved.chain) : saved.chain;
           if (!current(context.token)) return;
           providerFor(saved.chain).restore?.(saved.chain);
@@ -287,6 +290,7 @@ function createFlowController(host) {
       }
       notify({ busy: false, pending: false, error: recoveryError });
     } finally {
+      contexts.delete(context);
       background.delete(context);
       if (active === context) active = null;
     }
@@ -325,10 +329,14 @@ function createFlowController(host) {
       }
     } catch (error) {
       if (current(context.token)) notify({ busy: false, pending: false, error: { code: error.code || 'RESTORE_FAILED', message: error.message } });
-    } finally { if (active === context) active = null; }
+    } finally { contexts.delete(context); if (active === context) active = null; }
   }
 
-  function cancel(manual = true) {
+  function cancel(manual = true, { discardPending = false } = {}) {
+    // Changing the reader's source selection invalidates even verified events
+    // waiting on preparation or IndexedDB. Ordinary navigation still lets its
+    // accepted background checkpoints finish.
+    if (discardPending) for (const context of contexts) context.discardPending = true;
     const provider = providerFor(state.record?.chain);
     if (manual) provider?.cancelPreparation?.();
     else provider?.suspendPreparation?.();
@@ -343,25 +351,30 @@ function createFlowController(host) {
       state = { ...state, record };
       save(record).catch(() => notify({ storageWarning: true }));
       notify({ record, error: { code: 'INCOMPLETE', message: '这条联系尚未展开完整，可以再试或返回。' } });
+    } else if (discardPending && state.record) {
+      // An IndexedDB write already in progress cannot be aborted here. Queue
+      // the last visible snapshot behind it so reloads also keep that boundary.
+      save(captured(state.record)).catch(() => notify({ storageWarning: true }));
     }
   }
 
   function restart(selected, options = {}) {
-    const record = options.sourceRecord || state.record, frame = record?.chain.frames.find(item => item.id === selected?.frameId) || record?.chain.frames[0];
+    const record = options.sourceRecord || state.record, frame = options.sourceFrame || record?.chain.frames.find(item => item.id === selected?.frameId) || record?.chain.frames[0];
     if (!frame) return Promise.resolve();
     try {
       const chosen = selected && (selected.selection || selected.anchorId) ? branchInput(record.chain, selected) : null;
-      const lexical = chosen?.input.selection;
+      const lexical = options.sourceSelection || chosen?.input.selection;
       const anchor = frame.anchors.find(item => item.id === selected?.anchorId);
       const surface = lexical?.surface || anchor?.surface;
       // Former explanations are reading intent, never trusted ancient text.
       const seed = options.seed !== undefined ? options.seed : surface && surface !== 'quote'
         ? `沿「${chosen.label}」继续。这是经句「${frame.quote}」的${surface === 'meaning' ? '现代释义' : '生成联系'}中的词。`.slice(0, 120)
         : record.chain.seed;
-      const parentEntry = options.parentEntry || (chosen ? { fromFrameId: frame.id, anchorId: chosen.input.anchorId, label: chosen.label,
+      const parentEntry = options.parentEntry || (options.rescope ? { fromFrameId: frame.id, anchorId: 'scope:' + (host.contentPacks?.() || ['core']).join(',') + ':' + frame.sourceId + ':' + (lexical?.start ?? '') + ':' + (lexical?.end ?? ''), label: options.label || '按新范围继续' } : chosen ? { fromFrameId: frame.id, anchorId: chosen.input.anchorId, label: chosen.label,
         ...(lexical ? { selection: copy(lexical) } : {}) } : null);
       return execute('restart', { seed, restartFrom: { sourceId: frame.sourceId,
         corpusVersion: frame.corpusVersion, textHash: frame.textHash, quoteStart: frame.quoteStart, quoteEnd: frame.quoteEnd },
+        ...(options.rescope && record.chain.kind === 'remote' ? { rebaseFrom: { chainId: record.chain.chainId, frameId: frame.id } } : {}),
         ...(lexical && !lexical.surface ? { selection: lexical } : {}) }, { provider: host.defaultProvider,
         sourcePathId: record.pathId,
         ...(parentEntry ? { parentEntry, visited: !parentEntry.thought } : {}),

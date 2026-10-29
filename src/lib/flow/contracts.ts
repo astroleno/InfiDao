@@ -1,7 +1,8 @@
 import { z } from "zod";
+import { contentPackIdsSchema, type ContentScope, type WorkReference } from '@/lib/content/contracts';
 
 export const FLOW_VERSION = "flow-v1";
-export const FLOW_PROMPT_VERSION = "connected-text-v14-reading-depth";
+export const FLOW_PROMPT_VERSION = "connected-text-v15-poetry";
 export const flowRelationTypeSchema = z.enum(['related', 'similar', 'contrast', 'elaboration', 'application', 'cause']);
 export type FlowRelationType = z.infer<typeof flowRelationTypeSchema>;
 export const flowKnowledgeSchema = z.object({
@@ -33,9 +34,12 @@ export const flowRequestSchema = z.object({
   restartFrom: flowRestartSchema.optional(),
   prefetch: z.literal(true).optional(),
   graph: z.literal(true).optional(),
+  contentPacks: contentPackIdsSchema.optional(),
+  rebaseFrom: z.object({ chainId: z.string().min(1).max(80), frameId: z.string().min(1).max(80) }).strict().optional(),
 }).strict().superRefine((request, context) => {
   const invalid = (message: string) => context.addIssue({ code: z.ZodIssueCode.custom, message });
   if (request.prefetch && request.op !== 'next') invalid('Only continuations can be prepared');
+  if (request.rebaseFrom && (request.op !== 'open' || !request.restartFrom)) invalid('Range changes require a verified source restart');
   if (request.restartFrom) {
     if (request.op !== 'open' || request.chainId !== undefined || request.fromFrameId !== undefined || request.anchorId !== undefined || request.cursor !== undefined) invalid('restartFrom requires an independent open request');
     if (request.restartFrom.quoteEnd <= request.restartFrom.quoteStart) invalid('Empty quote range');
@@ -87,6 +91,7 @@ export interface FlowFrame {
   source: string;
   chapterLabel: string;
   fullText: string;
+  work?: WorkReference;
   lexicalBreaks?: number[];
   textBreaks?: { meaning: number[]; reflection: number[] };
   meaning: string;
@@ -111,6 +116,7 @@ export interface FlowChain {
   exhausted: boolean;
   kind: "remote";
   graph?: true;
+  contentScope?: ContentScope;
 }
 export type FlowEvent =
   | { type: "head" | "progress" | "frame"; requestId: string; chain: FlowChain }
@@ -124,7 +130,7 @@ export class FlowError extends Error {
 const targetSchema = z.object({ sourceId: z.string().max(100), quote: z.string().min(2).max(80), meaning: z.string().min(2).max(100) });
 export const generatedBatchSchema = z.object({
   frames: z.array(z.object({
-    sourceId: z.string().max(100), quote: z.string().min(2).max(80),
+    sourceId: z.string().max(100), quote: z.string().min(2).max(80), quoteStart: z.number().int().nonnegative().optional(),
     meaning: z.union([z.literal(''), z.string().min(2).max(100)]), reflection: z.string().min(2).max(360),
     relevance: z.number().min(0).max(1),
     knowledge: flowKnowledgeSchema.optional(),

@@ -3,6 +3,23 @@ import { FlowMenu } from '@/components/flow/FlowMenu';
 
 const props = { onThought: jest.fn(), onLibrary: jest.fn(), libraryDisabled: false };
 
+test('an enabled but unavailable poetry pack can still be turned off',()=>{
+  const onToggle=jest.fn();render(<FlowMenu {...props} open poetry={{enabled:true,available:false,onToggle,message:'暂不可用'}}/>);
+  const button=screen.getByRole('button',{name:'诗词篇 · 已开启'});expect(button).not.toBeDisabled();fireEvent.click(button);expect(onToggle).toHaveBeenCalledTimes(1);
+});
+
+test('reading sources show the fixed core and an independent optional poetry selection', () => {
+  const onToggle = jest.fn();
+  const view = render(<FlowMenu {...props} open poetry={{ enabled: false, available: true, onToggle }} />);
+  const group = screen.getByRole('group', { name: '阅读来源' });
+  expect(group).toHaveTextContent('核心典籍 · 始终选用');
+  const choice = screen.getByRole('button', { name: '诗词篇 · 未开启' });
+  expect(choice).toHaveAttribute('aria-pressed', 'false');
+  fireEvent.click(choice); expect(onToggle).toHaveBeenCalledTimes(1);
+  view.rerender(<FlowMenu {...props} open poetry={{ enabled: true, available: true, onToggle }} />);
+  expect(screen.getByRole('button', { name: '诗词篇 · 已开启' })).toHaveAttribute('aria-pressed', 'true');
+});
+
 function pointer(target: Element | Document, type: string, x: number, at: number) {
   const event = new MouseEvent(type, { bubbles: true, cancelable: true, button: 0, clientX: x, clientY: 200 });
   Object.defineProperties(event, { pointerId: { value: 1 }, isPrimary: { value: true }, timeStamp: { value: at } });

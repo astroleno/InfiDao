@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "coreVersion": "guji-core-v1",
+  "poetryManifests": [
+    "poetry/selected-1000-v10/manifest.json"
+  ]
+}

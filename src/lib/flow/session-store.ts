@@ -163,7 +163,7 @@ export function createSessionStore(backend: AtomicDocumentBackend, options: { cr
         // A child can be created from the committed head during generation.
         // Always retain those freshly committed edges, not a worker's old copy.
         const saved = { ...clone(state), branches: { ...current.branches }, updated: now };
-        document.semantics = retainSemantics(document.semantics || [], state.chain.frames, now);
+        document.semantics = retainSemantics(document.semantics || [], state.chain.frames, now, state.chain.contentScope?.fingerprint);
         document.chains[state.chain.chainId] = saved;
         const operation = document.operations[lease.key]!;
         operation.result = clone(state.chain); operation.chainId = state.chain.chainId;

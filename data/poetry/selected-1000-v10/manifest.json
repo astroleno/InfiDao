@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "packId": "poetry",
+  "version": "poetry-63eda33f1cb2bed8",
+  "indexModel": "poetry-ngram-v2",
+  "dimension": 64,
+  "repository": "palemoky/chinese-poetry",
+  "commit": "041b8ab50bdf07bf498bba2d1666b1d1fd707f4e",
+  "license": "MIT",
+  "works": 1000,
+  "passages": 1051,
+  "shards": [
+    {
+      "path": "poetry/selected-1000-v10/shard-0.sqlite",
+      "sha256": "23e2bd73d32e8c5f6c13f9b914e91c340102cee91b8fd776f262dbd385871d25",
+      "bytes": 245760,
+      "works": 64,
+      "passages": 65
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-1.sqlite",
+      "sha256": "89ee2ec69da675abe50232adacc3cdbe63f59fbcba9b5335387db00c84d42c61",
+      "bytes": 221184,
+      "works": 55,
+      "passages": 57
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-2.sqlite",
+      "sha256": "d10210990c992cede9d25269529b29200fa295843faa78b8f639c049abecad4a",
+      "bytes": 241664,
+      "works": 64,
+      "passages": 64
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-3.sqlite",
+      "sha256": "4c07c32684d9fa09000bb6f41f718a80685dcf1a6ec696dfe04b58804a3462c5",
+      "bytes": 335872,
+      "works": 79,
+      "passages": 83
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-4.sqlite",
+      "sha256": "2692950673f04535744cc50b9463af75e0fe891c93de78b926249186419cd9ba",
+      "bytes": 294912,
+      "works": 68,
+      "passages": 71
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-5.sqlite",
+      "sha256": "f8a4d32333bb66db08e230c998351d7eab88ecb57c6fda7edd3bc49ddb06de67",
+      "bytes": 262144,
+      "works": 65,
+      "passages": 67
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-6.sqlite",
+      "sha256": "29dfa53a41cbd786db7e0ce9bb222430e4a4d93574df7408b3ebf3b7e1467a0f",
+      "bytes": 327680,
+      "works": 72,
+      "passages": 77
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-7.sqlite",
+      "sha256": "bf659424e347fefb31defb3551ca34e8362152d00094bd957b7147afba1a0f58",
+      "bytes": 266240,
+      "works": 59,
+      "passages": 63
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-8.sqlite",
+      "sha256": "d07d85833f8e36741d3b9bc6b8e6177988056d1718793e9bd45ed9264f4745f2",
+      "bytes": 294912,
+      "works": 59,
+      "passages": 65
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-9.sqlite",
+      "sha256": "736c19892adcbbac3294c1047428f85a3b644bb9c662095f3e169042e7d6c2cd",
+      "bytes": 245760,
+      "works": 64,
+      "passages": 65
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-a.sqlite",
+      "sha256": "22ec8cc7b3adc5ac9bbc6ba88fdc826429ad41172c1e793e890079756852e171",
+      "bytes": 253952,
+      "works": 54,
+      "passages": 57
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-b.sqlite",
+      "sha256": "593845b3cf5302b1b02ffc35b2c4e6529f39fbe056b3cea36f9932c27cfdc1de",
+      "bytes": 274432,
+      "works": 53,
+      "passages": 61
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-c.sqlite",
+      "sha256": "18f761d4beafb97fe559cbe3639e0f1c7fbcc2f84751bcbd6437f619ed1936ba",
+      "bytes": 331776,
+      "works": 68,
+      "passages": 75
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-d.sqlite",
+      "sha256": "ed104e07650f071228d345c2afcd06e933ac644b7033eb1c3b2315fee4d9cc1b",
+      "bytes": 229376,
+      "works": 57,
+      "passages": 58
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-e.sqlite",
+      "sha256": "b5f08cc1f996d9820d829775f1c2c6ac4cbffd10e76d2803b805fab19ccb1de1",
+      "bytes": 233472,
+      "works": 63,
+      "passages": 63
+    },
+    {
+      "path": "poetry/selected-1000-v10/shard-f.sqlite",
+      "sha256": "49447d1c331c28ef3aa8923884cd51073ec9ea812e3a60e04ac5bd6d55548db6",
+      "bytes": 278528,
+      "works": 56,
+      "passages": 60
+    }
+  ]
+}

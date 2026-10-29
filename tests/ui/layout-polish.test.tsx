@@ -71,7 +71,7 @@ describe("legacy layout polish", () => {
     expect(wikiExplorerSource).not.toContain("text-gray");
     expect(wikiExplorerSource).not.toContain("border-gray");
     expect(globalsSource).toContain(".dark");
-    expect(globalsSource).toContain("--background: 24 18% 8%");
+    expect(globalsSource).toContain("--background: 180 20% 1%");
     expect(globalsSource).toContain("--paper:");
     expect(globalsSource).toContain("--reader-surface:");
     expect(globalsSource).toContain("--reader-border:");
@@ -99,7 +99,7 @@ describe("legacy layout polish", () => {
     expect(tsconfigSource).not.toContain("src/components/layout/responsive/**");
   });
 
-  it("uses Next 14 metadata exports without unfetched production assets", () => {
+  it("uses current metadata exports without unfetched production assets", () => {
     const layoutSource = readFileSync(join(process.cwd(), "src/app/layout.tsx"), "utf8");
 
     expect(metadata.metadataBase?.toString()).toBe("http://localhost:3000/");
@@ -108,7 +108,7 @@ describe("legacy layout polish", () => {
     expect(viewport).toMatchObject({
       width: "device-width",
       initialScale: 1,
-      themeColor: "#15110f",
+      themeColor: "#020303",
     });
     expect(viewport).not.toHaveProperty("maximumScale");
     expect(metadata.title).toBe("六经注我 - 以此刻一念进入经典");

@@ -6,6 +6,8 @@ import { savedSnapshot, type SavedTarget } from './library';
 import type { FlowSelection as TextSelection } from '../flow/contracts';
 import { withPreparedContinuation } from './prepared-provider';
 import { readingGraph } from './graph';
+import { currentContentPacks, matchesContentPreference } from './content-preference';
+import type { FlowFrame } from '../flow/contracts';
 
 export type FlowSelection = { pathId?: string; frameId: string; anchorId?: string; selection?: TextSelection; label?: string };
 export type ControllerState = { record: FlowPathRecord | null; busy: boolean; pending: boolean; error: { code: string; message: string } | null; storageWarning: boolean; version: number };
@@ -19,13 +21,14 @@ export type FlowController = {
   prepareNext: () => void;
   cancelPreparation: () => void;
   retry: () => Promise<unknown>;
-  restart: (selection?: FlowSelection) => Promise<unknown>;
+  restart: (selection?: FlowSelection, options?: { rescope?: boolean; label?: string; sourceRecord?: FlowPathRecord; sourceFrame?: FlowFrame; sourceSelection?: TextSelection }) => Promise<unknown>;
+  sourceBranch?: (pathId: string, frame: FlowFrame, selection: TextSelection, label: string) => Promise<unknown>;
   restore: (pathId: string, options?: { navigation?: string; record?: FlowPathRecord; resumeIncomplete?: boolean }) => Promise<unknown>;
   openSaved: (target: SavedTarget) => Promise<boolean>;
   returnToParent: (parentPathId?: string) => void;
   curated: (seed?: string) => Promise<unknown>;
   checkpoint: () => Promise<void>;
-  cancel: (manual?: boolean) => void;
+  cancel: (manual?: boolean, options?: { discardPending?: boolean }) => void;
   dismissError: () => void;
   setVisible: (visible: boolean) => void;
   dispose: () => void;
@@ -55,6 +58,7 @@ export function createBrowserController(host: Host) {
     providerFor: (chain: BrowserFlowBatch) => chain?.kind === 'curated' ? curated : remote,
     createId: createPathId,
     storage: readingGraph,
+    contentPacks: currentContentPacks,
     prepare(chain: BrowserFlowBatch) {
       preparations++; host.preparingFonts?.(true);
       const version = controller.getState().version;
@@ -72,14 +76,37 @@ export function createBrowserController(host: Host) {
     },
   });
   const dispose = controller.dispose;
-  return { ...controller, async start() {
+  return { ...controller,
+    retry() {
+      const chain = controller.getState().record?.chain as BrowserFlowBatch | undefined;
+      const frame = chain?.frames.at(-1);
+      if (frame && !matchesContentPreference(chain?.contentScope)) return controller.restart({ frameId: frame.id }, { rescope: true, label: '按新范围继续' });
+      return controller.retry();
+    },
+    next() {
+      const chain = controller.getState().record?.chain as BrowserFlowBatch | undefined;
+      if (chain && !matchesContentPreference(chain.contentScope)) return controller.restart({ frameId: chain.frames.at(-1)!.id }, { rescope: true, label: '按新范围继续' });
+      return controller.next();
+    },
+    prepareNext() {
+      const chain = controller.getState().record?.chain as BrowserFlowBatch | undefined;
+      if (chain && matchesContentPreference(chain.contentScope)) controller.prepareNext();
+    },
+    async sourceBranch(pathId: string, frame: FlowFrame, selection: TextSelection, label: string) {
+      const version = controller.getState().version;
+      const sourceRecord = pathId === controller.getState().record?.pathId ? controller.getState().record : await readingGraph.get(pathId);
+      if (controller.getState().version !== version) return;
+      if (!sourceRecord || !sourceRecord.chain.frames.some((item: FlowFrame) => item.id === frame.id)) throw new Error('原阅读记录暂不可用，当前经文仍在。');
+      return controller.restart({ frameId: frame.id }, { sourceRecord, sourceFrame: frame, sourceSelection: selection, rescope: true, label: `沿「${label}」` });
+    },
+    async start() {
       const version = controller.getState().version;
       await readingGraph.initialize();
       if (!readingGraph.status().persisted) host.state({ ...controller.getState(), storageWarning: true });
       if (controller.getState().version === version) return controller.start(history.current());
       return undefined;
     },
-    cancel(manual?: boolean) { opening++; controller.cancel(manual); },
+    cancel(manual?: boolean, options?: { discardPending?: boolean }) { opening++; controller.cancel(manual, options); },
     async openSaved(target: SavedTarget) {
       const token = ++opening;
       controller.cancel();

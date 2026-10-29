@@ -14,3 +14,10 @@ OFL.txt 仅适用于这份 Noto Serif SC 补字子集，不适用于康熙字体
 
 流动经文运行时直接解析上述字体文件并缓存字形，不另存按经文导出的轮廓表。
 字体解析器 OpenType.js 的来源与 MIT 许可见 flow/vendor/README.md。
+
+2026-10-29 诗词精选补字：
+poetry-*.woff 是本项目生成的字形子集，内部字体名称已改为 InfiDaoPoetry-*。
+其中 2,213 字来自 Noto Serif CJK SC Regular，遵循 SIL OFL 1.1，见 Noto-OFL.txt。
+另 6 个罕见字来自 HanaMinB（20170904，GlyphWiki Project），选择其 SIL OFL 1.1 授权，见 Hanazono-LICENSE.txt。
+这些许可证仅适用于对应补字文件；原有字体及其版权说明保持各自适用范围。
+源地址、源字体 SHA-256、覆盖与字节统计见 data/poetry/font-coverage.json；构建流程见 scripts/poetry/build-fonts.py。

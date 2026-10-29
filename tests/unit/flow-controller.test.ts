@@ -35,6 +35,31 @@ function fixture(overrides: any = {}) {
 }
 
 describe('shared reading controller', () => {
+  test.each(['prepare', 'storage'])('changing reading sources discards a received frame waiting on %s', async boundary => {
+    const gate = deferred();
+    const f = fixture({ backgroundLimit: 1 });
+    const opening = f.controller.open(''); await flush();
+    f.requests[0].resolve(batch('root')); await opening;
+    const original = structuredClone(f.controller.getState().record);
+    f.host.update.mockClear();
+    if (boundary === 'prepare') f.host.prepare = async (value: any) => {
+      if (value.frames.some((frame: any) => frame.ordinal === 2)) await gate.promise;
+      return value;
+    };
+    else f.storage.put.mockImplementation(async record => {
+      if (record.chain.frames.some((frame: any) => frame.ordinal === 2)) await gate.promise;
+      f.records.set(record.pathId, structuredClone(record));
+      return { persisted: true };
+    });
+    const next = f.controller.next(); await flush();
+    f.requests[1].event('frame', batch('root', true, 2)); await flush();
+    f.controller.cancel(true, { discardPending: true });
+    gate.resolve(null); await next; await flush();
+    expect(f.controller.getState().record.chain.frames).toEqual(original.chain.frames);
+    expect(f.records.get(original.pathId).chain.frames).toEqual(original.chain.frames);
+    expect(f.host.update).not.toHaveBeenCalled();
+  });
+
   test('a visible ancestor word branches directly from its owner without an intermediate presentation', async () => {
     const f = fixture(), opening = f.controller.open(''); await flush();
     f.requests[0].resolve(batch('root')); await opening;

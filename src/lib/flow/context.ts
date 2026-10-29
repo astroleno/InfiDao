@@ -84,5 +84,5 @@ export function compactCandidates(rows: PassageRecord[], terms: string[], head?:
   for (const row of rows) if ((books.get(row.source) || 0) < 3) add(row);
   rows.forEach(add);
   return { passages: selected, input: selected.map(row => ({ sourceId: row.id, source: row.source, chapter: row.chapter,
-    text: excerpts.get(row.id)! })) };
+    text: excerpts.get(row.id)!, ...(row.work ? { work: row.work, excerptStart: row.text.indexOf(excerpts.get(row.id)!) } : {}) })) };
 }

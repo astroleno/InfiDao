@@ -1,0 +1,566 @@
+{
+  "commit": "041b8ab50bdf07bf498bba2d1666b1d1fd707f4e",
+  "sourcePath": "元曲/yuanqu.json",
+  "entries": [
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9958,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・水仙子夜雨",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 0,
+        "end": 58
+      },
+      "fullSourceHash": "e9e2c58f15834dd2d6046d5aaaff7211b6f5d6b08d98d01c64860bd1882c86c2",
+      "textHash": "ed37686cc58403f817b2dfc712e2c4f36cc0870d1371615e3d3c772d311ab7d7",
+      "text": "一声梧叶一声秋，一点芭蕉一点愁，三更归梦三更后。\n落灯花棋未收，叹新丰孤馆人留。\n枕上十年事，江南二老忧，都到心头。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9958,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・水仙子弹唱佳人",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 63,
+        "end": 117
+      },
+      "fullSourceHash": "e9e2c58f15834dd2d6046d5aaaff7211b6f5d6b08d98d01c64860bd1882c86c2",
+      "textHash": "8654a68eaabed3b048d6e44445c156a049e59a98a2058ba1570b7dbb0be309fe",
+      "text": "玉纤流恨出冰丝，瓠齿和春吐怨辞，秋波送巧传心事。\n似邻船初听时，问江州司马何之。\n青衫泪，锦字诗，总是相思。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9958,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・水仙子红指甲",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 121,
+        "end": 186
+      },
+      "fullSourceHash": "e9e2c58f15834dd2d6046d5aaaff7211b6f5d6b08d98d01c64860bd1882c86c2",
+      "textHash": "b57df3dc44b5d6e15ab5ebe93878b47057df016537110d81931de428acc9a34e",
+      "text": "落花飞上笋牙尖，宫叶犹将冰箸粘，抵牙关越显得樱唇艳。\n怕伤春不卷帘，捧菱花香印妆奁。\n雪藕丝霞十缕，镂枣班血半点，掐刘郎春在纤纤。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9958,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・水仙子佳人钉履",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 191,
+        "end": 255
+      },
+      "fullSourceHash": "e9e2c58f15834dd2d6046d5aaaff7211b6f5d6b08d98d01c64860bd1882c86c2",
+      "textHash": "f23a3b569a87b9f1e9972993d8bfb6f51b91a781577f3da610dcfe6c8d6f2d14",
+      "text": "金莲脱瓣载云轻，红叶浮香带雨行，渍春泥印在苍苔径。\n三寸中数点星，玉玲珑环佩交鸣。\n溅越女红裙湿，沁湘妃罗袜冷，点寒波小小蜻蜓。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9958,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・水仙子春情",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 258,
+        "end": 323
+      },
+      "fullSourceHash": "e9e2c58f15834dd2d6046d5aaaff7211b6f5d6b08d98d01c64860bd1882c86c2",
+      "textHash": "5dab9f50649940c4202bb3c8baf05587f3bb42356c5abd1437b3f34c5bc3e031",
+      "text": "九分恩爱九分忧，两处相思两处愁，十年迤逗十年受。\n几遍成几遍休，半点事半点惭羞。\n三秋恨三秋感旧，三春怨三春病酒，一世害一世风流。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9958,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・水仙子重九",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 396,
+        "end": 453
+      },
+      "fullSourceHash": "e9e2c58f15834dd2d6046d5aaaff7211b6f5d6b08d98d01c64860bd1882c86c2",
+      "textHash": "29ba91c760e86c01d913ed7c926d353c5a4faed28b6879c948c04a8de74f7589",
+      "text": "东篱重赋紫萸诗，北海深倾白玉卮，西风了却黄花事。\n是渊明酒醉时，笑人间名利孜孜。\n钻醯瓮，检故纸，再谁题归去来兮？",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9958,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・水仙子马嵬坡",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 456,
+        "end": 522
+      },
+      "fullSourceHash": "e9e2c58f15834dd2d6046d5aaaff7211b6f5d6b08d98d01c64860bd1882c86c2",
+      "textHash": "0f943f967990ffc907228ad62347efcd97bac7584fd3902e99a41332e0f4f4fb",
+      "text": "翠华香冷梦初醒，黄壤春深草自青，羽林兵拱听将军令。\n拥鸾舆蜀道行，妾虽亡天子还京。\n昭阳殿梨花月色，建章宫梧桐雨声，马嵬坡尘土虚名。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9958,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・水仙子惠山泉",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 526,
+        "end": 582
+      },
+      "fullSourceHash": "e9e2c58f15834dd2d6046d5aaaff7211b6f5d6b08d98d01c64860bd1882c86c2",
+      "textHash": "c4c6834498d24ec5cb02f36065e3809fc855708fa2f6b8578f632cdafa2c9cfa",
+      "text": "自天飞下九龙涎，走地流为一股泉，带风吹作千寻练。\n问山僧不记年，任松梢鹤避青烟。\n湿云亭上，涵碧洞前，自采茶煎。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9955,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・蟾宫曲西湖",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 0,
+        "end": 71
+      },
+      "fullSourceHash": "c5e6cb182a7b0c6f9cc9646e0fe44cf6e5ccbf42e27d86650b63651cf93cf5e1",
+      "textHash": "c5c0be7e8b8dcd5cc6f64b2ec37316ec9846c8743bddc3f18722495377868a45",
+      "text": "十年不到湖山，齐楚秦燕，皓首苍颜。\n今日重来，莺嫌花老，燕怪春悭。\n听越女鸾箫象板，恼司空雾鬓云环。\n道院弹关，酒会诗坛，万古西湖，天上人间。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9955,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・蟾宫曲登太和楼",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 229,
+        "end": 301
+      },
+      "fullSourceHash": "c5e6cb182a7b0c6f9cc9646e0fe44cf6e5ccbf42e27d86650b63651cf93cf5e1",
+      "textHash": "46e7c7720132dfdbee7bc1636f6953aefb5bb5159ef978f06100832776126c0a",
+      "text": "白云中涌出蓬莱，俯视西湖，图画天开。\n暮雨珠帘，朝云画栋，夜月瑶台。\n书籍会三千剑客，管弦声十二金钗。\n对酒兴杯，拊髀怜才，寄语玲珑，王粲曾来。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9955,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・蟾宫曲竹夫人",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 305,
+        "end": 376
+      },
+      "fullSourceHash": "c5e6cb182a7b0c6f9cc9646e0fe44cf6e5ccbf42e27d86650b63651cf93cf5e1",
+      "textHash": "de6c7a3c8c19147c72a0207a53bccfd73be72a8919584c3894a0a3e611f2bcf9",
+      "text": "湘妃应是前身，不记何年，封虢封秦。\n万古虚心，百年贞节，一世故人。\n剖苍壁寒凝泪痕，挽潜蛟巧结香纹。\n侍枕知恩，入梦无春，两腋清风，满枕行云。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9955,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・蟾宫曲姑苏台",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 380,
+        "end": 452
+      },
+      "fullSourceHash": "c5e6cb182a7b0c6f9cc9646e0fe44cf6e5ccbf42e27d86650b63651cf93cf5e1",
+      "textHash": "f85b90193e3954812c4b914640c657a86929cafc15d8a2cb97e0ff9bcd8345d4",
+      "text": "荒台谁唤姑苏？兵渡西兴，祸起东吴。\n切齿仇冤，捧心钓饵，尝胆权谋。\n三千尺侵云粪土，十万家泣血膏腴。\n日月居诸，台殿丘墟。\n何似灵岩，山色如初。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9955,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・蟾宫曲春情",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 532,
+        "end": 603
+      },
+      "fullSourceHash": "c5e6cb182a7b0c6f9cc9646e0fe44cf6e5ccbf42e27d86650b63651cf93cf5e1",
+      "textHash": "18bafa24a58403dd752834744fe975114b735caa0c8f263c9352a28e3b8dda07",
+      "text": "平生不会相思，才会相思，便害相思。\n身似浮云，心如飞絮，气若游丝。\n空一缕余香在此，盼千金游子何之。\n证候来时，正是何时？灯半昏时，月半明时。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9955,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・蟾宫曲西湖寻春",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 608,
+        "end": 680
+      },
+      "fullSourceHash": "c5e6cb182a7b0c6f9cc9646e0fe44cf6e5ccbf42e27d86650b63651cf93cf5e1",
+      "textHash": "03b1ed3acb95ca4cfdcd92ce7a53c2c3293c5afc3c7ce636494a05b1ebb38e37",
+      "text": "清明春色三分，湖上行舟，陌上游人。\n一片花阴，两行柳影，十里莎裀。\n不要多殽排一品，休嫌少酒止三巡。\n处处开樽，步步寻春。\n花下归来，带月敲门。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9955,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・蟾宫曲送沙宰",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 684,
+        "end": 758
+      },
+      "fullSourceHash": "c5e6cb182a7b0c6f9cc9646e0fe44cf6e5ccbf42e27d86650b63651cf93cf5e1",
+      "textHash": "df886c477da4eaa7e1c9bbdaa3ab4a2f9b703828ca4218c366dc6fb4d14a23bf",
+      "text": "宦游人过钱塘，江水汤汤，山色苍苍。\n马首西风，鸡声残月，雁影斜阳。\n男子志周流四方，循吏心恪守三章。\n岐麦林桑，渡虎驱蝗。\n人颂《甘棠》，春满琴堂。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9955,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・蟾宫曲西湖夏宴",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 913,
+        "end": 980
+      },
+      "fullSourceHash": "c5e6cb182a7b0c6f9cc9646e0fe44cf6e5ccbf42e27d86650b63651cf93cf5e1",
+      "textHash": "b3ea7602ebefa2d9c7ea6ea76d14dd94ec7b98f67d249bb4549a6a403e454ef7",
+      "text": "卷荷筒翠袖生香，忙处投闲，静处寻凉。\n一片歌声，四围山色，十里湖光。\n只此是人间醉乡，更休题天上天堂。\n老子疏狂，信手新词，赠与秋娘。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9955,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・蟾宫曲红梅",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 983,
+        "end": 1048
+      },
+      "fullSourceHash": "c5e6cb182a7b0c6f9cc9646e0fe44cf6e5ccbf42e27d86650b63651cf93cf5e1",
+      "textHash": "afaf48adc3efbcd64d2d64e6268f790d78012b7384b10024ff34e18abdbae30a",
+      "text": "蕊珠宫内琼姬，醉倚东风，谁与更衣？血泪痕深，茜裙香冷，粉面春回。\n桃杏色十分可喜，冰霜心一片难移。\n何处长笛？吹散胭脂，分付春归。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9953,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "越调・天净沙探梅",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 0,
+        "end": 33
+      },
+      "fullSourceHash": "fffbb622eb9409472cb6a2c880f7fe071193c44415baae3fbf4b9fa3cc6cf8d8",
+      "textHash": "4ce3f549a0da69b53b0dc76df8788a80edc547b36b49c1ad17d283a6791a23dd",
+      "text": "昨朝深雪前村，今宵淡月黄昏，春到南枝几分？水香冰晕，唤回逋老诗魂。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9953,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "越调・天净沙春情",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 112,
+        "end": 146
+      },
+      "fullSourceHash": "fffbb622eb9409472cb6a2c880f7fe071193c44415baae3fbf4b9fa3cc6cf8d8",
+      "textHash": "616660fcf5dd20733a158412e1e2bd95f064c234e6268fa003d473ccdd136bbd",
+      "text": "双双翠舞珠歌，卿卿酒病花魔，为问风流玉娥。\n海棠开过，牡丹消息如何？",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9953,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "越调・天净沙渔父",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 148,
+        "end": 182
+      },
+      "fullSourceHash": "fffbb622eb9409472cb6a2c880f7fe071193c44415baae3fbf4b9fa3cc6cf8d8",
+      "textHash": "a5e878050958ed965cf555ce12d7a877deb081d069aef55709beffd894b87246",
+      "text": "忘形雨笠烟蓑，知心牧唱樵歌，明月清风共我。\n闲人三个，从他今古消磨。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9953,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "越调・天净沙秋江夜泊",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 187,
+        "end": 221
+      },
+      "fullSourceHash": "fffbb622eb9409472cb6a2c880f7fe071193c44415baae3fbf4b9fa3cc6cf8d8",
+      "textHash": "7c3d8672fca165cc19c438edd0ccaf8b7170c43e1d17a0829f02f208ca4592e3",
+      "text": "斜阳万点昏鸦，西风两岸芦花，船系浔阳酒家。\n多情司马，青衫梦里琵琶。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 9953,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "越调・天净沙题情",
+      "author": "徐再思",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 224,
+        "end": 258
+      },
+      "fullSourceHash": "fffbb622eb9409472cb6a2c880f7fe071193c44415baae3fbf4b9fa3cc6cf8d8",
+      "textHash": "9372a4d95b299bd0f6d20954f4eb373528abc170f1a153915a4765ef87d4aaec",
+      "text": "多才惹得多愁，多情便有多忧，不重不轻证候。\n甘心消受，谁教你会风流？",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 7470,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・寿阳曲山市晴岚",
+      "author": "马致远",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 0,
+        "end": 34
+      },
+      "fullSourceHash": "95288a55cd9fdbdd8eed25756cad105100d9a15a86626fbaf3781be2a4396d7f",
+      "textHash": "3ef852e2f5b811132c12275e76b8f138b4fc75b077c3415aca219a5167cc5963",
+      "text": "花村外，草店西，晚霞明雨收天霁。\n四围山一竿残照里，锦屏风又添铺翠。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 7470,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・寿阳曲远浦帆归",
+      "author": "马致远",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 39,
+        "end": 72
+      },
+      "fullSourceHash": "95288a55cd9fdbdd8eed25756cad105100d9a15a86626fbaf3781be2a4396d7f",
+      "textHash": "afa850f13d92eb360783281a2a9c497cd21a4d82f713e8068a8d8bf2afa37213",
+      "text": "夕阳下，酒旆闲，两三航未曾着岸。\n落花水香茅舍晚，断桥头卖鱼人散。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 7470,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・寿阳曲平沙落雁",
+      "author": "马致远",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 77,
+        "end": 111
+      },
+      "fullSourceHash": "95288a55cd9fdbdd8eed25756cad105100d9a15a86626fbaf3781be2a4396d7f",
+      "textHash": "c29febca8741fcebc121b6d0fd9a26f81e43fd07eb0231779d4cf6e0febc7aa4",
+      "text": "南传信，北寄书，半栖近岸花汀树。\n似鸳鸯失群迷伴侣，两三行海门斜去。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 7470,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・寿阳曲潇湘夜雨",
+      "author": "马致远",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 116,
+        "end": 149
+      },
+      "fullSourceHash": "95288a55cd9fdbdd8eed25756cad105100d9a15a86626fbaf3781be2a4396d7f",
+      "textHash": "9500919acab60854ea0cadc0dd930980eb91faa55b5f383ba6b07f31a43b80c1",
+      "text": "渔灯暗，客梦回，一声声滴人心碎。\n孤舟五更家万里，是离人几行情泪。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 7470,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・寿阳曲烟寺晚钟",
+      "author": "马致远",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 154,
+        "end": 188
+      },
+      "fullSourceHash": "95288a55cd9fdbdd8eed25756cad105100d9a15a86626fbaf3781be2a4396d7f",
+      "textHash": "80211831253de03af8198b15c70159588c0abe291841fbab969a7f4f598a05d5",
+      "text": "寒烟细，古寺清，近黄昏礼佛人静。\n顺西风晚钟三四声，怎生教老僧禅定？",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 7470,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・寿阳曲渔村夕照",
+      "author": "马致远",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 192,
+        "end": 226
+      },
+      "fullSourceHash": "95288a55cd9fdbdd8eed25756cad105100d9a15a86626fbaf3781be2a4396d7f",
+      "textHash": "c25ae5ce813e865fb9f32a7f644f7a825e787ccd41247d541851fb5033d2eaa0",
+      "text": "鸣榔罢，闪暮光，绿杨堤数声渔唱。\n挂柴门几家闲晒网，都撮在捕鱼图上。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 7470,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・寿阳曲江天暮雪",
+      "author": "马致远",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 231,
+        "end": 264
+      },
+      "fullSourceHash": "95288a55cd9fdbdd8eed25756cad105100d9a15a86626fbaf3781be2a4396d7f",
+      "textHash": "5c681611a29c20f62611b7b0bd637e929f74840537da695a224e4e3fe6c2a04e",
+      "text": "天将暮，雪乱舞，半梅花半飘柳絮。\n江上晚来堪画处，钓鱼人一蓑归去。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 7470,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・寿阳曲洞庭秋月",
+      "author": "马致远",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 269,
+        "end": 302
+      },
+      "fullSourceHash": "95288a55cd9fdbdd8eed25756cad105100d9a15a86626fbaf3781be2a4396d7f",
+      "textHash": "ca20cfef10dc79a53049f66962ba4edb191ed8aced06670df4ad2824ad920d9d",
+      "text": "芦花谢，客乍别，泛蟾光小舟一叶。\n豫章城故人来也，结末了洞庭秋月。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 55,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・大德歌春",
+      "author": "关汉卿",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 0,
+        "end": 47
+      },
+      "fullSourceHash": "342783bc2dca6c83c221c0bbc3f844b16cac837c68126bcd15f99900aede216b",
+      "textHash": "8616c1296a4eb57582634e99f4cb107ebc4e2fa207d2caa14658db1f43dd0a4a",
+      "text": "子规啼，不如归，道是春归人未归。\n几日添憔悴，虚飘飘柳絮飞。\n一春鱼雁无消息，则见双燕斗衔泥。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 55,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・大德歌夏",
+      "author": "关汉卿",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 49,
+        "end": 98
+      },
+      "fullSourceHash": "342783bc2dca6c83c221c0bbc3f844b16cac837c68126bcd15f99900aede216b",
+      "textHash": "9116f28e5acfd3f2c9b623fcba6b444f5908734dac94bf83863f72631fc17ea7",
+      "text": "俏冤家，在天涯，偏那里绿杨堪系马？困坐南窗下，数对清风想念他。\n蛾眉淡了教谁画？瘦岩岩羞带石榴花。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 55,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・大德歌秋",
+      "author": "关汉卿",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 100,
+        "end": 150
+      },
+      "fullSourceHash": "342783bc2dca6c83c221c0bbc3f844b16cac837c68126bcd15f99900aede216b",
+      "textHash": "72eeb77c140b74f28321983ea32be793d46b91130f75fae047e42117e4b97225",
+      "text": "风飘飘，雨潇潇，便做陈抟睡不着。\n懊恼伤怀抱，扑簌簌泪点抛。\n秋蝉儿噪罢寒蛩儿叫，淅零零细雨打芭蕉。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 55,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "双调・大德歌冬",
+      "author": "关汉卿",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 152,
+        "end": 202
+      },
+      "fullSourceHash": "342783bc2dca6c83c221c0bbc3f844b16cac837c68126bcd15f99900aede216b",
+      "textHash": "4bedfb8c6ae427751452eacc38a94ec3b5dd439748c31e3c6dfd1ba9a9a06945",
+      "text": "雪纷纷，掩重门，不由人不断魂，瘦损江梅韵。\n那里是清江江上村？香闺里冷落谁瞅问？好一个憔悴的凭阑人！",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    },
+    {
+      "path": "元曲/yuanqu.json",
+      "record": 7467,
+      "gitBlob": "0f170f87e87ae9ede2b4b23070534e896cf74356",
+      "title": "越调・天净沙秋思",
+      "author": "马致远",
+      "group": "元曲",
+      "sourceRange": {
+        "start": 0,
+        "end": 34
+      },
+      "fullSourceHash": "8069d17f6e2d2319a39792e3ed6eca966a9e2863d554448d037c2f7f6eac7fea",
+      "textHash": "8069d17f6e2d2319a39792e3ed6eca966a9e2863d554448d037c2f7f6eac7fea",
+      "text": "枯藤老树昏鸦，小桥流水人家，古道西风瘦马。\n夕阳西下，断肠人在天涯。",
+      "reason": "按源内题目与小令结构核对的独立作品，固定原文范围；不把源合集冒充一首"
+    }
+  ]
+}

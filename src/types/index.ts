@@ -19,6 +19,7 @@ export type ApiResponse<T> =
     };
 
 export interface PassageRecord {
+  imagery?: string[];
   id: string;
   source: string;
   collection: string;
@@ -29,12 +30,14 @@ export interface PassageRecord {
   text: string;
   textHash: string;
   corpusVersion: string;
+  work?: import('@/lib/content/contracts').WorkReference;
 }
 
 export interface SearchRequest {
   query: string;
   topK?: number;
   threshold?: number;
+  contentPacks?: import('@/lib/content/contracts').ContentPackId[];
 }
 
 export interface SearchResult {
@@ -44,6 +47,7 @@ export interface SearchResult {
   section: number;
   text: string;
   score: number;
+  work?: import('@/lib/content/contracts').WorkReference;
 }
 
 export type AnnotationStyle = "academic" | "classical" | "modern" | "poetic";
@@ -54,6 +58,7 @@ export interface AnnotateRequest {
   passageText: string;
   style?: AnnotationStyle;
   visitedPassageIds?: string[];
+  contentPacks?: import('@/lib/content/contracts').ContentPackId[];
 }
 
 export interface AnnotationLink {

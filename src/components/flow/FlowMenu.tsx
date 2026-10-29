@@ -13,6 +13,7 @@ type Props = {
   onOpen?: () => void;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  poetry?: { enabled: boolean; available: boolean; onToggle: () => void; message?: string };
   gestureSurface?: RefObject<HTMLElement>;
   onGestureStart?: (target: Element | null) => void;
   reading?: {
@@ -203,6 +204,12 @@ export function FlowMenu(props: Props) {
         <p className={styles.readingMenuGroupLabel}>自己的阅读</p>
         {onThought && <button className={styles.textButton} type="button" onClick={() => act(onThought)}>添一念</button>}
         {onLibrary && <button className={styles.textButton} type="button" disabled={libraryDisabled} onClick={() => act(onLibrary)}>温故</button>}
+      </div>}
+      {props.poetry && <div className={styles.readingMenuGroup} role="group" aria-label="阅读来源">
+        <p className={styles.readingMenuGroupLabel}>阅读来源</p>
+        <p className={styles.muted}>核心典籍 · 始终选用</p>
+        <button type="button" className={styles.textButton} aria-pressed={props.poetry.enabled} disabled={!props.poetry.available && !props.poetry.enabled} onClick={() => props.poetry?.onToggle()}>诗词篇 · {props.poetry.enabled ? '已开启' : '未开启'}</button>
+        {props.poetry.message && <p className={styles.muted} role="status">{props.poetry.message}</p>}
       </div>}
       {motionCandidate && <button className={styles.textButton} type="button" aria-pressed={motionCandidate.enabled}
         onClick={() => act(motionCandidate.onToggle)}>水膜动效{motionCandidate.enabled ? ' · 已开启' : ' · 已关闭'}</button>}

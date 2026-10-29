@@ -18,6 +18,17 @@ const verifiedFrame = (id = 'source'): FlowFrame => ({ id, sourceId: id, corpusV
   quote: '知止', quoteStart: 0, quoteEnd: 2, fullText: '知止', meaning: '辨明安止的方向', reflection: '私人短解不索引',
   source: '大学', chapterLabel: '经一章', ordinal: 1, provenance: 'model', ready: true, anchors: [], reflectionSpans: [] });
 
+test('verified semantics retain separate readings for different content scopes', () => {
+  const core = retainSemantics([], [verifiedFrame()], 1000, 'core-version');
+  const both = retainSemantics(core, [{ ...verifiedFrame(), meaning: '加入诗词后的原义线索' }], 1001, 'core-and-poetry-version');
+  expect(both).toHaveLength(2);
+  expect(both.find(entry => entry.contentScope === 'core-version')!.text).toBe('辨明安止的方向');
+  expect(both.find(entry => entry.contentScope === 'core-and-poetry-version')!.text).toBe('加入诗词后的原义线索');
+  const revised = retainSemantics(both, [{ ...verifiedFrame(), meaning: '新核心线索' }], 1002, 'core-version');
+  expect(revised).toHaveLength(2);
+  expect(revised.find(entry => entry.contentScope === 'core-and-poetry-version')!.text).toBe('加入诗词后的原义线索');
+});
+
 test('only completed verified semantics survive a new worker and remain isolated by owner', async () => {
   const f = fixture(), { lease } = await f.store.reserve(owner, opening);
   const head = state('indexed'); head.chain.seed = '私人输入不索引'; head.chain.frames = [verifiedFrame()];

@@ -3,6 +3,24 @@
 > Status: superseded on 2026-04-24
 > Legacy reference only for the pre-reboot implementation. For the current reboot MVP, use `docs/SUPERPOWERS_REBOOT_PLAN.md` and `docs/plans/reboot-mvp-implementation-plan.md`. If this file conflicts with them, those docs win.
 
+## 2026-10-29 内容来源扩展（当前实现）
+
+本节适用于当前阅读流；下方旧版接口示例不作为当前契约。网页由现有网关前缀访问以下别名，不增加独立的诗词应用。
+
+| 接口 | 行为 |
+| --- | --- |
+| `GET /api/flow/content-packs` | 返回 `data` 数组，含包的 `id/title/required/available/works/version/description`。核心为 14 部；诗词为精选 1,000 首。只读取轻量清单及文件状态；启用时再核验完整哈希和索引格式。内部等价路由为 `/api/content-packs`。 |
+| `GET /api/flow/works/<workId>?revision=<revision>` | 按 32 位十六进制作品 ID 与 24 位修订返回同版本全文、作者、朝代、篇名、体裁、行起点、来源、片段与词界。必须指定修订；格式错误 400，不存在 404。成功响应为不可变公共缓存；不会以最新版替代缺失的旧版本。内部等价路由为 `/api/works/<workId>`。 |
+| `POST /api/flow` | 原 `open/branch/next` 请求增加可选 `contentPacks: ["core"]` 或 `["core","poetry"]`。省略时新链默认核心；恢复已有链沿用该链范围。返回链的 `contentScope` 含实际 `packIds/versions/fingerprint/unavailable`。诗词帧另含 `work` 引用。 |
+| `POST /api/search` | 当前参数为 `query`、可选 `topK`（1–10）、`threshold`（0–1）与同上 `contentPacks`；省略范围保留原核心结果。诗词结果附 `work`。 |
+| `POST /api/annotate` | 增加可选 `contentPacks`；诗词来源及所选原文必须真实存在。内容范围与来源修订进入注解缓存身份。 |
+
+核心始终属于有效范围。可选包缺失、损坏或格式不兼容时隔离诗词并继续核心；范围结果中的 `unavailable` 如实列出失败包。新请求不能通过清单字段绕过所有者、原文哈希、词界或每日额度校验。
+
+链的范围不可在原游标下变更，否则返回 `CONTENT_SCOPE_CHANGED`（409）。网页在读者主动接续时使用 `open + restartFrom + rebaseFrom` 建立新范围子链，旧阅读与来路保留。`restartFrom` 包含 `sourceId/corpusVersion/textHash/quoteStart/quoteEnd`；`rebaseFrom` 包含原 `chainId/frameId`；全文点词另传同身份的 `selection`。坐标均为规范原文 UTF-16 偏移，不能切开代理对或更换异文。服务端核验原节点所有权；原节点过期时仅以能验证的规范原文恢复。
+
+阅读页“更多阅读选项 → 阅读来源”保存当前浏览器、当前域名的诗词偏好，默认关闭。开关本身不生成内容或消耗模型调用；切换时取消预取和未显示内容，停用后已读诗句、收藏及注脚继续保留。浏览器仅按需取全文，最多缓存 32 首；未缓存全文且离线时明确提示，保留已读片段。
+
 ## Overview
 
 The InfiDao API provides semantic search, embedding generation, and annotation services for the "六经注我" project. The API is built with Next.js App Router and follows RESTful principles.

@@ -8,6 +8,7 @@ import { createAnnotation } from "@/lib/annotation/service";
 import { buildSuccessResponse } from "@/lib/utils/errors";
 import { buildErrorResponse } from "@/lib/utils/errors";
 import { RouteError } from "@/lib/utils/errors";
+import { contentPackIdsSchema } from '@/lib/content/contracts';
 
 const AnnotateRequestSchema = z
   .object({
@@ -16,6 +17,7 @@ const AnnotateRequestSchema = z
     passageText: z.string().trim().min(1).max(2000),
     style: z.enum(["academic", "classical", "modern", "poetic"]).optional(),
     visitedPassageIds: z.array(z.string().trim().min(1).max(80)).max(20).optional(),
+    contentPacks: contentPackIdsSchema.optional(),
   })
   .strict();
 
@@ -105,6 +107,7 @@ export async function POST(request: Request): Promise<Response> {
       passageId: payload.passageId,
       passageText: payload.passageText,
       ...(payload.style !== undefined ? { style: payload.style } : {}),
+      ...(payload.contentPacks ? { contentPacks: payload.contentPacks } : {}),
       ...(payload.visitedPassageIds !== undefined
         ? { visitedPassageIds: payload.visitedPassageIds }
         : {}),

@@ -13,6 +13,7 @@ interface AnnotationCacheKeyInput {
   mode: AnnotationLlmMode;
   visitedPassageIds?: string[];
   growthContextHash?: string;
+  contentScope?: string;
 }
 
 export type CachedAnnotationCopy = Pick<
@@ -80,6 +81,7 @@ export function buildAnnotationCacheKey(input: AnnotationCacheKeyInput): string 
     queryHash: hashCacheText(input.query),
     passageTextHash: hashCacheText(input.passageText),
     growthContextHash: input.growthContextHash ?? "none",
+    ...(input.contentScope ? { contentScope: input.contentScope } : {}),
   });
 }
 

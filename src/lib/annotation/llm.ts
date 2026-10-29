@@ -5,6 +5,7 @@ export interface AnnotationLlmInput {
   passageLabel: string;
   passageText: string;
   style: AnnotationStyle;
+  poetry?: boolean;
   growthContext?: {
     relationTheme: string;
     branchLabel: string;
@@ -335,6 +336,7 @@ function buildPrompt(input: AnnotationLlmInput): string {
     `问:${input.query}`,
     `经:${input.passageLabel}`,
     `文:${input.passageText}`,
+    ...(input.poetry ? ['这是诗词阅读。允许景物、情绪与审美感受成为联系，不必归为矛盾或劝诫。保留多义，明确区分现代联想与原义；不得虚构作者生平、心理或创作背景。'] : []),
   ];
 
   if (input.growthContext) {

@@ -15,6 +15,7 @@ import {
 } from "@/components/home/kineticTextCopy";
 import { SearchBar } from "@/components/search/SearchBar";
 import { SearchResults } from "@/components/search/SearchResults";
+import { currentContentPacks } from '@/lib/flow-browser/content-preference';
 import { WikiPanel } from "@/components/wiki/WikiPanel";
 import {
   createWikiRoot,
@@ -202,6 +203,7 @@ async function requestSearchResults(
       query,
       topK,
       threshold,
+      ...(currentContentPacks().includes('poetry') ? { contentPacks: currentContentPacks() } : {}),
     }),
   });
 
@@ -1059,6 +1061,7 @@ export function HomeEntryExperience() {
           passageText,
           style: "modern",
           visitedPassageIds: [passageId],
+          ...(currentContentPacks().includes('poetry') ? { contentPacks: currentContentPacks() } : {}),
         }),
         signal: request.controller.signal,
       });
@@ -1156,6 +1159,7 @@ export function HomeEntryExperience() {
             passageText: link.passageText,
             style: "modern",
             visitedPassageIds: buildVisitedPassageIds(wikiStack, link.passageId),
+            ...(currentContentPacks().includes('poetry') ? { contentPacks: currentContentPacks() } : {}),
           }),
           signal: request.controller.signal,
         });

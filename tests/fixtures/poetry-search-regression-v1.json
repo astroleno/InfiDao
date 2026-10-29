@@ -1,0 +1,14 @@
+{
+  "note": "可见回归；包含独立 v1 暴露的问题，不作为未见泛化证据。",
+  "poetry": [
+    {"query":"静夜思","expectedTitle":"靜夜思"},
+    {"query":"李白","expectedAuthor":"李白"},
+    {"query":"一蓑烟雨任平生","expectedTitle":"定风波"},
+    {"query":"仕途不顺仍想自勉","expectedTitle":"行路難三首 一"},
+    {"query":"重见多年未见的老友","expectedTitle":"贈衛八處士"}
+  ],
+  "core": [
+    {"query":"君子坦荡荡","expectedId":"rysxguji-lunyu-7-37"},
+    {"query":"富贵不能淫","expectedId":"rysxguji-mengzi-5-5"}
+  ]
+}

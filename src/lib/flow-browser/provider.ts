@@ -1,5 +1,7 @@
 import type { FlowChain, FlowEvent, FlowRequest } from '@/lib/flow/contracts';
 import { createPathId } from './storage';
+import { currentContentPacks } from './content-preference';
+import { contentPacksKey } from './content-preference';
 
 export type BrowserFlowBatch = Omit<FlowChain, 'kind'> & {
   kind: 'curated' | 'remote';
@@ -32,6 +34,11 @@ export function createRemoteFlowProvider(options: { fetch?: typeof fetch; timeou
   const fetcher = options.fetch || globalThis.fetch.bind(globalThis), base = options.baseURL || '';
   let session: Promise<void> | null = null;
   let sessionAbort: AbortController | null = null, consumers = 0, sessionReady = false;
+  const restoredScopes = new Map<string, string>();
+  function rememberScope(chain: BrowserFlowBatch) {
+    restoredScopes.set(chain.chainId, [...new Set([...(chain.contentScope?.packIds || ['core']), ...(chain.contentScope?.unavailable || [])])].sort().join(','));
+    while (restoredScopes.size > 64) restoredScopes.delete(restoredScopes.keys().next().value!);
+  }
   async function ensureSession(signal: AbortSignal) {
     if (!session) {
       sessionAbort = new AbortController(); sessionReady = false;
@@ -68,7 +75,9 @@ export function createRemoteFlowProvider(options: { fetch?: typeof fetch; timeou
       try {
         await ensureSession(controller.signal); controller.signal.throwIfAborted();
         const response = await fetcher(base + '/api/flow', { method: 'POST', credentials: 'same-origin', signal: controller.signal,
-          headers: { 'Content-Type': 'application/json', Accept: 'application/x-ndjson' }, body: JSON.stringify({ ...input, graph: true, op, requestId }) });
+          headers: { 'Content-Type': 'application/json', Accept: 'application/x-ndjson' }, body: JSON.stringify({
+            ...((op === 'open' && input.chainId && (!restoredScopes.has(input.chainId) || restoredScopes.get(input.chainId) === contentPacksKey(currentContentPacks()))) ? {} : { contentPacks: currentContentPacks() }),
+            ...input, graph: true, op, requestId }) });
         if (!response.ok) {
           if (response.status === 401) session = null;
           const body = await response.json().catch(() => null);
@@ -97,6 +106,7 @@ export function createRemoteFlowProvider(options: { fetch?: typeof fetch; timeou
             }
           }
           controller.signal.throwIfAborted();
+          rememberScope(chain);
           hooks.onEvent?.(event);
           if (event.type === 'done') result = chain;
         }
@@ -125,7 +135,7 @@ export function createRemoteFlowProvider(options: { fetch?: typeof fetch; timeou
   }
   return { kind: 'remote', open: (input = '', hooks) => run('open', typeof input === 'string' ? { seed: input } : input, hooks),
     resume: (input, hooks) => run('open', input, hooks), branch: (input, hooks) => run('branch', input, hooks),
-    next: (input, hooks) => run('next', input, hooks), restore() {} };
+    next: (input, hooks) => run('next', input, hooks), restore: rememberScope };
 }
 
 // The same reviewed local provider is used by the native preview. The browser
