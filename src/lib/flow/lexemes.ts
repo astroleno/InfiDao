@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FlowError, type FlowFrame, type FlowSelection } from "./contracts";
+import { FlowError, type FlowAnchor, type FlowFrame, type FlowSelection } from "./contracts";
 import { flowJson } from "./model";
 import type { ContentPackId } from '@/lib/content/contracts';
 import { planningScope, planningScopeGuidance } from './context';
@@ -27,9 +27,25 @@ export function selectedLexeme(frame: FlowFrame, selection: FlowSelection) {
 
 export async function planLexeme(frame: FlowFrame, selection: FlowSelection, focus: string, signal: AbortSignal, contentPacks: ContentPackId[] = ['core']) {
   const token = selectedLexeme(frame, selection);
-  const text = selection.surface ? frame[selection.surface] : frame.fullText;
+  return planWord(frame, token, selection.surface || 'quote', focus, signal, contentPacks);
+}
+
+// Stored anchors can span several segmented words. Their server-owned exact
+// surface range is checked separately, without broadening public selections.
+export async function planAnchor(frame: FlowFrame, anchor: FlowAnchor, focus: string, signal: AbortSignal, contentPacks: ContentPackId[]) {
+  const surface = anchor.surface || 'reflection';
+  const text = surface === 'quote' ? frame.quote : frame[surface];
+  if (anchor.start === undefined || anchor.end === undefined || text.slice(anchor.start, anchor.end) !== anchor.label) {
+    throw new FlowError('ANCHOR_EXPIRED', '这个入口已不在当前经句中，请重新选择。', 409);
+  }
+  const offset = surface === 'quote' ? frame.quoteStart : 0;
+  return planWord(frame, { label: anchor.label, start: offset + anchor.start, end: offset + anchor.end }, surface, focus, signal, contentPacks);
+}
+
+async function planWord(frame: FlowFrame, token: { label: string; start: number; end: number }, surface: 'quote' | 'meaning' | 'reflection', focus: string, signal: AbortSignal, contentPacks: ContentPackId[]) {
+  const text = surface === 'quote' ? frame.fullText : frame[surface];
   const context = { word: token.label, source: frame.source, chapter: frame.chapterLabel,
-    surface: selection.surface || 'quote' as const, quote: frame.quote,
+    surface, quote: frame.quote,
     before: text.slice(Math.max(0, token.start - 100), token.start),
     after: text.slice(token.end, token.end + 100), focus, targetScope: planningScope(contentPacks), ...(frame.work ? { work: frame.work } : {}) };
   const plan = z.object({ sense: z.string().min(1).max(120), direction: z.string().min(1).max(120),

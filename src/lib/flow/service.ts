@@ -7,7 +7,7 @@ import { resolveContentScope } from '@/lib/content/scope';
 import { flowJson, flowModelConfig } from "./model";
 import { reviewRelations } from "./relations";
 import { linkSurfaces } from "./anchors";
-import { lexicalBreaks, selectedLexeme, planLexeme } from "./lexemes";
+import { lexicalBreaks, selectedLexeme, planLexeme, planAnchor } from "./lexemes";
 import { measureFlowPhase, withFlowTimings, recordFlowCounts } from './timings';
 import { reserveFlowModels } from './model-budget';
 import { compactCandidates, familyDecisionGuidance, quotationKey, repeatsQuotation, planningScope, planningScopeGuidance } from './context';
@@ -211,6 +211,7 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
   }
   const graph = request.graph || parent?.chain.graph || resumed?.chain.graph;
   const scope = await resolveContentScope(request.contentPacks || resumed?.chain.contentScope?.packIds || parent?.chain.contentScope?.packIds);
+  const parentScopeChanged = parent && scope.fingerprint !== (parent.chain.contentScope?.fingerprint || (await resolveContentScope()).fingerprint);
   const rebaseEntry = request.rebaseFrom && request.restartFrom ? 'scope:' + scope.fingerprint + ':' +
     [request.restartFrom.sourceId, request.restartFrom.quoteStart, request.restartFrom.quoteEnd, request.selection?.start ?? '', request.selection?.end ?? ''].join(':') : undefined;
   if (resumed && scope.fingerprint !== (resumed.chain.contentScope?.fingerprint || (await resolveContentScope()).fingerprint)) throw new FlowError('CONTENT_SCOPE_CHANGED', '阅读范围已更新，可以从当前原句继续。', 409);
@@ -253,7 +254,7 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
     }
     // Completed replays return above. New work needs generation + review,
     // and one planning call only when no stored plan/anchor is available.
-    const needsPlan = !state && (parent ? !anchor : Boolean(request.restartFrom || request.seed?.trim()));
+    const needsPlan = !state && (parent ? !anchor || parentScopeChanged : Boolean(request.restartFrom || request.seed?.trim()));
     // Check that three foreground calls remain available without holding
     // them: the reader can spend those calls even while preparation finishes.
     await reserveFlowModels(needsPlan ? 3 : 2, request.prefetch ? 3 : undefined);
@@ -263,7 +264,9 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
       const priorQuotes = parent ? await precedingQuotes(parent, owner, store) : [];
       let focus: string, terms: string[], fromQuote: string | undefined, readingContext: FlowReadingContext | undefined;
       if (parent && parentFrame && !request.rebaseFrom) {
-        const plan = anchor || await measureFlowPhase('plan', () => planLexeme(parentFrame!, request.selection!, parent!.chain.focus, signal, scope.packIds));
+        const plan = anchor && !parentScopeChanged ? anchor : await measureFlowPhase('plan', () => request.selection ?
+          planLexeme(parentFrame!, request.selection, parent!.chain.focus, signal, scope.packIds) :
+          planAnchor(parentFrame!, anchor!, parent!.chain.focus, signal, scope.packIds));
         const surface = request.selection ? request.selection.surface || 'quote' : anchor?.surface || 'reflection';
         focus = '「' + (lexical || anchor!).label + '」在《' + parentFrame.source + '》' +
           (surface === 'meaning' ? '的现代释义中' : surface === 'reflection' ? '的生成联系中' : '原文此处') + '：' + plan.sense + '；' + plan.direction;
@@ -273,7 +276,7 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
         const end = lexical?.end ?? start + anchor!.label.length;
         readingContext = { word: (lexical || anchor!).label, surface: surface || 'quote', source: parentFrame.source,
           quote: parentFrame.quote, before: text.slice(Math.max(0, start - 60), start), after: text.slice(end, end + 60) };
-        if (anchor && (!anchor.target.sourceId.startsWith('poetry-') || scope.packIds.includes('poetry')) && !repeatsQuotation(anchor.target.quote, graph ? [parentFrame.quote] : priorQuotes)) {
+        if (anchor && !parentScopeChanged && (!anchor.target.sourceId.startsWith('poetry-') || scope.packIds.includes('poetry')) && !repeatsQuotation(anchor.target.quote, graph ? [parentFrame.quote] : priorQuotes)) {
           const passage = await lookupPassage(anchor.target.sourceId);
           checkedQuote(passage, anchor.target.quote);
           // Show the verified quotation immediately. Whether it needs a gloss
@@ -304,7 +307,7 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
           seed, seedOrigin: seed ? 'user' : 'example', focus, parentChainId: parent?.chain.chainId || null,
           entry: parentFrame ? { fromFrameId: parentFrame.id, anchorId: (lexical || anchor)?.id || rebaseEntry || 'scope:' + scope.fingerprint, label: (lexical || anchor)?.label || readingContext?.word || '按新范围继续' } : null,
           frames: head ? [head] : [], cursor: '0', exhausted: false, kind: 'remote', contentScope: scope, ...(graph ? { graph: true as const } : {}) } };
-      state = await store.commitHead(owner, lease, state, parent && parentFrame ? { id: parent.chain.chainId, edge: parentFrame.id + ':' + ((lexical || anchor)?.id || rebaseEntry || 'scope:' + scope.fingerprint) + ':scope:' + scope.fingerprint } : undefined);
+      state = await store.commitHead(owner, lease, state, parent && parentFrame ? { id: parent.chain.chainId, edge: parentFrame.id + ':' + ((lexical || anchor)?.id || rebaseEntry || 'scope:' + scope.fingerprint) + ':scope:' + scope.fingerprint + ':prompt:' + FLOW_PROMPT_VERSION } : undefined);
     }
     if (!state) throw new FlowError('CHAIN_EXPIRED', '这条链的在线会话已结束，已保存的经文仍可阅读。', 410);
     assertCurrent();
