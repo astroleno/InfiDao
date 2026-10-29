@@ -1,4 +1,11 @@
 import type { PassageRecord } from '@/types';
+import type { ContentPackId } from '@/lib/content/contracts';
+import coreManifest from '../../../data/corpus-manifest.json';
+
+export const planningScopeGuidance = 'targetScope 是本次新目标的可用来源。terms 必须包含这些来源中可检索的原文短语。已读诗句可以作为理解起点；当 poetryEnabled=false 时，应将当前词义或问题转向 coreSources 中相近或可对照的原文，不再用唐宋诗句或来路原句反复检索。不要仅凭同字联系，不承诺一定存在合适目标。';
+export function planningScope(contentPacks: ContentPackId[] = ['core']) {
+  return { coreSources: Object.keys(coreManifest.works), poetryEnabled: contentPacks.includes('poetry') };
+}
 
 // The detailed modern decision guidance belongs to a reader's family question,
 // not every later classical word or story mentioning a parent.

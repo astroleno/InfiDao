@@ -2,7 +2,7 @@ import { z } from "zod";
 import { contentPackIdsSchema, type ContentScope, type WorkReference } from '@/lib/content/contracts';
 
 export const FLOW_VERSION = "flow-v1";
-export const FLOW_PROMPT_VERSION = "connected-text-v15-poetry";
+export const FLOW_PROMPT_VERSION = "connected-text-v16-poetry-scope";
 export const flowRelationTypeSchema = z.enum(['related', 'similar', 'contrast', 'elaboration', 'application', 'cause']);
 export type FlowRelationType = z.infer<typeof flowRelationTypeSchema>;
 export const flowKnowledgeSchema = z.object({

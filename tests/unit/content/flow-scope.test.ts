@@ -1,10 +1,11 @@
 /** @jest-environment node */
 import { runFlow } from '@/lib/flow/service';
 import { flowJson } from '@/lib/flow/model';
-import { candidatesFor, flowCorpus } from '@/lib/flow/candidates';
+import { candidatesFor, flowCorpus, planFocus } from '@/lib/flow/candidates';
 import { resolveContentScope } from '@/lib/content/scope';
 import { createSessionStore, MemoryDocumentBackend } from '@/lib/flow/session-store';
 import type { FlowChain, FlowEvent, FlowRequest } from '@/lib/flow/contracts';
+import { FLOW_PROMPT_VERSION } from '@/lib/flow/contracts';
 import type { PassageRecord } from '@/types';
 jest.mock('@/lib/flow/model',()=>({flowJson:jest.fn(),flowModelConfig:()=>({model:'test'})}));
 jest.mock('@/lib/flow/relations',()=>({reviewRelations:jest.fn(async frames=>frames)}));
@@ -17,8 +18,10 @@ function fixture(){let seq=0;const store=createSessionStore(new MemoryDocumentBa
 test('poetry completed resume reuses the exact generation key without generating again',async()=>{
   const f=fixture(),reserve=jest.spyOn(f.store,'reserve');jest.mocked(flowJson).mockResolvedValue(generated(0));
   await f.run({op:'open',requestId:'initial',seed:'月色',contentPacks:['core','poetry']});
+  expect(planFocus).toHaveBeenCalledWith('月色',expect.any(AbortSignal),['core','poetry']);
   const root=f.chain();await f.run({op:'open',requestId:'resume',chainId:root.chainId});
   expect(reserve.mock.calls[1]![1].key).toBe(reserve.mock.calls[0]![1].key);
+  expect(reserve.mock.calls[0]![1].key).toContain(':prompt:'+FLOW_PROMPT_VERSION);
   expect(f.chain().chainId).toBe(root.chainId);expect(flowJson).toHaveBeenCalledTimes(1);
 });
 test('changed scope is rejected before generation and does not consume the old cursor',async()=>{
@@ -40,5 +43,6 @@ test('distinct full-source words coexist and a repeated word replays its own chi
   await f.run(inputs[1]!);const b=f.chain();
   expect(a.chainId).not.toBe(b.chainId);expect(Object.values((await f.store.getChain('owner',root.chainId)).branches)).toEqual(expect.arrayContaining([a.chainId,b.chainId]));
   const calls=jest.mocked(flowJson).mock.calls.length;await f.run({...inputs[0]!,requestId:'repeat'});expect(f.chain().chainId).toBe(a.chainId);expect(flowJson).toHaveBeenCalledTimes(calls);
+  expect(jest.mocked(flowJson).mock.calls.some(([,input])=>(input as {targetScope?:{poetryEnabled:boolean}}).targetScope?.poetryEnabled===false)).toBe(true);
   expect(resolveContentScope).toHaveBeenCalled();
 });
