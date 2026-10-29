@@ -67,12 +67,16 @@ async function main() {
   const head = git('rev-parse', 'HEAD');
   if (args['source-ref']) {
     if (git('rev-parse', `${args['source-ref']}^{commit}`) !== head) fail('--source-ref must be the checked-out HEAD');
-    if (git('status', '--porcelain', '--untracked-files=all', '--', ...directories, ...files)) {
-      fail('--source-ref requires clean release inputs');
-    }
   }
-  const relativeFiles = (await Promise.all([...directories, ...files].map(name => walk(join(root, name)))))
-    .flat().map(path => relative(root, path).split(sep).join('/'))
+  // Commit mode reads Git objects, so unrelated local edits cannot enter a
+  // production archive and need not be stashed or temporarily overwritten.
+  const committed = args['source-ref'] ? git('ls-tree', '-rz', head, '--', ...directories, ...files).split('\0').filter(Boolean).map(entry => {
+    const [info, file] = entry.split('\t');
+    if (!/^100(?:644|755) blob [0-9a-f]{40}$/.test(info || '') || !file) fail('commit input is not a regular file');
+    return file;
+  }) : null;
+  const relativeFiles = (committed || (await Promise.all([...directories, ...files].map(name => walk(join(root, name)))))
+    .flat().map(path => relative(root, path).split(sep).join('/')))
     .filter(path => !excluded.has(path))
     .sort();
   if (relativeFiles.some(path => /(^|\/)(?:\.env[^/]*|project\.private\.config\.json|node_modules|\.git)(?:\/|$)/.test(path) ||
@@ -82,7 +86,12 @@ async function main() {
   await mkdir(source);
   const sourceHash = createHash('sha256');
   for (const path of relativeFiles) {
-    const bytes = await readFile(join(root, path));
+    let bytes;
+    if (committed) {
+      const result = spawnSync('git', ['show', `${head}:${path}`], {cwd:root,maxBuffer:256*1024*1024});
+      if (result.status !== 0) fail(`cannot read committed input: ${path}`);
+      bytes = result.stdout;
+    } else bytes = await readFile(join(root, path));
     sourceHash.update(path).update('\0').update(bytes).update('\0');
     const dest = join(source, path);
     await mkdir(dirname(dest), { recursive: true });
