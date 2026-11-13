@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { FlowStream } from '@/components/flow/FlowStream';
 import { FlowWaiting } from '@/components/flow/FlowWaiting';
 import type { FlowFrame } from '@/lib/flow/contracts';
@@ -657,4 +657,39 @@ test('switching the liquid candidate preserves entrance, ink progress, pause and
     view.unmount(); raf.mockRestore(); cancel.mockRestore(); now.mockRestore();
     document.documentElement.style.removeProperty('--flow-classic-family');
   }
+});
+
+describe('the loading light hands off to real lettering', () => {
+  const sized = (name: 'clientHeight' | 'clientWidth', value: number) =>
+    jest.spyOn(HTMLElement.prototype, name, 'get').mockReturnValue(value);
+  beforeEach(() => { jest.useFakeTimers(); sized('clientHeight', 600); sized('clientWidth', 390); });
+  // Unmount while the fake animation frame API still exists.
+  afterEach(() => { cleanup(); jest.restoreAllMocks(); jest.useRealTimers(); });
+
+  test('reduced motion is ready as soon as passages exist', () => {
+    const onVisualReady = jest.fn();
+    render(<FlowStream {...props} onVisualReady={onVisualReady} />);
+    expect(onVisualReady).toHaveBeenCalledTimes(1);
+  });
+
+  test('the glass announces its first drawn passage, once', () => {
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement) => ({
+      draw: jest.fn(() => { canvas.dataset.optics = 'ready'; }), destroy: jest.fn(),
+    }) as unknown as StreamGlass);
+    const onVisualReady = jest.fn();
+    render(<FlowStream {...props} reducedMotion={false} paused={false} onVisualReady={onVisualReady} />);
+    act(() => { jest.advanceTimersByTime(100); });
+    expect(onVisualReady).toHaveBeenCalledTimes(1);
+    act(() => { jest.advanceTimersByTime(2000); });
+    expect(onVisualReady).toHaveBeenCalledTimes(1);
+  });
+
+  test('a stalled glass never holds the reader behind the light', () => {
+    const onVisualReady = jest.fn();
+    render(<FlowStream {...props} reducedMotion={false} onVisualReady={onVisualReady} />);
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(onVisualReady).not.toHaveBeenCalled();
+    act(() => { jest.advanceTimersByTime(400); });
+    expect(onVisualReady).toHaveBeenCalledTimes(1);
+  });
 });

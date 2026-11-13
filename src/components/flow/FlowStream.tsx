@@ -24,6 +24,7 @@ import styles from './flow.module.css';
 // Active-passage updates retain the native text subtree for every other
 // passage. The same buttons keep their identity and keyboard focus.
 const RetainedLinkedText = memo(LinkedText);
+const VISUAL_READY_TIMEOUT_MS = 1400;
 
 export type FlowArrival = { id: string; sourceKey: string; targetKey: string; label: string };
 
@@ -38,6 +39,8 @@ type Props = {
   navigation?: Pick<ComponentProps<typeof FlowMenu>, 'onThought' | 'onLibrary' | 'libraryDisabled' | 'motionCandidate' | 'origins' | 'poetry'>;
   /** Comparison fixtures may start settled; reader materials never disable entry. */
   settleEntrance?: boolean;
+  /** Keeps the drawn lettering still until the loading light hands off. */
+  holdEntrance?: boolean;
   pending: boolean;
   connecting: FlowSelection | null;
   arrival?: FlowArrival | null;
@@ -98,6 +101,14 @@ export function FlowStream(props: Props) {
   const menuGestureFor = useRef<string | null>(null);
   const suppressPressClick = useRef(false);
   const opticalHit = useRef<(x: number, y: number) => HTMLElement | null | undefined>(() => undefined);
+  // The loading light hands off only once the glass shows real lettering.
+  const visualAnnounced = useRef(false);
+  const announceVisual = useRef(() => {
+    if (visualAnnounced.current) return;
+    visualAnnounced.current = true;
+    live.current.onVisualReady();
+    optics.current();
+  });
   const contentEntries = useMemo(() => props.entries.map(entry => ({
     entry,
     select: (selection: Parameters<ComponentProps<typeof LinkedText>['onSelect']>[0]) => {
@@ -253,7 +264,7 @@ export function FlowStream(props: Props) {
     const visibleParts: Part[] = [], visibleWords: Word[] = [];
     let previousWords = new Set<Word>(), nextWords = new Set<Word>();
     const planner = new StreamFramePlanner();
-    let settledAll = false, nextWordId = 0;
+    let settledAll = false, nextWordId = 0, lettered = false;
     let passedUntil = -Infinity, frameWordsVisited = 0;
     // Local diagnostics opt in before mounting. Normal reading does not time,
     // copy or publish per-frame records, nor read back GPU results.
@@ -285,6 +296,12 @@ export function FlowStream(props: Props) {
       const scrollTop = scrollMotion.position(panel.scrollTop), activeElement = document.activeElement;
       fastManualScroll = manualScroll.sample(scrollTop, time, height);
       const canvasOwnsGlyphs = !live.current.reducedMotion && glassRef.current?.dataset.optics === 'ready';
+      // The previous frame paid for rasterization and lazy programs; this one
+      // is warm, so the loading light may hand off now.
+      if (lettered && !visualAnnounced.current) announceVisual.current();
+      // Behind the loading light the glass rasterizes still lettering first;
+      // the ink reveal starts with the handoff instead of under the cover.
+      const holdEntrance = canvasOwnsGlyphs && (!visualAnnounced.current || !!live.current.holdEntrance);
       const variant = live.current.motionVariant || 'liquid-live';
       let stagger = 0, moving = false;
       const settleAll = !!live.current.settleEntrance || live.current.reducedMotion;
@@ -308,7 +325,7 @@ export function FlowStream(props: Props) {
           else part.motion.pause(time);
           part.ink.finish();
         }
-        if (part.top - scrollTop < height - 24 && part.bottom > scrollTop) {
+        if (!holdEntrance && part.top - scrollTop < height - 24 && part.bottom > scrollTop) {
           const delay = part.motion.waiting ? stagger++ * 90 : 0;
           part.motion.begin(time, delay);
           part.ink.begin(time, delay);
@@ -416,6 +433,7 @@ export function FlowStream(props: Props) {
       const started = probe ? performance.now() : 0;
       glass?.draw(runs, width, height, live.current.reducedMotion, bend, plan.fontRevision, plan);
       if (probe) drawMs += performance.now() - started;
+      if (runs.length && glassRef.current?.dataset.optics === 'ready' && !lettered) { lettered = true; moving = true; }
       drawn = { settings: bend, hits };
       return moving;
     };
@@ -616,11 +634,19 @@ export function FlowStream(props: Props) {
     }
     previousFlow.current = { paused: props.paused, revision: props.restore.revision };
     optics.current();
-  }, [props.paused, props.reducedMotion, props.restore.revision, props.motionVariant]);
+  }, [props.paused, props.reducedMotion, props.restore.revision, props.motionVariant, props.holdEntrance]);
   const count = props.entries.length;
   useEffect(() => {
-    if (count) live.current.onVisualReady();
-  }, [count]);
+    if (!count || visualAnnounced.current) return undefined;
+    const optics = glassRef.current?.dataset.optics;
+    if (props.reducedMotion || optics === 'reduced' || optics === 'unavailable' || optics === 'lost') {
+      announceVisual.current();
+      return undefined;
+    }
+    // Never hold the reader behind the loading light if the glass stalls.
+    const timer = window.setTimeout(() => announceVisual.current(), VISUAL_READY_TIMEOUT_MS);
+    return () => window.clearTimeout(timer);
+  }, [count, props.reducedMotion]);
 
   const pause = () => {
     intended.current = false;
