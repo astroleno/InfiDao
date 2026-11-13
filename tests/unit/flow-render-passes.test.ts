@@ -240,3 +240,19 @@ test.each([false, true])('GPU glyph sources share the original compositor and re
   renderer.destroy();
   for (const texture of Object.values(sources)) expect(gl.deleteTexture).not.toHaveBeenCalledWith(texture);
 });
+
+test.each([[false, .8, 9], [true, 0, 0]])('the Bend pass receives scroll sheen and motion blur (reduced motion %s)', (reducedMotion, sheen, blur) => {
+  const gl = new Proxy({ viewport: jest.fn(), texImage2D: jest.fn(), uniform1f: jest.fn(), isContextLost: () => false }, {
+    get: (target: any, key) => key in target ? target[key] : () => {},
+  });
+  const bendProgram = { program: {}, uniforms: { bendSheen: 'sheen', bendBlur: 'blur' } };
+  const renderer = streamHarness(gl, {
+    canvas: { width: 1440, height: 900 }, glassProgram: 'original-glass', reducedMotion,
+    backgroundProgram: 'background', bendProgram, glass: 'cylinder', backgroundQuad: 'quad', mesh: jest.fn(),
+    composite: { buffer: 3, texture: 'composed', width: 1440, height: 900 },
+    targets: [{ buffer: 1, texture: 'source', width: 720, height: 450 }, { buffer: 2, texture: 'rear', width: 720, height: 450 }],
+  });
+  renderer.drawSource({}, {}, { zone: 1 / 6, rounding: .12, angle: 1.2, perspective: .84, sheen: .8, blur: 9 });
+  expect(gl.uniform1f).toHaveBeenCalledWith('sheen', sheen);
+  expect(gl.uniform1f).toHaveBeenCalledWith('blur', blur);
+});

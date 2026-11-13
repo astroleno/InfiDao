@@ -54,3 +54,14 @@ test('only perceptible steps change the drawn level', () => {
   drive(energy, 2400, 32, 96);
   expect(energy.level).toBeGreaterThan(level);
 });
+
+test('motion blur follows the lit level and vanishes at rest', () => {
+  const energy = new OpticalEnergy();
+  drive(energy, 12, 0, 1000);
+  expect(energy.blur).toBe(0);
+  drive(energy, 2400, 1016, 1200);
+  expect(energy.blur).toBeGreaterThan(OPTICAL_ENERGY.maxBlurPx * .6);
+  expect(energy.blur).toBeLessThanOrEqual(OPTICAL_ENERGY.maxBlurPx);
+  energy.sample(5000, 1216, true);
+  expect(energy.blur).toBe(0);
+});

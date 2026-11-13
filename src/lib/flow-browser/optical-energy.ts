@@ -3,6 +3,8 @@
 export const OPTICAL_ENERGY = {
   restDispersion: .45, peakDispersion: 1,
   restSheen: .35,
+  // CSS px. The fold smears content along the scroll direction at full energy.
+  maxBlurPx: 14,
   // px/s. Automatic reading advances 12px/s; manual flicks start near 700px/s.
   quietSpeed: 60, fullSpeed: 1400,
   // Frame gaps and saved-position jumps are not motion the reader produced.
@@ -41,6 +43,10 @@ export class OpticalEnergy {
   get dispersion() {
     const value = this.level / OPTICAL_ENERGY.steps;
     return OPTICAL_ENERGY.restDispersion + (OPTICAL_ENERGY.peakDispersion - OPTICAL_ENERGY.restDispersion) * value;
+  }
+  get blur() {
+    if (this.reduced) return 0;
+    return OPTICAL_ENERGY.maxBlurPx * this.level / OPTICAL_ENERGY.steps;
   }
   get sheen() {
     if (this.reduced) return 0;

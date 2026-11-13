@@ -348,7 +348,7 @@ export function FlowStream(props: Props) {
         else activeParts.delete(part);
       }
       const bend: BendSettings = { ...streamBendSettings(width, height, variant, scrollTop),
-        dispersion: energy.dispersion, sheen: energy.sheen };
+        dispersion: energy.dispersion, sheen: energy.sheen, blur: energy.blur };
       const zone = bend.zone * height;
       if (variant === 'liquid-settle' || variant === 'liquid-live' || variant === 'liquid-live-before') {
         let motion = surfaceMotions.get(variant);

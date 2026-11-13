@@ -195,6 +195,7 @@ uniform float u_bendNoisePhase;
 uniform sampler2D u_bendLookup;
 uniform float u_bendLookupEnabled;
 uniform float u_bendSheen;
+uniform float u_bendBlur;
 uniform sampler2D u_inkMeta;
 uniform vec2 u_resolution;
 varying vec2 v_uv;
@@ -307,6 +308,19 @@ void main() {
   alpha *= smoothstep(vec2(0.0), feather, source).x;
   alpha *= 1.0 - smoothstep(1.0 - feather.x, 1.0, source.x);
   vec3 color = texture2D(u_texture, clamp(source, vec2(0.00001), vec2(0.99999))).rgb;
+  if (u_bendBlur > 0.0 && z < 0.0) {
+    // Lettering slides along the sheet while scrolling. Average a short trail
+    // in source space, so the fold foreshortens it like the content itself;
+    // it grows from the fold's start towards the rim and leaves no seam.
+    float trail = u_bendBlur * smoothstep(0.0, 0.3, -z / max(rimDepth, 1e-7));
+    vec2 tap = vec2(0.0, trail / u_resolution.y / 6.0);
+    vec3 sum = color;
+    for (int i = 1; i <= 3; i++) {
+      sum += texture2D(u_texture, clamp(source + tap * float(i), vec2(0.00001), vec2(0.99999))).rgb;
+      sum += texture2D(u_texture, clamp(source - tap * float(i), vec2(0.00001), vec2(0.99999))).rgb;
+    }
+    color = sum / 7.0;
+  }
   if (u_bendLiquid > 0.5) color = liquidOptics(source, color);
   else if (u_bendAdhesion > 0.0) color = meniscus(source, color);
   if (u_bendSheen > 0.0 && z < 0.0) {

@@ -18,6 +18,8 @@ export type BendSettings = {
   // Scroll energy: glass dispersion (0..1) and the rim highlight strength.
   dispersion?: number;
   sheen?: number;
+  // Motion blur length along the fold, in CSS px.
+  blur?: number;
 };
 
 export const { bendSettings, bendSourcePoint, bendDisplayPoint } = require('../../../miniprogram/flow/stream-bend') as {
