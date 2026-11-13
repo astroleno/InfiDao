@@ -279,7 +279,7 @@ function makeProgram(gl, fragment, vertex = VERTEX) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','bendAdhesion','bendScroll','bendLiquid','bendCaustics','bendContacts','bendPerlin','bendNoisePhase','bendLookup','bendLookupEnabled','inkMeta','inkMetaNext','inkMetaMix','inkEnabled','sourceWindow'].forEach(name => {
+  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','bendAdhesion','bendScroll','bendLiquid','bendCaustics','bendContacts','bendPerlin','bendNoisePhase','bendLookup','bendLookupEnabled','bendSheen','inkMeta','inkMetaNext','inkMetaMix','inkEnabled','sourceWindow'].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   });
   for (const name of ['noiseHashContact', 'noiseHashSurface', 'noiseContactBounds', 'noiseSurfaceBounds', 'noiseHashEnabled']) {
@@ -1020,6 +1020,7 @@ class StreamGlassRenderer extends WheelRenderer {
       gl.uniform1f(u.bendContacts, liquid && bend.contacts ? 1 : 0);
       gl.uniform1f(u.bendPerlin, liquid && bend.perlin ? 1 : 0);
       gl.uniform1f(u.bendNoisePhase, bend.noisePhase || 0);
+      gl.uniform1f(u.bendSheen, this.reducedMotion ? 0 : bend.sheen || 0);
       gl.uniform1i(u.bendLookup, 3);
       gl.uniform1f(u.bendLookupEnabled, this.bendLookupAvailable ? 1 : 0);
       this.drawSurfaceQuad(program);

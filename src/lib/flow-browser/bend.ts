@@ -15,6 +15,9 @@ export type BendSettings = {
   // A third noise dimension advances while scrolling, including in reverse.
   perlin?: boolean;
   noisePhase?: number;
+  // Scroll energy: glass dispersion (0..1) and the rim highlight strength.
+  dispersion?: number;
+  sheen?: number;
 };
 
 export const { bendSettings, bendSourcePoint, bendDisplayPoint } = require('../../../miniprogram/flow/stream-bend') as {

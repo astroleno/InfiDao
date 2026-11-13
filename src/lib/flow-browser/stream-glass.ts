@@ -13,6 +13,7 @@ type TextPaint = { run: OpticalRun; metrics: TextMetrics; alpha: number; filter:
 type TextLayer = { canvas: HTMLCanvasElement; context: CanvasRenderingContext2D };
 type GlassEngine = {
   gl?: WebGLRenderingContext;
+  streamDispersion?: number;
   drawSource: (source: HTMLCanvasElement, foreground: HTMLCanvasElement, bend: BendSettings, ink?: HTMLCanvasElement, adhesion?: HTMLCanvasElement, sourceChanged?: boolean, surfacePair?: SurfacePair, sourceWindow?: SourceWindow) => void;
   drawGpuSource?: (sources: GpuGlyphSources, bend: BendSettings, sourceChanged: boolean, sourceWindow: SourceWindow) => void;
   destroy: () => void;
@@ -429,6 +430,7 @@ export class StreamGlass {
         this.sourceRegion = undefined;
         this.lastRuns = undefined;
       }
+      if (this.engine) this.engine.streamDispersion = shape.dispersion ?? 1;
       if (this.fontRevision !== fontRevision) {
         this.metrics.clear();
         this.nativePositions.clear();

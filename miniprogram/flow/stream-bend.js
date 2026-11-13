@@ -194,6 +194,7 @@ uniform float u_bendPerlin;
 uniform float u_bendNoisePhase;
 uniform sampler2D u_bendLookup;
 uniform float u_bendLookupEnabled;
+uniform float u_bendSheen;
 uniform sampler2D u_inkMeta;
 uniform vec2 u_resolution;
 varying vec2 v_uv;
@@ -308,6 +309,18 @@ void main() {
   vec3 color = texture2D(u_texture, clamp(source, vec2(0.00001), vec2(0.99999))).rgb;
   if (u_bendLiquid > 0.5) color = liquidOptics(source, color);
   else if (u_bendAdhesion > 0.0) color = meniscus(source, color);
+  if (u_bendSheen > 0.0 && z < 0.0) {
+    // The fold catches an overhead light on one narrow band. Each wavelength
+    // meets it at a slightly different depth, so only that bright edge splits
+    // into colour. The hot spot travels with the reading position.
+    float depth = clamp(-z / max(rimDepth, 1e-7), 0.0, 1.0);
+    vec3 d = vec3(depth) + vec3(-0.03, 0.0, 0.03) * (0.5 + u_bendSheen);
+    vec3 band = smoothstep(0.10, 0.22, d) * (1.0 - smoothstep(0.28, 0.48, d));
+    float sweep = 0.5 + 0.36 * sin(u_bendScroll / 170.0);
+    float spot = (v_uv.x - sweep) / 0.2;
+    float lateral = 0.25 + 0.75 * exp(-spot * spot);
+    color += band * vec3(0.94, 0.97, 1.0) * lateral * 0.12 * u_bendSheen;
+  }
   gl_FragColor = vec4(mix(vec3(2.0, 3.0, 3.0) / 255.0, color, alpha), 1.0);
 }
 `;

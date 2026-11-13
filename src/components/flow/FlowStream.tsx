@@ -7,6 +7,7 @@ import { quoteKey } from '@/lib/flow-browser/library';
 import { streamBendSettings, streamProjection, type StreamMotionVariant } from '@/lib/flow-browser/motion-profile';
 import { EntranceMotion, InkMotion } from '@/lib/flow-browser/entrance-motion';
 import { ScrollNoiseMotion, SettlingScrollNoiseMotion } from '@/lib/flow-browser/liquid-motion';
+import { OpticalEnergy } from '@/lib/flow-browser/optical-energy';
 import { StreamGlass, type OpticalRun } from '@/lib/flow-browser/stream-glass';
 import { StreamSceneIndex } from '@/lib/flow-browser/stream-scene';
 import { StreamFramePlanner } from '@/lib/flow-browser/stream-frame-plan';
@@ -279,6 +280,7 @@ export function FlowStream(props: Props) {
     let glass: StreamGlass | null = null;
     let liquidNoise: ScrollNoiseMotion | undefined;
     const surfaceMotions = new Map<StreamMotionVariant, SettlingScrollNoiseMotion>();
+    const energy = new OpticalEnergy();
     const cachedRuns: OpticalRun[] = [], cachedHits: Hit[] = [];
 
     const finishPart = (part: Part) => {
@@ -304,6 +306,11 @@ export function FlowStream(props: Props) {
       const holdEntrance = canvasOwnsGlyphs && (!visualAnnounced.current || !!live.current.holdEntrance);
       const variant = live.current.motionVariant || 'liquid-live';
       let stagger = 0, moving = false;
+      // Recompose the glass only when its lit level visibly changes.
+      const energyLevel = energy.level;
+      energy.sample(scrollTop, time, live.current.reducedMotion);
+      if (energy.level !== energyLevel) planner.invalidate('motion');
+      moving = energy.moving;
       const settleAll = !!live.current.settleEntrance || live.current.reducedMotion;
       if (settleAll && !settledAll) parts.forEach(finishPart);
       settledAll = settleAll;
@@ -340,7 +347,9 @@ export function FlowStream(props: Props) {
         if ((!part.motion.done && !part.motion.waiting) || inkPhase === 'entering' || inkPhase === 'paused') activeParts.add(part);
         else activeParts.delete(part);
       }
-      const bend: BendSettings = streamBendSettings(width, height, variant, scrollTop), zone = bend.zone * height;
+      const bend: BendSettings = { ...streamBendSettings(width, height, variant, scrollTop),
+        dispersion: energy.dispersion, sheen: energy.sheen };
+      const zone = bend.zone * height;
       if (variant === 'liquid-settle' || variant === 'liquid-live' || variant === 'liquid-live-before') {
         let motion = surfaceMotions.get(variant);
         if (!motion) {
@@ -462,7 +471,7 @@ export function FlowStream(props: Props) {
         probe({ time, cpuMs, totalWords: words.length, visibleWords: cachedRuns.length,
           indexedWordsVisited: frameWordsVisited, activeParts: activeParts.size, visibleParts: visibleParts.length,
           scrollTop: top, nativeScrollTop: panel.scrollTop, scrollRemainder: remainder,
-          fastManualScroll,
+          fastManualScroll, opticalEnergy: energy.value,
           drawMs, sceneMs: cpuMs - drawMs, layout: { ...layoutProbe }, render: glass?.diagnostics });
       }
     };
