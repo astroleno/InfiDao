@@ -2,12 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-/** The loading quotation is shown whole for one beat before it dissolves. */
+/** The loading quotation is shown whole for one beat before it leaves. */
 export const QUOTE_HOLD_MS = 650;
+/** Matches the quotation's fade in flow.module.css. The lettering inks in only
+ * after it has gone, so the same words never stand in two layouts at once. */
+export const QUOTE_FADE_MS = 260;
 
 export function useLoadingHandoff(quote: string, reducedMotion: boolean) {
   const [visualReady, setVisualReady] = useState(false);
   const [ready, setReady] = useState(false);
+  const [revealed, setRevealed] = useState(false);
   const quoteAt = useRef<number | null>(null);
 
   useEffect(() => {
@@ -23,6 +27,13 @@ export function useLoadingHandoff(quote: string, reducedMotion: boolean) {
     return () => window.clearTimeout(timer);
   }, [visualReady, ready, reducedMotion]);
 
+  useEffect(() => {
+    if (!ready || revealed) return undefined;
+    if (reducedMotion || quoteAt.current === null) { setRevealed(true); return undefined; }
+    const timer = window.setTimeout(() => setRevealed(true), QUOTE_FADE_MS);
+    return () => window.clearTimeout(timer);
+  }, [ready, revealed, reducedMotion]);
+
   const markVisualReady = useCallback(() => setVisualReady(true), []);
-  return { ready, markVisualReady };
+  return { ready, revealed, markVisualReady };
 }

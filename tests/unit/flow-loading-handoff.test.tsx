@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import { QUOTE_HOLD_MS, useLoadingHandoff } from '@/components/flow/useLoadingHandoff';
+import { QUOTE_FADE_MS, QUOTE_HOLD_MS, useLoadingHandoff } from '@/components/flow/useLoadingHandoff';
 
 beforeEach(() => jest.useFakeTimers());
 afterEach(() => jest.useRealTimers());
@@ -38,4 +38,22 @@ test('readiness is final once reached', () => {
   act(() => view.result.current.markVisualReady());
   view.rerender({ quote: '新的一句。' });
   expect(view.result.current.ready).toBe(true);
+});
+
+test('the lettering is revealed only after the quotation has left, never beneath it', () => {
+  const view = renderHook(() => useLoadingHandoff('物有本末。', false));
+  act(() => { jest.advanceTimersByTime(QUOTE_HOLD_MS + 50); });
+  act(() => view.result.current.markVisualReady());
+  expect(view.result.current.ready).toBe(true);
+  expect(view.result.current.revealed).toBe(false);
+  act(() => { jest.advanceTimersByTime(QUOTE_FADE_MS - 1); });
+  expect(view.result.current.revealed).toBe(false);
+  act(() => { jest.advanceTimersByTime(1); });
+  expect(view.result.current.revealed).toBe(true);
+});
+
+test.each([['', false], ['物有本末。', true]])('without a visible quotation (%s, reduced %s) reveal is immediate', (quote, reducedMotion) => {
+  const view = renderHook(() => useLoadingHandoff(quote, reducedMotion));
+  act(() => view.result.current.markVisualReady());
+  expect(view.result.current.revealed).toBe(true);
 });

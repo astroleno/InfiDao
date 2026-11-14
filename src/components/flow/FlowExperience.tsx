@@ -566,7 +566,7 @@ export function FlowExperience() {
         canContinue={!!chain?.cursor && !chain.exhausted && !flowError && frames.every(item => item.ready !== false)}
         onContinue={continueReading} onPrepareNext={() => controllerRef.current?.prepareNext()}
         onPause={() => pauseReading()} onResume={() => { if (!seedOpen && !libraryOpen && !reducedMotion) pauseReading(false); }}
-        onRead={handleReadEntry} onVisualReady={handoff.markVisualReady} holdEntrance={!handoff.ready}
+        onRead={handleReadEntry} onVisualReady={handoff.markVisualReady} holdEntrance={!handoff.revealed}
         onScroll={top => { readingScrollRef.current = top; }} onBranch={selection => void handleBranch(selection)}
         waiting={!seedOpen && (pending ? <FlowWaiting compact busy={awaitingQuote} label={connecting?.label} onCancel={() => controllerRef.current?.cancel()} />
           : canResume ? <FlowResume onResume={() => void controllerRef.current?.retry()} /> : errorFeedback)}
