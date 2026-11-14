@@ -14,6 +14,7 @@ type TextLayer = { canvas: HTMLCanvasElement; context: CanvasRenderingContext2D 
 type GlassEngine = {
   gl?: WebGLRenderingContext;
   streamDispersion?: number;
+  echoQuiet?: number;
   drawSource: (source: HTMLCanvasElement, foreground: HTMLCanvasElement, bend: BendSettings, ink?: HTMLCanvasElement, adhesion?: HTMLCanvasElement, sourceChanged?: boolean, surfacePair?: SurfacePair, sourceWindow?: SourceWindow) => void;
   drawGpuSource?: (sources: GpuGlyphSources, bend: BendSettings, sourceChanged: boolean, sourceWindow: SourceWindow) => void;
   destroy: () => void;
@@ -430,7 +431,7 @@ export class StreamGlass {
         this.sourceRegion = undefined;
         this.lastRuns = undefined;
       }
-      if (this.engine) this.engine.streamDispersion = shape.dispersion ?? 1;
+      if (this.engine) { this.engine.streamDispersion = shape.dispersion ?? 1; this.engine.echoQuiet = shape.echoQuiet ?? 0; }
       if (this.fontRevision !== fontRevision) {
         this.metrics.clear();
         this.nativePositions.clear();

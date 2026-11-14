@@ -5,14 +5,18 @@ import { ribbonProjection } from './ribbon-optics';
 export type StreamMotionVariant = 'current' | 'refine-before' | 'refine' | 'refine-strong' | 'liquid' | 'liquid-caustic' | 'liquid-contact' | 'liquid-flow' | 'liquid-settle' | 'liquid-live-before' | 'liquid-live' | 'unfold';
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
+// The reader's water clings to the rim without pulling lettering into drips.
+export const LIVE_ADHESION = .4;
+const LIVE_FOCUS_BLUR = .3;
 const smooth = (value: number) => value * value * (3 - 2 * value);
 
 export function streamBendSettings(width: number, height: number, variant: StreamMotionVariant = 'current', scrollTop = 0) {
   const shape = bendSettings(width, height);
   if (variant === 'liquid' || variant === 'liquid-caustic' || variant === 'liquid-contact' || variant === 'liquid-flow' || variant === 'liquid-settle' || variant === 'liquid-live-before' || variant === 'liquid-live') {
-    return { ...shape, adhesion: 1.2, adhesionScroll: scrollTop, liquid: true,
+    return { ...shape, adhesion: variant === 'liquid-live' ? LIVE_ADHESION : 1.2, adhesionScroll: scrollTop, liquid: true,
       caustics: variant === 'liquid' ? 0 : .24, contacts: variant === 'liquid-contact' || variant === 'liquid-flow' || variant === 'liquid-settle' || variant === 'liquid-live-before' || variant === 'liquid-live',
-      perlin: variant === 'liquid-flow' || variant === 'liquid-settle' || variant === 'liquid-live-before' || variant === 'liquid-live' };
+      perlin: variant === 'liquid-flow' || variant === 'liquid-settle' || variant === 'liquid-live-before' || variant === 'liquid-live',
+      ...(variant === 'liquid-live' ? { ripple: 1, echoQuiet: .8 } : {}) };
   }
   if (variant === 'refine' || variant === 'refine-strong') {
     return { ...shape, adhesion: variant === 'refine' ? .8 : 1.2, adhesionScroll: scrollTop };
@@ -45,7 +49,8 @@ export function streamProjection(input: Parameters<typeof ribbonProjection>[0], 
   const heldOpacity = 1 - smooth(clamp((depth - .48) / .5)) * .98;
   return {
     ...projection,
-    blur: focus * (refining ? 5.5 + mobile * 1.5 : 4) * (adhering ? 1 - rim * .62 : 1),
+    // Liquid glass bends content rather than fogging it; the reader keeps a trace of depth.
+    blur: focus * (refining ? 5.5 + mobile * 1.5 : 4) * (adhering ? 1 - rim * .62 : 1) * (variant === 'liquid-live' ? LIVE_FOCUS_BLUR : 1),
     opacity: adhering ? originalOpacity + (heldOpacity - originalOpacity) * .5 : originalOpacity,
     fire: (1 + rim * (refining ? .18 : .35)) * (adhering ? 1 + rim * .22 : 1),
   };

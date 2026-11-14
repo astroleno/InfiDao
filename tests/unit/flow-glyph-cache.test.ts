@@ -35,7 +35,9 @@ function harness(textureSize = 4096, profile = false) {
   } });
   const cache = new StreamGlyphCache(gl as WebGLRenderingContext, profile);
   const draw = (runs: OpticalRun[] = [run], changed = true, revision = 1, width = 390) => cache.draw(runs, width, 844, 1.5,
-    streamBendSettings(width, 844, 'liquid-live'), revision, measure,
+    // Frozen uploads were recorded at the original 1.2 adhesion; they guard
+    // the staging path, not the reader's tuning of its water.
+    { ...streamBendSettings(width, 844, 'liquid-live'), adhesion: 1.2 }, revision, measure,
     new Map(runs.map(item => [Math.round(item.y * 2), { left: 165, right: 225 }])), 0, Math.round(width * 1.5), changed);
   return { gl, cache, draw };
 }

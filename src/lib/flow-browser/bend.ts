@@ -20,6 +20,10 @@ export type BendSettings = {
   sheen?: number;
   // Motion blur length along the fold, in CSS px.
   blur?: number;
+  // Travelling water ripples and their dispersion on the folds (0..1).
+  ripple?: number;
+  // Quiets the glass's transmitted echoes behind each line (0..1).
+  echoQuiet?: number;
 };
 
 export const { bendSettings, bendSourcePoint, bendDisplayPoint } = require('../../../miniprogram/flow/stream-bend') as {

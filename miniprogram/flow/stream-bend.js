@@ -196,6 +196,7 @@ uniform sampler2D u_bendLookup;
 uniform float u_bendLookupEnabled;
 uniform float u_bendSheen;
 uniform float u_bendBlur;
+uniform float u_bendRipple;
 uniform sampler2D u_inkMeta;
 uniform vec2 u_resolution;
 varying vec2 v_uv;
@@ -281,6 +282,30 @@ vec3 foldEdge(float sy) {
   if (bestU < 0.0) return vec3(1.0, previousZ, 0.0);
   return vec3(edge + bestU, bestZ, 1.0);
 }
+vec3 foldSample(vec2 uv, float trail) {
+  vec3 color = texture2D(u_texture, clamp(uv, vec2(0.00001), vec2(0.99999))).rgb;
+  if (trail <= 0.0) return color;
+  // Lettering slides along the sheet while scrolling: a short trail in
+  // source space, which the fold foreshortens like the content itself.
+  vec2 tap = vec2(0.0, trail / u_resolution.y / 4.0);
+  for (int i = 1; i <= 2; i++) {
+    color += texture2D(u_texture, clamp(uv + tap * float(i), vec2(0.00001), vec2(0.99999))).rgb;
+    color += texture2D(u_texture, clamp(uv - tap * float(i), vec2(0.00001), vec2(0.99999))).rgb;
+  }
+  return color / 5.0;
+}
+// Glass rising out of water: three travelling waves on the fold's surface,
+// in material coordinates so they ride with the lettering. xy is the
+// refracted throw in CSS px, z the surface curvature that focuses light.
+vec3 rippleWave(vec2 point) {
+  vec2 p = vec2((point.x - 0.5) * u_resolution.x, (1.0 - point.y) * u_resolution.y + u_bendScroll);
+  float t = u_bendNoisePhase * 9.0;
+  vec2 k1 = vec2(0.019, 0.031), k2 = vec2(-0.027, 0.017), k3 = vec2(0.043, -0.011);
+  float p1 = dot(k1, p) - t, p2 = dot(k2, p) - t * 1.37 + 1.7, p3 = dot(k3, p) - t * 0.81 + 4.1;
+  vec2 drift = normalize(k1) * cos(p1) + normalize(k2) * cos(p2) * 0.75 + normalize(k3) * cos(p3) * 0.4;
+  float curvature = (sin(p1) + sin(p2) * 0.75 + sin(p3) * 0.4) / 2.15;
+  return vec3(drift / 2.15, curvature);
+}
 void main() {
   vec2 source = v_uv;
   float z = 0.0, alpha = 1.0;
@@ -307,19 +332,27 @@ void main() {
   vec2 feather = 1.5 / u_resolution;
   alpha *= smoothstep(vec2(0.0), feather, source).x;
   alpha *= 1.0 - smoothstep(1.0 - feather.x, 1.0, source.x);
-  vec3 color = texture2D(u_texture, clamp(source, vec2(0.00001), vec2(0.99999))).rgb;
-  if (u_bendBlur > 0.0 && z < 0.0) {
-    // Lettering slides along the sheet while scrolling. Average a short trail
-    // in source space, so the fold foreshortens it like the content itself;
-    // it grows from the fold's start towards the rim and leaves no seam.
-    float trail = u_bendBlur * smoothstep(0.0, 0.3, -z / max(rimDepth, 1e-7));
-    vec2 tap = vec2(0.0, trail / u_resolution.y / 6.0);
-    vec3 sum = color;
-    for (int i = 1; i <= 3; i++) {
-      sum += texture2D(u_texture, clamp(source + tap * float(i), vec2(0.00001), vec2(0.99999))).rgb;
-      sum += texture2D(u_texture, clamp(source - tap * float(i), vec2(0.00001), vec2(0.99999))).rgb;
-    }
-    color = sum / 7.0;
+  // Fold effects grow from the fold's start towards the rim, with no seam.
+  float submerged = z < 0.0 ? smoothstep(0.0, 0.3, -z / max(rimDepth, 1e-7)) : 0.0;
+  float trail = u_bendBlur * submerged;
+  float water = u_bendRipple * submerged;
+  vec3 color;
+  if (water > 0.0) {
+    vec3 wave = rippleWave(source);
+    vec2 shift = vec2(wave.x / u_resolution.x, -wave.y / u_resolution.y) * 3.4 * water;
+    // Fire: each wavelength refracts by a different amount through the same
+    // wave, so bright stroke edges split into moving, saturated colour. Red
+    // and blue are added as plain offsets from the unblurred centre: three
+    // straight-line taps instead of three looped, branching samples.
+    color = foldSample(source + shift, trail);
+    vec3 centre = texture2D(u_texture, clamp(source + shift, vec2(0.00001), vec2(0.99999))).rgb;
+    color.r += texture2D(u_texture, clamp(source + shift * 0.55, vec2(0.00001), vec2(0.99999))).r - centre.r;
+    color.b += texture2D(u_texture, clamp(source + shift * 1.45, vec2(0.00001), vec2(0.99999))).b - centre.b;
+    color = max(color, vec3(0.0));
+    // Crests focus light onto the lettering beneath them.
+    color *= 1.0 + 0.38 * wave.z * water;
+  } else {
+    color = foldSample(source, trail);
   }
   if (u_bendLiquid > 0.5) color = liquidOptics(source, color);
   else if (u_bendAdhesion > 0.0) color = meniscus(source, color);

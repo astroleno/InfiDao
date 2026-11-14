@@ -186,6 +186,7 @@ uniform float u_thickness;
 uniform float u_back;
 uniform float u_borderless;
 uniform float u_streamDispersion;
+uniform float u_echoQuiet;
 ${FOCUS}
 ${INK_GLSL}
 float random(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
@@ -244,6 +245,9 @@ void main() {
   // The far wall throws its echoes half a screen away, doubling rows onto
   // each other; keep it to a whisper so only the front fringe reads.
   light *= u_back > 0.5 ? 0.25 : 1.0;
+  // An opt-in reader keeps crisp lettering on clean dark glass: it quiets
+  // these transmitted echoes without touching the foreground glyphs.
+  light *= 1.0 - u_echoQuiet;
   // Rear and off-axis refraction softens with depth, like a real lens.
   light *= 1.0 - depthBlur() * 0.4;
   float readingFace = centerWeight() * smoothstep(0.45, 0.92, n.z);
@@ -279,7 +283,7 @@ function makeProgram(gl, fragment, vertex = VERTEX) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','bendAdhesion','bendScroll','bendLiquid','bendCaustics','bendContacts','bendPerlin','bendNoisePhase','bendLookup','bendLookupEnabled','bendSheen','bendBlur','inkMeta','inkMetaNext','inkMetaMix','inkEnabled','sourceWindow'].forEach(name => {
+  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','echoQuiet','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','bendAdhesion','bendScroll','bendLiquid','bendCaustics','bendContacts','bendPerlin','bendNoisePhase','bendLookup','bendLookupEnabled','bendSheen','bendBlur','bendRipple','inkMeta','inkMetaNext','inkMetaMix','inkEnabled','sourceWindow'].forEach(name => {
     uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   });
   for (const name of ['noiseHashContact', 'noiseHashSurface', 'noiseContactBounds', 'noiseSurfaceBounds', 'noiseHashEnabled']) {
@@ -447,6 +451,7 @@ class WheelRenderer {
     gl.uniform1f(u.streamReadability, this.streamReadability ? 1 : 0);
     gl.uniform1f(u.streamDispersion, this.streamReadability && !this.reducedMotion ? Math.max(0, Math.min(1, this.streamDispersion || 0)) : 0);
     gl.uniform1f(u.readingAmbient, this.readingAmbient || 0);
+    gl.uniform1f(u.echoQuiet, Math.max(0, Math.min(1, this.echoQuiet || 0)));
     gl.uniform1f(u.opticalProfile, this.opticalProfile ? 1 : 0);
     gl.uniform1f(u.chromaticStrength, this.reducedMotion ? 0 : 1);
     gl.uniform1f(u.edgeFadeStart, this.edgeFadeStart ?? 0.9);
@@ -1022,6 +1027,7 @@ class StreamGlassRenderer extends WheelRenderer {
       gl.uniform1f(u.bendNoisePhase, bend.noisePhase || 0);
       gl.uniform1f(u.bendSheen, this.reducedMotion ? 0 : bend.sheen || 0);
       gl.uniform1f(u.bendBlur, this.reducedMotion ? 0 : bend.blur || 0);
+      gl.uniform1f(u.bendRipple, this.reducedMotion ? 0 : bend.ripple || 0);
       gl.uniform1i(u.bendLookup, 3);
       gl.uniform1f(u.bendLookupEnabled, this.bendLookupAvailable ? 1 : 0);
       this.drawSurfaceQuad(program);
