@@ -8,6 +8,7 @@ import { streamBendSettings, streamProjection, type StreamMotionVariant } from '
 import { EntranceMotion, InkMotion } from '@/lib/flow-browser/entrance-motion';
 import { ScrollNoiseMotion, SettlingScrollNoiseMotion } from '@/lib/flow-browser/liquid-motion';
 import { OpticalEnergy } from '@/lib/flow-browser/optical-energy';
+import { IdleCadence } from '@/lib/flow-browser/idle-cadence';
 import { StreamGlass, type OpticalRun } from '@/lib/flow-browser/stream-glass';
 import { StreamSceneIndex } from '@/lib/flow-browser/stream-scene';
 import { StreamFramePlanner } from '@/lib/flow-browser/stream-frame-plan';
@@ -281,6 +282,8 @@ export function FlowStream(props: Props) {
     let liquidNoise: ScrollNoiseMotion | undefined;
     const surfaceMotions = new Map<StreamMotionVariant, SettlingScrollNoiseMotion>();
     const energy = new OpticalEnergy();
+    const cadence = new IdleCadence();
+    let idleTimer = 0, lastTop = Infinity;
     const cachedRuns: OpticalRun[] = [], cachedHits: Hit[] = [];
 
     const finishPart = (part: Part) => {
@@ -464,14 +467,23 @@ export function FlowStream(props: Props) {
       // the browser rounded away. Optical projection uses that same position.
       const remainder = scrollMotion.applied(panel.scrollTop);
       content.style.translate = remainder ? `0 ${-remainder}px` : '';
-      if (playing) schedule();
-      if (paint(time)) schedule();
+      const moved = Math.abs(top - lastTop) > 1e-3;
+      lastTop = top;
+      const moving = paint(time);
+      // Only the ambient water is left once nothing else moves; let it drift
+      // at a lower rate. Any input calls schedule() and restores full rate.
+      cadence.note(time, moved || activeParts.size > 0 || energy.moving || fastManualScroll || !!pendingMeasure);
+      if (playing || moving) {
+        const wait = cadence.delay(time);
+        if (!wait) schedule();
+        else if (!idleTimer) idleTimer = window.setTimeout(() => { idleTimer = 0; schedule(); }, wait);
+      }
       if (probe) {
         const cpuMs = performance.now() - started;
         probe({ time, cpuMs, totalWords: words.length, visibleWords: cachedRuns.length,
           indexedWordsVisited: frameWordsVisited, activeParts: activeParts.size, visibleParts: visibleParts.length,
           scrollTop: top, nativeScrollTop: panel.scrollTop, scrollRemainder: remainder,
-          fastManualScroll, opticalEnergy: energy.value,
+          fastManualScroll, opticalEnergy: energy.value, idle: cadence.delay(time) > 0, moved,
           drawMs, sceneMs: cpuMs - drawMs, layout: { ...layoutProbe }, render: glass?.diagnostics });
       }
     };
@@ -614,6 +626,7 @@ export function FlowStream(props: Props) {
     return () => {
       disposed = true;
       cancelAnimationFrame(handle);
+      window.clearTimeout(idleTimer);
       resize?.disconnect();
       fontStyles.disconnect();
       document.fonts?.removeEventListener('loadingdone', fontChanged);
