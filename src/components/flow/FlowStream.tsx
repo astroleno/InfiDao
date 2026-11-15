@@ -9,6 +9,7 @@ import { EntranceMotion, InkMotion } from '@/lib/flow-browser/entrance-motion';
 import { ScrollNoiseMotion, SettlingScrollNoiseMotion } from '@/lib/flow-browser/liquid-motion';
 import { OpticalEnergy } from '@/lib/flow-browser/optical-energy';
 import { IdleCadence } from '@/lib/flow-browser/idle-cadence';
+import { FrameBudget, readQualityOverride } from '@/lib/flow-browser/frame-budget';
 import { StreamGlass, type OpticalRun } from '@/lib/flow-browser/stream-glass';
 import { StreamSceneIndex } from '@/lib/flow-browser/stream-scene';
 import { StreamFramePlanner } from '@/lib/flow-browser/stream-frame-plan';
@@ -283,7 +284,9 @@ export function FlowStream(props: Props) {
     const surfaceMotions = new Map<StreamMotionVariant, SettlingScrollNoiseMotion>();
     const energy = new OpticalEnergy();
     const cadence = new IdleCadence();
-    let idleTimer = 0, lastTop = Infinity;
+    let idleTimer = 0, idleFrame = false, lastTop = Infinity;
+    // A device that keeps missing frames steps the material down; ?quality=0-3 pins it.
+    const budget = new FrameBudget(readQualityOverride(window.location.search));
     const cachedRuns: OpticalRun[] = [], cachedHits: Hit[] = [];
 
     const finishPart = (part: Part) => {
@@ -300,7 +303,9 @@ export function FlowStream(props: Props) {
       if (!height) return false;
       const scrollTop = scrollMotion.position(panel.scrollTop), activeElement = document.activeElement;
       fastManualScroll = manualScroll.sample(scrollTop, time, height);
-      const canvasOwnsGlyphs = !live.current.reducedMotion && glassRef.current?.dataset.optics === 'ready';
+      // The last quality tier keeps the optics still; reading motion is unchanged.
+      const staticGlass = live.current.reducedMotion || budget.tier >= 3;
+      const canvasOwnsGlyphs = !staticGlass && glassRef.current?.dataset.optics === 'ready';
       // The previous frame paid for rasterization and lazy programs; this one
       // is warm, so the loading light may hand off now.
       if (lettered && !visualAnnounced.current) announceVisual.current();
@@ -351,7 +356,8 @@ export function FlowStream(props: Props) {
         else activeParts.delete(part);
       }
       const bend: BendSettings = { ...streamBendSettings(width, height, variant, scrollTop),
-        dispersion: energy.dispersion, sheen: energy.sheen, blur: energy.blur };
+        dispersion: energy.dispersion, sheen: energy.sheen, blur: energy.blur,
+        ...(budget.tier >= 1 ? { maxDpr: 1 } : {}), ...(budget.tier >= 2 ? { ripple: 0 } : {}) };
       const zone = bend.zone * height;
       if (variant === 'liquid-settle' || variant === 'liquid-live' || variant === 'liquid-live-before') {
         let motion = surfaceMotions.get(variant);
@@ -366,12 +372,12 @@ export function FlowStream(props: Props) {
         liquidNoise ??= new ScrollNoiseMotion(live.current.motionSeed);
         bend.noisePhase = liquidNoise.advance(scrollTop);
       }
-      const plan = planner.frame({ scrollTop, width, height, reducedMotion: live.current.reducedMotion, variant,
+      const plan = planner.frame({ scrollTop, width, height, reducedMotion: staticGlass, variant,
         surfacePhase: Math.round((bend.noisePhase ?? 0) * 1e6), focus: activeElement, canvasReady: canvasOwnsGlyphs });
       if (!plan.surfaceChanged) return moving;
       if (!plan.sourceChanged && drawn) {
         const started = probe ? performance.now() : 0;
-        glass?.draw(cachedRuns, width, height, live.current.reducedMotion, bend, plan.fontRevision, plan);
+        glass?.draw(cachedRuns, width, height, staticGlass, bend, plan.fontRevision, plan);
         if (probe) drawMs += performance.now() - started;
         drawn.settings = bend;
         return moving;
@@ -402,15 +408,15 @@ export function FlowStream(props: Props) {
         const screenY = word.y - scrollTop;
         const projection = streamProjection({
           ...word, viewportWidth: width, viewportHeight: height,
-          scrollTop, reducedMotion: live.current.reducedMotion,
+          scrollTop, reducedMotion: staticGlass,
         }, variant);
         const focused = word.element.contains(activeElement);
         const blur = focused || word.quiet ? 0 : projection.blur;
         const offset = word.part?.motion.offset || 0;
-        const folded = !live.current.reducedMotion && !word.quiet &&
+        const folded = !staticGlass && !word.quiet &&
           (screenY - word.wordHeight * projection.scale / 2 < zone || screenY + word.wordHeight * projection.scale / 2 > height - zone);
         const progress = word.part && word.part.inkPhase !== 'settled' ? word.part.ink.progress(word.inkIndex, word.count, word.progress) : undefined;
-        const inking = !live.current.reducedMotion && !!progress?.some(value => value < 1);
+        const inking = !staticGlass && !!progress?.some(value => value < 1);
         word.element.toggleAttribute('data-flow-bent', folded);
         word.element.toggleAttribute('data-flow-ink', inking);
         const transform = offset ? `translateX(${offset.toFixed(3)}px) ${projection.transform}` : projection.transform;
@@ -443,7 +449,7 @@ export function FlowStream(props: Props) {
         word.element.style.filter = canvasGlyph || !blur ? 'none' : `blur(${blur.toFixed(3)}px)`;
       }
       const started = probe ? performance.now() : 0;
-      glass?.draw(runs, width, height, live.current.reducedMotion, bend, plan.fontRevision, plan);
+      glass?.draw(runs, width, height, staticGlass, bend, plan.fontRevision, plan);
       if (probe) drawMs += performance.now() - started;
       if (runs.length && glassRef.current?.dataset.optics === 'ready' && !lettered) { lettered = true; moving = true; }
       drawn = { settings: bend, hits };
@@ -476,14 +482,17 @@ export function FlowStream(props: Props) {
       if (playing || moving) {
         const wait = cadence.delay(time);
         if (!wait) schedule();
-        else if (!idleTimer) idleTimer = window.setTimeout(() => { idleTimer = 0; schedule(); }, wait);
+        else if (!idleTimer) idleTimer = window.setTimeout(() => { idleTimer = 0; idleFrame = true; schedule(); }, wait);
       }
+      // Idle-cadence frames are deliberately slow and never count against the budget.
+      if (budget.sample(time, !idleFrame)) { planner.invalidate('restore'); schedule(); }
+      idleFrame = false;
       if (probe) {
         const cpuMs = performance.now() - started;
         probe({ time, cpuMs, totalWords: words.length, visibleWords: cachedRuns.length,
           indexedWordsVisited: frameWordsVisited, activeParts: activeParts.size, visibleParts: visibleParts.length,
           scrollTop: top, nativeScrollTop: panel.scrollTop, scrollRemainder: remainder,
-          fastManualScroll, opticalEnergy: energy.value, idle: cadence.delay(time) > 0, moved,
+          fastManualScroll, opticalEnergy: energy.value, idle: cadence.delay(time) > 0, moved, qualityTier: budget.tier,
           drawMs, sceneMs: cpuMs - drawMs, layout: { ...layoutProbe }, render: glass?.diagnostics });
       }
     };

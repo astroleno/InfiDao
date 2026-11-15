@@ -410,7 +410,7 @@ export class StreamGlass {
     const context = this.context;
     if (!context || width < 1 || height < 1) return;
     try {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(2_000_000 / (width * height)));
+      const dpr = Math.min(window.devicePixelRatio || 1, shape.maxDpr ?? 1.5, Math.sqrt(2_000_000 / (width * height)));
       const size = `${width}:${height}:${dpr}`;
       if (this.size !== size) {
         this.glyphCache?.destroy(); this.glyphCache = null;

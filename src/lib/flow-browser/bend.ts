@@ -24,6 +24,8 @@ export type BendSettings = {
   ripple?: number;
   // Quiets the glass's transmitted echoes behind each line (0..1).
   echoQuiet?: number;
+  // Caps the glass backing resolution (a lower quality tier uses 1).
+  maxDpr?: number;
 };
 
 export const { bendSettings, bendSourcePoint, bendDisplayPoint } = require('../../../miniprogram/flow/stream-bend') as {

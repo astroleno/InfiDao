@@ -693,3 +693,38 @@ describe('the loading light hands off to real lettering', () => {
     expect(onVisualReady).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('quality tiers reach the glass', () => {
+  const sized = (name: 'clientHeight' | 'clientWidth', value: number) =>
+    jest.spyOn(HTMLElement.prototype, name, 'get').mockReturnValue(value);
+  beforeEach(() => { jest.useFakeTimers(); sized('clientHeight', 600); sized('clientWidth', 390); });
+  afterEach(() => { cleanup(); jest.restoreAllMocks(); jest.useRealTimers(); window.history.replaceState(null, '', '/'); });
+
+  const drawsAt = (search: string) => {
+    window.history.replaceState(null, '', `/InfiDao${search}`);
+    const draw = jest.fn();
+    jest.mocked(StreamGlass).mockImplementationOnce(() => ({ draw, destroy: jest.fn() }) as unknown as StreamGlass);
+    render(<FlowStream {...props} reducedMotion={false} paused={false} />);
+    act(() => { jest.advanceTimersByTime(100); });
+    return draw.mock.calls.at(-1)!;
+  };
+
+  test('full quality keeps the water and the reader resolution', () => {
+    const [, , , staticGlass, shape] = drawsAt('');
+    expect(staticGlass).toBe(false);
+    expect(shape.ripple).toBe(1);
+    expect(shape.maxDpr).toBeUndefined();
+  });
+
+  test('a lower tier drops the resolution, then the ripple fire', () => {
+    const [, , , staticGlass, shape] = drawsAt('?quality=2');
+    expect(staticGlass).toBe(false);
+    expect(shape.maxDpr).toBe(1);
+    expect(shape.ripple).toBe(0);
+  });
+
+  test('the last tier keeps the glass still', () => {
+    const [, , , staticGlass] = drawsAt('?quality=3');
+    expect(staticGlass).toBe(true);
+  });
+});
