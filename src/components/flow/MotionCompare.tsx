@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { FlowStream } from './FlowStream';
 import { MOTION_COMPARE_ENTRIES } from './motion-compare-data';
+import { readCompareOptions, type CompareOptions } from './motion-compare-options';
 import { entryKey } from '@/lib/flow-browser/continuity';
 import { prepareFlowFonts } from '@/lib/flow-browser/fonts';
 import type { StreamMotionVariant } from '@/lib/flow-browser/motion-profile';
@@ -22,6 +23,7 @@ export function MotionCompare() {
   const positionRef = useRef(0);
   const speedRef = useRef(36);
   const motionSeedRef = useRef<number | undefined>(undefined);
+  const optionsRef = useRef<CompareOptions | null>(null);
   const [active, setActive] = useState<StreamMotionVariant>('liquid-live');
   const [single, setSingle] = useState(true);
   const [playing, setPlaying] = useState(false);
@@ -33,6 +35,14 @@ export function MotionCompare() {
   const [activeKey, setActiveKey] = useState(entryKey(MOTION_COMPARE_ENTRIES[0]!));
   const [selection, setSelection] = useState('');
   const restore = useMemo(() => ({ revision, top: positionRef.current }), [revision]);
+
+  useEffect(() => {
+    const options = readCompareOptions(window.location.search);
+    optionsRef.current = options;
+    speedRef.current = options.speed;
+    setSpeed(options.speed);
+    setSingle(options.single);
+  }, []);
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -47,8 +57,9 @@ export function MotionCompare() {
     setFontState('loading');
     void prepareFlowFonts(MOTION_COMPARE_ENTRIES.map(entry => entry.frame)).then(() => {
       if (!disposed) {
-        motionSeedRef.current ??= Math.random() * 289;
+        motionSeedRef.current ??= optionsRef.current?.seed ?? Math.random() * 289;
         setFontState('ready');
+        if (optionsRef.current?.play && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) setPlaying(true);
       }
     }).catch(() => { if (!disposed) setFontState('failed'); });
     return () => { disposed = true; };

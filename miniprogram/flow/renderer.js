@@ -266,6 +266,10 @@ void main() {
 }
 `;
 
+// Every uniform the shaders may declare; a name missing here stays at zero.
+const UNIFORM_NAMES = ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','echoQuiet','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','bendAdhesion','bendScroll','bendLiquid','bendCaustics','bendContacts','bendPerlin','bendNoisePhase','bendLookup','bendLookupEnabled','bendSheen','bendBlur','bendRipple','inkMeta','inkMetaNext','inkMetaMix','inkEnabled','sourceWindow',
+  'noiseHashContact', 'noiseHashSurface', 'noiseContactBounds', 'noiseSurfaceBounds', 'noiseHashEnabled', 'sourcePremultiplied'];
+
 function makeProgram(gl, fragment, vertex = VERTEX) {
   const shaders = [];
   const program = gl.createProgram();
@@ -283,13 +287,7 @@ function makeProgram(gl, fragment, vertex = VERTEX) {
   } catch (error) { gl.deleteProgram(program); throw error; }
   finally { shaders.forEach(shader => gl.deleteShader(shader)); }
   const uniforms = {};
-  ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','echoQuiet','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','bendAdhesion','bendScroll','bendLiquid','bendCaustics','bendContacts','bendPerlin','bendNoisePhase','bendLookup','bendLookupEnabled','bendSheen','bendBlur','bendRipple','inkMeta','inkMetaNext','inkMetaMix','inkEnabled','sourceWindow'].forEach(name => {
-    uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
-  });
-  for (const name of ['noiseHashContact', 'noiseHashSurface', 'noiseContactBounds', 'noiseSurfaceBounds', 'noiseHashEnabled']) {
-    uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
-  }
-  uniforms.sourcePremultiplied = gl.getUniformLocation(program, 'u_sourcePremultiplied');
+  for (const name of UNIFORM_NAMES) uniforms[name] = gl.getUniformLocation(program, 'u_' + name);
   return { program, uniforms, attributes: ['position','normal','uv'].map(name => gl.getAttribLocation(program, 'a_' + name)) };
 }
 
@@ -1037,4 +1035,17 @@ class StreamGlassRenderer extends WheelRenderer {
   }
 }
 
-module.exports = { WheelRenderer, StreamGlassRenderer };
+// Every program the renderers can link, with its compile-time variants, for
+// shader checks and tooling. Keep in step with the makeProgram calls above.
+const noiseVariants = ['', '#define NOISE_HASH_CACHE\n'];
+const SHADER_PROGRAMS = [
+  { name: 'text', vertex: VERTEX, fragment: TEXT_FRAGMENT },
+  { name: 'glass', vertex: VERTEX, fragment: GLASS_FRAGMENT },
+  { name: 'background', vertex: BACKGROUND_VERTEX, fragment: BACKGROUND_FRAGMENT },
+  { name: 'screen', vertex: SCREEN_VERTEX, fragment: SCREEN_FRAGMENT },
+  ...['', '#define BEND_LOOKUP_ONLY\n'].flatMap(lookup => noiseVariants.map(hash => ({
+    name: `bend${lookup ? '+lookup' : ''}${hash ? '+hash' : ''}`, vertex: SCREEN_VERTEX, fragment: lookup + hash + BEND_FRAGMENT }))),
+  ...noiseVariants.map(hash => ({ name: `liquid${hash ? '+hash' : ''}`, vertex: SCREEN_VERTEX, fragment: hash + LIQUID_FIELD_FRAGMENT })),
+];
+
+module.exports = { WheelRenderer, StreamGlassRenderer, SHADER_PROGRAMS, UNIFORM_NAMES };

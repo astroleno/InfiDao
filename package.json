@@ -37,7 +37,10 @@
     "build:flow-release": "tsx scripts/build-web-flow-assets.ts",
     "build:wechat-local-core": "tsx scripts/build-wechat-local-core.ts",
     "smoke:release": "node scripts/release-smoke.mjs",
-    "smoke:telemetry": "node scripts/annotation-telemetry-smoke.mjs"
+    "smoke:telemetry": "node scripts/annotation-telemetry-smoke.mjs",
+    "check:shaders": "node scripts/bench/check-shaders.mjs",
+    "bench:jank": "node scripts/bench/jank.mjs",
+    "bench:record": "node scripts/bench/record.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -94,6 +97,7 @@
     "eslint-plugin-react-refresh": "^0.4.13",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "playwright-core": "^1.64.0",
     "postcss": "^8.5.15",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.8",
