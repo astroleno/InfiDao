@@ -30,8 +30,11 @@ export function isNativeRequest(request: Request) {
     (process.env.NODE_ENV !== 'production' || process.env.FLOW_NATIVE_HTTP_ENABLED === '1');
 }
 function requestOrigins(request: Request) {
-  const primary = process.env.FLOW_PUBLIC_ORIGIN || (process.env.NODE_ENV !== 'production' ? new URL(request.url).origin : '');
   const host = (request.headers.get('host') || new URL(request.url).host).toLowerCase();
+  // In development the browser's own address is the origin: the dev server
+  // normalizes request.url to localhost even when opened at 127.0.0.1.
+  const primary = process.env.FLOW_PUBLIC_ORIGIN
+    || (process.env.NODE_ENV !== 'production' ? `${new URL(request.url).protocol}//${host}` : '');
   return [primary, ...(process.env.FLOW_ALLOWED_ORIGINS || '').split(',').map(value => value.trim())].filter(origin => {
     try {
       const parsed = new URL(origin);

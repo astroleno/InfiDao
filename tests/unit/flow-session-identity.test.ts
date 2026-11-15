@@ -45,3 +45,13 @@ test('an explicit alias accepts its own origin and keeps both domains separate',
   expect(() => requestReadSession(new Request('https://attacker.example/api/handwriting/jobs', { headers: { cookie } }))).toThrow('重新打开');
   expect(() => requestSession(alias({ cookie, 'sec-fetch-site': 'cross-site' }))).toThrow('重新打开');
 });
+test('development accepts the address the browser actually used, and still refuses other sites', () => {
+  Object.assign(process.env, { NODE_ENV: 'development' });
+  delete process.env.FLOW_PUBLIC_ORIGIN;
+  // The dev server reports localhost in request.url even when opened at 127.0.0.1.
+  const local = (origin: string) => new Request('http://localhost:3311/api/flow/session', { method: 'POST',
+    headers: { host: '127.0.0.1:3311', origin } });
+  expect(issueSession(local('http://127.0.0.1:3311')).owner).toBeTruthy();
+  expect(() => issueSession(local('http://evil.example:3311'))).toThrow('重新打开');
+  expect(() => issueSession(local('http://localhost:3311'))).toThrow('重新打开');
+});
