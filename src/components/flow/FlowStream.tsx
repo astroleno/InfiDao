@@ -370,10 +370,10 @@ export function FlowStream(props: Props) {
         ...(budget.tier >= 1 ? { maxDpr: 1 } : {}), ...(budget.tier >= 2 ? { ripple: 0 } : {}),
         ...(lensActive ? { lens: [lens.current.x / width, 1 - lens.current.y / height, LENS.radius, lensStrength] as [number, number, number, number] } : {}) };
       const zone = bend.zone * height;
-      if (variant === 'liquid-settle' || variant === 'liquid-live' || variant === 'liquid-live-before') {
+      if (variant === 'liquid-live' || variant === 'liquid-live-before') {
         let motion = surfaceMotions.get(variant);
         if (!motion) {
-          motion = new SettlingScrollNoiseMotion(live.current.motionSeed, variant !== 'liquid-settle', variant === 'liquid-live');
+          motion = new SettlingScrollNoiseMotion(live.current.motionSeed, true, variant === 'liquid-live');
           surfaceMotions.set(variant, motion);
         }
         const sample = motion.sample(scrollTop, time, live.current.reducedMotion || document.hidden);
