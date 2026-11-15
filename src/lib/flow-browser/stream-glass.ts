@@ -419,6 +419,8 @@ export class StreamGlass {
         this.releaseTextLayers();
         this.engine = new StreamGlassRenderer(this.canvas, null, {
           width, height, dpr, refractionScale: .75, opticalProfile: true, bend: true, streamReadability: true, streamDispersion: 1,
+          // The browser reader reveals lettering as ink settling in water.
+          inkWater: true,
           // The final pass covers the whole viewport. Glyph antialiasing is
           // already in the source textures; multisampling this quad adds none.
           antialias: false, preserveDrawingBuffer: false,

@@ -267,7 +267,7 @@ void main() {
 `;
 
 // Every uniform the shaders may declare; a name missing here stays at zero.
-const UNIFORM_NAMES = ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','echoQuiet','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','bendAdhesion','bendScroll','bendLiquid','bendCaustics','bendContacts','bendPerlin','bendNoisePhase','bendLookup','bendLookupEnabled','bendSheen','bendBlur','bendRipple','bendLens','inkMeta','inkMetaNext','inkMetaMix','inkEnabled','sourceWindow',
+const UNIFORM_NAMES = ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','echoQuiet','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','bendAdhesion','bendScroll','bendLiquid','bendCaustics','bendContacts','bendPerlin','bendNoisePhase','bendLookup','bendLookupEnabled','bendSheen','bendBlur','bendRipple','bendLens','inkMeta','inkMetaNext','inkMetaMix','inkEnabled','inkWater','sourceWindow',
   'noiseHashContact', 'noiseHashSurface', 'noiseContactBounds', 'noiseSurfaceBounds', 'noiseHashEnabled', 'sourcePremultiplied'];
 
 function makeProgram(gl, fragment, vertex = VERTEX) {
@@ -450,6 +450,7 @@ class WheelRenderer {
     gl.uniform1f(u.streamDispersion, this.streamReadability && !this.reducedMotion ? Math.max(0, Math.min(1, this.streamDispersion || 0)) : 0);
     gl.uniform1f(u.readingAmbient, this.readingAmbient || 0);
     gl.uniform1f(u.echoQuiet, Math.max(0, Math.min(1, this.echoQuiet || 0)));
+    gl.uniform1f(u.inkWater, this.inkWater ? 1 : 0);
     gl.uniform1f(u.opticalProfile, this.opticalProfile ? 1 : 0);
     gl.uniform1f(u.chromaticStrength, this.reducedMotion ? 0 : 1);
     gl.uniform1f(u.edgeFadeStart, this.edgeFadeStart ?? 0.9);
@@ -618,6 +619,7 @@ precision highp float;
 uniform sampler2D u_texture;
 uniform sampler2D u_inkMeta;
 uniform float u_inkEnabled;
+uniform float u_inkWater;
 uniform float u_sourcePremultiplied;
 uniform vec2 u_resolution;
 uniform vec2 u_sourceWindow;
@@ -658,6 +660,19 @@ void main() {
   // Adapted from TongyeGuanmi's loader: multiple ink scales fill the real
   // glyph mask, with a short wet edge. Its colour comes from our own source.
   float p = smoothstep(0.0, 1.0, meta.r);
+  if (u_inkWater > 0.5) {
+    // Ink in water: each glyph blooms as a soft cloud of its own strokes,
+    // then gathers into its exact shape. No fragments, no hard threshold.
+    vec2 q = vec2(mix(3.2, 0.0, p)) / u_resolution;
+    vec4 cloud = (sourceGlyph(v_uv + vec2(q.x, 0.0)) + sourceGlyph(v_uv - vec2(q.x, 0.0))
+      + sourceGlyph(v_uv + vec2(0.0, q.y)) + sourceGlyph(v_uv - vec2(0.0, q.y))
+      + sourceGlyph(v_uv + q) + sourceGlyph(v_uv - q)
+      + sourceGlyph(v_uv + vec2(q.x, -q.y)) + sourceGlyph(v_uv - vec2(q.x, -q.y))) / 8.0;
+    float settle = smoothstep(0.25, 0.95, p);
+    gl_FragColor = vec4(mix(max(cloud.rgb, glyph.rgb), glyph.rgb, settle),
+      mix(cloud.a * 0.85, glyph.a, settle) * smoothstep(0.0, 0.3, p));
+    return;
+  }
   vec2 px = (0.6 + sin(p * 3.14159265) * 0.5) / u_resolution;
   vec4 a = sourceGlyph(v_uv + vec2(px.x, 0.0));
   vec4 b = sourceGlyph(v_uv - vec2(px.x, 0.0));

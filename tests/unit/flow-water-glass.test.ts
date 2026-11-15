@@ -73,3 +73,11 @@ test.each([[false, [.4, .6, 68, .8]], [true, [0, 0, 0, 0]]])('the Bend pass rece
   renderer.drawSource({}, {}, { zone: 1 / 6, rounding: .12, angle: 1.2, perspective: .84, lens: [.4, .6, 68, .8] });
   expect(gl.uniform4f).toHaveBeenCalledWith('lens', ...expected);
 });
+
+test.each([[undefined, 0], [true, 1]])('ink in water is a renderer opt-in (%s)', (inkWater, expected) => {
+  const gl = new Proxy({ uniform1f: jest.fn() }, { get: (target: any, key) => key in target ? target[key] : () => {} });
+  const renderer = Object.assign(Object.create(WheelRenderer.prototype), { gl, inkWater,
+    timeline: { position: 0, rowOffset: 0, ambientPhase: 0, loop: false }, width: 390, height: 844, radius: 100 });
+  renderer.mesh({ program: {}, uniforms: { inkWater: 'water' }, attributes: [] }, { buffer: {}, count: 6 }, 2, false);
+  expect(gl.uniform1f).toHaveBeenCalledWith('water', expected);
+});
