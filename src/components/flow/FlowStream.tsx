@@ -10,6 +10,7 @@ import { ScrollNoiseMotion, SettlingScrollNoiseMotion } from '@/lib/flow-browser
 import { OpticalEnergy } from '@/lib/flow-browser/optical-energy';
 import { IdleCadence } from '@/lib/flow-browser/idle-cadence';
 import { FrameBudget, readQualityOverride } from '@/lib/flow-browser/frame-budget';
+import { LENS, LensMotion } from '@/lib/flow-browser/lens-motion';
 import { StreamGlass, type OpticalRun } from '@/lib/flow-browser/stream-glass';
 import { StreamSceneIndex } from '@/lib/flow-browser/stream-scene';
 import { StreamFramePlanner } from '@/lib/flow-browser/stream-frame-plan';
@@ -106,6 +107,9 @@ export function FlowStream(props: Props) {
   const opticalHit = useRef<(x: number, y: number) => HTMLElement | null | undefined>(() => undefined);
   // The loading light hands off only once the glass shows real lettering.
   const visualAnnounced = useRef(false);
+  // A glass lens forms over a long-pressed word and holds while its meaning is open.
+  const lens = useRef(new LensMotion());
+  const lensHeld = useRef(false);
   const announceVisual = useRef(() => {
     if (visualAnnounced.current) return;
     visualAnnounced.current = true;
@@ -284,7 +288,7 @@ export function FlowStream(props: Props) {
     const surfaceMotions = new Map<StreamMotionVariant, SettlingScrollNoiseMotion>();
     const energy = new OpticalEnergy();
     const cadence = new IdleCadence();
-    let idleTimer = 0, idleFrame = false, lastTop = Infinity;
+    let idleTimer = 0, idleFrame = false, lastTop = Infinity, lensWasActive = false, lastLens = 0;
     // A device that keeps missing frames steps the material down; ?quality=0-3 pins it.
     const budget = new FrameBudget(readQualityOverride(window.location.search));
     const cachedRuns: OpticalRun[] = [], cachedHits: Hit[] = [];
@@ -355,9 +359,16 @@ export function FlowStream(props: Props) {
         if ((!part.motion.done && !part.motion.waiting) || inkPhase === 'entering' || inkPhase === 'paused') activeParts.add(part);
         else activeParts.delete(part);
       }
+      const lensStrength = lens.current.sample(time, staticGlass);
+      const lensActive = lensStrength > 0;
+      // Lensed words move between native text and the glass: redraw the source.
+      if (lens.current.moving || lensActive !== lensWasActive) { planner.invalidate('interaction'); moving = true; }
+      lensWasActive = lensActive;
+      lastLens = lensStrength;
       const bend: BendSettings = { ...streamBendSettings(width, height, variant, scrollTop),
         dispersion: energy.dispersion, sheen: energy.sheen, blur: energy.blur,
-        ...(budget.tier >= 1 ? { maxDpr: 1 } : {}), ...(budget.tier >= 2 ? { ripple: 0 } : {}) };
+        ...(budget.tier >= 1 ? { maxDpr: 1 } : {}), ...(budget.tier >= 2 ? { ripple: 0 } : {}),
+        ...(lensActive ? { lens: [lens.current.x / width, 1 - lens.current.y / height, LENS.radius, lensStrength] as [number, number, number, number] } : {}) };
       const zone = bend.zone * height;
       if (variant === 'liquid-settle' || variant === 'liquid-live' || variant === 'liquid-live-before') {
         let motion = surfaceMotions.get(variant);
@@ -413,8 +424,11 @@ export function FlowStream(props: Props) {
         const focused = word.element.contains(activeElement);
         const blur = focused || word.quiet ? 0 : projection.blur;
         const offset = word.part?.motion.offset || 0;
-        const folded = !staticGlass && !word.quiet &&
-          (screenY - word.wordHeight * projection.scale / 2 < zone || screenY + word.wordHeight * projection.scale / 2 > height - zone);
+        // The glass draws lensed words itself, so the lens bends the word, not a copy.
+        const lensed = lensActive && Math.abs(word.x - lens.current.x) < LENS.radius + word.wordWidth / 2
+          && Math.abs(screenY - lens.current.y) < LENS.radius + word.wordHeight / 2;
+        const folded = !staticGlass && !word.quiet && (lensed ||
+          screenY - word.wordHeight * projection.scale / 2 < zone || screenY + word.wordHeight * projection.scale / 2 > height - zone);
         const progress = word.part && word.part.inkPhase !== 'settled' ? word.part.ink.progress(word.inkIndex, word.count, word.progress) : undefined;
         const inking = !staticGlass && !!progress?.some(value => value < 1);
         word.element.toggleAttribute('data-flow-bent', folded);
@@ -492,7 +506,7 @@ export function FlowStream(props: Props) {
         probe({ time, cpuMs, totalWords: words.length, visibleWords: cachedRuns.length,
           indexedWordsVisited: frameWordsVisited, activeParts: activeParts.size, visibleParts: visibleParts.length,
           scrollTop: top, nativeScrollTop: panel.scrollTop, scrollRemainder: remainder,
-          fastManualScroll, opticalEnergy: energy.value, idle: cadence.delay(time) > 0, moved, qualityTier: budget.tier,
+          fastManualScroll, opticalEnergy: energy.value, idle: cadence.delay(time) > 0, moved, qualityTier: budget.tier, lens: lastLens,
           drawMs, sceneMs: cpuMs - drawMs, layout: { ...layoutProbe }, render: glass?.diagnostics });
       }
     };
@@ -689,9 +703,11 @@ export function FlowStream(props: Props) {
   const cancelMeaningPress = () => {
     if (meaningPress.current) window.clearTimeout(meaningPress.current.timer);
     meaningPress.current = null;
+    if (!lensHeld.current && lens.current.active) { lens.current.release(performance.now()); optics.current(); }
   };
   const showMeaning = (entry: StreamEntry, resume = !props.paused && !props.reducedMotion, trigger: HTMLElement | null = null) => {
     if (!entry.frame.meaning) return;
+    if (lens.current.active) { lensHeld.current = true; lens.current.hold(); }
     cancelMeaningPress();
     if (meaningFor === entryKey(entry)) return;
     meaningResume.current = resume;
@@ -702,6 +718,9 @@ export function FlowStream(props: Props) {
   };
   const closeMeaning = () => {
     setMeaningFor(null);
+    lensHeld.current = false;
+    lens.current.release(performance.now());
+    optics.current();
     const resume = meaningResume.current;
     meaningResume.current = false;
     if (resume && !live.current.reducedMotion) {
@@ -801,6 +820,15 @@ export function FlowStream(props: Props) {
           }, 450);
           const trigger = target instanceof Element ? target.closest<HTMLElement>('button') : null;
           meaningPress.current = { timer, key: entryKey(entry), resume, trigger, top: scrollMotion.position(event.currentTarget.scrollTop) };
+        }
+        // A glass lens forms on the pressed word itself: a tap pulses it, a
+        // long press on a passage with a meaning holds it while that is open.
+        const word = target instanceof Element ? target.closest<HTMLElement>('[data-flow-optic] button') : null;
+        const glassRect = glassRef.current?.getBoundingClientRect(), wordRect = word?.getBoundingClientRect();
+        if (glassRect && wordRect && !props.reducedMotion) {
+          lensHeld.current = false;
+          lens.current.press(wordRect.left + wordRect.width / 2 - glassRect.left, wordRect.top + wordRect.height / 2 - glassRect.top, performance.now());
+          optics.current();
         }
         pause();
       }}

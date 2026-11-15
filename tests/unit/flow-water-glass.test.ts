@@ -56,3 +56,20 @@ test('the reader quiets the glass echoes behind each line; comparisons keep thei
   expect(streamBendSettings(390, 844, 'liquid-live', 0).echoQuiet).toBeGreaterThan(0);
   expect(streamBendSettings(390, 844, 'liquid-flow', 0).echoQuiet ?? 0).toBe(0);
 });
+
+test.each([[false, [.4, .6, 68, .8]], [true, [0, 0, 0, 0]]])('the Bend pass receives the word lens (reduced motion %s)', (reducedMotion, expected) => {
+  const gl = new Proxy({ viewport: jest.fn(), texImage2D: jest.fn(), uniform1f: jest.fn(), uniform4f: jest.fn(), isContextLost: () => false }, {
+    get: (target: any, key) => key in target ? target[key] : () => {},
+  });
+  const renderer = Object.assign(Object.create(StreamGlassRenderer.prototype), {
+    gl, uploadSizes: new Map(), screenProgram: { program: 'screen', uniforms: { sourceWindow: 'window' } },
+    textTexture: 'source-input', foregroundTexture: 'foreground-input', inkTexture: 'ink-input',
+    drawSurfaceQuad: jest.fn(), bindBendRows: jest.fn(), reducedMotion,
+    canvas: { width: 1440, height: 900 }, glassProgram: 'original-glass', backgroundProgram: 'background',
+    bendProgram: { program: {}, uniforms: { bendLens: 'lens' } }, glass: 'cylinder', backgroundQuad: 'quad', mesh: jest.fn(),
+    composite: { buffer: 3, texture: 'composed', width: 1440, height: 900 },
+    targets: [{ buffer: 1, texture: 'source', width: 720, height: 450 }, { buffer: 2, texture: 'rear', width: 720, height: 450 }],
+  });
+  renderer.drawSource({}, {}, { zone: 1 / 6, rounding: .12, angle: 1.2, perspective: .84, lens: [.4, .6, 68, .8] });
+  expect(gl.uniform4f).toHaveBeenCalledWith('lens', ...expected);
+});

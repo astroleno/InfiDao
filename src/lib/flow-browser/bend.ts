@@ -26,6 +26,8 @@ export type BendSettings = {
   echoQuiet?: number;
   // Caps the glass backing resolution (a lower quality tier uses 1).
   maxDpr?: number;
+  // A lens over a pressed word: centre uv (y up), radius CSS px, strength 0..1.
+  lens?: [number, number, number, number];
 };
 
 export const { bendSettings, bendSourcePoint, bendDisplayPoint } = require('../../../miniprogram/flow/stream-bend') as {

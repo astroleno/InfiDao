@@ -267,7 +267,7 @@ void main() {
 `;
 
 // Every uniform the shaders may declare; a name missing here stays at zero.
-const UNIFORM_NAMES = ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','echoQuiet','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','bendAdhesion','bendScroll','bendLiquid','bendCaustics','bendContacts','bendPerlin','bendNoisePhase','bendLookup','bendLookupEnabled','bendSheen','bendBlur','bendRipple','inkMeta','inkMetaNext','inkMetaMix','inkEnabled','sourceWindow',
+const UNIFORM_NAMES = ['resolution','texture','glyph','cursor','rowOffset','count','loop','radius','arc','curl','recede','pitch','final','reading','readingAmbient','opticalProfile','chromaticStrength','edgeFadeStart','thickness','back','borderless','streamReadability','streamDispersion','echoQuiet','noise','dpr','inkLight','atlasSize','bendZone','bendRound','bendAngle','bendPersp','bendFlare','bendAdhesion','bendScroll','bendLiquid','bendCaustics','bendContacts','bendPerlin','bendNoisePhase','bendLookup','bendLookupEnabled','bendSheen','bendBlur','bendRipple','bendLens','inkMeta','inkMetaNext','inkMetaMix','inkEnabled','sourceWindow',
   'noiseHashContact', 'noiseHashSurface', 'noiseContactBounds', 'noiseSurfaceBounds', 'noiseHashEnabled', 'sourcePremultiplied'];
 
 function makeProgram(gl, fragment, vertex = VERTEX) {
@@ -1026,6 +1026,8 @@ class StreamGlassRenderer extends WheelRenderer {
       gl.uniform1f(u.bendSheen, this.reducedMotion ? 0 : bend.sheen || 0);
       gl.uniform1f(u.bendBlur, this.reducedMotion ? 0 : bend.blur || 0);
       gl.uniform1f(u.bendRipple, this.reducedMotion ? 0 : bend.ripple || 0);
+      const lens = !this.reducedMotion && bend.lens ? bend.lens : [0, 0, 0, 0];
+      gl.uniform4f(u.bendLens, lens[0], lens[1], lens[2], lens[3]);
       gl.uniform1i(u.bendLookup, 3);
       gl.uniform1f(u.bendLookupEnabled, this.bendLookupAvailable ? 1 : 0);
       this.drawSurfaceQuad(program);

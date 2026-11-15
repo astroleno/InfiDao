@@ -197,6 +197,7 @@ uniform float u_bendLookupEnabled;
 uniform float u_bendSheen;
 uniform float u_bendBlur;
 uniform float u_bendRipple;
+uniform vec4 u_bendLens;
 uniform sampler2D u_inkMeta;
 uniform vec2 u_resolution;
 varying vec2 v_uv;
@@ -282,6 +283,9 @@ vec3 foldEdge(float sy) {
   if (bestU < 0.0) return vec3(1.0, previousZ, 0.0);
   return vec3(edge + bestU, bestZ, 1.0);
 }
+// One light for every surface: ripple fire, the lens highlight and its rim
+// agree on where the light comes from (screen space, y up).
+const vec2 LIGHT = vec2(-0.55, 0.835);
 vec3 foldSample(vec2 uv, float trail) {
   vec3 color = texture2D(u_texture, clamp(uv, vec2(0.00001), vec2(0.99999))).rgb;
   if (trail <= 0.0) return color;
@@ -329,13 +333,31 @@ void main() {
   float widen = 1.0 + u_bendFlare * max(0.0, -z) / max(rimDepth, 1e-7);
   source.x = 0.5 + (v_uv.x - 0.5) * (u_bendPersp + z) / u_bendPersp / widen;
   if (u_bendAdhesion > 0.0) source = adhesionSource(source);
+  // A thick glass lens over a pressed word (centre uv, radius px, strength):
+  // its dome magnifies the word itself; its rim bends light into colour.
+  float lensRim = 0.0, lensSpec = 0.0;
+  vec2 lensNormal = vec2(0.0);
+  if (u_bendLens.w > 0.0) {
+    vec2 offset = (v_uv - u_bendLens.xy) * u_resolution;
+    float r = length(offset) / u_bendLens.z;
+    if (r < 1.0) {
+      float dome = sqrt(1.0 - r * r);
+      source = u_bendLens.xy + (source - u_bendLens.xy) * (1.0 - 0.3 * u_bendLens.w * dome);
+      lensNormal = offset / max(length(offset), 1e-4);
+      lensRim = smoothstep(0.55, 0.97, r) * (1.0 - smoothstep(0.97, 1.0, r)) * u_bendLens.w;
+      lensSpec = pow(max(dot(lensNormal, LIGHT), 0.0), 6.0) * lensRim;
+    }
+  }
   vec2 feather = 1.5 / u_resolution;
   alpha *= smoothstep(vec2(0.0), feather, source).x;
   alpha *= 1.0 - smoothstep(1.0 - feather.x, 1.0, source.x);
   // Fold effects grow from the fold's start towards the rim, with no seam.
   float submerged = z < 0.0 ? smoothstep(0.0, 0.3, -z / max(rimDepth, 1e-7)) : 0.0;
   float trail = u_bendBlur * submerged;
-  float water = u_bendRipple * submerged;
+  // Reading flows upward: passages rise out of water in the lower fold and
+  // dry as they leave through the upper fold. (v_uv.y is 0 at the bottom.)
+  float rising = step(v_uv.y, 0.5);
+  float water = u_bendRipple * submerged * mix(0.35, 1.0, rising);
   vec3 color;
   if (water > 0.0) {
     vec3 wave = rippleWave(source);
@@ -351,11 +373,32 @@ void main() {
     color = max(color, vec3(0.0));
     // Crests focus light onto the lettering beneath them.
     color *= 1.0 + 0.38 * wave.z * water;
+    // Fire glow: bright strokes under the wave bleed a little coloured light,
+    // warm on flanks facing the light and cool on those turned away.
+    vec2 reach = vec2(4.0) / u_resolution;
+    float halo = dot(texture2D(u_texture, clamp(source + shift + vec2(reach.x, 0.0), vec2(0.00001), vec2(0.99999))).rgb
+      + texture2D(u_texture, clamp(source + shift - vec2(reach.x, 0.0), vec2(0.00001), vec2(0.99999))).rgb
+      + texture2D(u_texture, clamp(source + shift + vec2(0.0, reach.y), vec2(0.00001), vec2(0.99999))).rgb
+      + texture2D(u_texture, clamp(source + shift - vec2(0.0, reach.y), vec2(0.00001), vec2(0.99999))).rgb, vec3(0.0833));
+    float facing = dot(normalize(wave.xy + vec2(1e-4)), LIGHT);
+    vec3 fire = mix(vec3(0.35, 0.6, 1.0), vec3(1.0, 0.58, 0.28), smoothstep(-0.6, 0.6, facing));
+    color += fire * max(0.0, halo - 0.3) * 0.75 * water;
+    // Still under water: a little deeper and cooler until it surfaces.
+    color *= mix(vec3(1.0), vec3(0.8, 0.9, 1.0), water * rising * 0.55);
   } else {
     color = foldSample(source, trail);
   }
   if (u_bendLiquid > 0.5) color = liquidOptics(source, color);
   else if (u_bendAdhesion > 0.0) color = meniscus(source, color);
+  if (lensRim > 0.0) {
+    // Each wavelength leaves the rim at a different angle: the word's edges
+    // carry fire there, and the glass edge catches a highlight.
+    vec2 spread = lensNormal * 2.6 * lensRim / u_resolution;
+    vec3 centre = texture2D(u_texture, clamp(source, vec2(0.00001), vec2(0.99999))).rgb;
+    color.r += texture2D(u_texture, clamp(source - spread, vec2(0.00001), vec2(0.99999))).r - centre.r;
+    color.b += texture2D(u_texture, clamp(source + spread, vec2(0.00001), vec2(0.99999))).b - centre.b;
+    color = max(color, vec3(0.0)) + vec3(0.08) * lensRim + vec3(0.95, 0.98, 1.0) * lensSpec * 0.55;
+  }
   if (u_bendSheen > 0.0 && z < 0.0) {
     // The fold catches an overhead light on one narrow band. Each wavelength
     // meets it at a slightly different depth, so only that bright edge splits
