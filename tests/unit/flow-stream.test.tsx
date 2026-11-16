@@ -5,6 +5,7 @@ import type { FlowFrame } from '@/lib/flow/contracts';
 import { entryKey, type StreamEntry } from '@/lib/flow-browser/continuity';
 import { quoteKey } from '@/lib/flow-browser/library';
 import { EntranceMotion } from '@/lib/flow-browser/entrance-motion';
+import { LENS } from '@/lib/flow-browser/lens-motion';
 import { StreamGlass } from '@/lib/flow-browser/stream-glass';
 
 jest.mock('@/lib/flow-browser/stream-glass', () => ({
@@ -726,5 +727,84 @@ describe('quality tiers reach the glass', () => {
   test('the last tier keeps the glass still', () => {
     const [, , , staticGlass] = drawsAt('?quality=3');
     expect(staticGlass).toBe(true);
+  });
+
+  const driveFrames = () => {
+    let time = 0, nextFrame: FrameRequestCallback | undefined;
+    jest.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => { nextFrame = callback; return 1; });
+    const view = render(<FlowStream {...props} paused={false} reducedMotion={false} settleEntrance />);
+    const panel = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    Object.defineProperty(panel, 'scrollHeight', { value: 3000 });
+    const draw = jest.mocked(StreamGlass).mock.results.at(-1)!.value.draw as jest.Mock;
+    return { draw, step(gap: number) {
+      time += gap;
+      const callback = nextFrame;
+      nextFrame = undefined;
+      act(() => callback!(time));
+    } };
+  };
+
+  test('a sustained foreground stall lowers the actual glass resolution', () => {
+    const { draw, step } = driveFrames();
+    for (let i = 0; i < 150; i++) step(280);
+    const [, , , staticGlass, shape] = draw.mock.calls.at(-1)!;
+    expect(staticGlass).toBe(false);
+    expect(shape.maxDpr).toBe(1);
+  });
+
+  test('going to the background with no intervening frame does not count as stutter', () => {
+    let hidden = false;
+    jest.spyOn(document, 'hidden', 'get').mockImplementation(() => hidden);
+    const { draw, step } = driveFrames();
+    step(0);
+    for (let i = 0; i < 150; i++) {
+      step(17); step(17);
+      hidden = true; fireEvent(document, new Event('visibilitychange'));
+      hidden = false; fireEvent(document, new Event('visibilitychange'));
+      step(900);
+    }
+    expect(draw.mock.calls.at(-1)![4].maxDpr).toBeUndefined();
+  });
+});
+
+describe('the long-press lens follows the meaning dialog', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(600);
+    jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(390);
+  });
+  afterEach(() => { cleanup(); jest.restoreAllMocks(); jest.useRealTimers(); });
+
+  test.each(['branch', 'restore', 'meaning removed', 'close'] as const)('the lens recedes after %s', action => {
+    const frame = { ...first, meaning: '方向。', textBreaks: { meaning: [2, 3], reflection: [] } };
+    const explained = { ...entry, frame };
+    const onBranch = jest.fn(), onResume = jest.fn();
+    const options = { ...props, entries: [explained], paused: false, autoScroll: false, reducedMotion: false,
+      settleEntrance: true, onBranch, onResume };
+    const view = render(<FlowStream {...options} />);
+    const draw = jest.mocked(StreamGlass).mock.results.at(-1)!.value.draw as jest.Mock;
+    const lens = () => draw.mock.calls.at(-1)?.[4].lens?.[3] ?? 0;
+    const word = screen.getByRole('button', { name: '知' });
+    fireEvent(word, new MouseEvent('pointerdown', { bubbles: true, button: 0 }));
+    act(() => { jest.advanceTimersByTime(LENS.growMs + 100); });
+    fireEvent(word, new MouseEvent('pointerup', { bubbles: true, button: 0 }));
+    expect(screen.getByRole('dialog', { name: /释义/ })).toBeInTheDocument();
+    expect(lens()).toBe(1);
+
+    if (action === 'branch') {
+      fireEvent.click(screen.getByRole('button', { name: '方向' }));
+      expect(onBranch).toHaveBeenCalledWith(expect.objectContaining({ pathId: entry.pathId, frameId: first.id,
+        selection: expect.objectContaining({ surface: 'meaning' }) }));
+    } else if (action === 'restore') {
+      view.rerender(<FlowStream {...options} restore={{ revision: 1, top: 0 }} />);
+    } else if (action === 'meaning removed') {
+      view.rerender(<FlowStream {...options} entries={[entry]} />);
+    } else {
+      fireEvent.click(screen.getByRole('button', { name: '关闭释义' }));
+    }
+    expect(screen.queryByRole('dialog', { name: /释义/ })).not.toBeInTheDocument();
+    expect(onResume).toHaveBeenCalledTimes(action === 'close' ? 1 : 0);
+    act(() => { jest.advanceTimersByTime(LENS.releaseMs + 100); });
+    expect(lens()).toBe(0);
   });
 });

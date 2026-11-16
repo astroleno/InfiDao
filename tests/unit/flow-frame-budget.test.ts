@@ -29,20 +29,31 @@ test('a steady 30fps on a 60Hz display counts as missing frames', () => {
   expect(budget.tier).toBeGreaterThan(0);
 });
 
+test('sustained severe foreground stalls still step down through the existing tiers', () => {
+  const budget = new FrameBudget();
+  feed(budget, 0, 120_000, () => 280);
+  expect(budget.tier).toBe(3);
+});
+
 test('a 120Hz display reading at its own rate is not mistaken for a slow one', () => {
   const budget = new FrameBudget();
   feed(budget, 0, 20_000, () => 8.33);
   expect(budget.tier).toBe(0);
 });
 
-test('warm-up rasterization, idle cadence and hidden-tab gaps never lower quality', () => {
+test('warm-up and explicitly interrupted intervals never lower quality', () => {
   const budget = new FrameBudget();
   feed(budget, 0, FRAME_BUDGET.warmupMs - 1, () => 60);
   expect(budget.tier).toBe(0);
   feed(budget, FRAME_BUDGET.warmupMs, 30_000, () => 50, false);
   expect(budget.tier).toBe(0);
   let time = 30_000;
-  for (let index = 0; index < 400; index++) { budget.sample(time, true); time += index % 4 ? 16.7 : 900; }
+  for (let index = 0; index < 150; index++) {
+    budget.sample(time, true);
+    budget.sample(time + 16.7, true);
+    budget.sample(time + 20, false);
+    time += 900;
+  }
   expect(budget.tier).toBe(0);
 });
 

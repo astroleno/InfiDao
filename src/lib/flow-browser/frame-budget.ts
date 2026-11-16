@@ -4,7 +4,7 @@
  * Quality only steps down within a session, so it can never oscillate. */
 export const FRAME_BUDGET = {
   tiers: 3,
-  // Judged per window of consecutive full-rate frames.
+  // Judged per window of active frame intervals.
   window: 120,
   // A frame is slow beyond 1.6 display periods; a window fails above 20%.
   slowFactor: 1.6, slowRatio: .2,
@@ -12,8 +12,6 @@ export const FRAME_BUDGET = {
   warmupMs: 4000,
   // Let a new tier take effect before judging it.
   cooldownMs: 3000,
-  // Longer gaps are hidden tabs or pauses, not rendering cost.
-  maxGapMs: 250,
 } as const;
 
 const DISPLAY_PERIOD_MS = 1000 / 60;
@@ -38,7 +36,7 @@ export class FrameBudget {
     this.tier = override ?? 0;
   }
 
-  /** Records one rendered frame. fullRate is false for idle-cadence frames.
+  /** Records one rendered frame. The caller excludes background and deliberate waits.
    * Returns true when the tier changed. */
   sample(time: number, fullRate: boolean) {
     if (this.locked || this.tier >= FRAME_BUDGET.tiers) return false;
@@ -47,7 +45,7 @@ export class FrameBudget {
     this.previous = fullRate ? time : undefined;
     if (previous === undefined || !fullRate) return false;
     const gap = time - previous;
-    if (gap <= 0 || gap > FRAME_BUDGET.maxGapMs) return false;
+    if (gap <= 0) return false;
     if (time - this.start < FRAME_BUDGET.warmupMs || time - this.changedAt < FRAME_BUDGET.cooldownMs) return false;
     this.gaps.push(gap);
     if (this.gaps.length < FRAME_BUDGET.window) return false;

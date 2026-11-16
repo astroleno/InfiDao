@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type ComponentProps, type ReactNode } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ComponentProps, type ReactNode } from 'react';
 import type { FlowSelection } from '@/lib/flow-browser/controller-host';
 import { entryKey, type StreamEntry } from '@/lib/flow-browser/continuity';
 import { quoteKey } from '@/lib/flow-browser/library';
@@ -110,6 +110,17 @@ export function FlowStream(props: Props) {
   // A glass lens forms over a long-pressed word and holds while its meaning is open.
   const lens = useRef(new LensMotion());
   const lensHeld = useRef(false);
+  const cancelMeaningPress = useCallback(() => {
+    if (meaningPress.current) window.clearTimeout(meaningPress.current.timer);
+    meaningPress.current = null;
+    if (!lensHeld.current && lens.current.active) { lens.current.release(performance.now()); optics.current(); }
+  }, []);
+  const dismissMeaning = useCallback(() => {
+    meaningResume.current = false;
+    lensHeld.current = false;
+    cancelMeaningPress();
+    setMeaningFor(null);
+  }, [cancelMeaningPress]);
   const announceVisual = useRef(() => {
     if (visualAnnounced.current) return;
     visualAnnounced.current = true;
@@ -120,12 +131,12 @@ export function FlowStream(props: Props) {
     entry,
     select: (selection: Parameters<ComponentProps<typeof LinkedText>['onSelect']>[0]) => {
       intended.current = false;
-      meaningResume.current = false;
-      setMeaningFor(null);
+      dismissMeaning();
       live.current.onRead(entry);
       live.current.onBranch({ ...selection, pathId: entry.pathId });
     },
-  })), [props.entries]);
+  })), [props.entries, dismissMeaning]);
+  const meaningEntry = contentEntries.find(({ entry }) => entryKey(entry) === meaningFor);
 
   useLayoutEffect(() => {
     const panel = panelRef.current;
@@ -170,19 +181,19 @@ export function FlowStream(props: Props) {
   useEffect(() => { if (props.notesFrameId) setNotesFor(props.notesFrameId); }, [props.notesFrameId]);
 
   useEffect(() => {
-    meaningResume.current = false;
-    setMeaningFor(null);
+    dismissMeaning();
     setMenuOpen(false);
     setMenuFor(null);
     menuGestureFor.current = null;
-    if (meaningPress.current) window.clearTimeout(meaningPress.current.timer);
-    meaningPress.current = null;
-  }, [props.restore.revision]);
+  }, [dismissMeaning, props.restore.revision]);
+
+  useEffect(() => {
+    if (meaningFor && !meaningEntry?.entry.frame.meaning) dismissMeaning();
+  }, [dismissMeaning, meaningEntry, meaningFor]);
 
   useEffect(() => {
     const cancel = () => {
-      if (meaningPress.current) window.clearTimeout(meaningPress.current.timer);
-      meaningPress.current = null;
+      cancelMeaningPress();
       manualScroll.reset();
     };
     window.addEventListener('blur', cancel);
@@ -192,7 +203,7 @@ export function FlowStream(props: Props) {
       window.removeEventListener('blur', cancel);
       document.removeEventListener('visibilitychange', cancel);
     };
-  }, [manualScroll]);
+  }, [cancelMeaningPress, manualScroll]);
 
   useLayoutEffect(() => { measure.current(); }, [props.entries, props.sourceOpen, notesFor]);
 
@@ -288,7 +299,7 @@ export function FlowStream(props: Props) {
     const surfaceMotions = new Map<StreamMotionVariant, SettlingScrollNoiseMotion>();
     const energy = new OpticalEnergy();
     const cadence = new IdleCadence();
-    let idleTimer = 0, idleFrame = false, lastTop = Infinity, lensWasActive = false, lastLens = 0;
+    let idleTimer = 0, fullRatePending = false, lastTop = Infinity, lensWasActive = false, lastLens = 0;
     // A device that keeps missing frames steps the material down; ?quality=0-3 pins it.
     const budget = new FrameBudget(readQualityOverride(window.location.search));
     const cachedRuns: OpticalRun[] = [], cachedHits: Hit[] = [];
@@ -479,7 +490,10 @@ export function FlowStream(props: Props) {
       handle = 0;
       if (pendingMeasure) remeasure(pendingMeasure);
       const p = live.current;
-      const playing = !p.paused && p.autoScroll !== false && !p.reducedMotion && !document.hidden && !!p.entries.length;
+      const hidden = document.hidden;
+      const fullRate = fullRatePending && !hidden;
+      fullRatePending = false;
+      const playing = !p.paused && p.autoScroll !== false && !p.reducedMotion && !hidden && !!p.entries.length;
       const top = scrollMotion.frame(panel.scrollTop, time, playing,
         Math.max(panel.scrollTop, panel.scrollHeight - panel.clientHeight));
       if (playing) panel.scrollTop = top;
@@ -495,12 +509,11 @@ export function FlowStream(props: Props) {
       cadence.note(time, moved || activeParts.size > 0 || energy.moving || fastManualScroll || !!pendingMeasure);
       if (playing || moving) {
         const wait = cadence.delay(time);
-        if (!wait) schedule();
-        else if (!idleTimer) idleTimer = window.setTimeout(() => { idleTimer = 0; idleFrame = true; schedule(); }, wait);
+        if (!wait) { fullRatePending = !hidden; schedule(); }
+        else if (!idleTimer) idleTimer = window.setTimeout(() => { idleTimer = 0; schedule(); }, wait);
       }
-      // Idle-cadence frames are deliberately slow and never count against the budget.
-      if (budget.sample(time, !idleFrame)) { planner.invalidate('restore'); schedule(); }
-      idleFrame = false;
+      // Measure a foreground render loop, not time elapsed before an idle or event-driven redraw.
+      if (budget.sample(time, fullRate)) { planner.invalidate('restore'); schedule(); }
       if (probe) {
         const cpuMs = performance.now() - started;
         probe({ time, cpuMs, totalWords: words.length, visibleWords: cachedRuns.length,
@@ -626,9 +639,14 @@ export function FlowStream(props: Props) {
     });
     fontStyles.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
     const onFocus = () => { entrance.current.pause(); };
+    const onVisibilityChange = () => {
+      // A hidden tab may not get even one frame before it becomes visible again.
+      fullRatePending = false;
+      schedule();
+    };
     panel.addEventListener('focusin', onFocus);
     panel.addEventListener('focusout', schedule);
-    document.addEventListener('visibilitychange', schedule);
+    document.addEventListener('visibilitychange', onVisibilityChange);
     if (glassRef.current) glass = new StreamGlass(glassRef.current, () => { planner.invalidate('restore'); schedule(); }, !!probe);
     const targetAt = (clientX: number, clientY: number) => {
       if (!drawn || live.current.reducedMotion || glassRef.current?.dataset.optics !== 'ready') return undefined;
@@ -655,7 +673,7 @@ export function FlowStream(props: Props) {
       document.fonts?.removeEventListener('loadingdone', fontChanged);
       panel.removeEventListener('focusin', onFocus);
       panel.removeEventListener('focusout', schedule);
-      document.removeEventListener('visibilitychange', schedule);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       glass?.destroy();
       unbindBend();
       content.style.translate = '';
@@ -700,11 +718,6 @@ export function FlowStream(props: Props) {
     if (panelRef.current) props.onScroll(scrollMotion.position(panelRef.current.scrollTop));
     props.onPause();
   };
-  const cancelMeaningPress = () => {
-    if (meaningPress.current) window.clearTimeout(meaningPress.current.timer);
-    meaningPress.current = null;
-    if (!lensHeld.current && lens.current.active) { lens.current.release(performance.now()); optics.current(); }
-  };
   const showMeaning = (entry: StreamEntry, resume = !props.paused && !props.reducedMotion, trigger: HTMLElement | null = null) => {
     if (!entry.frame.meaning) return;
     if (lens.current.active) { lensHeld.current = true; lens.current.hold(); }
@@ -717,12 +730,8 @@ export function FlowStream(props: Props) {
     setMeaningFor(entryKey(entry));
   };
   const closeMeaning = () => {
-    setMeaningFor(null);
-    lensHeld.current = false;
-    lens.current.release(performance.now());
-    optics.current();
     const resume = meaningResume.current;
-    meaningResume.current = false;
+    dismissMeaning();
     if (resume && !live.current.reducedMotion) {
       intended.current = true;
       entrance.current.resume();
@@ -778,7 +787,6 @@ export function FlowStream(props: Props) {
   const waitingKey = props.connecting
     ? props.entries.find(item => item.frame.id === props.connecting?.frameId && (!props.connecting.pathId || item.pathId === props.connecting.pathId))
     : props.entries.at(-1);
-  const meaningEntry = contentEntries.find(({ entry }) => entryKey(entry) === meaningFor);
   const menuEntry = props.entries.find(entry => entryKey(entry) === (menuFor || props.activeKey)) || props.entries[0];
   const menuCurrent = !!menuEntry && entryKey(menuEntry) === props.activeKey;
 
