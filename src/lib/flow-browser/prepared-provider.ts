@@ -4,6 +4,11 @@ import type { FlowEvent } from '../flow/contracts';
 
 type NextInput = { chainId: string; cursor: string };
 const copy = (chain: BrowserFlowBatch) => structuredClone(chain);
+// Failures another attempt can fix: a slow or malformed model answer, or a
+// draft the review rejected. Budget, cancellation and stale cursors are not.
+const RETRYABLE = new Set(['MODEL_TIMEOUT', 'TIMEOUT', 'MODEL_UNAVAILABLE', 'MODEL_INVALID', 'MODEL_TRUNCATED',
+  'RELATION_UNVERIFIED', 'UNVERIFIED_QUOTE', 'UNAVAILABLE']);
+const retryable = (error: { code?: string; cancelled?: boolean } | undefined) => !!error?.code && !error.cancelled && RETRYABLE.has(error.code);
 
 /** One verified continuation, scoped to this provider and exact source cursor. */
 export function withPreparedContinuation(provider: RemoteFlowProvider, now = Date.now) {
@@ -12,6 +17,9 @@ export function withPreparedContinuation(provider: RemoteFlowProvider, now = Dat
     subscribe: (hooks: Hooks) => void };
   let slot: Slot | null = null;
   let attempted: string | null = null;
+  // One extra attempt per cursor keeps a single failure from ending the
+  // reading, while a cursor that keeps failing still costs a bounded amount.
+  let retried: string | null = null;
   const keyOf = (input: NextInput) => JSON.stringify([input.chainId, input.cursor, currentContentPacks()]);
   const cancelPreparation = () => {
     const previous = slot; slot = null;
@@ -22,38 +30,7 @@ export function withPreparedContinuation(provider: RemoteFlowProvider, now = Dat
     ...provider,
     cancelPreparation,
     suspendPreparation() { if (slot && !slot.finished) cancelPreparation(); },
-    prepareNext(input: NextInput) {
-      const key = keyOf(input);
-      if (attempted === key) return;
-      cancelPreparation(); attempted = key;
-      let progress: FlowEvent | undefined, listener: Hooks;
-      const forward = (event: FlowEvent) => {
-        if (listener?.onEvent) listener.onEvent({ ...structuredClone(event), requestId: listener.requestId || event.requestId });
-      };
-      const request = provider.next({ ...input, prefetch: true }, { onEvent(event) {
-        if (!['head', 'progress', 'frame'].includes(event.type)) return;
-        progress = structuredClone(event);
-        forward(event);
-      } });
-      const task = Object.assign(request.then(chain => {
-        if (chain.chainId !== input.chainId || chain.frames.some(frame => frame.ready === false)) {
-          throw Object.assign(new Error('经文尚未核验完整，可以继续阅读原句。'), { code: 'INVALID_RESPONSE' });
-        }
-        return chain;
-      }), { cancel: () => request.cancel() });
-      const pending: Slot = { key, created: now(), task, consumed: false, finished: false,
-        subscribe(hooks) { listener = hooks; if (progress && listener) forward(progress); } };
-      slot = pending;
-      // A background failure never becomes an error overlay or an automatic
-      // retry. The next explicit action may try normally under the same caps.
-      void task.then(() => { pending.finished = true; }, error => {
-        pending.finished = true;
-        // The extra foreground hold may decline preparation while two calls
-        // remain available for an explicit continuation. Other failures are
-        // delivered on demand, without silently repeating semantic work.
-        if (slot === pending && error.code === 'BUDGET_REACHED') slot = null;
-      });
-    },
+    prepareNext(input: NextInput) { prepare(input); },
     next(input: NextInput, hooks?: Parameters<RemoteFlowProvider['next']>[1]) {
       const pending = slot;
       if (pending?.key === keyOf(input) && now() - pending.created < 5 * 60_000) {
@@ -63,9 +40,13 @@ export function withPreparedContinuation(provider: RemoteFlowProvider, now = Dat
         pending.subscribe(hooks);
         let owned = pending.task, cancelled = false;
         const result = pending.task.then(copy).catch(error => {
-          if (error.code !== 'BUDGET_REACHED' || cancelled) throw error;
+          if (cancelled) throw error;
           // Preparation may still be waiting for its stricter preflight when
           // the reader clicks. That declined hold spent no model calls.
+          if (error.code !== 'BUDGET_REACHED') {
+            if (!retryable(error) || retried === pending.key) throw error;
+            retried = pending.key;
+          }
           owned = provider.next(input, hooks);
           return owned;
         });
@@ -78,4 +59,42 @@ export function withPreparedContinuation(provider: RemoteFlowProvider, now = Dat
     resume(...args: Parameters<RemoteFlowProvider['resume']>) { cancelPreparation(); return provider.resume(...args); },
     branch(...args: Parameters<RemoteFlowProvider['branch']>) { cancelPreparation(); return provider.branch(...args); },
   };
+
+  function prepare(input: NextInput) {
+    const key = keyOf(input);
+    if (attempted === key) return;
+    cancelPreparation(); attempted = key;
+    let progress: FlowEvent | undefined, listener: Hooks;
+    const forward = (event: FlowEvent) => {
+      if (listener?.onEvent) listener.onEvent({ ...structuredClone(event), requestId: listener.requestId || event.requestId });
+    };
+    const request = provider.next({ ...input, prefetch: true }, { onEvent(event) {
+      if (!['head', 'progress', 'frame'].includes(event.type)) return;
+      progress = structuredClone(event);
+      forward(event);
+    } });
+    const task = Object.assign(request.then(chain => {
+      if (chain.chainId !== input.chainId || chain.frames.some(frame => frame.ready === false)) {
+        throw Object.assign(new Error('经文尚未核验完整，可以继续阅读原句。'), { code: 'INVALID_RESPONSE' });
+      }
+      return chain;
+    }), { cancel: () => request.cancel() });
+    const pending: Slot = { key, created: now(), task, consumed: false, finished: false,
+      subscribe(hooks) { listener = hooks; if (progress && listener) forward(progress); } };
+    slot = pending;
+    // A background failure never becomes an error overlay. One retryable
+    // failure is prepared once more while the reader is still reading; a
+    // second is delivered on demand.
+    void task.then(() => { pending.finished = true; }, error => {
+      pending.finished = true;
+      if (slot !== pending) return;
+      // The extra foreground hold may decline preparation while two calls
+      // remain available for an explicit continuation.
+      if (error.code === 'BUDGET_REACHED') { slot = null; return; }
+      if (retryable(error) && retried !== key) {
+        retried = key; slot = null; attempted = null;
+        prepare(input);
+      }
+    });
+  }
 }

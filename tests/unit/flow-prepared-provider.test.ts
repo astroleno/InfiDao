@@ -32,11 +32,43 @@ test('ready cache is delivered as a copy; a second cursor does not consume it', 
   f.provider.next({ ...input, cursor: 'other' }); expect(f.next).toHaveBeenCalledTimes(2);
 });
 
-test('a semantic rejection is surfaced once on demand and never automatically retried', async () => {
+const failing = (code: string) => Object.assign(Promise.reject(Object.assign(new Error(code), { code })), { cancel: jest.fn() });
+
+test('a failed preparation is prepared once more in the background before the reader arrives', async () => {
   const f = fixture(); f.provider.prepareNext(input);
+  f.next.mockReturnValueOnce(Object.assign(Promise.resolve(batch), { cancel: jest.fn() }));
   f.reject(Object.assign(new Error('unverified'), { code: 'RELATION_UNVERIFIED' }));
-  await Promise.resolve(); f.provider.prepareNext(input);
-  await expect(f.provider.next(input)).rejects.toMatchObject({ code: 'RELATION_UNVERIFIED' });
+  await Promise.resolve(); await Promise.resolve();
+  expect(f.next).toHaveBeenCalledTimes(2); expect((f.next.mock.calls[1] as unknown[])[0]).toEqual({ ...input, prefetch: true });
+  expect(await f.provider.next(input)).toEqual(batch);
+  expect(f.next).toHaveBeenCalledTimes(2);
+});
+
+test('a second failure for the same cursor is surfaced on demand without further calls', async () => {
+  const f = fixture(); f.provider.prepareNext(input);
+  const again = failing('MODEL_TIMEOUT'); again.catch(() => {});
+  f.next.mockReturnValueOnce(again);
+  f.reject(Object.assign(new Error('unverified'), { code: 'RELATION_UNVERIFIED' }));
+  await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+  f.provider.prepareNext(input);
+  await expect(f.provider.next(input)).rejects.toMatchObject({ code: 'MODEL_TIMEOUT' });
+  expect(f.next).toHaveBeenCalledTimes(2);
+});
+
+test('a reader already waiting on a failing preparation gets one fresh attempt', async () => {
+  const f = fixture(); f.provider.prepareNext(input);
+  const demand = f.provider.next(input);
+  f.next.mockReturnValueOnce(Object.assign(Promise.resolve(batch), { cancel: jest.fn() }));
+  f.reject(Object.assign(new Error('timeout'), { code: 'MODEL_TIMEOUT' }));
+  expect(await demand).toEqual(batch);
+  expect(f.next).toHaveBeenCalledTimes(2); expect((f.next.mock.calls[1] as unknown[])[0]).toEqual(input);
+});
+
+test.each(['CURSOR_CHANGED', 'CHAIN_EXPIRED', 'CONTENT_SCOPE_CHANGED'])('%s is never retried', async code => {
+  const f = fixture(); f.provider.prepareNext(input);
+  f.reject(Object.assign(new Error(code), { code }));
+  await Promise.resolve(); await Promise.resolve();
+  await expect(f.provider.next(input)).rejects.toMatchObject({ code });
   expect(f.next).toHaveBeenCalledTimes(1);
 });
 
