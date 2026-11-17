@@ -136,6 +136,19 @@ test('a reprinted read sentence cannot hide an unread companion in the same cano
   expect(flowJson).toHaveBeenCalledTimes(2); expect(reviewRelations).toHaveBeenCalledTimes(2);
 });
 
+test('a continuation that repeats an already-read passage gets one correction before the reader sees an error', async () => {
+  const signal = new AbortController().signal, events: FlowEvent[] = [];
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s1', rows[0]!.text)] });
+  await runFlow({ op: 'open', requestId: 'repeat-root', seed: '本末' }, 'owner', signal, event => events.push(event));
+  const root = (events.at(-1) as { chain: FlowChain }).chain;
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s1', rows[0]!.text)] })
+    .mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] });
+  await runFlow({ op: 'next', requestId: 'repeat-next', chainId: root.chainId, cursor: root.cursor! }, 'owner', signal, event => events.push(event));
+  expect(flowJson).toHaveBeenCalledTimes(3);
+  expect(jest.mocked(flowJson).mock.calls[2]![1]).toHaveProperty('validationIssues', [{ path: ['frames', 0, 'quote'], code: 'repeats_read_quote' }]);
+  expect((events.at(-1) as { chain: FlowChain }).chain.frames[0]!.quote).toBe(rows[1]!.text);
+});
+
 test.each(['知止而后有定 定而后能静', '知止而后有定', '知止而后有定，定而后能静。此谓知本。'])
 ('rejects a repeated quotation across sources without consuming the continuation cursor: %s', async duplicate => {
   const signal = new AbortController().signal, events: FlowEvent[] = [];
@@ -144,7 +157,8 @@ test.each(['知止而后有定 定而后能静', '知止而后有定', '知止�
   const root = (events.at(-1) as { chain: FlowChain }).chain;
   const alias = { ...source('alias', `他章重收：${duplicate}`), source: '礼记' };
   jest.mocked(candidatesFor).mockResolvedValue([alias, rows[1]!]);
-  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('alias', duplicate)] });
+  // The single correction may insist on the same passage; it is still rejected.
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('alias', duplicate)] }).mockResolvedValueOnce({ frames: [item('alias', duplicate)] });
   const next = { op: 'next' as const, requestId: 'next', chainId: root.chainId, cursor: root.cursor! };
   const reviews = jest.mocked(reviewRelations).mock.calls.length;
   await expect(runFlow(next, 'owner', signal, event => events.push(event))).rejects.toMatchObject({ code: 'RELATION_UNVERIFIED' });
@@ -154,7 +168,7 @@ test.each(['知止而后有定 定而后能静', '知止而后有定', '知止�
   jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] });
   await runFlow(next, 'owner', signal, event => events.push(event));
   expect((events.at(-1) as { chain: FlowChain }).chain.frames[0]!.quote).toBe(rows[1]!.text);
-  expect(flowJson).toHaveBeenCalledTimes(3);
+  expect(flowJson).toHaveBeenCalledTimes(4);
 });
 
 test.each([
@@ -168,12 +182,12 @@ test.each([
   jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('first-edition', original)] });
   await runFlow({ op: 'open', requestId: 'spelling-root', seed: '安止' }, 'owner', signal, event => events.push(event));
   const root = (events.at(-1) as { chain: FlowChain }).chain;
-  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('other-edition', duplicate)] });
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('other-edition', duplicate)] }).mockResolvedValueOnce({ frames: [item('other-edition', duplicate)] });
   const next = { op: 'next' as const, requestId: 'spelling-next', chainId: root.chainId, cursor: root.cursor! };
   const reviews = jest.mocked(reviewRelations).mock.calls.length;
   await expect(runFlow(next, 'owner', signal, event => events.push(event))).rejects.toMatchObject({ code: 'RELATION_UNVERIFIED' });
   expect(reviewRelations).toHaveBeenCalledTimes(reviews);
-  expect(flowJson).toHaveBeenCalledTimes(2);
+  expect(flowJson).toHaveBeenCalledTimes(3);
   expect((events.at(-1) as { chain: FlowChain }).chain.cursor).toBe(root.cursor);
   expect(jest.mocked(flowJson).mock.calls.at(-1)![1]).toHaveProperty('avoidQuotes', [original, duplicate]);
   jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] });
@@ -228,11 +242,11 @@ test.each([false, true])('inherits read quotations across branches and continuat
   expect(childFrame.anchors).toHaveLength(0); // Its old target is already in the parent reading.
   expect((await getChain('owner', child.chainId)).priorQuotes).toEqual([rows[0]!.text, rows[1]!.text]);
   jest.mocked(candidatesFor).mockResolvedValue([...rows, source('unread', '敬以直内，义以方外。')]);
-  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] });
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] }).mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] });
   await expect(runFlow({ op: 'next', requestId: 'ancestry-child-next', chainId: child.chainId, cursor: child.cursor! }, 'owner', signal, emit, store))
     .rejects.toMatchObject({ code: 'RELATION_UNVERIFIED' });
   expect(jest.mocked(flowJson).mock.calls.at(-1)![1]).toHaveProperty('avoidQuotes', expect.arrayContaining([rows[0]!.text, rows[1]!.text, rows[2]!.text]));
-  jest.mocked(flowJson).mockResolvedValueOnce(plan).mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] });
+  jest.mocked(flowJson).mockResolvedValueOnce(plan).mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] }).mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] });
   await expect(runFlow({ op: 'branch', requestId: 'ancestry-grandchild', chainId: child.chainId, fromFrameId: childFrame.id,
     selection: { start: 0, end: 1, textHash: childFrame.textHash, corpusVersion: childFrame.corpusVersion } }, 'owner', signal, emit, store))
     .rejects.toMatchObject({ code: 'RELATION_UNVERIFIED' });
@@ -421,6 +435,21 @@ test('an empty opening shows a verified head before explanation generation witho
   const complete = (events.at(-1) as { chain: FlowChain }).chain.frames[0]!;
   expect(complete.id).toBe(first.id);
   expect(complete.quote).toBe(first.quote);
+  expect(complete.ready).toBe(true);
+});
+test('a draft that ignores the visible head gets one correction instead of failing the opening', async () => {
+  const quote = '知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。';
+  const available = [source('opening', quote), ...rows];
+  jest.mocked(flowCorpus).mockResolvedValue(available);
+  jest.mocked(candidatesFor).mockResolvedValue(available);
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s2', rows[1]!.text)] })
+    .mockResolvedValueOnce({ frames: [item('opening', quote)] });
+  const events: FlowEvent[] = [];
+  await runFlow({ op: 'open', requestId: 'head-ignored' }, 'owner', new AbortController().signal, event => events.push(event));
+  expect(flowJson).toHaveBeenCalledTimes(2);
+  expect(jest.mocked(flowJson).mock.calls[1]![1]).toHaveProperty('validationIssues', [{ path: ['frames', 0, 'sourceId'], code: 'head_missing' }]);
+  const complete = (events.at(-1) as { chain: FlowChain }).chain.frames[0]!;
+  expect(complete.quote).toBe(quote);
   expect(complete.ready).toBe(true);
 });
 test('abort while generating never commits late model output', async () => {
@@ -613,7 +642,7 @@ test('a lexical branch cannot repeat a shortened parent quotation under another 
   const duplicate = source('other-edition', rows[0]!.text);
   jest.mocked(candidatesFor).mockResolvedValue([duplicate, ...rows]);
   jest.mocked(flowJson).mockResolvedValueOnce({ sense: '安止', direction: '辨明所守的方向', terms: ['物有本末', '知所先后'] })
-    .mockResolvedValueOnce({ frames: [item('other-edition', '知止而后有定')] });
+    .mockResolvedValueOnce({ frames: [item('other-edition', '知止而后有定')] }).mockResolvedValueOnce({ frames: [item('other-edition', '知止而后有定')] });
   await expect(runFlow({ op: 'branch', requestId: 'duplicate-word', chainId: parent.chainId, fromFrameId: frame.id,
     selection: { start: 1, end: 2, textHash: frame.textHash, corpusVersion: frame.corpusVersion } }, 'owner', new AbortController().signal, () => {}))
     .rejects.toMatchObject({ code: 'RELATION_UNVERIFIED' });

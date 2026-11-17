@@ -108,12 +108,26 @@ recentReadings 是这条来路最近已读的原文与短解。新节点要增�
 若给出 head，第一段必须严格保留 head.sourceId 和 head.quote。后续尽量提供不同典籍、不同观察角度。
 返回 JSON {"frames":[{"sourceId":"候选ID","quote":"原文子串","meaning":"原义","reflection":"仅说明本句新增的具体理解","relevance":0.9,"anchors":[]}]}。若确需预备关联词，anchors 每项为 {"surface":"meaning","label":"原样出现的词","sense":"此处义项","direction":"具体关联","terms":["古典检索词"],"topics":["具体主题"],"relationType":"related","target":{"sourceId":"另一个候选ID","quote":"其原文子串","meaning":"其原义"}}。`;
 
-async function generateNode(input: Record<string, unknown>, signal: AbortSignal): Promise<GeneratedBatch> {
+// A visible head can only be completed by explaining that head. A draft that
+// picked another passage instead goes through the same single correction.
+function explainsHead(batch: GeneratedBatch, head: unknown) {
+  const sourceId = (head as { sourceId?: string } | null)?.sourceId;
+  if (!sourceId || batch.frames.some(frame => frame.sourceId === sourceId)) return batch;
+  const error = new FlowError("MODEL_INVALID", "这条联系还不完整，可以换个入口。", 502);
+  error.cause = [{ path: ['frames', 0, 'sourceId'], code: 'head_missing' }];
+  throw error;
+}
+
+async function generateNode(input: Record<string, unknown>, signal: AbortSignal, check: (batch: GeneratedBatch) => void = () => {}): Promise<GeneratedBatch> {
   const prompt = NODE_PROMPT + '\n' + familyDecisionGuidance(typeof input.seed === 'string' && !input.readingContext ? input.seed : '') + '\n默认只输出最相关的一个主选。有head时frames最多1项，仅解释head并保持引文不变。没有head且主选联系存在原义歧义时，才提供至多一个有实质区别的备选（frames最多2项），主选在前；备选的anchors=[]，省略knowledge，只写简短原义和具体联系。它们是同一次核验的候选，最终只交付一个节点，不为备选凑数。' +
     '\nreadingContext是本次主动选择的词及其语境，focus是它要继续理解的问题；seed仅为来路，不得覆盖新方向。以原义明确的相近观点或有理由的对照回应当前词，不能只搜索同字。候选text是完整原文中的局部片段。avoidQuote和avoidQuotes是本次不能直接复写的经句（含已核实的异写）；主选不能返回相同、截短或扩长的引文，也不能换出处、标点或异写重复。经典汇编可能重收同一句，另一个sourceId不代表新内容。' +
     (input.graph ? '\ngraph=true：这是可循环的阅读图。visitedQuotes是更早读过的节点，不是排除清单；若当前词与旧经句有明确语义联系，可以重访该句，reflection必须说明本次具体联系。预备anchor也可以指向更早经句，包括来路中的经句，也允许同一个sourceId内另一条不同的经句，但不能指向本节点本身。不要为了循环而牵强连线，也不必为了新颖刻意避开相关旧句。' : '') +
     '\n长度是硬性要求：quote和target.quote各为2–80字，meaning、reflection、sense及target.meaning各不超过100字，direction不超过80字。候选原文可能很长，只选完整可读的短句，不抄整段。';
-  try { return parseGeneratedBatch(await flowJson(prompt, input, signal)); }
+  try {
+    const draft = explainsHead(parseGeneratedBatch(await flowJson(prompt, input, signal)), input.head);
+    check(draft);
+    return draft;
+  }
   catch (error) {
     signal.throwIfAborted();
     if (!(error instanceof FlowError) || error.code !== 'MODEL_INVALID') throw error;
@@ -126,7 +140,7 @@ async function generateNode(input: Record<string, unknown>, signal: AbortSignal)
     }
     // One correction may replace an invalid model response. Never truncate a
     // quote in code, relax source checks, or retry network/semantic rejection.
-    return parseGeneratedBatch(await flowJson(prompt + '\n上次输出没有通过格式或长度校验。请重新选择符合上述限制的原文短句并返回完整JSON。',
+    return parseGeneratedBatch(await flowJson(prompt + '\n上次输出没有通过格式、长度或核验（validationIssues 列出原因；repeats_read_quote 表示选了已读经句）。请重新选择符合上述限制的原文短句并返回完整JSON。',
       { ...input, validationIssues: error.cause || 'JSON结构不完整' }, signal));
   }
 }
@@ -326,6 +340,18 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
     recordFlowCounts({ candidateCount: candidates.length, candidateChars: compact.input.reduce((total, row) => total + row.text.length, 0) });
     if (!candidates.length && recalled.length && previousQuotes.length) throw new FlowError('RELATION_UNVERIFIED', '当前方向还没有找到合适的联系，可以换个词继续。', 422);
     const repeated = (frame: FlowFrame) => repeatsQuotation(frame.quote, previousQuotes);
+    const verify = (draft: GeneratedBatch) => verifyGenerated({ frames: draft.frames.slice(0, head ? 1 : 2).filter(item =>
+      head && item.sourceId === head.sourceId || compact.input.some(row => row.sourceId === item.sourceId && row.text.includes(item.quote))) },
+      candidates, state!.seen.length + 1, head, previousQuotes, !!graph).filter(frame => !repeated(frame));
+    // A draft whose every proposal is rejected (a passage already read, or a
+    // quote that is not in its source) gets the single bounded correction
+    // instead of ending the reading. Verification itself is never relaxed.
+    const correctable = (draft: GeneratedBatch) => {
+      if (!draft.frames.length || verify(draft).length) return;
+      const error = new FlowError('MODEL_INVALID', '这条联系还不完整，可以换个入口。', 502);
+      error.cause = [{ path: ['frames', 0, 'quote'], code: draft.frames.some(frame => repeatsQuotation(frame.quote, previousQuotes)) ? 'repeats_read_quote' : 'unverified_quote' }];
+      throw error;
+    };
     const parsed = candidates.length ? await measureFlowPhase('generate', () => generateNode({
       // Keep the original seed in the public chain, but do not let it replace
       // the reader's current word as the model's question on later branches.
@@ -336,11 +362,8 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
       avoidQuote: state!.fromQuote || null,
       avoidQuotes: [...new Set(previousQuotes.flatMap(quotationSpellings))],
       candidates: compact.input,
-    }, signal)) : { frames: [] };
-    const batch = { frames: parsed.frames.slice(0, head ? 1 : 2).filter(item =>
-      head && item.sourceId === head.sourceId || compact.input.some(row => row.sourceId === item.sourceId && row.text.includes(item.quote))) };
-    const generated = verifyGenerated(batch, candidates, state.seen.length + 1, head, previousQuotes, !!graph);
-    const verified = generated.filter(frame => !repeated(frame));
+    }, signal, correctable)) : { frames: [] };
+    const verified = verify(parsed);
     recordFlowCounts({ proposed: parsed.frames.length, verified: verified.length });
     if (!verified.length && parsed.frames.length) throw new FlowError('RELATION_UNVERIFIED',
       parsed.frames.some(frame => repeatsQuotation(frame.quote, previousQuotes)) ? '这次接续与已读经文重复，可以换一个词继续。' : '这次生成的联系未通过核验，可以换个词，或重试。', 422);
