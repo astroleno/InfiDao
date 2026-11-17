@@ -1,0 +1,262 @@
+{
+ "startedAt": "2026-11-17T16:07:10.968Z",
+ "options": {
+  "size": "phone",
+  "minutes": "15",
+  "path": "/InfiDao",
+  "out": "/tmp/soak-3b.json",
+  "retry": "1"
+ },
+ "requests": [
+  {
+   "op": "open",
+   "prefetch": false,
+   "start": 2.515,
+   "end": 7.022,
+   "seconds": 4.5,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 7.105,
+   "end": 12.223,
+   "seconds": 5.1,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 18.188,
+   "end": 22.605,
+   "seconds": 4.4,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 65.453,
+   "end": 70.307,
+   "seconds": 4.9,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 106.766,
+   "end": 138.756,
+   "seconds": 32,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 163.722,
+   "end": 170.073,
+   "seconds": 6.4,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 240.054,
+   "end": 266.587,
+   "seconds": 26.5,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 279.193,
+   "end": 290.01,
+   "seconds": 10.8,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 339.28,
+   "end": 344.817,
+   "seconds": 5.5,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 388.323,
+   "end": 392.549,
+   "seconds": 4.2,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 440.295,
+   "end": 445.306,
+   "seconds": 5,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 483.282,
+   "end": 489.229,
+   "seconds": 5.9,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 523.087,
+   "end": 526.847,
+   "seconds": 3.8,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 561.276,
+   "end": 566.562,
+   "seconds": 5.3,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 600.86,
+   "end": 604.914,
+   "seconds": 4.1,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 642.403,
+   "end": 646.764,
+   "seconds": 4.4,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 685.234,
+   "end": 691.954,
+   "seconds": 6.7,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 725.155,
+   "end": 729.685,
+   "seconds": 4.5,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 784.796,
+   "end": 788.403,
+   "seconds": 3.6,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 826.133,
+   "end": 838.783,
+   "seconds": 12.6,
+   "failed": "net::ERR_ABORTED"
+  },
+  {
+   "op": "next",
+   "prefetch": true,
+   "start": 869.064,
+   "end": 873.396,
+   "seconds": 4.3,
+   "failed": "net::ERR_ABORTED"
+  }
+ ],
+ "waits": [
+  {
+   "start": 5.244,
+   "seconds": 1.9
+  },
+  {
+   "start": 10.468,
+   "seconds": 1.8
+  },
+  {
+   "start": 105.099,
+   "seconds": 0.3
+  },
+  {
+   "start": 203.334,
+   "seconds": 0.3
+  },
+  {
+   "start": 277.435,
+   "seconds": 0.5
+  },
+  {
+   "start": 318.981,
+   "seconds": 0.4
+  },
+  {
+   "start": 378.834,
+   "seconds": 0.3
+  },
+  {
+   "start": 427.928,
+   "seconds": 0.3
+  },
+  {
+   "start": 522.902,
+   "seconds": 0.3
+  },
+  {
+   "start": 560.912,
+   "seconds": 0.4
+  },
+  {
+   "start": 599.189,
+   "seconds": 0.3
+  },
+  {
+   "start": 640.509,
+   "seconds": 0.9
+  },
+  {
+   "start": 682.124,
+   "seconds": 0.3
+  },
+  {
+   "start": 763.127,
+   "seconds": 0.3
+  },
+  {
+   "start": 824.455,
+   "seconds": 0.6
+  },
+  {
+   "start": 865.764,
+   "seconds": 0.3
+  }
+ ],
+ "errors": [],
+ "stuck": [],
+ "readyAt": 4.985,
+ "passages": 20,
+ "endedAt": 900.046,
+ "summary": {
+  "minutes": 15,
+  "passages": 20,
+  "continuations": 0,
+  "prefetches": 20,
+  "visibleWaits": 16,
+  "waitSeconds": 9.2,
+  "longestWait": 1.9,
+  "errors": 0,
+  "stopped": false
+ }
+}
