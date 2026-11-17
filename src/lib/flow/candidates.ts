@@ -58,11 +58,21 @@ export async function candidatesFor(terms: string[], focus: string, exclude: Set
     .filter(([id]) => !exclude.has(id) || id === forceId).slice(0, 40)
     .flatMap(([id]) => byId.has(id) ? [byId.get(id)!] : []);
   if (!contentPacks.includes('poetry')) return core;
-  const poetry = await searchPoetry([...terms, focus].join(' '), 32);
-  const fused = new Map(core.map((passage, rank) => [passage.id, { passage, score: 1 / (60 + rank) }]));
-  poetry.forEach(({ passage, score }, rank) => { if (!exclude.has(passage.id) || passage.id === forceId) fused.set(passage.id, { passage, score: (0.8 + score) / (60 + rank) }); });
-  if (forceId && !fused.has(forceId)) { const passage = await findFlowPassage(forceId); if (passage) fused.set(forceId, { passage, score: 1000 }); }
-  return [...fused.values()].sort((a,b) => Number(b.passage.id === forceId) - Number(a.passage.id === forceId) || b.score-a.score).slice(0,40).map(item => item.passage);
+  const poetry = (await searchPoetry([...terms, focus].join(' '), 32)).map(({ passage }) => passage)
+    .filter(passage => !exclude.has(passage.id) || passage.id === forceId);
+  // Poetry scores and classical lexical scores are on different scales, so
+  // fusing them by score let poems fill the whole pool. Alternate by rank:
+  // each pack keeps its own order and the model chooses between them. Poems
+  // lead each pair: a reader who turned poetry on asked to meet them.
+  const fused = new Map<string, PassageRecord>();
+  if (forceId) {
+    const forced = core.find(row => row.id === forceId) || poetry.find(row => row.id === forceId) || await findFlowPassage(forceId);
+    if (forced) fused.set(forceId, forced);
+  }
+  for (let rank = 0; rank < Math.max(core.length, poetry.length); rank++) {
+    for (const passage of [poetry[rank], core[rank]]) if (passage && !fused.has(passage.id)) fused.set(passage.id, passage);
+  }
+  return [...fused.values()].slice(0, 40);
 }
 
 export function checkedQuote(passage: PassageRecord | undefined, quote: string, start?: number) {

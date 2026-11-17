@@ -9,6 +9,12 @@ jest.mock('@/lib/flow/lexemes', () => {
   return { ...actual, lexicalBreaks: jest.fn(actual.lexicalBreaks) };
 });
 
+jest.mock('@/lib/content/store', () => ({
+  poetryPassage: jest.fn(),
+  searchPoetry: jest.fn(async () => ['p1', 'p2', 'p3'].map((id, index) => ({ score: .9 - index * .1,
+    passage: { id: 'poetry-' + id, text: '山月照人归', textHash: id, corpusVersion: 'poetry:v1', source: '诗' + id, chapter: '' } }))),
+}));
+
 jest.mock('@/lib/data/corpus', () => ({ loadCorpus: jest.fn(async () => [
   { id: 'row-a', text: '物有本末，事有终始。', textHash: 'hash-a', corpusVersion: 'v1', source: '大学', workTitle: '大学', chapter: '经一章' },
   { id: 'row-b', text: '己所不欲，勿施于人。', textHash: 'hash-b', corpusVersion: 'v1', source: '论语', workTitle: '论语', chapter: '颜渊' },
@@ -36,4 +42,12 @@ test('semantic retrieval uses only supplied visitor entries with current source 
   expect(await retrieve([])).toEqual([]);
   expect(await candidatesFor(['独特标记'], '', new Set(['row-a']), undefined, [entry])).toEqual([]);
   expect((await candidatesFor([], '', new Set(['row-a']), 'row-a')).map(row => row.id)).toEqual(['row-a']);
+});
+
+test('turning poetry on keeps the classics in the pool instead of letting poems outrank them all', async () => {
+  const ids = (await candidatesFor(['物有本末', '己所不欲'], '', new Set(), undefined, [], ['core', 'poetry'])).map(row => row.id);
+  // Each pack keeps its own order; the model chooses between them.
+  expect(ids.slice(0, 4).filter(id => id.startsWith('row-'))).toHaveLength(2);
+  expect(ids.slice(0, 4).filter(id => id.startsWith('poetry-'))).toHaveLength(2);
+  expect(ids.filter(id => id.startsWith('poetry-'))).toEqual(['poetry-p1', 'poetry-p2', 'poetry-p3']);
 });
