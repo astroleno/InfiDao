@@ -335,6 +335,12 @@ export function FlowExperience() {
     setSourceOpen(false);
   }
 
+  // Pressing inside the stream holds it; a retry is a request to read on.
+  function readOnAfterRetry() {
+    if (!reducedRef.current) pauseReading(false);
+    void controllerRef.current?.retry();
+  }
+
   function continueReading() {
     lastSelectionRef.current = null;
     setConnecting(null);
@@ -546,7 +552,7 @@ export function FlowExperience() {
         if (selected?.pathId && selected.pathId !== recordRef.current?.pathId) void controllerRef.current?.branch(selected);
         else void controllerRef.current?.restart(selected || (currentFrame ? { frameId: currentFrame.id } : undefined));
       }}>{lastSelectionRef.current?.selection ? '沿此词重新展开' : '从原句重新展开'}</button>
-      : <button className={styles.textButton} type="button" onClick={() => void controllerRef.current?.retry()}>重试</button>)}
+      : <button className={styles.textButton} type="button" onClick={readOnAfterRetry}>重试</button>)}
     <button className={styles.textButton} type="button" onClick={() => controllerRef.current?.dismissError()}>{flowError.code === 'BUDGET_REACHED' ? '回到已读经文' : '留在原句'}</button>
   </div> : undefined;
   return (
@@ -569,7 +575,7 @@ export function FlowExperience() {
         onRead={handleReadEntry} onVisualReady={handoff.markVisualReady} holdEntrance={!handoff.revealed}
         onScroll={top => { readingScrollRef.current = top; }} onBranch={selection => void handleBranch(selection)}
         waiting={!seedOpen && (pending ? <FlowWaiting compact busy={awaitingQuote} label={connecting?.label} onCancel={() => controllerRef.current?.cancel()} />
-          : canResume ? <FlowResume onResume={() => void controllerRef.current?.retry()} /> : errorFeedback)}
+          : canResume ? <FlowResume onResume={readOnAfterRetry} /> : errorFeedback)}
         sourceOpen={sourceOpen} onToggleSource={onToggleSource} bookmarkKeys={bookmarkKeys} onBookmark={() => void toggleBookmark()}
         onSourceBranch={(pathId, frame, selection, label) => { pauseReading(); void controllerRef.current?.sourceBranch?.(pathId,frame,selection,label).catch(() => notify('原阅读记录暂不可用，当前经文仍在。')); }}
         notesFrameId={notesFrameId} notes={notes} savingNote={savingNote}
