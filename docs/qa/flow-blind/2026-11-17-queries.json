@@ -1,0 +1,30 @@
+{
+  "id": "flow-blind-2026-11-17",
+  "purpose": "End-to-end reader accuracy: a modern thought goes through planning, retrieval, generation and relation review; judge the one delivered passage.",
+  "protocol": [
+    "Queries and criteria are written and committed before any run; neither changes after the first run.",
+    "Each query runs once per scope (core; core+poetry) with the production prompts and the configured model.",
+    "PASS: the quote's original meaning substantively answers the registered need, and the reflection neither misstates the quote nor adds unsupported claims about the reader.",
+    "PARTIAL: related but only through a shared word or a generic virtue, or the reflection overreaches.",
+    "FAIL: unrelated, misread, or nothing delivered (delivery failures are also counted separately as continuity failures).",
+    "Limitation: the author of the queries also judges them; this is not an independent review."
+  ],
+  "cases": [
+    { "id": "b01", "query": "老同学升职了，我嘴上祝贺，心里却酸酸的", "need": "面对他人成就的妒意或比较之心；自省、不以他人得失为忧、各安其分。不得说成用户不够好。" },
+    { "id": "b02", "query": "我爸住院了，我一边上班一边跑医院，快撑不住了", "need": "侍亲之劳与孝的分寸、量力、身心之养或忧患中自持；不能只讲尽孝的义务而无体谅。" },
+    { "id": "b03", "query": "领导让我在报表上改个数字，说大家都这么做", "need": "不义之事不为、守正、直道而行、不随众；不能导向服从。" },
+    { "id": "b04", "query": "拖了一个月的论文，打开文档就想刷手机", "need": "立志与行动、日积、不自欺、即时着手；一般劝学不足。" },
+    { "id": "b05", "query": "搬到新城市半年，下班回家没人说话", "need": "独处、思乡或客居孤寂，以及与之共处或结交；仅写离别送人不足。" },
+    { "id": "b06", "query": "朋友借了钱一直不还，我不知道该不该开口", "need": "朋友之间的信义、直言与分寸、责善有度；不能导向一味忍让或断交。" },
+    { "id": "b07", "query": "孩子考砸了，我忍不住吼了他，现在很后悔", "need": "怒与悔、过而能改、教子之道或以身作则；不能只谴责。" },
+    { "id": "b08", "query": "外婆去世后，我总想起她做饭的样子", "need": "悼亡、追念亲人、慎终追远或哀而不伤；泛泛人生无常不足。" },
+    { "id": "b09", "query": "同时收到两个工作邀请，一个稳定一个有意思", "need": "取舍、义利或志向与安稳的权衡、知所先后；不得替用户做决定。" },
+    { "id": "b10", "query": "开会时我的提议被别人拿去说成是他的", "need": "被冒功时的是非、不求人知与正当维护边界并存；不能只导向责己或忍耐。" },
+    { "id": "b11", "query": "体检报告出来有几项异常，晚上睡不着", "need": "忧惧与安命、养生、不忧不惧或珍惜当下；不得做医疗判断。" },
+    { "id": "b12", "query": "傍晚在江边散步，看着晚霞一点点暗下去", "need": "暮景、江水、夕照与静观或时光之感；以景为主，不强加义理。" },
+    { "id": "b13", "query": "总觉得自己说话太直，得罪了人", "need": "言语之慎、讷言、直与礼的平衡；不得否定正直本身。" },
+    { "id": "b14", "query": "辞职创业失败了，存款也花光了", "need": "困厄中守志、失败与再起、穷而不失义；泛泛安慰不足。" },
+    { "id": "b15", "query": "过年回家，亲戚一直问我什么时候结婚", "need": "面对他人期待时自持、和而不同、亲情中的分寸；不能导向顺从或敌视亲人。" },
+    { "id": "b16", "query": "看到新闻里的灾难，觉得自己什么也做不了", "need": "恻隐之心、仁者爱人、力所能及之善或忧天下；不能导向冷漠或无边自责。" }
+  ]
+}
