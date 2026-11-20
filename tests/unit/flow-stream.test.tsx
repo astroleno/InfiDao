@@ -717,15 +717,16 @@ describe('quality tiers reach the glass', () => {
     expect(shape.maxDpr).toBeUndefined();
   });
 
-  test('a lower tier drops the resolution, then the ripple fire', () => {
-    const [, , , staticGlass, shape] = drawsAt('?quality=2');
-    expect(staticGlass).toBe(false);
-    expect(shape.maxDpr).toBe(1);
-    expect(shape.ripple).toBe(0);
-  });
+  test.each([['?quality=1', 1], ['?quality=2', .8], ['?quality=3', .67]])(
+    'lower tier %s lowers only the resolution; the water and its fire stay', (search, maxDpr) => {
+      const [, , , staticGlass, shape] = drawsAt(search);
+      expect(staticGlass).toBe(false);
+      expect(shape.maxDpr).toBe(maxDpr);
+      expect(shape.ripple).toBe(1);
+    });
 
   test('the last tier keeps the glass still', () => {
-    const [, , , staticGlass] = drawsAt('?quality=3');
+    const [, , , staticGlass] = drawsAt('?quality=4');
     expect(staticGlass).toBe(true);
   });
 
@@ -748,8 +749,10 @@ describe('quality tiers reach the glass', () => {
     const { draw, step } = driveFrames();
     for (let i = 0; i < 150; i++) step(280);
     const [, , , staticGlass, shape] = draw.mock.calls.at(-1)!;
+    // A severe stall steps two tiers per window; the fire is still there.
     expect(staticGlass).toBe(false);
-    expect(shape.maxDpr).toBe(1);
+    expect(shape.maxDpr).toBe(.8);
+    expect(shape.ripple).toBe(1);
   });
 
   test('going to the background with no intervening frame does not count as stutter', () => {

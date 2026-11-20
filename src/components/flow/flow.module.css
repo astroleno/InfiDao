@@ -175,6 +175,10 @@
 .streamSourceText .fullSource { font-size: var(--flow-size-body); line-height: 2; }
 .streamProvenance { margin: 18px 0 0; color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.8; }
 .streamWaiting { min-height: 44px; margin: 16px 0 0; text-align: center; }
+/* While the first passage rises out of the water it is drawn below its native
+   place; native extras wait and fade in once it lands. */
+.streamWaiting { transition: opacity 320ms ease-out; }
+.streamViewport[data-flow-rising] .streamWaiting { opacity: 0; transition: none; }
 .streamWaiting > div { justify-content: center; }
 .streamError { color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.8; }
 .streamEnd { text-align: center; }

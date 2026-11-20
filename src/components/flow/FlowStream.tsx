@@ -8,8 +8,9 @@ import { streamBendSettings, streamProjection, type StreamMotionVariant } from '
 import { EntranceMotion, InkMotion } from '@/lib/flow-browser/entrance-motion';
 import { ScrollNoiseMotion, SettlingScrollNoiseMotion } from '@/lib/flow-browser/liquid-motion';
 import { OpticalEnergy } from '@/lib/flow-browser/optical-energy';
+import { ArrivalRise } from '@/lib/flow-browser/arrival-rise';
 import { IdleCadence } from '@/lib/flow-browser/idle-cadence';
-import { FrameBudget, readQualityOverride } from '@/lib/flow-browser/frame-budget';
+import { FrameBudget, qualitySettings, readQualityOverride } from '@/lib/flow-browser/frame-budget';
 import { LENS, LensMotion } from '@/lib/flow-browser/lens-motion';
 import { StreamGlass, type OpticalRun } from '@/lib/flow-browser/stream-glass';
 import { StreamSceneIndex } from '@/lib/flow-browser/stream-scene';
@@ -45,6 +46,8 @@ type Props = {
   settleEntrance?: boolean;
   /** Keeps the drawn lettering still until the loading light hands off. */
   holdEntrance?: boolean;
+  /** The first passage rises out of the water when the loading light hands off. */
+  riseOnReveal?: boolean;
   pending: boolean;
   connecting: FlowSelection | null;
   arrival?: FlowArrival | null;
@@ -298,9 +301,10 @@ export function FlowStream(props: Props) {
     let liquidNoise: ScrollNoiseMotion | undefined;
     const surfaceMotions = new Map<StreamMotionVariant, SettlingScrollNoiseMotion>();
     const energy = new OpticalEnergy();
+    const rise = new ArrivalRise();
     const cadence = new IdleCadence();
     let idleTimer = 0, fullRatePending = false, lastTop = Infinity, lensWasActive = false, lastLens = 0;
-    // A device that keeps missing frames steps the material down; ?quality=0-3 pins it.
+    // A device that keeps missing frames steps the material down; ?quality=0-4 pins it.
     const budget = new FrameBudget(readQualityOverride(window.location.search));
     const cachedRuns: OpticalRun[] = [], cachedHits: Hit[] = [];
 
@@ -316,10 +320,11 @@ export function FlowStream(props: Props) {
       frameWordsVisited = 0;
       const height = panel.clientHeight;
       if (!height) return false;
-      const scrollTop = scrollMotion.position(panel.scrollTop), activeElement = document.activeElement;
-      fastManualScroll = manualScroll.sample(scrollTop, time, height);
+      const nativeTop = scrollMotion.position(panel.scrollTop), activeElement = document.activeElement;
+      fastManualScroll = manualScroll.sample(nativeTop, time, height);
       // The last quality tier keeps the optics still; reading motion is unchanged.
-      const staticGlass = live.current.reducedMotion || budget.tier >= 3;
+      const quality = qualitySettings(budget.tier);
+      const staticGlass = live.current.reducedMotion || quality.static;
       const canvasOwnsGlyphs = !staticGlass && glassRef.current?.dataset.optics === 'ready';
       // The previous frame paid for rasterization and lazy programs; this one
       // is warm, so the loading light may hand off now.
@@ -327,13 +332,26 @@ export function FlowStream(props: Props) {
       // Behind the loading light the glass rasterizes still lettering first;
       // the ink reveal starts with the handoff instead of under the cover.
       const holdEntrance = canvasOwnsGlyphs && (!visualAnnounced.current || !!live.current.holdEntrance);
+      if (!rise.started && canvasOwnsGlyphs && !holdEntrance) {
+        // Rise only while every visible passage is still to be inked: those
+        // glyphs belong to the canvas, so no native text stands elsewhere.
+        partIndex.visible(nativeTop, nativeTop + height - 24, visibleParts);
+        const unwritten = visibleParts.length > 0 && visibleParts.every(part => part.ink.phase === 'waiting');
+        if (live.current.riseOnReveal && unwritten && !fastManualScroll) rise.begin(time, height);
+        else rise.skip();
+      }
+      // The optics read a position below the native one while the passage
+      // rises, so water, fire and ripple answer it exactly as a scroll.
+      const scrollTop = nativeTop - rise.offset(time, staticGlass);
+      // Native extras (the waiting line) stay hidden until the passage lands.
+      if (rise.active !== panel.hasAttribute('data-flow-rising')) panel.toggleAttribute('data-flow-rising', rise.active);
       const variant = live.current.motionVariant || 'liquid-live';
       let stagger = 0, moving = false;
       // Recompose the glass only when its lit level visibly changes.
       const energyLevel = energy.level;
       energy.sample(scrollTop, time, live.current.reducedMotion);
       if (energy.level !== energyLevel) planner.invalidate('motion');
-      moving = energy.moving;
+      moving = energy.moving || rise.active;
       const settleAll = !!live.current.settleEntrance || live.current.reducedMotion;
       if (settleAll && !settledAll) parts.forEach(finishPart);
       settledAll = settleAll;
@@ -378,7 +396,7 @@ export function FlowStream(props: Props) {
       lastLens = lensStrength;
       const bend: BendSettings = { ...streamBendSettings(width, height, variant, scrollTop),
         dispersion: energy.dispersion, sheen: energy.sheen, blur: energy.blur,
-        ...(budget.tier >= 1 ? { maxDpr: 1 } : {}), ...(budget.tier >= 2 ? { ripple: 0 } : {}),
+        ...(quality.maxDpr !== undefined ? { maxDpr: quality.maxDpr } : {}),
         ...(lensActive ? { lens: [lens.current.x / width, 1 - lens.current.y / height, LENS.radius, lensStrength] as [number, number, number, number] } : {}) };
       const zone = bend.zone * height;
       if (variant === 'liquid-live' || variant === 'liquid-live-before') {
@@ -406,7 +424,9 @@ export function FlowStream(props: Props) {
       }
       const runs = cachedRuns, hits = cachedHits;
       runs.length = 0; hits.length = 0;
-      wordIndex.visible(scrollTop - 70, scrollTop + height + 70, visibleWords);
+      // While rising, words still on screen natively stay owned by the glass;
+      // treating them as offscreen would restore their native text in place.
+      wordIndex.visible(scrollTop - 70, nativeTop + height + 70, visibleWords);
       frameWordsVisited = wordIndex.visited;
       nextWords.clear();
       for (const word of visibleWords) nextWords.add(word);
@@ -506,7 +526,7 @@ export function FlowStream(props: Props) {
       const moving = paint(time);
       // Only the ambient water is left once nothing else moves; let it drift
       // at a lower rate. Any input calls schedule() and restores full rate.
-      cadence.note(time, moved || activeParts.size > 0 || energy.moving || fastManualScroll || !!pendingMeasure);
+      cadence.note(time, moved || rise.active || activeParts.size > 0 || energy.moving || fastManualScroll || !!pendingMeasure);
       if (playing || moving) {
         const wait = cadence.delay(time);
         if (!wait) { fullRatePending = !hidden; schedule(); }

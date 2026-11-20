@@ -1,9 +1,13 @@
 /** Steps the reader's material down when a device keeps missing frames, so a
  * weaker GPU reads smoothly instead of stuttering at full quality.
- *   1: glass at 1x resolution    2: no ripple fire    3: static glass
- * Quality only steps down within a session, so it can never oscillate. */
+ *   1: glass at 1x   2: glass at 0.8x   3: glass at 0.67x   4: static glass
+ * Resolution is what the glass costs; its water, fire and ripple cost almost
+ * nothing, so they stay until the glass must stand still. Settled central
+ * lettering is native text, so a lower glass resolution softens only the
+ * already defocused folds. Quality only steps down within a session, so it
+ * can never oscillate. */
 export const FRAME_BUDGET = {
-  tiers: 3,
+  tiers: 4,
   // Judged per window of active frame intervals.
   window: 120,
   // A frame is slow beyond 1.6 display periods; a window fails above 20%.
@@ -12,9 +16,26 @@ export const FRAME_BUDGET = {
   warmupMs: 4000,
   // Let a new tier take effect before judging it.
   cooldownMs: 3000,
+  // A window whose median frame exceeds this many display periods is a severe
+  // stall: it steps down two tiers, so a struggling device is not left
+  // stuttering through one long window per tier.
+  severeFactor: 3,
 } as const;
 
 const DISPLAY_PERIOD_MS = 1000 / 60;
+
+// Glass backing resolution per live tier; undefined keeps the reader default.
+const TIER_MAX_DPR = [undefined, 1, .8, .67] as const;
+
+export type QualitySettings = { static: boolean; maxDpr?: number };
+
+/** What a quality tier changes. Only resolution, then a still glass. */
+export function qualitySettings(tier: number): QualitySettings {
+  const index = Math.max(0, Math.min(FRAME_BUDGET.tiers, Math.floor(tier)));
+  if (index >= FRAME_BUDGET.tiers) return { static: true };
+  const maxDpr = TIER_MAX_DPR[index];
+  return maxDpr === undefined ? { static: false } : { static: false, maxDpr };
+}
 
 export function readQualityOverride(search: string) {
   const value = new URLSearchParams(search).get('quality');
@@ -56,7 +77,8 @@ export class FrameBudget {
     const period = Math.min(sorted[Math.floor(sorted.length * .1)]!, DISPLAY_PERIOD_MS);
     const slow = sorted.filter(value => value > period * FRAME_BUDGET.slowFactor).length;
     if (slow / sorted.length <= FRAME_BUDGET.slowRatio) return false;
-    this.tier++;
+    const severe = sorted[Math.floor(sorted.length / 2)]! > DISPLAY_PERIOD_MS * FRAME_BUDGET.severeFactor;
+    this.tier = Math.min(FRAME_BUDGET.tiers, this.tier + (severe ? 2 : 1));
     this.changedAt = time;
     return true;
   }

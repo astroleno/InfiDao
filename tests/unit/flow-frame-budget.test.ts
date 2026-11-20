@@ -1,4 +1,4 @@
-import { FRAME_BUDGET, FrameBudget, readQualityOverride } from '@/lib/flow-browser/frame-budget';
+import { FRAME_BUDGET, FrameBudget, qualitySettings, readQualityOverride } from '@/lib/flow-browser/frame-budget';
 
 const feed = (budget: FrameBudget, from: number, until: number, gap: (index: number) => number, fullRate = true) => {
   let time = from, index = 0, changed = false;
@@ -23,6 +23,19 @@ test('a device that keeps missing frames steps down one tier at a time', () => {
   expect(budget.tier).toBe(FRAME_BUDGET.tiers);
 });
 
+test('severe stalls reach still glass sooner than one tier per window would', () => {
+  const budget = new FrameBudget();
+  // 280ms frames: one judging window lasts over half a minute.
+  feed(budget, 0, 80_000, () => 280);
+  expect(budget.tier).toBe(FRAME_BUDGET.tiers);
+});
+
+test('a moderately slow device still steps down one tier per window', () => {
+  const budget = new FrameBudget();
+  feed(budget, 0, FRAME_BUDGET.warmupMs + 4000, () => 33.4);
+  expect(budget.tier).toBe(1);
+});
+
 test('a steady 30fps on a 60Hz display counts as missing frames', () => {
   const budget = new FrameBudget();
   feed(budget, 0, FRAME_BUDGET.warmupMs + 6000, () => 33.4);
@@ -32,7 +45,7 @@ test('a steady 30fps on a 60Hz display counts as missing frames', () => {
 test('sustained severe foreground stalls still step down through the existing tiers', () => {
   const budget = new FrameBudget();
   feed(budget, 0, 120_000, () => 280);
-  expect(budget.tier).toBe(3);
+  expect(budget.tier).toBe(FRAME_BUDGET.tiers);
 });
 
 test('a 120Hz display reading at its own rate is not mistaken for a slow one', () => {
@@ -63,5 +76,30 @@ test('an explicit quality is held and never adapted', () => {
   expect(budget.tier).toBe(2);
 });
 
-test.each([['?quality=0', 0], ['?quality=3', 3], ['?quality=9', undefined], ['?quality=x', undefined], ['', undefined]])(
+test.each([['?quality=0', 0], ['?quality=3', 3], ['?quality=4', 4], ['?quality=5', undefined], ['?quality=9', undefined], ['?quality=x', undefined], ['', undefined]])(
   'quality override %s', (search, expected) => { expect(readQualityOverride(search)).toBe(expected); });
+
+test('full quality overrides nothing', () => {
+  expect(qualitySettings(0)).toEqual({ static: false });
+});
+
+test('weaker tiers lower only the glass resolution, step by step', () => {
+  const live = Array.from({ length: FRAME_BUDGET.tiers }, (_, tier) => qualitySettings(tier));
+  expect(live.map(setting => setting.maxDpr)).toEqual([undefined, 1, .8, .67]);
+  expect(live.every(setting => !setting.static)).toBe(true);
+});
+
+test('the water, its fire and the ripple stay until the glass must stand still', () => {
+  for (let tier = 0; tier <= FRAME_BUDGET.tiers; tier++) {
+    const setting = qualitySettings(tier) as Record<string, unknown>;
+    expect(setting).not.toHaveProperty('ripple');
+    expect(setting).not.toHaveProperty('caustics');
+    expect(setting).not.toHaveProperty('perlin');
+  }
+  expect(qualitySettings(FRAME_BUDGET.tiers).static).toBe(true);
+});
+
+test('out-of-range tiers clamp to the nearest defined tier', () => {
+  expect(qualitySettings(-1)).toEqual(qualitySettings(0));
+  expect(qualitySettings(99)).toEqual(qualitySettings(FRAME_BUDGET.tiers));
+});

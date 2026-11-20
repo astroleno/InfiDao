@@ -41,7 +41,8 @@
     "check:shaders": "node scripts/bench/check-shaders.mjs",
     "bench:jank": "node scripts/bench/jank.mjs",
     "bench:record": "node scripts/bench/record.mjs",
-    "bench:soak": "node scripts/bench/soak.mjs"
+    "bench:soak": "node scripts/bench/soak.mjs",
+    "bench:golden": "node scripts/bench/golden.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
