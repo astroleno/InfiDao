@@ -22,6 +22,46 @@ const item = (id: string, text: string) => ({ sourceId: id, quote: text, meaning
     target: { sourceId: 's2', quote: rows[1]!.text, meaning: '事物有根本与末节。' } }] });
 beforeEach(() => { jest.clearAllMocks(); resetFlowState(); jest.mocked(candidatesFor).mockResolvedValue(rows); jest.mocked(flowCorpus).mockResolvedValue(rows); });
 
+test.each([undefined, ''])('opening a chain only finalizes an explicit review meaning (%j)', async meaning => {
+  const realReview = jest.requireActual<typeof import('@/lib/flow/relations')>('@/lib/flow/relations').reviewRelations;
+  jest.mocked(reviewRelations).mockImplementationOnce(realReview);
+  let sequence = 0;
+  const store = createSessionStore(new MemoryDocumentBackend(), { createId: () => `review-meaning-${sequence++}` });
+  const events: FlowEvent[] = [];
+  const reflection = '从愿望转向行动时，可以先辨明要往哪里走。';
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s1', rows[0]!.text)] })
+    .mockImplementationOnce(async (_prompt, input, _signal, stream) => {
+      const { id } = (input as { frames: Array<{ id: string }> }).frames[0]!;
+      await stream?.onProgress({ frames: [{ id, relevant: true }] });
+      const result = { frames: [{ id, relevant: true, ...(meaning === undefined ? {} : { meaning }), reflection, anchorIds: [] }] };
+      await stream?.onProgress(result);
+      return result;
+    });
+  const opening = runFlow({ op: 'open', requestId: 'review-meaning', seed: '本末' }, 'owner', new AbortController().signal,
+    e => events.push(e), store);
+  if (meaning === undefined) {
+    await expect(opening).rejects.toMatchObject({ code: 'RELATION_UNVERIFIED' });
+    const arrival = events.find(event => event.type === 'head');
+    const arrivalFrame = arrival && 'chain' in arrival && arrival.chain.frames[0];
+    expect(arrivalFrame).toMatchObject({ meaning: '', reflection: '', ready: false,
+      settled: { meaning: false, reflection: false } });
+    expect(events.filter(event => event.type === 'progress' || event.type === 'frame' || event.type === 'done')).toEqual([]);
+  } else {
+    await opening;
+    const progress = events.find(event => event.type === 'progress');
+    const final = events.find(event => event.type === 'done');
+    const progressFrame = progress && 'chain' in progress ? progress.chain.frames[0] : undefined;
+    const finalFrame = final && 'chain' in final ? final.chain.frames[0] : undefined;
+    expect(progressFrame).toMatchObject({ meaning: '', reflection, ready: false,
+      settled: { meaning: true, reflection: true } });
+    expect(finalFrame).toMatchObject({ id: progressFrame?.id, meaning: '', reflection, ready: true });
+  }
+  expect(flowJson).toHaveBeenCalledTimes(2);
+  const prompt = jest.mocked(flowJson).mock.calls[0]![0];
+  expect(prompt).toContain('「事父母能竭其力」讲侍奉父母时尽力。原句没有界定照护者应在何处停下');
+  expect(prompt).toContain('应说明这是读者处境提出的问题');
+});
+
 test('new branches and continuation pass completed recent readings to generation and independent review', async () => {
   let sequence = 0;
   const store = createSessionStore(new MemoryDocumentBackend(), { createId: () => `history-${sequence++}` });
