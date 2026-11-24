@@ -405,7 +405,7 @@ export function FlowStream(props: Props) {
           motion = new SettlingScrollNoiseMotion(live.current.motionSeed, true, variant === 'liquid-live');
           surfaceMotions.set(variant, motion);
         }
-        const sample = motion.sample(scrollTop, time, live.current.reducedMotion || document.hidden);
+        const sample = motion.sample(scrollTop, time, staticGlass || document.hidden);
         bend.noisePhase = sample.phase;
         moving = sample.moving || moving;
       } else if (bend.perlin) {

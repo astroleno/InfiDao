@@ -730,6 +730,45 @@ describe('quality tiers reach the glass', () => {
     expect(staticGlass).toBe(true);
   });
 
+  test('paused, settled static glass stops requesting frames and redraws on scroll', () => {
+    window.history.replaceState(null, '', '/InfiDao?quality=4');
+    const raf = jest.spyOn(window, 'requestAnimationFrame');
+    render(<FlowStream {...props} reducedMotion={false} settleEntrance motionSeed={12} />);
+    const panel = screen.getByRole('generic', { name: '经文阅读' });
+    const draw = jest.mocked(StreamGlass).mock.results.at(-1)!.value.draw as jest.Mock;
+    act(() => { jest.advanceTimersByTime(2500); });
+    expect(draw).toHaveBeenCalled();
+    raf.mockClear(); draw.mockClear();
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(raf).not.toHaveBeenCalled();
+    expect(draw).not.toHaveBeenCalled();
+
+    panel.scrollTop = 120;
+    fireEvent.scroll(panel);
+    act(() => { jest.advanceTimersByTime(100); });
+    expect(raf).toHaveBeenCalled();
+    expect(draw.mock.calls.at(-1)?.[3]).toBe(true);
+    expect(panel.scrollTop).toBe(120);
+
+    act(() => { jest.advanceTimersByTime(2500); });
+    raf.mockClear();
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(raf).not.toHaveBeenCalled();
+  });
+
+  test.each([0, 3])('paused, settled live tier %d still redraws the ambient water', tier => {
+    window.history.replaceState(null, '', `/InfiDao?quality=${tier}`);
+    render(<FlowStream {...props} reducedMotion={false} settleEntrance motionSeed={12} />);
+    const draw = jest.mocked(StreamGlass).mock.results.at(-1)!.value.draw as jest.Mock;
+    act(() => { jest.advanceTimersByTime(2500); });
+    const phase = draw.mock.calls.at(-1)?.[4].noisePhase;
+    draw.mockClear();
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(draw.mock.calls.length).toBeGreaterThan(1);
+    expect(draw.mock.calls.at(-1)?.[3]).toBe(false);
+    expect(draw.mock.calls.at(-1)?.[4].noisePhase).not.toBe(phase);
+  });
+
   const driveFrames = () => {
     let time = 0, nextFrame: FrameRequestCallback | undefined;
     jest.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => { nextFrame = callback; return 1; });
