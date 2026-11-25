@@ -1,0 +1,453 @@
+{
+  "url": "https://aitoshuu.me/InfiDao",
+  "gitHead": "c80a192555c9239df64c17dfde42f58ac4299bfd",
+  "releaseId": "infidao-9a72686549eafcbd",
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "dpr": 3
+  },
+  "starts": "2026-11-25T16:48:22.485Z",
+  "sequence": [
+    "止",
+    "静",
+    "安",
+    "虑"
+  ],
+  "substitutions": [
+    "得",
+    "定"
+  ],
+  "attempts": [
+    {
+      "planned": "止",
+      "resources": [
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/flow-assets/v-094d7b612c674ac324e9/manifest.json",
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/flow-assets/v-094d7b612c674ac324e9/base-serif-c2701e3fde99183cf3b9.woff",
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/flow-assets/v-094d7b612c674ac324e9/base-supplement-7ae6002e9d58b6a75354.woff"
+      ],
+      "http": 200,
+      "open": {
+        "status": 200,
+        "events": [
+          {
+            "type": "head",
+            "ms": 1421.5
+          },
+          {
+            "type": "progress",
+            "ms": 4286.399999976158
+          },
+          {
+            "type": "progress",
+            "ms": 5038.699999988079
+          },
+          {
+            "type": "progress",
+            "ms": 5038.699999988079
+          },
+          {
+            "type": "frame",
+            "ms": 5322
+          },
+          {
+            "type": "done",
+            "ms": 5322
+          }
+        ],
+        "durationMs": 5343.899999976158
+      },
+      "parent": {
+        "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+        "source": "大学",
+        "sourceId": "rysxguji-daxue-1-2",
+        "start": 0,
+        "end": 31,
+        "hash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpus": "guji-core-v1",
+        "focus": "辨明方向，再安顿当下",
+        "anchors": []
+      },
+      "eligibility": [
+        {
+          "word": "止",
+          "start": 1,
+          "segmented": true
+        }
+      ],
+      "word": "止",
+      "start": 1,
+      "end": 2,
+      "failure": "locator.click: Timeout 8000ms exceeded."
+    },
+    {
+      "planned": "静",
+      "resources": [
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/flow-assets/v-094d7b612c674ac324e9/manifest.json",
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/flow-assets/v-094d7b612c674ac324e9/base-serif-c2701e3fde99183cf3b9.woff",
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/flow-assets/v-094d7b612c674ac324e9/base-supplement-7ae6002e9d58b6a75354.woff"
+      ],
+      "http": 200,
+      "open": {
+        "status": 200,
+        "events": [
+          {
+            "type": "head",
+            "ms": 1021.9000000059605
+          },
+          {
+            "type": "progress",
+            "ms": 4638.199999988079
+          },
+          {
+            "type": "progress",
+            "ms": 4638.199999988079
+          },
+          {
+            "type": "progress",
+            "ms": 5022.5
+          },
+          {
+            "type": "frame",
+            "ms": 5878.9000000059605
+          },
+          {
+            "type": "done",
+            "ms": 5878.9000000059605
+          }
+        ],
+        "durationMs": 5882
+      },
+      "parent": {
+        "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+        "source": "大学",
+        "sourceId": "rysxguji-daxue-1-2",
+        "start": 0,
+        "end": 31,
+        "hash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpus": "guji-core-v1",
+        "focus": "辨明方向，再安顿当下",
+        "anchors": []
+      },
+      "eligibility": [
+        {
+          "word": "静",
+          "start": 11,
+          "segmented": true
+        }
+      ],
+      "word": "静",
+      "start": 11,
+      "end": 12,
+      "failure": "locator.click: Timeout 8000ms exceeded."
+    },
+    {
+      "planned": "安",
+      "skip": "previous runner stopped during preparation; possible open counted against cap, no branch click recorded"
+    },
+    {
+      "planned": "虑",
+      "resources": [
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/flow-assets/v-094d7b612c674ac324e9/manifest.json",
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/flow-assets/v-094d7b612c674ac324e9/base-serif-c2701e3fde99183cf3b9.woff",
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/flow-assets/v-094d7b612c674ac324e9/base-supplement-7ae6002e9d58b6a75354.woff"
+      ],
+      "http": 200,
+      "open": {
+        "status": 200,
+        "events": [
+          {
+            "type": "head",
+            "ms": 547.1000000238419
+          },
+          {
+            "type": "progress",
+            "ms": 2402.100000023842
+          },
+          {
+            "type": "progress",
+            "ms": 2423.4000000059605
+          },
+          {
+            "type": "progress",
+            "ms": 2846.7000000178814
+          },
+          {
+            "type": "frame",
+            "ms": 3181.600000023842
+          },
+          {
+            "type": "done",
+            "ms": 3181.600000023842
+          }
+        ],
+        "durationMs": 3186.2000000178814
+      },
+      "parent": {
+        "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+        "source": "大学",
+        "sourceId": "rysxguji-daxue-1-2",
+        "start": 0,
+        "end": 31,
+        "hash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpus": "guji-core-v1",
+        "focus": "辨明方向，再安顿当下",
+        "anchors": []
+      },
+      "eligibility": [
+        {
+          "word": "虑",
+          "start": 23,
+          "segmented": true
+        }
+      ],
+      "word": "虑",
+      "start": 23,
+      "end": 24,
+      "dom": {
+        "heading": "左右方向键选词，Home 和 End 到首尾，回车接续，Tab 离开选词。知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+        "numButtons": 21
+      },
+      "pointer": {
+        "x": 246,
+        "y": 365.6394958496094
+      },
+      "trace": {
+        "branch": {
+          "op": "branch",
+          "start": 14246.09999999404,
+          "events": [
+            {
+              "type": "head",
+              "at": 18925.30000001192,
+              "frames": [
+                {
+                  "sourceId": "rysxguji-mengzi-9-16",
+                  "source": "孟子",
+                  "chapterLabel": "第9章 卷十一 告子上",
+                  "quote": "心之官则思，思则得之，不思则不得也。",
+                  "quoteStart": 287,
+                  "quoteEnd": 305,
+                  "textHash": "43fe82ececb0f8ef54dd4594bf90dff018faa4e4050a4e339b885e88b4cd6736",
+                  "corpusVersion": "guji-core-v1",
+                  "ready": false,
+                  "meaning": "",
+                  "reflection": ""
+                }
+              ],
+              "focus": "「虑」在《大学》原文此处：心安定后所生的思虑、谋虑，非泛泛忧虑。；可对照《论语》“人无远虑”与《孟子》“心之官则思”，看思虑如何由安定而生并导向有得。"
+            },
+            {
+              "type": "progress",
+              "at": 19078.80000001192,
+              "frames": [
+                {
+                  "sourceId": "rysxguji-mengzi-9-16",
+                  "source": "孟子",
+                  "chapterLabel": "第9章 卷十一 告子上",
+                  "quote": "心之官则思，思则得之，不思则不得也。",
+                  "quoteStart": 287,
+                  "quoteEnd": 305,
+                  "textHash": "43fe82ececb0f8ef54dd4594bf90dff018faa4e4050a4e339b885e88b4cd6736",
+                  "corpusVersion": "guji-core-v1",
+                  "ready": false,
+                  "meaning": "心这个器官的职能是思虑，思虑就有所得，不思虑就无所获。",
+                  "reflection": ""
+                }
+              ],
+              "focus": "「虑」在《大学》原文此处：心安定后所生的思虑、谋虑，非泛泛忧虑。；可对照《论语》“人无远虑”与《孟子》“心之官则思”，看思虑如何由安定而生并导向有得。"
+            },
+            {
+              "type": "progress",
+              "at": 19657.69999998808,
+              "frames": [
+                {
+                  "sourceId": "rysxguji-mengzi-9-16",
+                  "source": "孟子",
+                  "chapterLabel": "第9章 卷十一 告子上",
+                  "quote": "心之官则思，思则得之，不思则不得也。",
+                  "quoteStart": 287,
+                  "quoteEnd": 305,
+                  "textHash": "43fe82ececb0f8ef54dd4594bf90dff018faa4e4050a4e339b885e88b4cd6736",
+                  "corpusVersion": "guji-core-v1",
+                  "ready": false,
+                  "meaning": "心这个器官的职能是思虑，思虑就有所得，不思虑就无所获。",
+                  "reflection": "《大学》说安而后能虑，孟子则把思虑归给“心之官”：虑不是空转的担忧，而是心有所取向的思。安定之后生出的谋虑，正因有所指向才可能“得”；若心不参与思，所得也无从谈起。"
+                }
+              ],
+              "focus": "「虑」在《大学》原文此处：心安定后所生的思虑、谋虑，非泛泛忧虑。；可对照《论语》“人无远虑”与《孟子》“心之官则思”，看思虑如何由安定而生并导向有得。"
+            },
+            {
+              "type": "frame",
+              "at": 20116.09999999404,
+              "frames": [
+                {
+                  "sourceId": "rysxguji-mengzi-9-16",
+                  "source": "孟子",
+                  "chapterLabel": "第9章 卷十一 告子上",
+                  "quote": "心之官则思，思则得之，不思则不得也。",
+                  "quoteStart": 287,
+                  "quoteEnd": 305,
+                  "textHash": "43fe82ececb0f8ef54dd4594bf90dff018faa4e4050a4e339b885e88b4cd6736",
+                  "corpusVersion": "guji-core-v1",
+                  "ready": true,
+                  "meaning": "心这个器官的职能是思虑，思虑就有所得，不思虑就无所获。",
+                  "reflection": "《大学》说安而后能虑，孟子则把思虑归给“心之官”：虑不是空转的担忧，而是心有所取向的思。安定之后生出的谋虑，正因有所指向才可能“得”；若心不参与思，所得也无从谈起。",
+                  "knowledge": {
+                    "topics": [
+                      "思虑",
+                      "心官",
+                      "所得"
+                    ],
+                    "relation": {
+                      "type": "elaboration",
+                      "description": "《大学》的“虑而后能得”在此获得心官之思的具体说明：得来自心有所取向的思虑，而非外物自来。"
+                    }
+                  }
+                }
+              ],
+              "focus": "「虑」在《大学》原文此处：心安定后所生的思虑、谋虑，非泛泛忧虑。；可对照《论语》“人无远虑”与《孟子》“心之官则思”，看思虑如何由安定而生并导向有得。"
+            },
+            {
+              "type": "done",
+              "at": 20116.09999999404,
+              "frames": [
+                {
+                  "sourceId": "rysxguji-mengzi-9-16",
+                  "source": "孟子",
+                  "chapterLabel": "第9章 卷十一 告子上",
+                  "quote": "心之官则思，思则得之，不思则不得也。",
+                  "quoteStart": 287,
+                  "quoteEnd": 305,
+                  "textHash": "43fe82ececb0f8ef54dd4594bf90dff018faa4e4050a4e339b885e88b4cd6736",
+                  "corpusVersion": "guji-core-v1",
+                  "ready": true,
+                  "meaning": "心这个器官的职能是思虑，思虑就有所得，不思虑就无所获。",
+                  "reflection": "《大学》说安而后能虑，孟子则把思虑归给“心之官”：虑不是空转的担忧，而是心有所取向的思。安定之后生出的谋虑，正因有所指向才可能“得”；若心不参与思，所得也无从谈起。",
+                  "knowledge": {
+                    "topics": [
+                      "思虑",
+                      "心官",
+                      "所得"
+                    ],
+                    "relation": {
+                      "type": "elaboration",
+                      "description": "《大学》的“虑而后能得”在此获得心官之思的具体说明：得来自心有所取向的思虑，而非外物自来。"
+                    }
+                  }
+                }
+              ],
+              "focus": "「虑」在《大学》原文此处：心安定后所生的思虑、谋虑，非泛泛忧虑。；可对照《论语》“人无远虑”与《孟子》“心之官则思”，看思虑如何由安定而生并导向有得。"
+            }
+          ],
+          "status": 200,
+          "end": 20117.80000001192
+        },
+        "blocked": [
+          {
+            "op": "next",
+            "prefetch": true
+          }
+        ],
+        "clicks": [
+          {
+            "kind": "word",
+            "at": 14073.699999988079,
+            "trusted": true
+          },
+          {
+            "kind": "word",
+            "at": 14076.199999988079,
+            "trusted": false
+          },
+          {
+            "kind": "go",
+            "at": 19070.59999999404,
+            "trusted": true
+          }
+        ],
+        "goAvailable": 18990.40000000596,
+        "visual": {
+          "at": 19093.19999998808,
+          "geometry": {
+            "top": 211.16522216796875,
+            "bottom": 377.66522216796875,
+            "left": 70.203125,
+            "right": 319.796875,
+            "viewportTop": 0,
+            "viewportBottom": 844,
+            "ink": "settled",
+            "entry": "paused"
+          },
+          "verifiedAt": 19109.69999998808
+        },
+        "lastGeometry": {
+          "top": 211.16522216796875,
+          "bottom": 377.66522216796875,
+          "left": 70.203125,
+          "right": 319.796875,
+          "viewportTop": 0,
+          "viewportBottom": 844,
+          "ink": "settled",
+          "entry": "paused"
+        },
+        "elapsed": {
+          "networkMs": 172.40000000596046,
+          "firstQuoteMs": 4851.600000023842,
+          "goAvailableMs": 4916.700000017881,
+          "goClickedMs": 4996.9000000059605,
+          "readableMs": 5019.5,
+          "frameMs": 6042.4000000059605,
+          "doneMs": 6042.4000000059605
+        }
+      },
+      "corpusCheck": {
+        "commit": "c80a192555c9239df64c17dfde42f58ac4299bfd",
+        "file": "data/rysxguji/guji-core-v1.jsonl",
+        "sourceId": "rysxguji-mengzi-9-16",
+        "quoteIntervalMatches": true,
+        "fullTextSha256Matches": true
+      },
+      "readableScreenshot": {
+        "file": "quote-readable.png",
+        "sha256": "c3cbf5e032331e79643af642f957456e4076cd9a92c45fd4645c4ff992ec41d3"
+      }
+    }
+  ],
+  "finished": "2026-11-25T16:50:35.663Z",
+  "releaseFingerprints": {
+    "sourceDigest": "9a72686549eafcbd95944b090b911155f8d5d0d198814ccc7754746e205f8296",
+    "browserBundle": {
+      "path": "/_next/static/chunks/app/infidao/page-17d3ec46c0d7e443.js",
+      "sha256": "9fdc77061e6b6b22e391c8c66b85b444165ebc047aa634cc1576557dd89d4113"
+    },
+    "cdnReleaseManifestSha256": "fbf53cd55c069a52c9dcae5f7f18e8baa6a3c8cb7cf3a26bef696b814d1ac13f",
+    "cdnFontManifestSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0"
+  },
+  "method": {
+    "timebase": "performance.now() 单调时钟，毫秒。原词可信 click 的捕获事件为零点；实际光学路由转发的同词非可信 click 是同一次动作。",
+    "network": "同源真实流，旁路读取响应克隆的 NDJSON 完整行；不以网络事件替代可读。",
+    "readable": "目标整段引文框在阅读视口和视觉视口交集中，墨迹 settled、无数据标记显示仍在渲染墨迹，连续两个 rAF 取样位移 <0.5 CSS px。首个取样为点词后 5,019.5 ms，相邻帧在 5,036.0 ms 确认上下边缘稳定。后续截图作为可读性旁证。",
+    "goDwell": "去读的可信 click 时刻减首次检出该按钮且有布局尺寸的时刻，差为 80.2 ms。检出当帧没有另行截图。",
+    "quality": "部署提交 c80a192 的 runFlow 先执行 reviewRelations，再核对并提交完整结果，之后才发 frame 与 done。完成事件带 ready=true 计作服务端关联门通过；内容盲评另行独立判定。",
+    "limits": "隔离 Chromium 前台上下文；只允许每上下文一个无 seed open 和一个预先确认的 branch；自动 next/prefetch 本地拦截。第四样本先以 Shift 键停驻，再按可见词按钮中心发真实指针点击。"
+  },
+  "summary": {
+    "planned": 4,
+    "openConfirmed": 3,
+    "openUnconfirmedWithBudgetCounted": 1,
+    "branchSent": 1,
+    "serverGate": {
+      "pass": 1,
+      "fail": 0,
+      "unknown": 0
+    },
+    "notExecutedBranches": 3,
+    "readableCount": 1,
+    "goDwellMs": 80.2,
+    "goToReadableMs": 22.6,
+    "clickToReadableMinusGoDwellMs": 4939.3,
+    "reasonNoReuse": "部署提交先于 e3e0b28。本轮未发送复用探针。",
+    "iPhone": "待验"
+  }
+}
