@@ -100,6 +100,7 @@ export function FlowExperience() {
   const frameRef = useRef<FlowFrame | null>(null);
   const undoNoteRef = useRef<PersonalNote | null>(null);
   const lastSelectionRef = useRef<Selection | null>(null);
+  const wordArrivalSelection = useRef<Selection | null>(null);
   const reducedRef = useRef(false);
   const pausedRef = useRef(false);
 
@@ -136,6 +137,7 @@ export function FlowExperience() {
   }, []);
 
   function togglePoetry() {
+    wordArrivalSelection.current = null;
     controllerRef.current?.cancel(true, { discardPending: true });
     controllerRef.current?.cancelPreparation();
     pauseReading();
@@ -161,12 +163,19 @@ export function FlowExperience() {
     const selection = lastSelectionRef.current;
     const target = nextEntries.find(entry => entry.pathId === record.pathId);
     const origin = record.parentEntry;
+    const chosen = selection?.selection, continued = origin?.selection;
+    const matchedSelection = !!(selection && selection.pathId === record.parentPathId && origin &&
+      selection.frameId === origin.fromFrameId && !origin.thought && (chosen ?
+        continued && chosen.start === continued.start && chosen.end === continued.end &&
+          chosen.surface === continued.surface && chosen.surfaceText === continued.surfaceText &&
+          chosen.textHash === continued.textHash && chosen.corpusVersion === continued.corpusVersion :
+        selection.anchorId && selection.anchorId === origin.anchorId && !continued));
     setArrival(preserve && target && origin ? {
       id: String(++arrivalRevision.current), sourceKey: `${record.parentPathId}:${origin.fromFrameId}`, targetKey: entryKey(target),
-      label: selection?.label ? `沿「${selection.label}」已接续` : origin.thought ? '沿这一念已接续' : '经文已接续',
+      ...(matchedSelection && selection === wordArrivalSelection.current ? { kind: 'word' } : {}),
+      label: matchedSelection && selection?.label ? `沿「${selection.label}」已接续` : origin.thought ? '沿这一念已接续' : '经文已接续',
     } : null);
-    lastSelectionRef.current = null;
-    setConnecting(null);
+    clearSelection();
     if (!preserve) setNotesFrameId(null);
     if (seedSubmitting.current && seedOpenRef.current && record.pathId !== seedOrigin.current) {
       seedSubmitting.current = false;
@@ -322,9 +331,16 @@ export function FlowExperience() {
     pauseReading();
     setArrival(null);
     lastSelectionRef.current = selection;
+    wordArrivalSelection.current = selection;
     setConnecting(selection);
     await controller.branch(selection);
     if (lastSelectionRef.current === selection && !controller.getState().pending) setConnecting(null);
+  }
+
+  function clearSelection() {
+    lastSelectionRef.current = null;
+    wordArrivalSelection.current = null;
+    setConnecting(null);
   }
 
   function handleReadEntry(entry: StreamEntry) {
@@ -344,8 +360,7 @@ export function FlowExperience() {
   }
 
   function continueReading() {
-    lastSelectionRef.current = null;
-    setConnecting(null);
+    clearSelection();
     setArrival(null);
     void controllerRef.current?.next();
   }
@@ -363,6 +378,7 @@ export function FlowExperience() {
     const request = ++seedRequestRef.current;
     setSeedError('');
     lastSelectionRef.current = null;
+    wordArrivalSelection.current = null;
     seedSubmitting.current = true;
     submittedDraft.current = { version: draftVersionRef.current, value: seed };
     setSeedBusy(true);
@@ -437,6 +453,7 @@ export function FlowExperience() {
 
   function openLibrary() {
     libraryPause.current = paused; libraryRestored.current = false;
+    wordArrivalSelection.current = null;
     controllerRef.current?.cancel();
     pauseReading();
     void controllerRef.current?.checkpoint();
@@ -584,7 +601,9 @@ export function FlowExperience() {
           <button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button>
         </div> : undefined}
         onScroll={top => { readingScrollRef.current = top; }} onBranch={selection => void handleBranch(selection)}
-        waiting={!seedOpen && (pending ? <FlowWaiting compact busy={awaitingQuote} label={connecting?.label} onCancel={() => controllerRef.current?.cancel()} />
+        waiting={!seedOpen && (pending ? <FlowWaiting compact busy={awaitingQuote} label={connecting?.label} onCancel={() => {
+          wordArrivalSelection.current = null; controllerRef.current?.cancel();
+        }} />
           : canResume ? <FlowResume onResume={readOnAfterRetry} /> : errorFeedback)}
         sourceOpen={sourceOpen} onToggleSource={onToggleSource} bookmarkKeys={bookmarkKeys} onBookmark={() => void toggleBookmark()}
         onSourceBranch={(pathId, frame, selection, label) => { pauseReading(); void controllerRef.current?.sourceBranch?.(pathId,frame,selection,label).catch(() => notify('原阅读记录暂不可用，当前经文仍在。')); }}

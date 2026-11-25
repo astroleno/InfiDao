@@ -32,7 +32,7 @@ import styles from './flow.module.css';
 const RetainedLinkedText = memo(LinkedText);
 const VISUAL_READY_TIMEOUT_MS = 1400;
 
-export type FlowArrival = { id: string; sourceKey: string; targetKey: string; label: string };
+export type FlowArrival = { id: string; sourceKey: string; targetKey: string; label: string; kind?: 'word' };
 
 type Props = {
   entries: StreamEntry[];
@@ -99,6 +99,8 @@ export function FlowStream(props: Props) {
   const [shownArrivalId, setShownArrivalId] = useState<string | null>(null);
   const shownArrival = useRef<string | null>(null);
   const arrivalDismissed = useRef('');
+  const visibleWordArrival = useRef<FlowArrival | null>(null);
+  const settledWordArrival = useRef('');
   const arrivalHeadings = useRef(new Map<string, { entry: StreamEntry; heading: HTMLElement }>());
   const arrivalCovered = useRef(false);
   const arrivalCheckFrame = useRef<number | null>(null);
@@ -260,20 +262,28 @@ export function FlowStream(props: Props) {
   const checkArrival = useCallback(() => {
     const arrival = live.current.arrival;
     const panel = panelRef.current;
-    if (arrivalCovered.current || !arrival || !panel || arrivalDismissed.current === arrival.id) {
+    if (arrivalCovered.current || !arrival || !panel || (arrivalDismissed.current === arrival.id &&
+      (arrival.kind !== 'word' || settledWordArrival.current === arrival.id || visualAnnounced.current === 'native'))) {
+      visibleWordArrival.current = null;
       showArrival(null);
       return;
     }
     const target = arrivalHeadings.current.get(arrival.targetKey)?.heading;
     if (!target || !panel.contains(target)) {
+      visibleWordArrival.current = null;
       showArrival(null);
       return;
     }
     const bounds = panel.getBoundingClientRect(), rect = target.getBoundingClientRect();
     const visible = rect.top >= bounds.top + panel.clientHeight * .18 &&
       rect.top + Math.min(rect.height, 100) <= bounds.top + panel.clientHeight * .68;
+    const word = visible && arrival.kind === 'word' ? arrival : null;
+    if (word !== visibleWordArrival.current) {
+      visibleWordArrival.current = word;
+      if (word) optics.current();
+    }
     if (visible) arrivalDismissed.current = arrival.id;
-    showArrival(visible ? null : arrival.id);
+    showArrival(arrivalDismissed.current === arrival.id ? null : arrival.id);
   }, [showArrival]);
 
   const scheduleArrivalCheck = useCallback(() => {
@@ -285,7 +295,10 @@ export function FlowStream(props: Props) {
   }, [checkArrival]);
 
   useLayoutEffect(() => {
-    if (arrivalObscured || !props.arrival) showArrival(null);
+    if (arrivalObscured || !props.arrival) {
+      visibleWordArrival.current = null;
+      showArrival(null);
+    }
     else scheduleArrivalCheck();
   }, [arrivalObscured, props.arrival, scheduleArrivalCheck, showArrival]);
 
@@ -407,10 +420,17 @@ export function FlowStream(props: Props) {
       for (const part of activeParts) workParts.add(part);
       const focusedPart = activeElement instanceof Element ? partRecords.get(activeElement.closest<HTMLElement>('[data-flow-entrance]')!) : undefined;
       if (focusedPart) workParts.add(focusedPart);
+      const arrival = live.current.arrival;
+      const wordHeading = canvasOwnsGlyphs && !holdEntrance && !rise.active && !arrivalCovered.current &&
+        arrival && visibleWordArrival.current === arrival && settledWordArrival.current !== arrival.id
+        ? headings.get(arrival.targetKey)?.heading : undefined;
       for (const part of workParts) {
         if (part.bottom < passedUntil) { finishPart(part); continue; }
         const previousOffset = Math.round(part.motion.offset * 1000), previousInk = part.ink.revision;
-        if (fastManualScroll) part.ink.finish();
+        if (part.element === wordHeading && arrival) {
+          part.ink.finish();
+          settledWordArrival.current = arrival.id;
+        } else if (fastManualScroll) part.ink.finish();
         if (part.element.contains(activeElement)) {
           if (part.motion.waiting) part.motion.finish();
           else part.motion.pause(time);

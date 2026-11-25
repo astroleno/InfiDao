@@ -430,6 +430,91 @@ describe('branch arrival under reading overlays', () => {
     expect(viewport.scrollTop).toBe(800);
   });
 
+  test.each([true, false])('only a word arrival settles the in-zone quote early (word: %s)', word => {
+    jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(50);
+    jest.spyOn(HTMLElement.prototype, 'offsetTop', 'get').mockReturnValue(180);
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement) => {
+      canvas.dataset.optics = 'ready';
+      return { draw: jest.fn(), destroy: jest.fn() } as unknown as StreamGlass;
+    });
+    const explained = { ...second, frame: { ...second.frame, reflection: '可以看清方向。' } };
+    const options = { ...props, reducedMotion: false, entries: [entry, explained] };
+    const view = render(<FlowStream {...options} />);
+    const panel = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    const source = view.container.querySelector('[data-flow-frame="first"] [data-flow-heading]')!;
+    const target = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    const reflection = view.container.querySelector('[data-flow-frame="second"] [data-flow-entrance="reflection"]')!;
+    jest.spyOn(target, 'getBoundingClientRect').mockReturnValue({ top: 200, height: 100 } as DOMRect);
+    advance();
+    view.rerender(<FlowStream {...options} arrival={word ? { ...arrival, kind: 'word' } : arrival} />);
+    advance(); advance();
+    expect(target).toHaveAttribute('data-ink-phase', word ? 'settled' : 'entering');
+    expect(target).toHaveAttribute('data-entry-phase', 'entering');
+    expect(source).toHaveAttribute('data-ink-phase', 'entering');
+    expect(reflection).toHaveAttribute('data-ink-phase', 'entering');
+    expect(target).not.toHaveFocus();
+    expect(panel.scrollTop).toBe(0);
+    expect(go()).not.toBeInTheDocument();
+  });
+
+  test('an obscured or replaced word arrival does not settle a stale quote', () => {
+    jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(50);
+    jest.spyOn(HTMLElement.prototype, 'offsetTop', 'get').mockReturnValue(180);
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement) => {
+      canvas.dataset.optics = 'ready';
+      return { draw: jest.fn(), destroy: jest.fn() } as unknown as StreamGlass;
+    });
+    const replacement = { ...second, pathId: 'replacement', frame: { ...second.frame, id: 'third' } };
+    const options = { ...props, reducedMotion: false, entries: [entry, second, replacement] };
+    const view = render(<FlowStream {...options} />);
+    const panel = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    const old = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    const latest = view.container.querySelector<HTMLElement>('[data-flow-frame="third"] [data-flow-heading]')!;
+    jest.spyOn(old, 'getBoundingClientRect').mockReturnValue({ top: 200, height: 100 } as DOMRect);
+    jest.spyOn(latest, 'getBoundingClientRect').mockReturnValue({ top: 200, height: 100 } as DOMRect);
+    advance();
+    view.rerender(<FlowStream {...options} arrival={{ ...arrival, kind: 'word' }} />);
+    fireEvent.scroll(panel);
+    const newer = { ...arrival, id: 'newer', kind: 'word' as const, targetKey: entryKey(replacement) };
+    view.rerender(<FlowStream {...options} arrival={newer} arrivalObscured />);
+    advance();
+    expect(old).toHaveAttribute('data-ink-phase', 'entering');
+    expect(latest).toHaveAttribute('data-ink-phase', 'entering');
+    view.rerender(<FlowStream {...options} arrival={newer} />);
+    advance(); advance();
+    expect(latest).toHaveAttribute('data-ink-phase', 'settled');
+    expect(old).toHaveAttribute('data-ink-phase', 'entering');
+  });
+
+  test('an offscreen word arrival keeps the reading point until the reader uses 去读', () => {
+    jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(50);
+    jest.spyOn(HTMLElement.prototype, 'offsetTop', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.closest('[data-flow-frame="second"]') ? 900 : 180;
+    });
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement) => {
+      canvas.dataset.optics = 'ready';
+      return { draw: jest.fn(), destroy: jest.fn() } as unknown as StreamGlass;
+    });
+    const onRead = jest.fn();
+    const options = { ...props, reducedMotion: false, entries: [entry, second], onRead };
+    const view = render(<FlowStream {...options} />);
+    const panel = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    const target = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    Object.defineProperty(panel, 'scrollHeight', { value: 2200 });
+    jest.spyOn(target, 'getBoundingClientRect').mockImplementation(() => ({ top: 900 - panel.scrollTop, height: 100 } as DOMRect));
+    advance();
+    view.rerender(<FlowStream {...options} arrival={{ ...arrival, kind: 'word' }} />);
+    advance();
+    expect(panel.scrollTop).toBe(0);
+    expect(target).toHaveAttribute('data-ink-phase', 'waiting');
+    fireEvent.click(screen.getByRole('button', { name: '去读' }));
+    advance(); advance();
+    expect(panel.scrollTop).toBe(750);
+    expect(onRead).toHaveBeenLastCalledWith(second);
+    expect(target).toHaveFocus();
+    expect(target).toHaveAttribute('data-ink-phase', 'settled');
+  });
+
   test('remeasurement rechecks a pending heading without a scroll event', () => {
     const options = { ...props, arrival };
     const view = render(<FlowStream {...options} entries={[entry, second]} />);
@@ -877,6 +962,30 @@ describe('the loading light hands off to real lettering', () => {
     fireEvent.click(screen.getByRole('button', { name: '更多阅读选项' }));
     expect(screen.getByRole('dialog', { name: '阅读选项' })).toBeInTheDocument();
     expect(screen.queryByText('点词接续。')).not.toBeInTheDocument();
+  });
+
+  test('an in-zone word result waits for the opening rise without accelerating the opening quote', () => {
+    jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(50);
+    jest.spyOn(HTMLElement.prototype, 'offsetTop', 'get').mockReturnValue(180);
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement) => ({
+      draw: jest.fn(() => { canvas.dataset.optics = 'ready'; }), destroy: jest.fn(),
+    }) as unknown as StreamGlass);
+    const options = { ...props, entries: [entry, second], reducedMotion: false, riseOnReveal: true,
+      arrival: { id: 'early-word', sourceKey: entryKey(entry), targetKey: entryKey(second), label: '已接续', kind: 'word' as const } };
+    const view = render(<FlowStream {...options} holdEntrance />);
+    const source = view.container.querySelector('[data-flow-frame="first"] [data-flow-heading]')!;
+    const target = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    jest.spyOn(target, 'getBoundingClientRect').mockReturnValue({ top: 200, height: 100 } as DOMRect);
+    act(() => { jest.advanceTimersByTime(100); });
+    expect(target).toHaveAttribute('data-ink-phase', 'waiting');
+    view.rerender(<FlowStream {...options} />);
+    act(() => { jest.advanceTimersByTime(32); });
+    expect(view.container.querySelector('[data-flow-rising]')).toBeInTheDocument();
+    expect(source).not.toHaveAttribute('data-ink-phase', 'settled');
+    expect(target).not.toHaveAttribute('data-ink-phase', 'settled');
+    act(() => { jest.advanceTimersByTime(ARRIVAL_RISE.durationMs + 32); });
+    expect(view.container.querySelector('[data-flow-rising]')).toBeNull();
+    expect(target).toHaveAttribute('data-ink-phase', 'settled');
   });
 
   test('the hint yields from the start of a menu drag through the end of its closing spring', () => {
