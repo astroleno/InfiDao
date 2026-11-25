@@ -1,10 +1,12 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { frameData, frameSteps } from 'framer-motion';
 import { FlowStream } from '@/components/flow/FlowStream';
 import { FlowWaiting } from '@/components/flow/FlowWaiting';
 import type { FlowFrame } from '@/lib/flow/contracts';
 import { entryKey, type StreamEntry } from '@/lib/flow-browser/continuity';
 import { quoteKey } from '@/lib/flow-browser/library';
 import { EntranceMotion } from '@/lib/flow-browser/entrance-motion';
+import { ARRIVAL_RISE } from '@/lib/flow-browser/arrival-rise';
 import { LENS } from '@/lib/flow-browser/lens-motion';
 import { StreamGlass } from '@/lib/flow-browser/stream-glass';
 
@@ -261,9 +263,11 @@ test('a reading swipe opens the same menu, preserves native words, and suppresse
   const word = screen.getByRole('button', { name: '知' });
   const panel = screen.getByRole('generic', { name: '经文阅读' });
   panel.scrollTop = 51;
-  fireEvent(word, new MouseEvent('pointerdown', { bubbles: true, button: 0, clientX: 300, clientY: 300 }));
-  fireEvent(word, new MouseEvent('pointermove', { bubbles: true, button: 0, clientX: 220, clientY: 302 }));
-  fireEvent(word, new MouseEvent('pointerup', { bubbles: true, button: 0, clientX: 220, clientY: 302 }));
+  for (const [type, x, y, timeStamp] of [['pointerdown', 300, 300, 0], ['pointermove', 220, 302, 16], ['pointerup', 220, 302, 20]] as const) {
+    const event = new MouseEvent(type, { bubbles: true, button: 0, clientX: x, clientY: y });
+    Object.defineProperty(event, 'timeStamp', { value: timeStamp });
+    fireEvent(word, event);
+  }
   fireEvent.click(word, { detail: 1 });
   expect(onBranch).not.toHaveBeenCalled(); expect(onRead).toHaveBeenLastCalledWith(entry);
   expect(screen.getByRole('dialog', { name: '阅读选项' })).toHaveAttribute('aria-modal', 'true');
@@ -665,12 +669,12 @@ describe('the loading light hands off to real lettering', () => {
     jest.spyOn(HTMLElement.prototype, name, 'get').mockReturnValue(value);
   beforeEach(() => { jest.useFakeTimers(); sized('clientHeight', 600); sized('clientWidth', 390); });
   // Unmount while the fake animation frame API still exists.
-  afterEach(() => { cleanup(); jest.restoreAllMocks(); jest.useRealTimers(); });
+  afterEach(() => { cleanup(); jest.restoreAllMocks(); jest.useRealTimers(); window.history.replaceState(null, '', '/'); });
 
   test('reduced motion is ready as soon as passages exist', () => {
     const onVisualReady = jest.fn();
     render(<FlowStream {...props} onVisualReady={onVisualReady} />);
-    expect(onVisualReady).toHaveBeenCalledTimes(1);
+    expect(onVisualReady.mock.calls).toEqual([['native']]);
   });
 
   test('the glass announces its first drawn passage, once', () => {
@@ -680,7 +684,7 @@ describe('the loading light hands off to real lettering', () => {
     const onVisualReady = jest.fn();
     render(<FlowStream {...props} reducedMotion={false} paused={false} onVisualReady={onVisualReady} />);
     act(() => { jest.advanceTimersByTime(100); });
-    expect(onVisualReady).toHaveBeenCalledTimes(1);
+    expect(onVisualReady.mock.calls).toEqual([['canvas']]);
     act(() => { jest.advanceTimersByTime(2000); });
     expect(onVisualReady).toHaveBeenCalledTimes(1);
   });
@@ -691,7 +695,91 @@ describe('the loading light hands off to real lettering', () => {
     act(() => { jest.advanceTimersByTime(1000); });
     expect(onVisualReady).not.toHaveBeenCalled();
     act(() => { jest.advanceTimersByTime(400); });
-    expect(onVisualReady).toHaveBeenCalledTimes(1);
+    expect(onVisualReady.mock.calls).toEqual([['native']]);
+  });
+
+  test('the static quality tier hands off as native without waiting for the fallback timeout', () => {
+    window.history.replaceState(null, '', '?quality=4');
+    const onVisualReady = jest.fn();
+    const view = render(<FlowStream {...props} reducedMotion={false} onVisualReady={onVisualReady} riseOnReveal />);
+    act(() => { jest.advanceTimersByTime(32); });
+    expect(onVisualReady.mock.calls).toEqual([['native']]);
+    expect(view.container.querySelector('[data-flow-rising]')).toBeNull();
+  });
+
+  test.each([true, false])('context failure settles the opening before its first rise frame (hold %s)', holdEntrance => {
+    let loseContext!: () => void;
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement, invalidate: () => void) => {
+      loseContext = () => { canvas.dataset.optics = 'lost'; invalidate(); };
+      return { draw: jest.fn(() => { if (!canvas.dataset.optics) canvas.dataset.optics = 'ready'; }), destroy: jest.fn() } as unknown as StreamGlass;
+    });
+    const onVisualReady = jest.fn();
+    const options = { ...props, reducedMotion: false, onVisualReady, riseOnReveal: true, firstHint: <span>点词接续。</span> };
+    const view = render(<FlowStream {...options} holdEntrance />);
+    act(() => { jest.advanceTimersByTime(100); });
+    expect(onVisualReady.mock.calls).toEqual([['canvas']]);
+    expect(screen.queryByText('点词接续。')).not.toBeInTheDocument();
+    if (!holdEntrance) view.rerender(<FlowStream {...options} holdEntrance={false} />);
+    act(() => loseContext());
+    expect(onVisualReady.mock.calls).toEqual(holdEntrance ? [['canvas'], ['native']] : [['canvas']]);
+    expect(screen.getByText('点词接续。')).toBeInTheDocument();
+    act(() => { jest.advanceTimersByTime(32); });
+    expect(view.container.querySelector('[data-flow-rising]')).toBeNull();
+  });
+
+  test('the first hint waits for the real optical rise and yields to the reading menu', () => {
+    jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(30);
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement) => ({
+      draw: jest.fn(() => { canvas.dataset.optics = 'ready'; }), destroy: jest.fn(),
+    }) as unknown as StreamGlass);
+    const options = { ...props, reducedMotion: false, riseOnReveal: true, firstHint: <span>点词接续。</span> };
+    const view = render(<FlowStream {...options} holdEntrance />);
+    act(() => { jest.advanceTimersByTime(100); });
+    expect(screen.queryByText('点词接续。')).not.toBeInTheDocument();
+    view.rerender(<FlowStream {...options} />);
+    act(() => { jest.advanceTimersByTime(32); });
+    expect(view.container.querySelector('[data-flow-rising]')).toBeInTheDocument();
+    expect(screen.queryByText('点词接续。')).not.toBeInTheDocument();
+    act(() => { jest.advanceTimersByTime(ARRIVAL_RISE.durationMs + 32); });
+    expect(view.container.querySelector('[data-flow-rising]')).toBeNull();
+    expect(screen.getByText('点词接续。')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '更多阅读选项' }));
+    expect(screen.getByRole('dialog', { name: '阅读选项' })).toBeInTheDocument();
+    expect(screen.queryByText('点词接续。')).not.toBeInTheDocument();
+  });
+
+  test('the hint yields from the start of a menu drag through the end of its closing spring', () => {
+    const view = render(<FlowStream {...props} reducedMotion={false} firstHint={<button type="button">知道了</button>} />);
+    const viewport = screen.getByRole('generic', { name: '经文阅读' });
+    const menu = view.container.querySelector('[data-flow-menu]');
+    const hint = () => screen.queryByRole('button', { name: '知道了' });
+    expect(hint()).toBeInTheDocument();
+    fireEvent(viewport, new MouseEvent('pointerdown', { bubbles: true, button: 0, clientX: 350, clientY: 300 }));
+    fireEvent(viewport, new MouseEvent('pointermove', { bubbles: true, button: 0, clientX: 130, clientY: 300 }));
+    expect(menu).not.toHaveAttribute('hidden');
+    expect(menu).toHaveAttribute('aria-hidden', 'true');
+    expect(hint()).not.toBeInTheDocument();
+    fireEvent(viewport, new MouseEvent('pointerup', { bubbles: true, button: 0, clientX: 130, clientY: 300 }));
+    fireEvent.click(view.container.querySelector('[data-flow-menu-backdrop]')!);
+    expect(menu).not.toHaveAttribute('hidden');
+    expect(menu).toHaveAttribute('aria-hidden', 'true');
+    expect(hint()).not.toBeInTheDocument();
+    // Framer Motion captures the browser frame scheduler before Jest installs its clock.
+    // Process the animation frames with the same clock used by the reader.
+    const previousFrame = { ...frameData };
+    try {
+      for (let frame = 0; frame < 100 && !menu?.hasAttribute('hidden'); frame++) {
+        act(() => {
+          jest.advanceTimersByTime(16);
+          Object.assign(frameData, { delta: 16, timestamp: performance.now(), isProcessing: true });
+          for (const step of Object.values(frameSteps)) step.process(frameData);
+        });
+      }
+    } finally {
+      Object.assign(frameData, previousFrame);
+    }
+    expect(menu).toHaveAttribute('hidden');
+    expect(hint()).toBeInTheDocument();
   });
 });
 

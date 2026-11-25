@@ -13,6 +13,7 @@ type Props = {
   onOpen?: () => void;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onPresenceChange?: (visible: boolean) => void;
   poetry?: { enabled: boolean; available: boolean; onToggle: () => void; message?: string };
   gestureSurface?: RefObject<HTMLElement>;
   onGestureStart?: (target: Element | null) => void;
@@ -26,11 +27,12 @@ type Drag = { id: number; x: number; y: number; progress: number; lastX: number;
 const RELEASE_VELOCITY_WINDOW_MS = 80;
 
 export function FlowMenu(props: Props) {
-  const { onThought, onLibrary, libraryDisabled, motionCandidate, origins, reading } = props;
+  const { onThought, onLibrary, libraryDisabled, motionCandidate, origins, reading, onPresenceChange } = props;
   const origin = origins?.find(item => item.pathId === reading?.pathId);
   const [internalOpen, setInternalOpen] = useState(false);
   const open = props.open ?? internalOpen;
   const [present, setPresent] = useState(open);
+  const visible = present || open;
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const gesture = useRef<Drag | null>(null);
@@ -82,6 +84,7 @@ export function FlowMenu(props: Props) {
     if (open) live.current.onOpen?.();
   }, [open]);
   useEffect(() => () => animation.current?.stop(), []);
+  useLayoutEffect(() => { onPresenceChange?.(visible); }, [onPresenceChange, visible]);
   useLayoutEffect(() => { panel.current?.toggleAttribute('inert', !open); }, [open, panel]);
 
   useEffect(() => {
@@ -184,9 +187,9 @@ export function FlowMenu(props: Props) {
       onKeyDown={event => { if (!open && ['ArrowDown', 'ArrowUp'].includes(event.key)) { event.preventDefault(); instant.current = true; changeOpen(true); } }}>
       <span aria-hidden="true" />
     </button>
-    <motion.div hidden={!present && !open} className={styles.readingMenuScrim} style={{ opacity: progress, pointerEvents: present || open ? 'auto' : 'none' }} data-flow-menu-backdrop aria-hidden="true" onClick={() => close()} />
+    <motion.div hidden={!visible} className={styles.readingMenuScrim} style={{ opacity: progress, pointerEvents: visible ? 'auto' : 'none' }} data-flow-menu-backdrop aria-hidden="true" onClick={() => close()} />
     <motion.section ref={panel} id={id} className={styles.readingMenuPanel} role="dialog" aria-modal={open ? true : undefined} aria-hidden={!open || undefined}
-      aria-label="阅读选项" data-flow-menu hidden={!present && !open} style={{ x, pointerEvents: open ? 'auto' : 'none' }}>
+      aria-label="阅读选项" data-flow-menu hidden={!visible} style={{ x, pointerEvents: open ? 'auto' : 'none' }}>
       <div className={styles.readingMenuHeading}><h2>阅读选项</h2><button type="button" className={styles.readingMenuClose} aria-label="关闭阅读选项" onClick={event => close(event.detail === 0)}>×</button></div>
       {origin && <div className={styles.readingMenuOrigin}>
         <p className={styles.muted}>{origin.label}</p>

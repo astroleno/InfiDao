@@ -68,6 +68,7 @@ export function FlowExperience() {
   const keepsakeOpening = useRef(0);
   const [bookmarkKeys, setBookmarkKeys] = useState<Set<string>>(new Set());
   const [hint, setHint] = useState(false);
+  const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(true);
   const [connecting, setConnecting] = useState<Selection | null>(null);
   const [arrival, setArrival] = useState<FlowArrival | null>(null);
   const [feedback, setFeedback] = useState<{ text: string; revision: number } | null>(null);
@@ -533,6 +534,8 @@ export function FlowExperience() {
   const currentFrame = active || frames[0] || null;
   const loadingQuote = currentFrame?.quote || preparingQuote;
   const handoff = useLoadingHandoff(loadingQuote, reducedMotion);
+  const showHint = hint && handoff.revealed && !loadingOverlayVisible && !loading && !pending && !flowError &&
+    !seedOpen && !libraryOpen && !keepsakeSource && !sourceOpen && !storageWarning && !feedback;
   const readingOrigins = records.flatMap(record => {
     const origin = record.parentEntry, parentPathId = record.parentPathId;
     return parentPathId && origin ? [{
@@ -573,6 +576,10 @@ export function FlowExperience() {
         onContinue={continueReading} onPrepareNext={() => controllerRef.current?.prepareNext()}
         onPause={() => pauseReading()} onResume={() => { if (!seedOpen && !libraryOpen && !reducedMotion) pauseReading(false); }}
         onRead={handleReadEntry} onVisualReady={handoff.markVisualReady} holdEntrance={!handoff.revealed} riseOnReveal
+        firstHint={showHint ? <div className={styles.firstHint}>
+          <span>{reducedMotion ? '上下滑动阅读，点词接续。' : '点空白停驻，点词接续。'}</span>
+          <button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button>
+        </div> : undefined}
         onScroll={top => { readingScrollRef.current = top; }} onBranch={selection => void handleBranch(selection)}
         waiting={!seedOpen && (pending ? <FlowWaiting compact busy={awaitingQuote} label={connecting?.label} onCancel={() => controllerRef.current?.cancel()} />
           : canResume ? <FlowResume onResume={readOnAfterRetry} /> : errorFeedback)}
@@ -581,8 +588,8 @@ export function FlowExperience() {
         notesFrameId={notesFrameId} notes={notes} savingNote={savingNote}
         onSaveNote={onSaveNote} onDeleteNote={onDeleteNote} onUndoNote={onUndoNote} onUpdateNote={onUpdateNote} onKeepsake={currentKeepsake} />
 
-      <FlowLoading active={!handoff.ready && !flowError} progress={fontProgress} quote={loadingQuote} reducedMotion={reducedMotion} />
-      {hint && !loading && !pending && <div className={styles.firstHint}><span>点空白停驻，点词接续。上下滑动继续流动；长按看释义，左滑可添一念、写注脚。</span><button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button></div>}
+      <FlowLoading active={!handoff.ready && !flowError} progress={fontProgress} quote={loadingQuote} reducedMotion={reducedMotion}
+        immediate={handoff.immediate || !!flowError} onVisibilityChange={setLoadingOverlayVisible} />
       <div className={styles.readingFeedback} role="status" aria-label="收藏状态" data-visible={!!feedback}>{feedback?.text || ''}</div>
       {!entries.length && errorFeedback && <div className={styles.notice}>{errorFeedback}</div>}
       {storageWarning && <p className={styles.storageNotice} role="status">本机存储暂不可用；当前阅读仍可继续，刷新后可能无法恢复。</p>}

@@ -57,3 +57,30 @@ test.each([['', false], ['物有本末。', true]])('without a visible quotation
   act(() => view.result.current.markVisualReady());
   expect(view.result.current.revealed).toBe(true);
 });
+
+test('native lettering takes over immediately while the centered quotation is on hold', () => {
+  const view = renderHook(() => useLoadingHandoff('物有本末。', false));
+  act(() => view.result.current.markVisualReady('canvas'));
+  expect(view.result.current.ready).toBe(false);
+  act(() => view.result.current.markVisualReady('native'));
+  expect(view.result.current).toMatchObject({ ready: true, revealed: true, immediate: true });
+  expect(jest.getTimerCount()).toBe(0);
+});
+
+test.each([0, QUOTE_HOLD_MS])('enabling reduced motion after %d ms permanently skips the rest of the quotation', elapsed => {
+  const view = renderHook(({ reducedMotion }) => useLoadingHandoff('物有本末。', reducedMotion), {
+    initialProps: { reducedMotion: false },
+  });
+  act(() => view.result.current.markVisualReady('canvas'));
+  act(() => { jest.advanceTimersByTime(elapsed); });
+  expect(view.result.current).toMatchObject({ ready: elapsed >= QUOTE_HOLD_MS, revealed: false, immediate: false });
+  expect(jest.getTimerCount()).toBe(1);
+
+  view.rerender({ reducedMotion: true });
+  expect(view.result.current).toMatchObject({ ready: true, revealed: true, immediate: true });
+  expect(jest.getTimerCount()).toBe(0);
+
+  view.rerender({ reducedMotion: false });
+  expect(view.result.current).toMatchObject({ ready: true, revealed: true, immediate: true });
+  expect(jest.getTimerCount()).toBe(0);
+});

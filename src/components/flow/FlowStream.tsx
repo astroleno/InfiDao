@@ -24,6 +24,7 @@ import { FlowMenu } from './FlowMenu';
 import { PoetrySource } from './PoetrySource';
 import type { FlowFrame } from '@/lib/flow/contracts';
 import { MeaningPopover } from './MeaningPopover';
+import type { OpeningSurface } from './useLoadingHandoff';
 import styles from './flow.module.css';
 
 // Active-passage updates retain the native text subtree for every other
@@ -60,7 +61,8 @@ type Props = {
   onResume?: () => void;
   onRead: (entry: StreamEntry) => void;
   onScroll: (top: number) => void;
-  onVisualReady: () => void;
+  onVisualReady: (surface: OpeningSurface) => void;
+  firstHint?: ReactNode;
   onBranch: (selection: FlowSelection & { label: string }) => void;
   sourceOpen: boolean;
   onToggleSource: () => void;
@@ -104,12 +106,13 @@ export function FlowStream(props: Props) {
   const meaningTrigger = useRef<HTMLElement | null>(null);
   const menuResume = useRef(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPresent, setMenuPresent] = useState(false);
   const [menuFor, setMenuFor] = useState<string | null>(null);
   const menuGestureFor = useRef<string | null>(null);
   const suppressPressClick = useRef(false);
   const opticalHit = useRef<(x: number, y: number) => HTMLElement | null | undefined>(() => undefined);
-  // The loading light hands off only once the glass shows real lettering.
-  const visualAnnounced = useRef(false);
+  const visualAnnounced = useRef<OpeningSurface | null>(null);
+  const [openingSettled, setOpeningSettled] = useState(false);
   // A glass lens forms over a long-pressed word and holds while its meaning is open.
   const lens = useRef(new LensMotion());
   const lensHeld = useRef(false);
@@ -124,10 +127,12 @@ export function FlowStream(props: Props) {
     cancelMeaningPress();
     setMeaningFor(null);
   }, [cancelMeaningPress]);
-  const announceVisual = useRef(() => {
-    if (visualAnnounced.current) return;
-    visualAnnounced.current = true;
-    live.current.onVisualReady();
+  const announceVisual = useRef((surface: OpeningSurface) => {
+    const previous = visualAnnounced.current;
+    if (previous === surface || previous === 'native') return;
+    visualAnnounced.current = surface;
+    if (surface === 'native' && live.current.riseOnReveal) setOpeningSettled(true);
+    if (previous !== 'canvas' || live.current.holdEntrance) live.current.onVisualReady(surface);
     optics.current();
   });
   const contentEntries = useMemo(() => props.entries.map(entry => ({
@@ -302,6 +307,7 @@ export function FlowStream(props: Props) {
     const surfaceMotions = new Map<StreamMotionVariant, SettlingScrollNoiseMotion>();
     const energy = new OpticalEnergy();
     const rise = new ArrivalRise();
+    let openingLanded = false;
     const cadence = new IdleCadence();
     let idleTimer = 0, fullRatePending = false, lastTop = Infinity, lensWasActive = false, lastLens = 0;
     // A device that keeps missing frames steps the material down; ?quality=0-4 pins it.
@@ -325,26 +331,33 @@ export function FlowStream(props: Props) {
       // The last quality tier keeps the optics still; reading motion is unchanged.
       const quality = qualitySettings(budget.tier);
       const staticGlass = live.current.reducedMotion || quality.static;
-      const canvasOwnsGlyphs = !staticGlass && glassRef.current?.dataset.optics === 'ready';
+      const optics = glassRef.current?.dataset.optics;
+      const canvasOwnsGlyphs = !staticGlass && optics === 'ready';
       // The previous frame paid for rasterization and lazy programs; this one
       // is warm, so the loading light may hand off now.
-      if (lettered && !visualAnnounced.current) announceVisual.current();
+      if (live.current.entries.length && (staticGlass || optics === 'unavailable' || optics === 'lost')) announceVisual.current('native');
+      else if (lettered && canvasOwnsGlyphs && !visualAnnounced.current) announceVisual.current('canvas');
       // Behind the loading light the glass rasterizes still lettering first;
       // the ink reveal starts with the handoff instead of under the cover.
-      const holdEntrance = canvasOwnsGlyphs && (!visualAnnounced.current || !!live.current.holdEntrance);
+      const holdEntrance = visualAnnounced.current !== 'native' && (canvasOwnsGlyphs || !!live.current.riseOnReveal) &&
+        (!visualAnnounced.current || !!live.current.holdEntrance);
       if (!rise.started && canvasOwnsGlyphs && !holdEntrance) {
         // Rise only while every visible passage is still to be inked: those
         // glyphs belong to the canvas, so no native text stands elsewhere.
         partIndex.visible(nativeTop, nativeTop + height - 24, visibleParts);
         const unwritten = visibleParts.length > 0 && visibleParts.every(part => part.ink.phase === 'waiting');
-        if (live.current.riseOnReveal && unwritten && !fastManualScroll) rise.begin(time, height);
+        if (live.current.riseOnReveal && visualAnnounced.current !== 'native' && unwritten && !fastManualScroll) rise.begin(time, height);
         else rise.skip();
       }
       // The optics read a position below the native one while the passage
       // rises, so water, fire and ripple answer it exactly as a scroll.
-      const scrollTop = nativeTop - rise.offset(time, staticGlass);
+      const scrollTop = nativeTop - rise.offset(time, staticGlass || optics === 'unavailable' || optics === 'lost');
       // Native extras (the waiting line) stay hidden until the passage lands.
       if (rise.active !== panel.hasAttribute('data-flow-rising')) panel.toggleAttribute('data-flow-rising', rise.active);
+      if (!openingLanded && live.current.riseOnReveal && rise.started && !rise.active) {
+        openingLanded = true;
+        setOpeningSettled(true);
+      }
       const variant = live.current.motionVariant || 'liquid-live';
       let stagger = 0, moving = false;
       // Recompose the glass only when its lit level visibly changes.
@@ -667,7 +680,11 @@ export function FlowStream(props: Props) {
     panel.addEventListener('focusin', onFocus);
     panel.addEventListener('focusout', schedule);
     document.addEventListener('visibilitychange', onVisibilityChange);
-    if (glassRef.current) glass = new StreamGlass(glassRef.current, () => { planner.invalidate('restore'); schedule(); }, !!probe);
+    if (glassRef.current) glass = new StreamGlass(glassRef.current, () => {
+      const optics = glassRef.current?.dataset.optics;
+      if (live.current.entries.length && (optics === 'unavailable' || optics === 'lost')) announceVisual.current('native');
+      planner.invalidate('restore'); schedule();
+    }, !!probe);
     const targetAt = (clientX: number, clientY: number) => {
       if (!drawn || live.current.reducedMotion || glassRef.current?.dataset.optics !== 'ready') return undefined;
       const rect = panel.getBoundingClientRect(), shape = drawn.settings;
@@ -723,11 +740,11 @@ export function FlowStream(props: Props) {
     if (!count || visualAnnounced.current) return undefined;
     const optics = glassRef.current?.dataset.optics;
     if (props.reducedMotion || optics === 'reduced' || optics === 'unavailable' || optics === 'lost') {
-      announceVisual.current();
+      announceVisual.current('native');
       return undefined;
     }
     // Never hold the reader behind the loading light if the glass stalls.
-    const timer = window.setTimeout(() => announceVisual.current(), VISUAL_READY_TIMEOUT_MS);
+    const timer = window.setTimeout(() => { if (!visualAnnounced.current) announceVisual.current('native'); }, VISUAL_READY_TIMEOUT_MS);
     return () => window.clearTimeout(timer);
   }, [count, props.reducedMotion]);
 
@@ -813,7 +830,7 @@ export function FlowStream(props: Props) {
   return <section className={styles.stream} aria-label="连续经文流" data-flow-stream data-motion-variant={props.motionVariant || 'liquid-live'} data-paused={props.paused} data-pending={props.pending}>
     <canvas ref={glassRef} className={styles.streamGlass} data-flow-glass aria-hidden="true" />
     <div ref={panelRef} className={styles.streamViewport} tabIndex={0} aria-label="经文阅读" data-flow-viewport
-      aria-description={`${props.onResume ? '点空白停驻阅读，滚轮、上下滑动或翻页键继续流动。' : ''}向左滑动打开阅读选项。长按经文或按 Shift+F10 查看释义。`}
+      aria-description={`${props.reducedMotion ? '上下滑动阅读。' : props.onResume ? '点空白停驻阅读，滚轮、上下滑动或翻页键继续流动。' : ''}向左滑动打开阅读选项。长按经文或按 Shift+F10 查看释义。`}
       onWheel={event => { if (!event.ctrlKey && event.deltaY) resumeFromInput(event.target); }}
       onTouchMove={event => {
         if (event.touches.length !== 1) return;
@@ -937,6 +954,7 @@ export function FlowStream(props: Props) {
         </div>
       </div>
     </div>
+    {(!props.riseOnReveal || openingSettled) && !menuPresent && !meaningEntry?.entry.frame.meaning && !notesFor && !arrivalVisible && props.firstHint}
     {arrivalVisible && props.arrival && <div className={styles.branchArrival} data-flow-arrival role="status">
       <span>{props.arrival.label}</span>
       <button type="button" className={styles.textButton} onClick={() => {
@@ -952,7 +970,7 @@ export function FlowStream(props: Props) {
         positionAt(target);
       }}>去读</button>
     </div>}
-    <FlowMenu {...props.navigation} gestureSurface={panelRef} onGestureStart={target => {
+    <FlowMenu {...props.navigation} gestureSurface={panelRef} onPresenceChange={setMenuPresent} onGestureStart={target => {
       cancelMeaningPress();
       if (menuOpen) return;
       const start = target && panelRef.current?.contains(target) ? pointer.current : null;

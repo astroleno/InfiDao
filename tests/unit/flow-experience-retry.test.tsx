@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { FlowExperience } from '@/components/flow/FlowExperience';
+import { QUOTE_HOLD_MS } from '@/components/flow/useLoadingHandoff';
 import { readingStorage, type FlowPathRecord } from '@/lib/flow-browser/storage';
 
 const mockRecord: FlowPathRecord = {
@@ -10,6 +11,7 @@ const mockRecord: FlowPathRecord = {
 
 const mockRetry = jest.fn(async () => {});
 let mockHost: any;
+let mockVisualReady: (surface: 'native' | 'canvas') => void;
 jest.mock('@/lib/flow-browser/controller-host', () => ({
   createBrowserController: (host: any) => {
     mockHost = host;
@@ -24,14 +26,13 @@ jest.mock('@/lib/flow-browser/controller-host', () => ({
   },
 }));
 jest.mock('@/components/flow/FlowStream', () => ({ FlowStream: (props: any) => {
-  const React = require('react');
-  const ready = React.useRef(props.onVisualReady);
-  React.useEffect(() => { ready.current(); }, []);
+  mockVisualReady = props.onVisualReady;
   // Any press inside the stream holds the reading still, including a press
   // that lands on the error's own buttons.
-  return <section data-testid="stream" data-paused={String(props.paused)} onPointerDown={() => props.onPause()}>{props.waiting}</section>;
+  return <section data-testid="stream" data-paused={String(props.paused)} onPointerDown={() => props.onPause()}>
+    {props.waiting}{props.firstHint}
+  </section>;
 } }));
-jest.mock('@/components/flow/FlowLoading', () => ({ FlowLoading: () => null }));
 jest.mock('@/components/flow/SeedSheet', () => ({ SeedSheet: () => null }));
 
 const originalMedia = Object.getOwnPropertyDescriptor(window, 'matchMedia');
@@ -71,4 +72,45 @@ test('with reduced motion a retry never starts automatic movement', async () => 
   await failContinuation();
   expect(mockRetry).toHaveBeenCalledTimes(1);
   expect(screen.getByTestId('stream')).toHaveAttribute('data-paused', 'true');
+});
+
+test('the first hint waits for the outgoing overlay, yields to connection status, and remembers dismissal', async () => {
+  jest.useFakeTimers();
+  try {
+    jest.mocked(readingStorage.hintSeen).mockResolvedValue(false);
+    const dismiss = jest.spyOn(readingStorage, 'dismissHint').mockResolvedValue({ persisted: true });
+    const view = render(<FlowExperience />);
+    await screen.findByText('知止。', { selector: 'p' });
+    act(() => mockVisualReady('canvas'));
+    act(() => jest.advanceTimersByTime(QUOTE_HOLD_MS));
+    expect(view.container.querySelector('[data-phase="focus"]')).toBeInTheDocument();
+    act(() => jest.advanceTimersByTime(300));
+    expect(screen.queryByRole('button', { name: '知道了' })).not.toBeInTheDocument();
+
+    const state = { record: mockRecord, busy: false, error: null, storageWarning: false };
+    act(() => mockHost.state({ ...state, pending: true }));
+    act(() => jest.advanceTimersByTime(200));
+    expect(view.container.querySelector('[data-phase="focus"]')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '知道了' })).not.toBeInTheDocument();
+    act(() => mockHost.state({ ...state, pending: false, error: { code: 'RELATION_UNVERIFIED', message: '联系待核对。' } }));
+    expect(screen.queryByRole('button', { name: '知道了' })).not.toBeInTheDocument();
+    act(() => mockHost.state({ ...state, pending: false }));
+    expect(screen.getByText('点空白停驻，点词接续。')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '知道了' }));
+    expect(dismiss).toHaveBeenCalledTimes(1);
+    act(() => mockHost.state({ ...state, pending: true }));
+    act(() => mockHost.state({ ...state, pending: false }));
+    expect(screen.queryByRole('button', { name: '知道了' })).not.toBeInTheDocument();
+    view.unmount();
+  } finally { jest.useRealTimers(); }
+});
+
+test('native reduced-motion reveal provides only usable reading gestures', async () => {
+  media(true);
+  jest.mocked(readingStorage.hintSeen).mockResolvedValue(false);
+  render(<FlowExperience />);
+  await screen.findByText('知止。', { selector: 'p' });
+  act(() => mockVisualReady('native'));
+  expect(screen.queryByText('知止。', { selector: 'p' })).not.toBeInTheDocument();
+  expect(screen.getByText('上下滑动阅读，点词接续。')).toBeInTheDocument();
 });
