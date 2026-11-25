@@ -844,6 +844,68 @@ describe('quality tiers reach the glass', () => {
     expect(raf).not.toHaveBeenCalled();
   });
 
+  test('unavailable glass lets settled native reading sleep and redraw on scroll', () => {
+    const raf = jest.spyOn(window, 'requestAnimationFrame');
+    const draw = jest.fn<void, Parameters<StreamGlass['draw']>>();
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement, invalidate: () => void) => ({
+      draw: (...args: Parameters<StreamGlass['draw']>) => {
+        draw(...args);
+        if (!canvas.dataset.optics) { canvas.dataset.optics = 'unavailable'; invalidate(); }
+      }, destroy: jest.fn(),
+    }) as unknown as StreamGlass);
+    render(<FlowStream {...props} reducedMotion={false} settleEntrance motionSeed={12} />);
+    const panel = screen.getByRole('generic', { name: '经文阅读' });
+    act(() => { jest.advanceTimersByTime(2500); });
+    expect(draw).toHaveBeenCalled();
+    raf.mockClear(); draw.mockClear();
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(raf).not.toHaveBeenCalled();
+    expect(draw).not.toHaveBeenCalled();
+
+    panel.scrollTop = 120;
+    fireEvent.scroll(panel);
+    act(() => { jest.advanceTimersByTime(100); });
+    expect(raf).toHaveBeenCalled();
+    expect(draw.mock.calls.at(-1)?.[3]).toBe(false);
+    expect(panel.scrollTop).toBe(120);
+
+    act(() => { jest.advanceTimersByTime(2500); });
+    raf.mockClear();
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(raf).not.toHaveBeenCalled();
+  });
+
+  test('losing settled live glass stops its frames and restoring it resumes water without input', () => {
+    const raf = jest.spyOn(window, 'requestAnimationFrame');
+    let loseContext!: () => void, restoreContext!: () => void;
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement, invalidate: () => void) => {
+      let lost = false;
+      loseContext = () => { lost = true; canvas.dataset.optics = 'lost'; invalidate(); };
+      restoreContext = () => { lost = false; invalidate(); };
+      return { draw: jest.fn(() => { if (!lost) canvas.dataset.optics = 'ready'; }), destroy: jest.fn() } as unknown as StreamGlass;
+    });
+    const view = render(<FlowStream {...props} reducedMotion={false} settleEntrance motionSeed={12} />);
+    const canvas = view.container.querySelector('canvas');
+    const draw = jest.mocked(StreamGlass).mock.results.at(-1)!.value.draw as jest.Mock;
+    act(() => { jest.advanceTimersByTime(2500); });
+    expect(canvas).toHaveAttribute('data-optics', 'ready');
+    expect(draw.mock.calls.length).toBeGreaterThan(1);
+
+    act(() => { loseContext(); jest.advanceTimersByTime(100); });
+    expect(canvas).toHaveAttribute('data-optics', 'lost');
+    raf.mockClear(); draw.mockClear();
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(raf).not.toHaveBeenCalled();
+    expect(draw).not.toHaveBeenCalled();
+
+    act(() => restoreContext());
+    expect(canvas).toHaveAttribute('data-optics', 'lost');
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(canvas).toHaveAttribute('data-optics', 'ready');
+    expect(draw.mock.calls.length).toBeGreaterThan(2);
+    expect(draw.mock.calls.at(-1)?.[4].noisePhase).not.toBe(draw.mock.calls[1]?.[4].noisePhase);
+  });
+
   test.each([0, 3])('paused, settled live tier %d still redraws the ambient water', tier => {
     window.history.replaceState(null, '', `/InfiDao?quality=${tier}`);
     render(<FlowStream {...props} reducedMotion={false} settleEntrance motionSeed={12} />);
@@ -855,6 +917,70 @@ describe('quality tiers reach the glass', () => {
     expect(draw.mock.calls.length).toBeGreaterThan(1);
     expect(draw.mock.calls.at(-1)?.[3]).toBe(false);
     expect(draw.mock.calls.at(-1)?.[4].noisePhase).not.toBe(phase);
+  });
+
+  test('a frozen entrance keeps its lettering steady at the idle water cadence until resumed', () => {
+    window.history.replaceState(null, '', '/InfiDao?quality=0');
+    jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(50);
+    jest.spyOn(HTMLElement.prototype, 'offsetTop', 'get').mockReturnValue(200);
+    const raf = jest.spyOn(window, 'requestAnimationFrame');
+    const draws: Array<{ x: number; ink: number[]; water: number | undefined; lens: number }> = [];
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement) => ({
+      draw: (...[runs, , , , shape]: Parameters<StreamGlass['draw']>) => {
+        canvas.dataset.optics = 'ready';
+        const word = runs.find(run => run.text === '知');
+        if (word) draws.push({ x: word.x, ink: [...(word.ink ?? [])], water: shape?.noisePhase, lens: shape?.lens?.[3] ?? 0 });
+      }, destroy: jest.fn(),
+    }) as unknown as StreamGlass);
+    const options = { ...props, autoScroll: false, reducedMotion: false, motionSeed: 12 };
+    const view = render(<FlowStream {...options} paused={false} />);
+    const part = view.container.querySelector('[data-flow-entrance]');
+    act(() => { jest.advanceTimersByTime(160); });
+    expect(part).toHaveAttribute('data-entry-phase', 'entering');
+    const entering = draws.at(-1)!;
+    expect(entering.ink[0]).toBeGreaterThan(0);
+    expect(entering.ink[0]).toBeLessThan(1);
+
+    view.rerender(<FlowStream {...options} />);
+    act(() => { jest.advanceTimersByTime(2500); });
+    expect(part).toHaveAttribute('data-entry-phase', 'paused');
+    expect(part).toHaveAttribute('data-ink-phase', 'paused');
+    raf.mockClear(); draws.length = 0;
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(raf.mock.calls.length).toBeLessThan(25);
+    expect(draws.length).toBeGreaterThan(1);
+    expect(draws.at(-1)?.water).not.toBe(draws[0]?.water);
+    expect(draws.every(draw => draw.x === entering.x)).toBe(true);
+    expect(draws.map(draw => draw.ink)).toEqual(draws.map(() => entering.ink));
+
+    const word = screen.getByRole('button', { name: '知' });
+    raf.mockClear(); draws.length = 0;
+    fireEvent(word, new MouseEvent('pointerdown', { bubbles: true, button: 0 }));
+    act(() => { jest.advanceTimersByTime(200); });
+    expect(raf.mock.calls.length).toBeGreaterThan(8);
+    expect(draws[0]?.lens).toBeGreaterThan(0);
+    expect(draws.at(-1)?.lens).toBeGreaterThan(draws[0]!.lens);
+
+    act(() => { jest.advanceTimersByTime(2500); });
+    raf.mockClear(); draws.length = 0;
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(raf.mock.calls.length).toBeLessThan(25);
+    expect(draws.length).toBeGreaterThan(1);
+    expect(draws.at(-1)?.lens).toBe(1);
+
+    raf.mockClear(); draws.length = 0;
+    fireEvent(word, new MouseEvent('pointerup', { bubbles: true, button: 0 }));
+    act(() => { jest.advanceTimersByTime(200); });
+    expect(raf.mock.calls.length).toBeGreaterThan(8);
+    expect(draws.at(-1)?.lens).toBeLessThan(draws[0]!.lens);
+
+    act(() => { jest.advanceTimersByTime(2500); });
+    raf.mockClear();
+    view.rerender(<FlowStream {...options} paused={false} />);
+    act(() => { jest.advanceTimersByTime(240); });
+    expect(raf.mock.calls.length).toBeGreaterThan(10);
+    expect(draws.at(-1)?.x).not.toBe(entering.x);
+    expect(draws.at(-1)?.ink[0]).toBeGreaterThan(entering.ink[0]!);
   });
 
   const driveFrames = () => {

@@ -291,6 +291,7 @@ export function FlowStream(props: Props) {
     let previousWords = new Set<Word>(), nextWords = new Set<Word>();
     const planner = new StreamFramePlanner();
     let settledAll = false, nextWordId = 0, lettered = false;
+    let entranceAdvancing = false, lensAdvancing = false;
     let passedUntil = -Infinity, frameWordsVisited = 0;
     // Local diagnostics opt in before mounting. Normal reading does not time,
     // copy or publish per-frame records, nor read back GPU results.
@@ -324,6 +325,8 @@ export function FlowStream(props: Props) {
 
     const paint = (time: number) => {
       frameWordsVisited = 0;
+      entranceAdvancing = false;
+      lensAdvancing = false;
       const height = panel.clientHeight;
       if (!height) return false;
       const nativeTop = scrollMotion.position(panel.scrollTop), activeElement = document.activeElement;
@@ -332,10 +335,11 @@ export function FlowStream(props: Props) {
       const quality = qualitySettings(budget.tier);
       const staticGlass = live.current.reducedMotion || quality.static;
       const optics = glassRef.current?.dataset.optics;
+      const nativeFallback = optics === 'unavailable' || optics === 'lost';
       const canvasOwnsGlyphs = !staticGlass && optics === 'ready';
       // The previous frame paid for rasterization and lazy programs; this one
       // is warm, so the loading light may hand off now.
-      if (live.current.entries.length && (staticGlass || optics === 'unavailable' || optics === 'lost')) announceVisual.current('native');
+      if (live.current.entries.length && (staticGlass || nativeFallback)) announceVisual.current('native');
       else if (lettered && canvasOwnsGlyphs && !visualAnnounced.current) announceVisual.current('canvas');
       // Behind the loading light the glass rasterizes still lettering first;
       // the ink reveal starts with the handoff instead of under the cover.
@@ -351,7 +355,7 @@ export function FlowStream(props: Props) {
       }
       // The optics read a position below the native one while the passage
       // rises, so water, fire and ripple answer it exactly as a scroll.
-      const scrollTop = nativeTop - rise.offset(time, staticGlass || optics === 'unavailable' || optics === 'lost');
+      const scrollTop = nativeTop - rise.offset(time, staticGlass || nativeFallback);
       // Native extras (the waiting line) stay hidden until the passage lands.
       if (rise.active !== panel.hasAttribute('data-flow-rising')) panel.toggleAttribute('data-flow-rising', rise.active);
       if (!openingLanded && live.current.riseOnReveal && rise.started && !rise.active) {
@@ -391,8 +395,9 @@ export function FlowStream(props: Props) {
           part.motion.begin(time, delay);
           part.ink.begin(time, delay);
         }
-        moving = part.motion.sample(time, width, live.current.reducedMotion) || moving;
-        moving = part.ink.sample(time, live.current.reducedMotion) || moving;
+        const movingPart = part.motion.sample(time, width, live.current.reducedMotion);
+        const advancingInk = part.ink.sample(time, live.current.reducedMotion);
+        entranceAdvancing = movingPart || advancingInk || entranceAdvancing;
         if (part.element.dataset.entryPhase !== part.motion.phase) part.element.dataset.entryPhase = part.motion.phase;
         const inkPhase = part.ink.phase;
         part.inkPhase = inkPhase;
@@ -401,7 +406,9 @@ export function FlowStream(props: Props) {
         if ((!part.motion.done && !part.motion.waiting) || inkPhase === 'entering' || inkPhase === 'paused') activeParts.add(part);
         else activeParts.delete(part);
       }
+      moving = moving || entranceAdvancing;
       const lensStrength = lens.current.sample(time, staticGlass);
+      lensAdvancing = canvasOwnsGlyphs && lens.current.moving;
       const lensActive = lensStrength > 0;
       // Lensed words move between native text and the glass: redraw the source.
       if (lens.current.moving || lensActive !== lensWasActive) { planner.invalidate('interaction'); moving = true; }
@@ -418,7 +425,7 @@ export function FlowStream(props: Props) {
           motion = new SettlingScrollNoiseMotion(live.current.motionSeed, true, variant === 'liquid-live');
           surfaceMotions.set(variant, motion);
         }
-        const sample = motion.sample(scrollTop, time, staticGlass || document.hidden);
+        const sample = motion.sample(scrollTop, time, staticGlass || nativeFallback || document.hidden);
         bend.noisePhase = sample.phase;
         moving = sample.moving || moving;
       } else if (bend.perlin) {
@@ -536,14 +543,22 @@ export function FlowStream(props: Props) {
       content.style.translate = remainder ? `0 ${-remainder}px` : '';
       const moved = Math.abs(top - lastTop) > 1e-3;
       lastTop = top;
+      const previousOptics = glassRef.current?.dataset.optics;
       const moving = paint(time);
+      // A restored context publishes readiness only after a successful draw.
+      // Sample again so the recovered glass takes ownership and the water resumes.
+      const restored = (previousOptics === 'lost' || previousOptics === 'unavailable') && glassRef.current?.dataset.optics === 'ready';
       // Only the ambient water is left once nothing else moves; let it drift
       // at a lower rate. Any input calls schedule() and restores full rate.
-      cadence.note(time, moved || rise.active || activeParts.size > 0 || energy.moving || fastManualScroll || !!pendingMeasure);
-      if (playing || moving) {
+      cadence.note(time, moved || rise.active || entranceAdvancing || lensAdvancing || energy.moving || fastManualScroll || !!pendingMeasure);
+      if (restored) schedule();
+      else if (playing || moving) {
         const wait = cadence.delay(time);
         if (!wait) { fullRatePending = !hidden; schedule(); }
         else if (!idleTimer) idleTimer = window.setTimeout(() => { idleTimer = 0; schedule(); }, wait);
+      } else if (idleTimer) {
+        window.clearTimeout(idleTimer);
+        idleTimer = 0;
       }
       // Measure a foreground render loop, not time elapsed before an idle or event-driven redraw.
       if (budget.sample(time, fullRate)) { planner.invalidate('restore'); schedule(); }
