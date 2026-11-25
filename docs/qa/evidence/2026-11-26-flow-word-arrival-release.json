@@ -1,0 +1,177 @@
+{
+  "releaseId": "infidao-42d12afceb1f46a1",
+  "commit": "feb1c803f314ed929c1ee88f48e6e61b5f4b4f22",
+  "sourceMode": "commit",
+  "sourceFiles": 820,
+  "sourceDigest": "42d12afceb1f46a1db70b376ed3f01a1c854b3172f7f6cff08acfe9e7c82c245",
+  "sourceArchive": {
+    "packagePath": "origin-source.tar.gz",
+    "bytes": 31567178,
+    "sha256": "6d5255119bddd333cbb18ce0481e73d4ffbf6463612432f8dba3beb30731a7b4"
+  },
+  "originVerifiedPaths": 820,
+  "originBuild": {
+    "node": "24.22.1",
+    "packageManager": "npm 11.6.2",
+    "lockedDependencies": true,
+    "standalone": true
+  },
+  "candidate": {
+    "loopbackOnly": true,
+    "isolatedRedis": true,
+    "zeroModelBudget": true,
+    "modelCalls": 0,
+    "points": [
+      "entry",
+      "manifest",
+      "sources",
+      "knownWork",
+      "missingWork",
+      "missingPage",
+      "signedSession",
+      "oldAssetHashes",
+      "newAssetHashes"
+    ],
+    "candidateStopped": true
+  },
+  "cdn": {
+    "newObjects": 23,
+    "checkedFonts": 22,
+    "fontBytes": 4919374,
+    "releaseManifestMatches": true,
+    "releaseManifestSha256": "f8048750ffc469219c84d6e0174b5944a9a6a409569ab1400d854e113d21eb2e"
+  },
+  "previous": {
+    "release": "infidao-3a963357ece7288f",
+    "commit": "5934876c36f93b4b7978fb1a8a9d660e71e2e650",
+    "processStarted": "2026-11-20T19:17:00+08:00",
+    "processId": 918332,
+    "originStaticHash": "2ad4bf15fcdbc4206a5d058ac4f13500ec02c2747acf442ce9783b67c79097b0",
+    "publicHashes": {
+      "aitoshuu.me": "2ad4bf15fcdbc4206a5d058ac4f13500ec02c2747acf442ce9783b67c79097b0",
+      "tongye.me": "2ad4bf15fcdbc4206a5d058ac4f13500ec02c2747acf442ce9783b67c79097b0"
+    },
+    "entryBundle": "/_next/static/chunks/app/infidao/page-17d3ec46c0d7e443.js",
+    "entryBundleHash": "9fdc77061e6b6b22e391c8c66b85b444165ebc047aa634cc1576557dd89d4113",
+    "fontReleasePrefix": "infidao-9a72686549eafcbd"
+  },
+  "current": {
+    "processStarted": "2026-11-26T01:29:45+08:00",
+    "processId": 2629518,
+    "originStaticHash": "1e7cbaacabdd8846b3b892c172ace0e07598f64f01d12903f3cca1a482d66e77",
+    "publicHashes": {
+      "aitoshuu.me": "1e7cbaacabdd8846b3b892c172ace0e07598f64f01d12903f3cca1a482d66e77",
+      "tongye.me": "1e7cbaacabdd8846b3b892c172ace0e07598f64f01d12903f3cca1a482d66e77"
+    },
+    "entryBundle": "/_next/static/chunks/app/infidao/page-85af3d502c87d0fa.js",
+    "runtimeInventoryHash": "c30652a042c1563af156b0c77119c9b9a3fced1818a61263ad95029514d5ed11"
+  },
+  "unchanged": {
+    "redisPid": 1302135,
+    "handwritingPid": 1299063,
+    "privateEnvHashesMatch": true
+  },
+  "rollback": {
+    "release": "infidao-3a963357ece7288f",
+    "pointer": "rollback-target.txt",
+    "executed": false
+  },
+  "staticDigestAlgorithm": "SHA-256 of the UTF-8 compact JSON mapping of URL path to lowercase SHA-256 hex of the decoded HTTP body, with keys sorted by path and no trailing newline.",
+  "publicBefore": {
+    "aitoshuu.me": {
+      "observedAt": "2026-11-25T17:11:14.257092+00:00",
+      "origin": "tencent-shanghai",
+      "fonts": [
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/flow-assets/v-094d7b612c674ac324e9/manifest.json"
+      ],
+      "static": {
+        "/_next/static/chunks/app/infidao/page-17d3ec46c0d7e443.js": "9fdc77061e6b6b22e391c8c66b85b444165ebc047aa634cc1576557dd89d4113",
+        "/_next/static/chunks/app/layout-fd445903584b45aa.js": "90372102cbdcbc9c945ae189ae78f244b5a40904621259f27cb43716d7128d5b",
+        "/_next/static/chunks/commons-d1704e53a93d02cb.js": "655e4dcca67f868fd7c4ae5226d56ccceb924c3b4040c08221064ecf85673c75",
+        "/_next/static/chunks/lib-c39371e2-eb793cd18a83cb92.js": "64bb074abc753aad99da8b45a2125a9f1077ebcce9f2c9eeb9b8fa901f0fa5e5",
+        "/_next/static/chunks/lib-faaca044-cdaf5ff6c61addba.js": "39c277a0d0ca59c2e85af496bbab4d3359a10267e324dbacb0671325dd0e5c45",
+        "/_next/static/chunks/main-app-e68280704721d7de.js": "51e309d491b8191386874a82a6dc24721f730a971bde6eb61d72b31ac0aae9bb",
+        "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+        "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+        "/_next/static/chunks/webpack-dfc2fd59be983bc0.js": "27bffe3c00edfa18c482f06b0c0aaa80d0d38e12c760317bbb114756f917a73b",
+        "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b",
+        "/_next/static/css/e522cf7dadabc7e6.css": "d4dcc17a4447b9bca5f06b00915c7c68f6f74178d07fad2613832e65c0c6ca52"
+      }
+    },
+    "tongye.me": {
+      "observedAt": "2026-11-25T17:11:41.476270+00:00",
+      "origin": "tencent-shanghai",
+      "fonts": [
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/flow-assets/v-094d7b612c674ac324e9/manifest.json"
+      ],
+      "static": {
+        "/_next/static/chunks/app/infidao/page-17d3ec46c0d7e443.js": "9fdc77061e6b6b22e391c8c66b85b444165ebc047aa634cc1576557dd89d4113",
+        "/_next/static/chunks/app/layout-fd445903584b45aa.js": "90372102cbdcbc9c945ae189ae78f244b5a40904621259f27cb43716d7128d5b",
+        "/_next/static/chunks/commons-d1704e53a93d02cb.js": "655e4dcca67f868fd7c4ae5226d56ccceb924c3b4040c08221064ecf85673c75",
+        "/_next/static/chunks/lib-c39371e2-eb793cd18a83cb92.js": "64bb074abc753aad99da8b45a2125a9f1077ebcce9f2c9eeb9b8fa901f0fa5e5",
+        "/_next/static/chunks/lib-faaca044-cdaf5ff6c61addba.js": "39c277a0d0ca59c2e85af496bbab4d3359a10267e324dbacb0671325dd0e5c45",
+        "/_next/static/chunks/main-app-e68280704721d7de.js": "51e309d491b8191386874a82a6dc24721f730a971bde6eb61d72b31ac0aae9bb",
+        "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+        "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+        "/_next/static/chunks/webpack-dfc2fd59be983bc0.js": "27bffe3c00edfa18c482f06b0c0aaa80d0d38e12c760317bbb114756f917a73b",
+        "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b",
+        "/_next/static/css/e522cf7dadabc7e6.css": "d4dcc17a4447b9bca5f06b00915c7c68f6f74178d07fad2613832e65c0c6ca52"
+      }
+    }
+  },
+  "publicAfter": {
+    "aitoshuu.me": {
+      "observedAt": "2026-11-25T17:31:05.059813+00:00",
+      "id": "infidao-42d12afceb1f46a1",
+      "commit": "feb1c803f314ed929c1ee88f48e6e61b5f4b4f22",
+      "newAndSharedStatic": {
+        "/_next/static/chunks/app/infidao/page-85af3d502c87d0fa.js": "9e4ac41c53339178dc68a5f6ac0fe583af1874e1125a8b06e9fc810d04bc0286",
+        "/_next/static/chunks/app/layout-2da3aa91efdae539.js": "3340243748571e927dc7cbae4a7f9e3a0ec9e56496264fd05073d35de0918066",
+        "/_next/static/chunks/commons-9dc6e0845f53d85a.js": "e5ecb97eec30db0a06deab90f5c0bfe8d17038def1f70dbd282567b938cd2b1e",
+        "/_next/static/chunks/lib-0e21a148-9df2cd160486cd4f.js": "0f60e3e67083b1fd47dc0a923d7baf77231980960e890ccfabc9579709d92118",
+        "/_next/static/chunks/lib-7815f9af-ab8b6dc5c906229c.js": "320d2ac29735951f4402b70f7f8a5500ecdca702ed6e5334b6253d297e8800ae",
+        "/_next/static/chunks/main-app-9fbef5e5d4e70271.js": "64fc7289e8559b00a080453a55049766719e9f94e4dc72f148046812bcdd1b24",
+        "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+        "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+        "/_next/static/chunks/webpack-8a873c7cc2baf872.js": "5f8822b5ddd0a7d1c20ead773dd0a830d038ac13d788057f57060f1efd765d9f",
+        "/_next/static/css/7f910ce2c51ea1d7.css": "0a662af3185c0d536c25612a31e3add6d3430bc9fde144b8027113bf68f6372d",
+        "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b"
+      },
+      "checkedOldAssets": 11,
+      "fontManifest": "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json",
+      "fontManifestSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+      "sources": true,
+      "missingPaths": true,
+      "signedSession": true
+    },
+    "tongye.me": {
+      "observedAt": "2026-11-25T17:31:58.395471+00:00",
+      "id": "infidao-42d12afceb1f46a1",
+      "commit": "feb1c803f314ed929c1ee88f48e6e61b5f4b4f22",
+      "newAndSharedStatic": {
+        "/_next/static/chunks/app/infidao/page-85af3d502c87d0fa.js": "9e4ac41c53339178dc68a5f6ac0fe583af1874e1125a8b06e9fc810d04bc0286",
+        "/_next/static/chunks/app/layout-2da3aa91efdae539.js": "3340243748571e927dc7cbae4a7f9e3a0ec9e56496264fd05073d35de0918066",
+        "/_next/static/chunks/commons-9dc6e0845f53d85a.js": "e5ecb97eec30db0a06deab90f5c0bfe8d17038def1f70dbd282567b938cd2b1e",
+        "/_next/static/chunks/lib-0e21a148-9df2cd160486cd4f.js": "0f60e3e67083b1fd47dc0a923d7baf77231980960e890ccfabc9579709d92118",
+        "/_next/static/chunks/lib-7815f9af-ab8b6dc5c906229c.js": "320d2ac29735951f4402b70f7f8a5500ecdca702ed6e5334b6253d297e8800ae",
+        "/_next/static/chunks/main-app-9fbef5e5d4e70271.js": "64fc7289e8559b00a080453a55049766719e9f94e4dc72f148046812bcdd1b24",
+        "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+        "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+        "/_next/static/chunks/webpack-8a873c7cc2baf872.js": "5f8822b5ddd0a7d1c20ead773dd0a830d038ac13d788057f57060f1efd765d9f",
+        "/_next/static/css/7f910ce2c51ea1d7.css": "0a662af3185c0d536c25612a31e3add6d3430bc9fde144b8027113bf68f6372d",
+        "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b"
+      },
+      "checkedOldAssets": 11,
+      "fontManifest": "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json",
+      "fontManifestSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+      "sources": true,
+      "missingPaths": true,
+      "signedSession": true
+    }
+  },
+  "acceptanceScope": {
+    "productionModelRequestsDuringRelease": 0,
+    "iphone": "pending",
+    "rollbackExercise": "not run"
+  }
+}
