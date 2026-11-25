@@ -22,6 +22,21 @@ const item = (id: string, text: string) => ({ sourceId: id, quote: text, meaning
     target: { sourceId: 's2', quote: rows[1]!.text, meaning: '事物有根本与末节。' } }] });
 beforeEach(() => { jest.clearAllMocks(); resetFlowState(); jest.mocked(candidatesFor).mockResolvedValue(rows); jest.mocked(flowCorpus).mockResolvedValue(rows); });
 
+test('local retrieval observer reports the actual request and windows independently of public events', async () => {
+  const observer = jest.fn(), events: FlowEvent[] = [];
+  jest.mocked(flowJson).mockResolvedValueOnce({ frames: [item('s1', rows[0]!.text)] });
+  await runFlow({ op: 'open', requestId: 'retrieval-baseline', seed: '本末' }, 'owner', new AbortController().signal,
+    event => events.push(event), undefined, observer);
+  const windows = rows.map(row => ({ sourceId: row.id, corpusVersion: row.corpusVersion, textHash: row.textHash, start: 0, end: row.text.length }));
+  expect(observer).toHaveBeenCalledTimes(1);
+  expect(observer).toHaveBeenCalledWith(expect.objectContaining({
+    op: 'open', terms: ['本末', '知止'], focus: '本末', exclude: [], previousQuotes: [], semantics: [],
+    scope: expect.objectContaining({ packIds: ['core'] }), recalled: windows, compact: windows,
+  }));
+  expect(events.at(-1)?.type).toBe('done');
+  expect(events.every(event => !('recalled' in event || 'compact' in event))).toBe(true);
+});
+
 test.each([undefined, ''])('opening a chain only finalizes an explicit review meaning (%j)', async meaning => {
   const realReview = jest.requireActual<typeof import('@/lib/flow/relations')>('@/lib/flow/relations').reviewRelations;
   jest.mocked(reviewRelations).mockImplementationOnce(realReview);

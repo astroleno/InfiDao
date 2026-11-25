@@ -26,26 +26,29 @@ export function repeatsQuotation(quote: string, previous: string[]) {
 
 // Keep the exact source bytes around a useful occurrence, including matches
 // beyond a chapter's opening. Every quote is still checked against full text.
-export function sourceExcerpt(text: string, terms: string[], required = '', limit = 720, avoidQuotes: string[] = []) {
+function excerptWindow(text: string, terms: string[], required = '', limit = 720, avoidQuotes: string[] = []): { text: string; start: number; end: number } {
   if (avoidQuotes.length && !required) {
-    const regions: string[] = [];
+    const regions: { text: string; start: number }[] = [];
     let start = 0;
     for (const match of text.matchAll(/[^。！？!?]+[。！？!?]*/gu)) {
       if (!repeatsQuotation(match[0], avoidQuotes)) continue;
-      if (match.index > start) regions.push(text.slice(start, match.index));
+      if (match.index > start) regions.push({ text: text.slice(start, match.index), start });
       start = match.index + match[0].length;
     }
-    if (start < text.length) regions.push(text.slice(start));
-    let best = '', score = -1;
+    if (start < text.length) regions.push({ text: text.slice(start), start });
+    let best = { text: '', start: 0, end: 0 }, score = -1;
     for (const region of regions) {
-      const excerpt = sourceExcerpt(region, terms, '', limit);
-      if (quotationKey(excerpt).length < 2) continue;
-      const next = terms.reduce((total, term) => total + (term && excerpt.includes(term) ? Math.min(term.length, 12) : 0), 0);
-      if (next > score) { best = excerpt; score = next; }
+      const excerpt = excerptWindow(region.text, terms, '', limit);
+      if (quotationKey(excerpt.text).length < 2) continue;
+      const next = terms.reduce((total, term) => total + (term && excerpt.text.includes(term) ? Math.min(term.length, 12) : 0), 0);
+      if (next > score) {
+        best = { text: excerpt.text, start: region.start + excerpt.start, end: region.start + excerpt.end };
+        score = next;
+      }
     }
     return best;
   }
-  if (text.length <= limit) return text;
+  if (text.length <= limit) return { text, start: 0, end: text.length };
   const requiredAt = required ? text.indexOf(required) : -1;
   const termsToFind = [...new Set(terms.filter(term => term.trim().length > 0))].slice(0, 24);
   const positions: number[] = [];
@@ -62,23 +65,32 @@ export function sourceExcerpt(text: string, terms: string[], required = '', limi
     // Avoid returning half a surrogate pair at either boundary.
     if (/[\uDC00-\uDFFF]/u.test(text[start] || '')) start++;
     const stop = /[\uD800-\uDBFF]/u.test(text[end - 1] || '') ? end - 1 : end;
-    return text.slice(start, stop);
+    return { text: text.slice(start, stop), start, end: stop };
   };
   if (requiredAt >= 0) return windowAt(requiredAt, required.length);
   let best = windowAt(0), score = -1;
   for (const at of positions.length ? positions : [0]) {
     const excerpt = windowAt(at);
-    const next = termsToFind.reduce((total, term) => total + (excerpt.includes(term) ? Math.min(term.length, 12) : 0), 0);
+    const next = termsToFind.reduce((total, term) => total + (excerpt.text.includes(term) ? Math.min(term.length, 12) : 0), 0);
     if (next > score) { best = excerpt; score = next; }
   }
   return best;
 }
 
+export function sourceExcerpt(text: string, terms: string[], required = '', limit = 720, avoidQuotes: string[] = []) {
+  return excerptWindow(text, terms, required, limit, avoidQuotes).text;
+}
+
+export type CandidateRange = {
+  sourceId: string; corpusVersion: string; textHash: string; start: number; end: number;
+  selectedStart?: number;
+};
+
 export const CANDIDATE_EXCERPT_LIMIT = 480;
 
 export function compactCandidates(rows: PassageRecord[], terms: string[], head?: { sourceId: string; quote: string }, avoidQuotes: string[] = []) {
-  const excerpts = new Map(rows.map(row => [row.id, sourceExcerpt(row.text, terms, row.id === head?.sourceId ? head.quote : '', CANDIDATE_EXCERPT_LIMIT, avoidQuotes)]));
-  rows = rows.filter(row => excerpts.get(row.id));
+  const excerpts = new Map(rows.map(row => [row.id, excerptWindow(row.text, terms, row.id === head?.sourceId ? head.quote : '', CANDIDATE_EXCERPT_LIMIT, avoidQuotes)]));
+  rows = rows.filter(row => excerpts.get(row.id)?.text);
   const selected: PassageRecord[] = [], seen = new Set<string>(), books = new Map<string, number>();
   const add = (row: PassageRecord) => {
     if (seen.has(row.id) || selected.length >= 12) return;
@@ -90,6 +102,24 @@ export function compactCandidates(rows: PassageRecord[], terms: string[], head?:
   for (const row of rows) if (!books.has(row.source)) add(row);
   for (const row of rows) if ((books.get(row.source) || 0) < 3) add(row);
   rows.forEach(add);
-  return { passages: selected, input: selected.map(row => ({ sourceId: row.id, source: row.source, chapter: row.chapter,
-    text: excerpts.get(row.id)!, ...(row.work ? { work: row.work, excerptStart: row.text.indexOf(excerpts.get(row.id)!) } : {}) })) };
+  const input = selected.map(row => {
+    const { text } = excerpts.get(row.id)!;
+    return { sourceId: row.id, source: row.source, chapter: row.chapter,
+      text, ...(row.work ? { work: row.work, excerptStart: row.text.indexOf(text) } : {}) };
+  });
+  return {
+    passages: selected, input,
+    get windows(): CandidateRange[] {
+      return selected.map((row, index) => {
+        const { start: selectedStart, end: selectedEnd } = excerpts.get(row.id)!;
+        // Poetry asks the model for a position relative to the supplied excerptStart.
+        const start = input[index]!.excerptStart ?? selectedStart;
+        return {
+          sourceId: row.id, corpusVersion: row.corpusVersion, textHash: row.textHash,
+          start, end: start + (selectedEnd - selectedStart),
+          ...(start !== selectedStart ? { selectedStart } : {}),
+        };
+      });
+    },
+  };
 }

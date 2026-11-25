@@ -10,8 +10,9 @@ import { linkSurfaces } from "./anchors";
 import { lexicalBreaks, selectedLexeme, planLexeme, planAnchor } from "./lexemes";
 import { measureFlowPhase, withFlowTimings, recordFlowCounts } from './timings';
 import { reserveFlowModels } from './model-budget';
-import { compactCandidates, familyDecisionGuidance, quotationKey, repeatsQuotation, planningScope, planningScopeGuidance } from './context';
-import type { ContentPackId } from '@/lib/content/contracts';
+import { compactCandidates, familyDecisionGuidance, quotationKey, repeatsQuotation, planningScope, planningScopeGuidance, type CandidateRange } from './context';
+import type { ContentPackId, ContentScope } from '@/lib/content/contracts';
+import type { SemanticEntry } from './semantic-index';
 import { recentReadingsFor } from './reading-history';
 async function lookupPassage(id: string, version?: string) {
   return id.startsWith('poetry-') ? findFlowPassage(id, version) : (await flowCorpus()).find(row => row.id === id);
@@ -184,13 +185,27 @@ async function restartContext(request: FlowRequest, signal: AbortSignal, content
   return { ...plan.data, fromQuote: quote };
 }
 
+// Private observation for local evaluation of the retrieval executed by this call.
+type RetrievalObserver = (snapshot: Readonly<{
+  op: FlowRequest['op'];
+  terms: readonly string[];
+  focus: string;
+  exclude: readonly string[];
+  force?: Readonly<{ sourceId: string; quote: string }>;
+  previousQuotes: readonly string[];
+  scope: Readonly<{ packIds: readonly ContentPackId[]; versions: Readonly<ContentScope['versions']>; fingerprint: string; unavailable: readonly string[] }>;
+  semantics: readonly Readonly<SemanticEntry>[];
+  recalled: readonly Readonly<CandidateRange>[];
+  compact: readonly Readonly<CandidateRange>[];
+}>) => void;
+
 export async function runFlow(request: FlowRequest, owner: string, signal: AbortSignal, emit: (event: FlowEvent) => void,
-  store: FlowSessionStore = localSessionStore) {
-  return withFlowTimings(request.op, () => executeFlow(request, owner, signal, emit, store));
+  store: FlowSessionStore = localSessionStore, onRetrieval?: RetrievalObserver) {
+  return withFlowTimings(request.op, () => executeFlow(request, owner, signal, emit, store, onRetrieval));
 }
 
 async function executeFlow(request: FlowRequest, owner: string, signal: AbortSignal, emit: (event: FlowEvent) => void,
-  store: FlowSessionStore) {
+  store: FlowSessionStore, onRetrieval?: RetrievalObserver) {
   signal.throwIfAborted();
   let parent: StoredChain | undefined, parentFrame: FlowFrame | undefined;
   let anchor: FlowAnchor | undefined, lexical: ReturnType<typeof selectedLexeme> | undefined;
@@ -338,6 +353,13 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
     const previousQuotes = [...(graph ? [] : state.priorQuotes || []), state.fromQuote, ...Object.values(state.nodes).filter(frame => frame.ready !== false).map(frame => frame.quote)]
       .filter((quote): quote is string => Boolean(quote));
     const compact = compactCandidates(recalled, state.terms, head, previousQuotes), candidates = compact.passages;
+    if (onRetrieval) onRetrieval({
+      op: request.op, terms: [...state.terms], focus: state.chain.focus, exclude: [...excluded],
+      ...(head ? { force: { sourceId: head.sourceId, quote: head.quote } } : {}),
+      previousQuotes: [...previousQuotes], scope: clone(scope), semantics: semantics.map(entry => ({ ...entry })),
+      recalled: recalled.map(row => ({ sourceId: row.id, corpusVersion: row.corpusVersion, textHash: row.textHash, start: 0, end: row.text.length })),
+      compact: compact.windows,
+    });
     recordFlowCounts({ candidateCount: candidates.length, candidateChars: compact.input.reduce((total, row) => total + row.text.length, 0) });
     if (!candidates.length && recalled.length && previousQuotes.length) throw new FlowError('RELATION_UNVERIFIED', '当前方向还没有找到合适的联系，可以换个词继续。', 422);
     const repeated = (frame: FlowFrame) => repeatsQuotation(frame.quote, previousQuotes);

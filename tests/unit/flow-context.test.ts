@@ -69,3 +69,18 @@ test('a quoted spelling is omitted without changing a new stanza or a fixed head
   expect(sourceExcerpt(text, ['黄鸟'], '', 720, [old])).toBe(other);
   expect(sourceExcerpt(text, ['黄鸟'], other, 720, [old])).toContain(other);
 });
+
+test('locates the actual unread copy when an identical window also appeared in a read sentence', () => {
+  const repeated = '𠮷'.repeat(240);
+  const read = '已读章' + repeated + '。';
+  const text = read + repeated + '；补语。';
+  const passage = { ...row('duplicate', '礼记', text), corpusVersion: 'v1', textHash: 'hash' };
+  const result = compactCandidates([passage], [], undefined, [read]);
+  expect(result.input[0]!.text).toBe(repeated);
+  expect(text.indexOf(result.input[0]!.text)).toBe(3);
+  expect(result.windows).toEqual([
+    { sourceId: 'duplicate', corpusVersion: 'v1', textHash: 'hash', start: read.length, end: read.length + repeated.length },
+  ]);
+  const { start, end } = result.windows[0]!;
+  expect(text.slice(start, end)).toBe(result.input[0]!.text);
+});
