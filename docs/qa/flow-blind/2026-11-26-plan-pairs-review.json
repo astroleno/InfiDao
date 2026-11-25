@@ -1,0 +1,664 @@
+{
+  "model": "gpt-6.2-astra",
+  "reviewedWindows": 153,
+  "reviewedPoints": 6,
+  "scores": [
+    {
+      "id": "003039e1ac4a7f4a",
+      "verdict": "D",
+      "reason": "把“上之所是，必亦是之”和“上有过规谏之”并读，可追问随从权威的界限。"
+    },
+    {
+      "id": "00e604d86dfc693c",
+      "verdict": "D",
+      "reason": "“温故而知新”直接回答反复温习旧学可以带来什么。"
+    },
+    {
+      "id": "016b815e02a79864",
+      "verdict": "N"
+    },
+    {
+      "id": "06ead32a9d68ff05",
+      "verdict": "D",
+      "reason": "把对别人不知自己的忧虑，转为反省自己是否了解别人。"
+    },
+    {
+      "id": "0a1118b87bfefbf2",
+      "verdict": "N"
+    },
+    {
+      "id": "0cd3c0b14b2fecd5",
+      "verdict": "D",
+      "reason": "从“为之、贯之、积重之”写到“致好之”，点出喜好如何由持续践行养成。"
+    },
+    {
+      "id": "1079a0c7c0e2f3d4",
+      "verdict": "N"
+    },
+    {
+      "id": "138204cc6fbc83c5",
+      "verdict": "N"
+    },
+    {
+      "id": "1b4eb6e0732d8137",
+      "verdict": "N"
+    },
+    {
+      "id": "1c487874ff6d52e2",
+      "verdict": "N"
+    },
+    {
+      "id": "1cdfded4e0977a62",
+      "verdict": "D",
+      "reason": "公鉏因任命而愠，听劝后将所忧从职位转到尽自己的职分。"
+    },
+    {
+      "id": "1e442db8ec381757",
+      "verdict": "N"
+    },
+    {
+      "id": "21cd943cc89be760",
+      "verdict": "N"
+    },
+    {
+      "id": "243919caffd38c8d",
+      "verdict": "N"
+    },
+    {
+      "id": "2485e580cf44817a",
+      "verdict": "N"
+    },
+    {
+      "id": "248e3576b2075d4a",
+      "verdict": "P"
+    },
+    {
+      "id": "256bdcfefe78488f",
+      "verdict": "D",
+      "reason": "用事父、事君、事兄与交友说明换位，尤其以“先施之”说明可以先给朋友所期待的对待。"
+    },
+    {
+      "id": "2668e478757d330d",
+      "verdict": "P"
+    },
+    {
+      "id": "28e3d7140b840a54",
+      "verdict": "P"
+    },
+    {
+      "id": "2934ed1cc3e45c86",
+      "verdict": "N"
+    },
+    {
+      "id": "2955dd4483a6662a",
+      "verdict": "D",
+      "reason": "将温故知新放在由广大入精微的问学工夫中，说明重温如何深化理解。"
+    },
+    {
+      "id": "2e47db67be98e4e3",
+      "verdict": "D",
+      "reason": "以课余练弦、习诗礼说明平时所习怎样使正课融会于心。"
+    },
+    {
+      "id": "2e55f9ab0c0eeb77",
+      "verdict": "N"
+    },
+    {
+      "id": "2f28b5f3521fc4aa",
+      "verdict": "N"
+    },
+    {
+      "id": "2f37a4d276bb6e00",
+      "verdict": "D",
+      "reason": "由反躬而诚说到乐莫大焉，给出修身之乐的内在来源。"
+    },
+    {
+      "id": "2fd8a7bc6b23d438",
+      "verdict": "D",
+      "reason": "贤士乐其道而忘人之势，说明何以能在人知与不知时同样自得。"
+    },
+    {
+      "id": "3019f0737db21811",
+      "verdict": "P"
+    },
+    {
+      "id": "31a302dd9cd2d1ef",
+      "verdict": "N"
+    },
+    {
+      "id": "3442d4ad15608aee",
+      "verdict": "D",
+      "reason": "以自己无力占有的土地给郑国，说明行恕要从受者处境检验所给之物。"
+    },
+    {
+      "id": "36cba70ab951a265",
+      "verdict": "N"
+    },
+    {
+      "id": "3765d403a5f61184",
+      "verdict": "D",
+      "reason": "“本诸身，徵诸庶民，考诸三王”给出检验所从之道的几个依据。"
+    },
+    {
+      "id": "38e691b14d9fd808",
+      "verdict": "D",
+      "reason": "制矢与制甲使人所愿相反，可据所学之术如何塑造人心来作选择。"
+    },
+    {
+      "id": "3901b4d41de142cd",
+      "verdict": "P"
+    },
+    {
+      "id": "3999b01a38c61546",
+      "verdict": "D",
+      "reason": "“唯善所在，亲疏一也”用具体德行说明择善的依据。"
+    },
+    {
+      "id": "3cc06ad5d2708dc2",
+      "verdict": "N"
+    },
+    {
+      "id": "3d78538bb39de24e",
+      "verdict": "P"
+    },
+    {
+      "id": "41dc01df25c21668",
+      "verdict": "D",
+      "reason": "遇横逆先反省自己的仁、礼、忠，尽己之后便能放下对方的无理。"
+    },
+    {
+      "id": "420449a9b8f508dc",
+      "verdict": "D",
+      "reason": "求诸己把受人理解的期待转为对自己的要求。"
+    },
+    {
+      "id": "42da7fad4ab18e1a",
+      "verdict": "P"
+    },
+    {
+      "id": "43b38fc3d473e791",
+      "verdict": "P"
+    },
+    {
+      "id": "450fd67201e9abae",
+      "verdict": "N"
+    },
+    {
+      "id": "4869a94cd154bb5f",
+      "verdict": "N"
+    },
+    {
+      "id": "499ca4d1dfa4175b",
+      "verdict": "D",
+      "reason": "以诸侯、士大夫和农夫各自劳动后都需休息，反问禁乐是否顾及众人的生活。"
+    },
+    {
+      "id": "499fec3249086501",
+      "verdict": "N"
+    },
+    {
+      "id": "4abf98400d4b545a",
+      "verdict": "N"
+    },
+    {
+      "id": "4f7ae2f8a62e5961",
+      "verdict": "N"
+    },
+    {
+      "id": "4fef7efe7b53c657",
+      "verdict": "N"
+    },
+    {
+      "id": "53d980c1918a4518",
+      "verdict": "P"
+    },
+    {
+      "id": "566249f2569ef3af",
+      "verdict": "P"
+    },
+    {
+      "id": "57f5938d9a24dbf1",
+      "verdict": "P"
+    },
+    {
+      "id": "59a5ac598d184e94",
+      "verdict": "N"
+    },
+    {
+      "id": "5cb972e256e184f3",
+      "verdict": "D",
+      "reason": "用百姓是否欣悦、上下是否相亲衡量君令，使乐落实到统治者和百姓的关系。"
+    },
+    {
+      "id": "5ee89b07ec9ea7d6",
+      "verdict": "N"
+    },
+    {
+      "id": "618e6e6b5e632284",
+      "verdict": "P"
+    },
+    {
+      "id": "6207f381868b0b9e",
+      "verdict": "D",
+      "reason": "数百家之产不足一日游费，君王停游以惜民力，写明一人之乐的公共代价。"
+    },
+    {
+      "id": "64218b394f2cd752",
+      "verdict": "P"
+    },
+    {
+      "id": "65ffd347b9d984ab",
+      "verdict": "P"
+    },
+    {
+      "id": "667b93495571e484",
+      "verdict": "N"
+    },
+    {
+      "id": "667c7a29e5ef7194",
+      "verdict": "D",
+      "reason": "明确指出宗庙社稷礼乐有“与民同”的一面，可接读共享的公共场合。"
+    },
+    {
+      "id": "66c8f5464822c864",
+      "verdict": "N"
+    },
+    {
+      "id": "6dacca5801decaff",
+      "verdict": "D",
+      "reason": "以百姓听见王的钟鼓、看见田猎也为王欣喜，具体解释与民同乐。"
+    },
+    {
+      "id": "6e1c30b82d8ab6b9",
+      "verdict": "N"
+    },
+    {
+      "id": "6e8c8cecb7865996",
+      "verdict": "N"
+    },
+    {
+      "id": "6ec7e049566b1543",
+      "verdict": "N"
+    },
+    {
+      "id": "6f467650680f6265",
+      "verdict": "N"
+    },
+    {
+      "id": "6fd954dd411ad9e7",
+      "verdict": "P"
+    },
+    {
+      "id": "70e48fa1a6549206",
+      "verdict": "N"
+    },
+    {
+      "id": "711e8393843cc35f",
+      "verdict": "P"
+    },
+    {
+      "id": "72aebfc7d392e0a7",
+      "verdict": "N"
+    },
+    {
+      "id": "73fbc816b1c5ee94",
+      "verdict": "N"
+    },
+    {
+      "id": "7504bfcac991b9be",
+      "verdict": "D",
+      "reason": "以温故知新承接尽精微，继以考察三代礼制说明旧学怎样用到当下。"
+    },
+    {
+      "id": "76f7550e2458b4f3",
+      "verdict": "P"
+    },
+    {
+      "id": "77006aacd27650a6",
+      "verdict": "D",
+      "reason": "先疑忠而造怨之说，再由反复经历而信，以“九折臂而成医”写旧闻如何化为切身体会。"
+    },
+    {
+      "id": "78d7ad5be4f8a59d",
+      "verdict": "N"
+    },
+    {
+      "id": "7aab221734b71d56",
+      "verdict": "D",
+      "reason": "用练熟射御才能获禽说明预先反复操练如何将所学变为能用的本领。"
+    },
+    {
+      "id": "7dfd64d99cc8c6ae",
+      "verdict": "P"
+    },
+    {
+      "id": "7e0435f48b435254",
+      "verdict": "N"
+    },
+    {
+      "id": "8098ea6cb60b54a6",
+      "verdict": "N"
+    },
+    {
+      "id": "8209376e5a6988ac",
+      "verdict": "P"
+    },
+    {
+      "id": "8268874a8edb2410",
+      "verdict": "N"
+    },
+    {
+      "id": "83b2cb3daeeb5cb6",
+      "verdict": "N"
+    },
+    {
+      "id": "841e930ee416ee46",
+      "verdict": "D",
+      "reason": "对旧法也须择其善者施用，说明沿袭之前仍要判别。"
+    },
+    {
+      "id": "88a579a45c7609b3",
+      "verdict": "N"
+    },
+    {
+      "id": "88e9b55dbdcb98ef",
+      "verdict": "N"
+    },
+    {
+      "id": "892e809927bb8bc4",
+      "verdict": "P"
+    },
+    {
+      "id": "8a61769acbb9af7a",
+      "verdict": "D",
+      "reason": "颜回择中庸而将所得之善服膺不失，写出选定之后如何从之。"
+    },
+    {
+      "id": "8bb706f7a1fc3fca",
+      "verdict": "N"
+    },
+    {
+      "id": "8c23237a56543d89",
+      "verdict": "N"
+    },
+    {
+      "id": "8cd31132da1b54c1",
+      "verdict": "N"
+    },
+    {
+      "id": "8fae84aa6207cb4a",
+      "verdict": "P"
+    },
+    {
+      "id": "90d57e945f1aa361",
+      "verdict": "P"
+    },
+    {
+      "id": "91751bd622b0c203",
+      "verdict": "P"
+    },
+    {
+      "id": "92c71a2f38a01829",
+      "verdict": "N"
+    },
+    {
+      "id": "949d2ad58599f8b2",
+      "verdict": "N"
+    },
+    {
+      "id": "9643066c972bab6d",
+      "verdict": "N"
+    },
+    {
+      "id": "96adab8e694a19a4",
+      "verdict": "N"
+    },
+    {
+      "id": "96b9e4ac3ae5a270",
+      "verdict": "D",
+      "reason": "多闻之后还要择善才从，给出了把众说变为所学的具体步骤。"
+    },
+    {
+      "id": "98960d0c4e74ba19",
+      "verdict": "D",
+      "reason": "“患其不能”把注意力转向自己能够改进的本领。"
+    },
+    {
+      "id": "9c602b3484822bba",
+      "verdict": "N"
+    },
+    {
+      "id": "9f6f60666bfcfa60",
+      "verdict": "N"
+    },
+    {
+      "id": "9faee8f7790b72fa",
+      "verdict": "P"
+    },
+    {
+      "id": "a04797c392ba7337",
+      "verdict": "D",
+      "reason": "百姓恨君至于愿与俱亡，直接反问有台池鸟兽的君主还能否独乐。"
+    },
+    {
+      "id": "a34ec99a17da93c9",
+      "verdict": "P"
+    },
+    {
+      "id": "a48ed66ef230dd81",
+      "verdict": "N"
+    },
+    {
+      "id": "a651c9747b74fc86",
+      "verdict": "N"
+    },
+    {
+      "id": "a7c802219c0bad92",
+      "verdict": "N"
+    },
+    {
+      "id": "a88466acd6546182",
+      "verdict": "N"
+    },
+    {
+      "id": "a8bd06f49ea572db",
+      "verdict": "P"
+    },
+    {
+      "id": "a9ab2d0b635b27d7",
+      "verdict": "P"
+    },
+    {
+      "id": "a9ea2bc61bec2e1e",
+      "verdict": "N"
+    },
+    {
+      "id": "ab84114755e092cd",
+      "verdict": "N"
+    },
+    {
+      "id": "abfa73f1155588a0",
+      "verdict": "D",
+      "reason": "从君王不早朝、尽日观舞写到兵乱惊破乐曲，可追问君主逸乐与公共处境。"
+    },
+    {
+      "id": "ac0aa8f37de12150",
+      "verdict": "D",
+      "reason": "以巡游时补助农事和耗粮虐民对举，说明如何乐民之乐、忧民之忧。"
+    },
+    {
+      "id": "b000c2647dfd7490",
+      "verdict": "D",
+      "reason": "把担忧的对象从别人不知自己移到自己能力不足。"
+    },
+    {
+      "id": "b165fc943b9a4e2a",
+      "verdict": "N"
+    },
+    {
+      "id": "b3375295aad924ec",
+      "verdict": "D",
+      "reason": "“求为可知”点出无人知时仍能下功夫之处。"
+    },
+    {
+      "id": "b349c2e36874e3b2",
+      "verdict": "N"
+    },
+    {
+      "id": "b4a80125833c4754",
+      "verdict": "D",
+      "reason": "以颜回得一善便服膺不失，落实从所择之善。"
+    },
+    {
+      "id": "b5a07577f1c16f60",
+      "verdict": "D",
+      "reason": "看见三位友人不得意，逐一肯定才志，用“青云无自疑”劝勉。"
+    },
+    {
+      "id": "b5eff74ff9d6f029",
+      "verdict": "P"
+    },
+    {
+      "id": "b63ac27da16048f4",
+      "verdict": "D",
+      "reason": "操缦、博依等平日练习使人安于所学，具体解释“不兴其艺，不能乐学”。"
+    },
+    {
+      "id": "b7a8385870d93e05",
+      "verdict": "N"
+    },
+    {
+      "id": "bc82d3d0370918b3",
+      "verdict": "N"
+    },
+    {
+      "id": "c164555650730d0a",
+      "verdict": "P"
+    },
+    {
+      "id": "c65f1fe53a937a66",
+      "verdict": "N"
+    },
+    {
+      "id": "c794f5994a1334c6",
+      "verdict": "P"
+    },
+    {
+      "id": "c8471e4025c481a9",
+      "verdict": "P"
+    },
+    {
+      "id": "d2eea91ed1b53058",
+      "verdict": "P"
+    },
+    {
+      "id": "d356d27b59df5dc9",
+      "verdict": "N"
+    },
+    {
+      "id": "d4044c6104001785",
+      "verdict": "D",
+      "reason": "絜矩之道落实在尊老、敬长与体恤孤弱。"
+    },
+    {
+      "id": "d44c5e65bb2633fe",
+      "verdict": "D",
+      "reason": "“正己而不求于人，则无怨”写清了消解怨意的做法。"
+    },
+    {
+      "id": "d57fce71b580340a",
+      "verdict": "N"
+    },
+    {
+      "id": "d6fe36544573cf43",
+      "verdict": "D",
+      "reason": "由事亲从兄到乐于践行，再到手舞足蹈，写出内在之乐如何自生。"
+    },
+    {
+      "id": "d8c3ceeda77fa8a2",
+      "verdict": "N"
+    },
+    {
+      "id": "d9364562cbee2152",
+      "verdict": "N"
+    },
+    {
+      "id": "dc2f00744d5e3378",
+      "verdict": "D",
+      "reason": "伯宗向赶车载重者问计，听其理由而采用，示范如何越过身份辨认可取之言。"
+    },
+    {
+      "id": "de82b0631e09e625",
+      "verdict": "N"
+    },
+    {
+      "id": "e1458f84185f075c",
+      "verdict": "N"
+    },
+    {
+      "id": "e2327c012726dcd6",
+      "verdict": "P"
+    },
+    {
+      "id": "e5846167c05ca449",
+      "verdict": "N"
+    },
+    {
+      "id": "e6d4b17f6c4665a9",
+      "verdict": "D",
+      "reason": "“言通药石规”写朋友以诚相待、互相规劝的具体支持。"
+    },
+    {
+      "id": "e7b593045081b8ed",
+      "verdict": "P"
+    },
+    {
+      "id": "e8f42ec1fba96d0d",
+      "verdict": "N"
+    },
+    {
+      "id": "ec349b54bb4d8d37",
+      "verdict": "P"
+    },
+    {
+      "id": "ee1d48cd24aee581",
+      "verdict": "P"
+    },
+    {
+      "id": "efcf54fc75fab1de",
+      "verdict": "D",
+      "reason": "见贤思齐、见不贤自省，把他人的两类行为转为不同的学习动作。"
+    },
+    {
+      "id": "f0fa0441c9274aa0",
+      "verdict": "D",
+      "reason": "以知危险却守口待问的后果检验“若钟”之说，直接示范如何审查名家之言。"
+    },
+    {
+      "id": "f2bc0755348a2881",
+      "verdict": "D",
+      "reason": "先讲不把所厌强加于人，再以四种关系追问自己是否先做到了所求于人之事。"
+    },
+    {
+      "id": "f51bfede8f0ae180",
+      "verdict": "N"
+    },
+    {
+      "id": "fa20cef95c7384ee",
+      "verdict": "D",
+      "reason": "想邀友同行却听见对方另有志趣，遂主张各从所务，正可说明如何尊重对方。"
+    },
+    {
+      "id": "fc6d3730320810f5",
+      "verdict": "N"
+    },
+    {
+      "id": "fd890a5f70a0fe4f",
+      "verdict": "P"
+    },
+    {
+      "id": "fee542d277c35d4e",
+      "verdict": "P"
+    }
+  ]
+}
