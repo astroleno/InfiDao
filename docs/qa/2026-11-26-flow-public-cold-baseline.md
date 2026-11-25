@@ -1,6 +1,6 @@
 # 公网点词冷路径基线
 
-2026-11-26 00:48–00:50（台北时间），通过 [公网阅读页](https://aitoshuu.me/InfiDao) 验证匿名读者的点词到首句可读。入口页面实时引用 `infidao-9a72686549eafcbd`。CDN 发布清单绑定源码提交 `c80a192555c9239df64c17dfde42f58ac4299bfd`，与此次浏览器记录的资源路径一致。使用前台 Chromium、390 × 844 CSS 像素视口、DPR 3。 [发布清单](https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/manifests/release-manifest.json) · [原始时间戳与发布指纹](evidence/2026-11-26-flow-public-cold/result.json)
+2026-11-26 00:48–00:50（台北时间），通过公网阅读页验证匿名读者的点词到首句可读。实测应用为 `infidao-3a963357ece7288f`，对应源码提交 `5934876c36f93b4b7978fb1a8a9d660e71e2e650`。源站进程在实测前已从该应用发布目录启动，公网入口引用的页面脚本路径与 SHA-256 均与实测记录一致。入口预加载字体来自 CDN 发布 `infidao-9a72686549eafcbd`，其清单中的提交为 `c80a192555c9239df64c17dfde42f58ac4299bfd`。使用前台 Chromium、390 × 844 CSS 像素视口、DPR 3。 [公网阅读页](https://aitoshuu.me/InfiDao) · [应用发布清单](https://aitoshuu.me/flow-releases/infidao-3a963357ece7288f.json) · [字体 CDN 发布清单](https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-9a72686549eafcbd/manifests/release-manifest.json) · [原始时间戳与发布指纹](evidence/2026-11-26-flow-public-cold/result.json)
 
 ## 实际执行
 
@@ -27,8 +27,8 @@
 
 从检出「去读」到自动点按相隔 80.2 ms，检出当帧没有另行截图。点按至整句可读耗时 22.6 ms。扣除这段等候后，点词到首句可读耗时 4,939.3 ms。计时从浏览器捕获真实点词动作起算。5,019.5 ms 的取样中，引文框完全位于实际阅读视口内且墨迹完成。5,036.0 ms 的相邻帧确认引文框上下边缘稳定。截图在完成后复核显示。 [整句可读截图](evidence/2026-11-26-flow-public-cold/quote-readable.png)
 
-交付原文为《孟子·告子上》「心之官则思，思则得之，不思则不得也。」。以发布提交中的 `guji-core-v1` 复算，来源 `rysxguji-mengzi-9-16` 的全文 SHA-256 和引文的 UTF-16 区间 `[287, 305)` 均匹配。部署版 `runFlow` 完成独立关联核验及提交后才发出 `frame` 和 `done`，两事件均包含同一条 `ready: true` 的引文。
+交付原文为《孟子·告子上》「心之官则思，思则得之，不思则不得也。」。原始核验使用 `c80a192` 中的 `guji-core-v1`，来源 `rysxguji-mengzi-9-16` 的全文 SHA-256 和引文的 UTF-16 区间 `[287, 305)` 均匹配。实测应用提交 `5934876` 含有同一份核心语料文件（Git blob `cf6f575995978287056e35cc5ab9ac77b3b07a4d`）。部署版 `runFlow` 完成独立关联核验及提交后才发出 `frame` 和 `done`，两事件均包含同一条 `ready: true` 的引文。
 
 Astra 对交付内容的独立盲评判定 `CN-01` 通过。《孟子》由「虑」补出思是心的职能，再以「不思则不得」给出反面条件。盲评材料缺少完整来路回响，无法核对与此前解释是否重复。
 
-当前公网版本早于 `e3e0b28`，已核验原句复用未上线，复用样本为 0 次。iPhone 真机待验。
+实测应用版本早于 `e3e0b28`，当时已核验原句复用尚未上线，复用样本为 0 次。iPhone 真机待验。
