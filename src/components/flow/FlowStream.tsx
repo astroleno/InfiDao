@@ -52,6 +52,7 @@ type Props = {
   pending: boolean;
   connecting: FlowSelection | null;
   arrival?: FlowArrival | null;
+  arrivalObscured?: boolean;
   waiting?: ReactNode;
   restore: { revision: number; top: number; frameId?: string; entryKey?: string; source?: boolean };
   canContinue: boolean;
@@ -95,9 +96,12 @@ export function FlowStream(props: Props) {
   const preparedAt = useRef('');
   const continuedAt = useRef('');
   const [notesFor, setNotesFor] = useState<string | null>(null);
-  const [arrivalVisible, setArrivalVisible] = useState(false);
-  const arrivalShown = useRef(false);
+  const [shownArrivalId, setShownArrivalId] = useState<string | null>(null);
+  const shownArrival = useRef<string | null>(null);
   const arrivalDismissed = useRef('');
+  const arrivalHeadings = useRef(new Map<string, { entry: StreamEntry; heading: HTMLElement }>());
+  const arrivalCovered = useRef(false);
+  const arrivalCheckFrame = useRef<number | null>(null);
   const [scrollMotion] = useState(() => new StreamScrollMotion(props.restore.top));
   const [manualScroll] = useState(() => new StreamManualScroll());
   const [meaningFor, setMeaningFor] = useState<string | null>(null);
@@ -145,6 +149,9 @@ export function FlowStream(props: Props) {
     },
   })), [props.entries, dismissMeaning]);
   const meaningEntry = contentEntries.find(({ entry }) => entryKey(entry) === meaningFor);
+  const arrivalObscured = !!(props.arrivalObscured || menuPresent || meaningEntry?.entry.frame.meaning);
+  arrivalCovered.current = arrivalObscured;
+  const visibleArrival = !arrivalObscured && props.arrival?.id === shownArrivalId ? props.arrival : null;
 
   useLayoutEffect(() => {
     const panel = panelRef.current;
@@ -243,35 +250,54 @@ export function FlowStream(props: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notesFor, props.activeKey]);
 
-  function checkArrival() {
+  const showArrival = useCallback((id: string | null) => {
+    if (shownArrival.current !== id) {
+      shownArrival.current = id;
+      setShownArrivalId(id);
+    }
+  }, []);
+
+  const checkArrival = useCallback(() => {
     const arrival = live.current.arrival;
     const panel = panelRef.current;
-    if (!arrival || !panel || arrivalDismissed.current === arrival.id) {
-      if (arrivalShown.current) { arrivalShown.current = false; setArrivalVisible(false); }
+    if (arrivalCovered.current || !arrival || !panel || arrivalDismissed.current === arrival.id) {
+      showArrival(null);
       return;
     }
-    const target = arrival && panel ? Array.from(panel.querySelectorAll<HTMLElement>('[data-stream-key]'))
-      .find(node => node.dataset.streamKey === arrival.targetKey)?.querySelector<HTMLElement>('[data-flow-heading]') : null;
-    let show = false;
-    if (target) {
-      const bounds = panel.getBoundingClientRect(), rect = target.getBoundingClientRect();
-      const visible = rect.top >= bounds.top + panel.clientHeight * .18 &&
-        rect.top + Math.min(rect.height, 100) <= bounds.top + panel.clientHeight * .68;
-      show = !visible;
-      if (visible) arrivalDismissed.current = arrival.id;
+    const target = arrivalHeadings.current.get(arrival.targetKey)?.heading;
+    if (!target || !panel.contains(target)) {
+      showArrival(null);
+      return;
     }
-    if (arrivalShown.current !== show) { arrivalShown.current = show; setArrivalVisible(show); }
-  }
-  useEffect(() => {
-    const handle = requestAnimationFrame(checkArrival);
-    return () => cancelAnimationFrame(handle);
-    // Recheck geometry when the first quote or its following text arrives.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.arrival, props.entries]);
+    const bounds = panel.getBoundingClientRect(), rect = target.getBoundingClientRect();
+    const visible = rect.top >= bounds.top + panel.clientHeight * .18 &&
+      rect.top + Math.min(rect.height, 100) <= bounds.top + panel.clientHeight * .68;
+    if (visible) arrivalDismissed.current = arrival.id;
+    showArrival(visible ? null : arrival.id);
+  }, [showArrival]);
+
+  const scheduleArrivalCheck = useCallback(() => {
+    if (arrivalCovered.current || !live.current.arrival || arrivalCheckFrame.current !== null) return;
+    arrivalCheckFrame.current = requestAnimationFrame(() => {
+      arrivalCheckFrame.current = null;
+      checkArrival();
+    });
+  }, [checkArrival]);
+
+  useLayoutEffect(() => {
+    if (arrivalObscured || !props.arrival) showArrival(null);
+    else scheduleArrivalCheck();
+  }, [arrivalObscured, props.arrival, scheduleArrivalCheck, showArrival]);
+
+  useLayoutEffect(() => () => {
+    if (arrivalCheckFrame.current !== null) cancelAnimationFrame(arrivalCheckFrame.current);
+    arrivalCheckFrame.current = null;
+  }, []);
 
   useEffect(() => {
     const panel = panelRef.current, content = contentRef.current;
     if (!panel || !content) return;
+    const headings = arrivalHeadings.current;
     let handle = 0, disposed = false;
     type Part = { element: HTMLElement; top: number; bottom: number; order: number; motion: EntranceMotion; ink: InkMotion; inkPhase: string };
     let parts: Part[] = [];
@@ -653,10 +679,15 @@ export function FlowStream(props: Props) {
       }
       partIndex.setLayout(parts); wordIndex.setLayout(words);
       const entriesByKey = new Map(live.current.entries.map(entry => [entryKey(entry), entry]));
+      headings.clear();
       articleScene.current.setLayout(Array.from(content.querySelectorAll<HTMLElement>('[data-flow-frame]')).flatMap((element, order) => {
-        const entry = entriesByKey.get(element.dataset.streamKey!);
+        const key = element.dataset.streamKey!;
+        const entry = entriesByKey.get(key);
+        if (!entry) return [];
+        const heading = element.querySelector<HTMLElement>('[data-flow-heading]');
+        if (heading) headings.set(key, { entry, heading });
         const { y } = positionOf(element);
-        return entry ? [{ top: y - element.offsetHeight / 2, bottom: y + element.offsetHeight / 2, order, entry }] : [];
+        return [{ top: y - element.offsetHeight / 2, bottom: y + element.offsetHeight / 2, order, entry }];
       }));
       width = panel.clientWidth;
       measuredSize = layoutSize();
@@ -664,6 +695,7 @@ export function FlowStream(props: Props) {
         layoutProbe.count++; layoutProbe.lastMs = performance.now() - started;
         layoutProbe.totalMs += layoutProbe.lastMs; layoutProbe.reason = reason;
       }
+      scheduleArrivalCheck();
       schedule();
     };
     measure.current = remeasure;
@@ -730,6 +762,7 @@ export function FlowStream(props: Props) {
       unbindBend();
       content.style.translate = '';
       opticalHit.current = () => undefined;
+      headings.clear();
       for (const { element } of words) {
         for (const name of ['transform', 'transform-origin', 'filter', 'opacity', 'visibility']) element.style.removeProperty(name);
         element.removeAttribute('data-flow-bent');
@@ -739,7 +772,7 @@ export function FlowStream(props: Props) {
       measure.current = () => {};
       entrance.current = { pause: () => {}, resume: () => {} };
     };
-  }, [scrollMotion, manualScroll]);
+  }, [scheduleArrivalCheck, scrollMotion, manualScroll]);
 
   useEffect(() => {
     if (previousFlow.current.paused !== props.paused) {
@@ -969,20 +1002,18 @@ export function FlowStream(props: Props) {
         </div>
       </div>
     </div>
-    {(!props.riseOnReveal || openingSettled) && !menuPresent && !meaningEntry?.entry.frame.meaning && !notesFor && !arrivalVisible && props.firstHint}
-    {arrivalVisible && props.arrival && <div className={styles.branchArrival} data-flow-arrival role="status">
-      <span>{props.arrival.label}</span>
+    {(!props.riseOnReveal || openingSettled) && !menuPresent && !meaningEntry?.entry.frame.meaning && !notesFor && !visibleArrival && props.firstHint}
+    {visibleArrival && <div className={styles.branchArrival} data-flow-arrival role="status">
+      <span>{visibleArrival.label}</span>
       <button type="button" className={styles.textButton} onClick={() => {
-        const arrival = props.arrival;
-        const entry = props.entries.find(item => entryKey(item) === arrival?.targetKey);
-        const target = Array.from(panelRef.current?.querySelectorAll<HTMLElement>('[data-stream-key]') || [])
-          .find(node => node.dataset.streamKey === arrival?.targetKey)?.querySelector<HTMLElement>('[data-flow-heading]');
-        if (!entry || !target || !arrival) return;
-        arrivalDismissed.current = arrival.id;
-        arrivalShown.current = false; setArrivalVisible(false);
+        const target = arrivalHeadings.current.get(visibleArrival.targetKey);
+        if (!target || !panelRef.current?.contains(target.heading)) return;
+        const { entry, heading } = target;
+        arrivalDismissed.current = visibleArrival.id;
+        showArrival(null);
         props.onRead(entry); setNotesFor(null);
-        target.tabIndex = -1;
-        positionAt(target);
+        heading.tabIndex = -1;
+        positionAt(heading);
       }}>去读</button>
     </div>}
     <FlowMenu {...props.navigation} gestureSurface={panelRef} onPresenceChange={setMenuPresent} onGestureStart={target => {

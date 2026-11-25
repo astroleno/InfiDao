@@ -338,11 +338,142 @@ test('offscreen branch arrival offers an explicit handoff without moving the old
   await act(async () => { await new Promise<void>(resolve => requestAnimationFrame(() => resolve())); });
   expect(viewport.scrollTop).toBe(31);
   const go = screen.getByRole('button', { name: '去读' });
+  const scan = jest.spyOn(viewport, 'querySelectorAll');
+  for (let offset = 32; offset < 72; offset++) {
+    viewport.scrollTop = offset;
+    fireEvent.scroll(viewport);
+  }
+  expect(scan).not.toHaveBeenCalled();
+  viewport.scrollTop = 31;
   fireEvent.click(go);
+  expect(scan).not.toHaveBeenCalled();
+  scan.mockRestore();
   expect(onRead).toHaveBeenLastCalledWith(second);
   expect(target).toHaveFocus();
   expect(viewport.scrollTop).toBe(1220);
   expect(screen.queryByRole('button', { name: '去读' })).not.toBeInTheDocument();
+});
+
+describe('branch arrival under reading overlays', () => {
+  const arrival = { id: 'child', sourceKey: entryKey(entry), targetKey: entryKey(second), label: '沿「止」已接续' };
+  const advance = () => act(() => { jest.advanceTimersByTime(32); });
+  const go = () => screen.queryByRole('button', { name: '去读' });
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(600);
+  });
+  afterEach(() => { cleanup(); jest.restoreAllMocks(); jest.useRealTimers(); });
+
+  test.each([true, false])('rechecks the current reading zone when an overlay closes (in zone: %s)', inZone => {
+    const options = { ...props, entries: [entry, second], arrival };
+    const view = render(<FlowStream {...options} />);
+    const viewport = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    const target = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    const bounds = jest.spyOn(target, 'getBoundingClientRect').mockReturnValue({ top: 900, height: 100 } as DOMRect);
+    advance();
+    expect(go()).toBeInTheDocument();
+
+    view.rerender(<FlowStream {...options} arrivalObscured />);
+    expect(view.container.querySelector('[data-flow-arrival]')).toBeNull();
+    bounds.mockReturnValue({ top: 200, height: 100 } as DOMRect);
+    viewport.scrollTop = 700;
+    fireEvent.scroll(viewport);
+    advance();
+    expect(go()).not.toBeInTheDocument();
+    if (!inZone) {
+      bounds.mockReturnValue({ top: 900, height: 100 } as DOMRect);
+      viewport.scrollTop = 0;
+      fireEvent.scroll(viewport);
+    }
+
+    view.rerender(<FlowStream {...options} />);
+    expect(go()).not.toBeInTheDocument();
+    advance();
+    if (inZone) {
+      bounds.mockReturnValue({ top: 900, height: 100 } as DOMRect);
+      viewport.scrollTop = 0;
+      fireEvent.scroll(viewport);
+      expect(go()).not.toBeInTheDocument();
+    } else {
+      expect(go()).toBeInTheDocument();
+    }
+    expect(target).not.toHaveFocus();
+  });
+
+  test('a new arrival replaces the old notice and lands on its remeasured heading', () => {
+    const onRead = jest.fn();
+    const options = { ...props, entries: [entry, second], arrival, onRead };
+    const view = render(<FlowStream {...options} />);
+    const viewport = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    Object.defineProperty(viewport, 'scrollHeight', { value: 3000 });
+    advance();
+    expect(screen.getByText(arrival.label)).toBeInTheDocument();
+    const oldHeading = view.container.querySelector('[data-flow-frame="second"] [data-flow-heading]');
+
+    const replacement = { ...second, pathId: 'replaced-child' };
+    const newArrival = { ...arrival, id: 'replacement', targetKey: entryKey(replacement), label: '沿「知」已接续' };
+    const next = { ...options, entries: [entry, replacement], arrival: newArrival };
+    view.rerender(<FlowStream {...next} arrivalObscured />);
+    expect(go()).not.toBeInTheDocument();
+    const heading = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    expect(heading).not.toBe(oldHeading);
+    jest.spyOn(heading, 'getBoundingClientRect').mockReturnValue({ top: 950, height: 100 } as DOMRect);
+
+    view.rerender(<FlowStream {...next} />);
+    expect(go()).not.toBeInTheDocument();
+    advance();
+    expect(screen.queryByText(arrival.label)).not.toBeInTheDocument();
+    expect(screen.getByText(newArrival.label)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '去读' }));
+    expect(onRead).toHaveBeenLastCalledWith(replacement);
+    expect(heading).toHaveFocus();
+    expect(viewport.scrollTop).toBe(800);
+  });
+
+  test('remeasurement rechecks a pending heading without a scroll event', () => {
+    const options = { ...props, arrival };
+    const view = render(<FlowStream {...options} entries={[entry, second]} />);
+    const heading = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    const bounds = jest.spyOn(heading, 'getBoundingClientRect').mockReturnValue({ top: 900, height: 100 } as DOMRect);
+    advance();
+    expect(go()).toBeInTheDocument();
+
+    bounds.mockReturnValue({ top: 200, height: 100 } as DOMRect);
+    const updated = { ...second, frame: { ...second.frame, chapterLabel: '经二章' } };
+    view.rerender(<FlowStream {...options} entries={[entry, updated]} />);
+    advance();
+    expect(go()).not.toBeInTheDocument();
+  });
+
+  test('the menu and meaning keep the notice hidden until the last layer closes', () => {
+    const explained = { ...entry, frame: { ...first, meaning: '方向。', textBreaks: { meaning: [2, 3], reflection: [] } } };
+    const options = { ...props, arrival };
+    const view = render(<FlowStream {...options} entries={[explained, second]} />);
+    const viewport = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    const target = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    const bounds = jest.spyOn(target, 'getBoundingClientRect').mockReturnValue({ top: 900, height: 100 } as DOMRect);
+    advance();
+    expect(go()).toBeInTheDocument();
+
+    bounds.mockReturnValue({ top: 200, height: 100 } as DOMRect);
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: '更多阅读选项' }));
+      view.rerender(<FlowStream {...options} entries={[explained, { ...second }]} />);
+    });
+    advance();
+    expect(go()).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '释义' }));
+    expect(screen.getByRole('dialog', { name: /释义/ })).toBeInTheDocument();
+    fireEvent.scroll(viewport);
+    bounds.mockReturnValue({ top: 900, height: 100 } as DOMRect);
+    fireEvent.scroll(viewport);
+    advance();
+    expect(go()).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '关闭释义' }));
+    advance();
+    expect(go()).toBeInTheDocument();
+  });
 });
 
 test('tab focus and programmatic layout changes do not spend a continuation; reading consumes only one', () => {

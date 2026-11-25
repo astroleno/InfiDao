@@ -71,6 +71,7 @@ export function FlowExperience() {
   const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(true);
   const [connecting, setConnecting] = useState<Selection | null>(null);
   const [arrival, setArrival] = useState<FlowArrival | null>(null);
+  const arrivalRevision = useRef(0);
   const [feedback, setFeedback] = useState<{ text: string; revision: number } | null>(null);
   const feedbackRevision = useRef(0);
   const [notesFrameId, setNotesFrameId] = useState<string | null>(null);
@@ -161,7 +162,7 @@ export function FlowExperience() {
     const target = nextEntries.find(entry => entry.pathId === record.pathId);
     const origin = record.parentEntry;
     setArrival(preserve && target && origin ? {
-      id: record.pathId, sourceKey: `${record.parentPathId}:${origin.fromFrameId}`, targetKey: entryKey(target),
+      id: String(++arrivalRevision.current), sourceKey: `${record.parentPathId}:${origin.fromFrameId}`, targetKey: entryKey(target),
       label: selection?.label ? `沿「${selection.label}」已接续` : origin.thought ? '沿这一念已接续' : '经文已接续',
     } : null);
     lastSelectionRef.current = null;
@@ -534,6 +535,7 @@ export function FlowExperience() {
   const currentFrame = active || frames[0] || null;
   const loadingQuote = currentFrame?.quote || preparingQuote;
   const handoff = useLoadingHandoff(loadingQuote, reducedMotion);
+  const loadingActive = !handoff.ready && !flowError;
   const showHint = hint && handoff.revealed && !loadingOverlayVisible && !loading && !pending && !flowError &&
     !seedOpen && !libraryOpen && !keepsakeSource && !sourceOpen && !storageWarning && !feedback;
   const readingOrigins = records.flatMap(record => {
@@ -571,7 +573,8 @@ export function FlowExperience() {
           motionCandidate: motion.available ? { enabled: motion.variant === 'liquid-live', onToggle: motion.toggle } : undefined }}
         motionVariant={motion.variant}
         paused={paused || seedOpen || libraryOpen || !!keepsakeSource} reducedMotion={reducedMotion} pending={pending}
-        connecting={connecting} arrival={arrival} restore={restorePosition}
+        connecting={connecting} arrival={arrival}
+        arrivalObscured={loadingActive || loadingOverlayVisible || seedOpen || libraryOpen || !!keepsakeSource} restore={restorePosition}
         canContinue={!!chain?.cursor && !chain.exhausted && !flowError && frames.every(item => item.ready !== false)}
         onContinue={continueReading} onPrepareNext={() => controllerRef.current?.prepareNext()}
         onPause={() => pauseReading()} onResume={() => { if (!seedOpen && !libraryOpen && !reducedMotion) pauseReading(false); }}
@@ -588,7 +591,7 @@ export function FlowExperience() {
         notesFrameId={notesFrameId} notes={notes} savingNote={savingNote}
         onSaveNote={onSaveNote} onDeleteNote={onDeleteNote} onUndoNote={onUndoNote} onUpdateNote={onUpdateNote} onKeepsake={currentKeepsake} />
 
-      <FlowLoading active={!handoff.ready && !flowError} progress={fontProgress} quote={loadingQuote} reducedMotion={reducedMotion}
+      <FlowLoading active={loadingActive} progress={fontProgress} quote={loadingQuote} reducedMotion={reducedMotion}
         immediate={handoff.immediate || !!flowError} onVisibilityChange={setLoadingOverlayVisible} />
       <div className={styles.readingFeedback} role="status" aria-label="收藏状态" data-visible={!!feedback}>{feedback?.text || ''}</div>
       {!entries.length && errorFeedback && <div className={styles.notice}>{errorFeedback}</div>}
