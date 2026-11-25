@@ -1,0 +1,766 @@
+{
+  "reviewedWindows": 43,
+  "reviewedPoints": 5,
+  "scores": [
+    {
+      "id": "005e81ca63",
+      "sourceId": "rysxguji-xunzi-13-15",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "da1dc8069971c67dc44f34fcd85b05b5bb5960afc93e5ec0ffbba5dd6a2c6d62",
+      "start": 0,
+      "end": 269,
+      "verdict": "P"
+    },
+    {
+      "id": "0d96ec15f5",
+      "sourceId": "rysxguji-hanfeizi-7-1",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "29ba22b0e9dca29211db39dc51ae63f0f9dc75c8936c48f72017e6aaf2c8bdf6",
+      "start": 0,
+      "end": 360,
+      "verdict": "N"
+    },
+    {
+      "id": "11182acfd7",
+      "sourceId": "rysxguji-mengzi-1-3",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "c828ef4ff5e4fcc819ee673591ff8215c49d9fd5212ce08f6888330b2535d7c4",
+      "start": 0,
+      "end": 357,
+      "verdict": "D",
+      "reason": "由百姓反感君王的處境說明共同享樂取決於君民關係。"
+    },
+    {
+      "id": "188a663b28",
+      "sourceId": "rysxguji-xunzi-33-2",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "dbe2cb405fca130da56068d6bacd72374fc0967510bf011a75465ffcea6080a1",
+      "start": 0,
+      "end": 229,
+      "verdict": "N"
+    },
+    {
+      "id": "1c4affc0b1",
+      "sourceId": "poetry-8eb16281e76b8f6f8e5614f22842104d-0",
+      "corpusVersion": "poetry:226de54db4cfd965c7d367bc",
+      "textHash": "bfe1bcec2109a2c34419541c98ae81c1c2e6c0f6790fa411590ad2669657a7e7",
+      "start": 0,
+      "end": 168,
+      "verdict": "P"
+    },
+    {
+      "id": "1d25fe1892",
+      "sourceId": "rysxguji-lunyu-4-1",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "eeb20c9f538cc318e99bd5374872de68f37c8d769db13e07c2b5f091f267908b",
+      "start": 0,
+      "end": 50,
+      "verdict": "P"
+    },
+    {
+      "id": "315f49c816",
+      "sourceId": "rysxguji-zhongyong-1-10",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "aea403c24e941c7119b9a6f8f2cfe95d1ec641547eb7b52c3ebd7cc0358ce8e0",
+      "start": 0,
+      "end": 68,
+      "verdict": "P"
+    },
+    {
+      "id": "445708ccd9",
+      "sourceId": "rysxguji-chunqiu-zuozhuan-210-7",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "e1994f1784be00d1d27af9f29ecdd0c470e4332dd1a55e5ef9e0ff66beeda64a",
+      "start": 0,
+      "end": 347,
+      "verdict": "D",
+      "reason": "以舉薦具體說明觀察行為、按善而非親疏選人。"
+    },
+    {
+      "id": "476ab448bb",
+      "sourceId": "rysxguji-liji-2-96",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "8be63061272bdbe6520d5211214625ced0b54573c16dbc8734786e38adf34d00",
+      "start": 0,
+      "end": 85,
+      "verdict": "N"
+    },
+    {
+      "id": "4c99f8e2f7",
+      "sourceId": "rysxguji-daxue-1-28",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "1cc51cbed4c43fb959a52936a3be34ae31bab95094d26989d9f7a9fa7ae4b6f0",
+      "start": 0,
+      "end": 206,
+      "verdict": "P"
+    },
+    {
+      "id": "54a8e26656",
+      "sourceId": "rysxguji-mozi-2-1",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "d5c4e0fb5ec28fea48d395350417b111691b7e89625060f84353359a06be9ca9",
+      "start": 0,
+      "end": 55,
+      "verdict": "P"
+    },
+    {
+      "id": "562998dab1",
+      "sourceId": "rysxguji-zhongyong-1-44",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "4c8402abc133c1b6e7a48ec58054e8e2e189505617cc0ffe06b053a82ccc1728",
+      "start": 0,
+      "end": 211,
+      "verdict": "P"
+    },
+    {
+      "id": "5fa0af03ad",
+      "sourceId": "rysxguji-hanfeizi-68-4",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "bf60663ebc41a98fc6fb8fbae127fee4a0b5bbadf2c2b5523fb9117a0378c634",
+      "start": 0,
+      "end": 360,
+      "verdict": "N"
+    },
+    {
+      "id": "6716479d5b",
+      "sourceId": "rysxguji-chunqiu-zuozhuan-149-19",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "7cc3b6c19dc054717795fb6a36b4e14a97234459c2257919d47659849dd97c31",
+      "start": 0,
+      "end": 295,
+      "verdict": "N"
+    },
+    {
+      "id": "6f419f45d7",
+      "sourceId": "rysxguji-liji-2-159",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "86515d0651e7cbbe8d50c268ebd0c07cacacb1ec9b32bdc3f56710287b99c826",
+      "start": 0,
+      "end": 72,
+      "verdict": "P"
+    },
+    {
+      "id": "709fe18940",
+      "sourceId": "rysxguji-chunqiu-zuozhuan-183-14",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "7b73883bdd18c9f3333f2d757e0ba293fbfe19ba76df10344822bf58d1f6c57c",
+      "start": 0,
+      "end": 329,
+      "verdict": "N"
+    },
+    {
+      "id": "73a4a02c9c",
+      "sourceId": "rysxguji-shangshu-34-11",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "40987c348af6f03acd80b7fc9bdb88997aecf37714e3133a9af082e1ad243c8e",
+      "start": 0,
+      "end": 26,
+      "verdict": "N"
+    },
+    {
+      "id": "776ed02d4c",
+      "sourceId": "rysxguji-mozi-12-2",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "0729c73958b82582ad619db6284f400ce98ec80c385bd38e51799403b5354e9e",
+      "start": 0,
+      "end": 347,
+      "verdict": "P"
+    },
+    {
+      "id": "7996b87338",
+      "sourceId": "rysxguji-lunyu-7-26",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "1600aeb54c78544c6d0ef74e7f3254ae110101ed23493477541a4caac9412014",
+      "start": 0,
+      "end": 40,
+      "verdict": "D",
+      "reason": "通過多聞積累比較材料，再擇善而從。"
+    },
+    {
+      "id": "81beb298ad",
+      "sourceId": "rysxguji-mozi-10-13",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "ca0164123c02aa56ff9c64f50c67374f3b8201ed8cc039ccf64de7fff5d4dc63",
+      "start": 0,
+      "end": 344,
+      "verdict": "D",
+      "reason": "以政教能否勸善止暴來判斷先王之道是否可取。"
+    },
+    {
+      "id": "8559913ada",
+      "sourceId": "rysxguji-shijing-241-1",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "6f612b1c3a98d1d2881f16ec5f2bfbe5fbf66348717471b6b4626c86e20c001e",
+      "start": 0,
+      "end": 31,
+      "verdict": "N"
+    },
+    {
+      "id": "86a2615a02",
+      "sourceId": "rysxguji-mengzi-3-19",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "b2b6ee5511bd956a00ded86e3291c7f1f572d56b3783fc3a913ea9afc6281493",
+      "start": 0,
+      "end": 171,
+      "verdict": "P"
+    },
+    {
+      "id": "8f85e05b69",
+      "sourceId": "rysxguji-liji-17-1",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "af630f1c26a1569f265ee369184947626f348615c0e99bdbcda32f99b8090bde",
+      "start": 0,
+      "end": 229,
+      "verdict": "N"
+    },
+    {
+      "id": "925935a0eb",
+      "sourceId": "rysxguji-chunqiu-zuozhuan-177-6",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "e3ddde09ee066c67660524143ea77613b63bb517e0ae5edac208d7353a47f1e6",
+      "start": 0,
+      "end": 34,
+      "verdict": "N"
+    },
+    {
+      "id": "a533994dc6",
+      "sourceId": "rysxguji-zhongyong-1-17",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "0820e0b5f17bb7bc0fa47692ad738a018f9ba1605ff581c6cb4c521ffc5874e5",
+      "start": 0,
+      "end": 104,
+      "verdict": "D",
+      "reason": "把對怨意的處理落到端正自己可做的事。"
+    },
+    {
+      "id": "aa427cf480",
+      "sourceId": "rysxguji-liji-40-12",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "7793afdc366fcb04cecfd2ef82484d40b43ad7cc6540c40019b460fc9d9777da",
+      "start": 0,
+      "end": 353,
+      "verdict": "P"
+    },
+    {
+      "id": "ae3c5d1db9",
+      "sourceId": "rysxguji-hanfeizi-14-11",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "6523da45bc3f21638d8ea4209f41e50c8075f181cf0292fd4a9406cf510110fe",
+      "start": 0,
+      "end": 150,
+      "verdict": "N"
+    },
+    {
+      "id": "af14fbd11d",
+      "sourceId": "rysxguji-chunqiu-zuozhuan-87-9",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "48083127fb691ad7b4db2d653b6ea81282a52cfda6df4b716b6f757f1c12e8c3",
+      "start": 0,
+      "end": 124,
+      "verdict": "N"
+    },
+    {
+      "id": "b0f0a205da",
+      "sourceId": "rysxguji-daxue-1-27",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "3c20074db39eabafaf5b666cf50e25eb4976d326e12a1d81940230e354ca0ce9",
+      "start": 0,
+      "end": 276,
+      "verdict": "D",
+      "reason": "在看見他人有才時，容納或嫉妒是能區別善行的具體例子。"
+    },
+    {
+      "id": "b1e7656750",
+      "sourceId": "rysxguji-hanfeizi-68-18",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "5d2efb86440672475d86d929355782b13ceaa7802898e4c2e7592528dfbcd638",
+      "start": 0,
+      "end": 131,
+      "verdict": "P"
+    },
+    {
+      "id": "c34180cc45",
+      "sourceId": "rysxguji-daxue-1-23",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "e5905439c034e38d02190f4b783f60d5d23156f02fec906ade51db6cc22b0b4a",
+      "start": 0,
+      "end": 124,
+      "verdict": "N"
+    },
+    {
+      "id": "c45bc09dc0",
+      "sourceId": "rysxguji-zhongyong-1-1",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "46f24fe8eee5357c11d598b4749c9f81cdf76c7b40220d56f2add90187e6c9ea",
+      "start": 0,
+      "end": 131,
+      "verdict": "N"
+    },
+    {
+      "id": "c7c50f5d13",
+      "sourceId": "rysxguji-zhongyong-1-46",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "63c4d2f6384a9fb0d53d9dfb24d7ad2bc98113fdb4496b982142e22ee3059137",
+      "start": 0,
+      "end": 164,
+      "verdict": "P"
+    },
+    {
+      "id": "c912260ef5",
+      "sourceId": "rysxguji-mozi-31-6",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "83e051a494e1f4f766c80227c5c7423228675cc3a5834f8d02b8b7b982a93cc3",
+      "start": 0,
+      "end": 358,
+      "verdict": "D",
+      "reason": "以知險卻等人發問的後果檢驗一條教誨。"
+    },
+    {
+      "id": "d52a5d782f",
+      "sourceId": "rysxguji-xunzi-19-10",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "2eb96ea2ff498d79053d8feef283e587beaa0767c342b76554b43f07a168c934",
+      "start": 0,
+      "end": 141,
+      "verdict": "N"
+    },
+    {
+      "id": "d942fee55e",
+      "sourceId": "rysxguji-mengzi-11-7",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "4f9045382e4c693ab0d20de042ae1fb91d683a24a504b67f5107c4030fcb9431",
+      "start": 0,
+      "end": 135,
+      "verdict": "D",
+      "reason": "並列被理解與不被理解，說明兩種處境都可以自持。"
+    },
+    {
+      "id": "dc0a041b34",
+      "sourceId": "rysxguji-hanfeizi-32-11",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "dd9034d1e0fc3ed8b8520a4b7e0249cb050828095a50d58ba5b0a0e2a1025e50",
+      "start": 0,
+      "end": 195,
+      "verdict": "N"
+    },
+    {
+      "id": "e006a3bdcc",
+      "sourceId": "poetry-4d70e497976d139025487805a1a7baa5-0",
+      "corpusVersion": "poetry:7fe10d6de678c79735a0f362",
+      "textHash": "dd54234e1a66bc6edf2bbe1cbc822f96a6ae74b730c5ef9016251369a5fafb6e",
+      "start": 0,
+      "end": 415,
+      "verdict": "N"
+    },
+    {
+      "id": "e681ebcdca",
+      "sourceId": "rysxguji-chunqiu-zuozhuan-177-21",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "c4c222aab0fcf564794dfba84bcf3e95f85cf993f6b867a277c7339d28b6008c",
+      "start": 0,
+      "end": 256,
+      "verdict": "N"
+    },
+    {
+      "id": "e90e1b57a0",
+      "sourceId": "rysxguji-hanfeizi-18-15",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "00c42dcc624aa42f0c39e42439d85d39448908f9cd6d65c43f49e14e693b7eb7",
+      "start": 0,
+      "end": 360,
+      "verdict": "D",
+      "reason": "同一行動先被讚後遭罰，提醒分辨評價是否受好惡左右。"
+    },
+    {
+      "id": "f0620c7558",
+      "sourceId": "rysxguji-xunzi-12-14",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "c8bb324ecff9eb80730f77089a8b2d481744e37c5907d63eb425b0d408f2e322",
+      "start": 0,
+      "end": 233,
+      "verdict": "P"
+    },
+    {
+      "id": "f1478e0a48",
+      "sourceId": "rysxguji-hanfeizi-27-9",
+      "corpusVersion": "guji-core-v1",
+      "textHash": "a2ced321b3c908a5904d439c912b3bcdc9124cfed6fb2cb913128db9c0c4f412",
+      "start": 0,
+      "end": 360,
+      "verdict": "D",
+      "reason": "以有權勢者面對貧弱者的行為具體示範克制。"
+    },
+    {
+      "id": "fbfa7f6804",
+      "sourceId": "poetry-8b1c8a2fa1f95ef0de30e6f83deed820-0",
+      "corpusVersion": "poetry:3d5e2d664da0aeb72e969658",
+      "textHash": "0769714f1372b188bf9c32371604aa894af7c293db12ec0a0e4bb28d239e23cb",
+      "start": 0,
+      "end": 382,
+      "verdict": "D",
+      "reason": "占者承認自身限度並支持求問者用自己的判斷行動。"
+    }
+  ],
+  "exposures": [
+    {
+      "id": "188a663b28",
+      "caseId": "word-recognition-core",
+      "repeat": 1,
+      "change": "added"
+    },
+    {
+      "id": "d52a5d782f",
+      "caseId": "word-recognition-core",
+      "repeat": 1,
+      "change": "removed"
+    },
+    {
+      "id": "188a663b28",
+      "caseId": "word-recognition-core",
+      "repeat": 2,
+      "change": "added"
+    },
+    {
+      "id": "d52a5d782f",
+      "caseId": "word-recognition-core",
+      "repeat": 2,
+      "change": "removed"
+    },
+    {
+      "id": "86a2615a02",
+      "caseId": "word-recognition-core",
+      "repeat": 3,
+      "change": "added"
+    },
+    {
+      "id": "a533994dc6",
+      "caseId": "word-recognition-core",
+      "repeat": 3,
+      "change": "added"
+    },
+    {
+      "id": "d942fee55e",
+      "caseId": "word-recognition-core",
+      "repeat": 3,
+      "change": "removed"
+    },
+    {
+      "id": "d52a5d782f",
+      "caseId": "word-recognition-core",
+      "repeat": 3,
+      "change": "removed"
+    },
+    {
+      "id": "f1478e0a48",
+      "caseId": "word-empathy-poetry",
+      "repeat": 2,
+      "change": "added"
+    },
+    {
+      "id": "1c4affc0b1",
+      "caseId": "word-empathy-poetry",
+      "repeat": 2,
+      "change": "removed"
+    },
+    {
+      "id": "f1478e0a48",
+      "caseId": "word-empathy-poetry",
+      "repeat": 3,
+      "change": "added"
+    },
+    {
+      "id": "fbfa7f6804",
+      "caseId": "word-empathy-poetry",
+      "repeat": 3,
+      "change": "removed"
+    },
+    {
+      "id": "b1e7656750",
+      "caseId": "deep-discernment-core",
+      "repeat": 1,
+      "change": "added"
+    },
+    {
+      "id": "476ab448bb",
+      "caseId": "deep-discernment-core",
+      "repeat": 1,
+      "change": "added"
+    },
+    {
+      "id": "005e81ca63",
+      "caseId": "deep-discernment-core",
+      "repeat": 1,
+      "change": "added"
+    },
+    {
+      "id": "dc0a041b34",
+      "caseId": "deep-discernment-core",
+      "repeat": 1,
+      "change": "removed"
+    },
+    {
+      "id": "6f419f45d7",
+      "caseId": "deep-discernment-core",
+      "repeat": 1,
+      "change": "removed"
+    },
+    {
+      "id": "776ed02d4c",
+      "caseId": "deep-discernment-core",
+      "repeat": 1,
+      "change": "removed"
+    },
+    {
+      "id": "e90e1b57a0",
+      "caseId": "deep-discernment-core",
+      "repeat": 2,
+      "change": "added"
+    },
+    {
+      "id": "81beb298ad",
+      "caseId": "deep-discernment-core",
+      "repeat": 2,
+      "change": "added"
+    },
+    {
+      "id": "8559913ada",
+      "caseId": "deep-discernment-core",
+      "repeat": 2,
+      "change": "added"
+    },
+    {
+      "id": "c912260ef5",
+      "caseId": "deep-discernment-core",
+      "repeat": 2,
+      "change": "removed"
+    },
+    {
+      "id": "0d96ec15f5",
+      "caseId": "deep-discernment-core",
+      "repeat": 2,
+      "change": "removed"
+    },
+    {
+      "id": "562998dab1",
+      "caseId": "deep-discernment-core",
+      "repeat": 2,
+      "change": "removed"
+    },
+    {
+      "id": "b0f0a205da",
+      "caseId": "deep-discernment-core",
+      "repeat": 3,
+      "change": "added"
+    },
+    {
+      "id": "f0620c7558",
+      "caseId": "deep-discernment-core",
+      "repeat": 3,
+      "change": "added"
+    },
+    {
+      "id": "e90e1b57a0",
+      "caseId": "deep-discernment-core",
+      "repeat": 3,
+      "change": "added"
+    },
+    {
+      "id": "445708ccd9",
+      "caseId": "deep-discernment-core",
+      "repeat": 3,
+      "change": "added"
+    },
+    {
+      "id": "54a8e26656",
+      "caseId": "deep-discernment-core",
+      "repeat": 3,
+      "change": "added"
+    },
+    {
+      "id": "7996b87338",
+      "caseId": "deep-discernment-core",
+      "repeat": 3,
+      "change": "removed"
+    },
+    {
+      "id": "1d25fe1892",
+      "caseId": "deep-discernment-core",
+      "repeat": 3,
+      "change": "removed"
+    },
+    {
+      "id": "c7c50f5d13",
+      "caseId": "deep-discernment-core",
+      "repeat": 3,
+      "change": "removed"
+    },
+    {
+      "id": "c45bc09dc0",
+      "caseId": "deep-discernment-core",
+      "repeat": 3,
+      "change": "removed"
+    },
+    {
+      "id": "315f49c816",
+      "caseId": "deep-discernment-core",
+      "repeat": 3,
+      "change": "removed"
+    },
+    {
+      "id": "11182acfd7",
+      "caseId": "deep-shared-joy-poetry",
+      "repeat": 1,
+      "change": "added"
+    },
+    {
+      "id": "e006a3bdcc",
+      "caseId": "deep-shared-joy-poetry",
+      "repeat": 1,
+      "change": "removed"
+    },
+    {
+      "id": "6716479d5b",
+      "caseId": "word-learning-joy-core",
+      "repeat": 1,
+      "change": "added"
+    },
+    {
+      "id": "73a4a02c9c",
+      "caseId": "word-learning-joy-core",
+      "repeat": 1,
+      "change": "added"
+    },
+    {
+      "id": "c34180cc45",
+      "caseId": "word-learning-joy-core",
+      "repeat": 1,
+      "change": "added"
+    },
+    {
+      "id": "aa427cf480",
+      "caseId": "word-learning-joy-core",
+      "repeat": 1,
+      "change": "added"
+    },
+    {
+      "id": "709fe18940",
+      "caseId": "word-learning-joy-core",
+      "repeat": 1,
+      "change": "removed"
+    },
+    {
+      "id": "4c99f8e2f7",
+      "caseId": "word-learning-joy-core",
+      "repeat": 1,
+      "change": "removed"
+    },
+    {
+      "id": "af14fbd11d",
+      "caseId": "word-learning-joy-core",
+      "repeat": 1,
+      "change": "removed"
+    },
+    {
+      "id": "5fa0af03ad",
+      "caseId": "word-learning-joy-core",
+      "repeat": 1,
+      "change": "removed"
+    },
+    {
+      "id": "6716479d5b",
+      "caseId": "word-learning-joy-core",
+      "repeat": 2,
+      "change": "added"
+    },
+    {
+      "id": "c34180cc45",
+      "caseId": "word-learning-joy-core",
+      "repeat": 2,
+      "change": "added"
+    },
+    {
+      "id": "aa427cf480",
+      "caseId": "word-learning-joy-core",
+      "repeat": 2,
+      "change": "added"
+    },
+    {
+      "id": "925935a0eb",
+      "caseId": "word-learning-joy-core",
+      "repeat": 2,
+      "change": "added"
+    },
+    {
+      "id": "709fe18940",
+      "caseId": "word-learning-joy-core",
+      "repeat": 2,
+      "change": "removed"
+    },
+    {
+      "id": "4c99f8e2f7",
+      "caseId": "word-learning-joy-core",
+      "repeat": 2,
+      "change": "removed"
+    },
+    {
+      "id": "af14fbd11d",
+      "caseId": "word-learning-joy-core",
+      "repeat": 2,
+      "change": "removed"
+    },
+    {
+      "id": "5fa0af03ad",
+      "caseId": "word-learning-joy-core",
+      "repeat": 2,
+      "change": "removed"
+    },
+    {
+      "id": "e681ebcdca",
+      "caseId": "word-learning-joy-core",
+      "repeat": 3,
+      "change": "added"
+    },
+    {
+      "id": "c34180cc45",
+      "caseId": "word-learning-joy-core",
+      "repeat": 3,
+      "change": "added"
+    },
+    {
+      "id": "8f85e05b69",
+      "caseId": "word-learning-joy-core",
+      "repeat": 3,
+      "change": "added"
+    },
+    {
+      "id": "aa427cf480",
+      "caseId": "word-learning-joy-core",
+      "repeat": 3,
+      "change": "added"
+    },
+    {
+      "id": "709fe18940",
+      "caseId": "word-learning-joy-core",
+      "repeat": 3,
+      "change": "removed"
+    },
+    {
+      "id": "4c99f8e2f7",
+      "caseId": "word-learning-joy-core",
+      "repeat": 3,
+      "change": "removed"
+    },
+    {
+      "id": "af14fbd11d",
+      "caseId": "word-learning-joy-core",
+      "repeat": 3,
+      "change": "removed"
+    },
+    {
+      "id": "ae3c5d1db9",
+      "caseId": "word-learning-joy-core",
+      "repeat": 3,
+      "change": "removed"
+    }
+  ]
+}
