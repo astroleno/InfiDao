@@ -1,0 +1,295 @@
+{
+  "contextSha256": "7a271b7ad04e28915917f296795543fca620b91fe395a8b57964964298454ac6",
+  "model": "deepseek-flash",
+  "promptVersion": "connected-text-v17-source-stance",
+  "repeats": 3,
+  "modelSettings": {
+    "temperature": 0.2,
+    "thinking": "disabled",
+    "responseFormat": "json_object",
+    "maxTokens": 4608
+  },
+  "runs": [
+    {
+      "caseId": "word-recognition-core",
+      "repeat": 1,
+      "inputHash": "0f66e12e4ed08d09dbdc6655cc8dde2175c5a4e05b060a712f23db9871c0e33e",
+      "elapsedMs": 1594,
+      "status": "ok",
+      "sense": "心中含怒、因不被理解而生的怨气。",
+      "direction": "可对照《论语》中“不患人之不己知”与《孟子》论“人不知”的修养，看儒家如何把被了解的期待转向自省。",
+      "terms": [
+        "不患人之不己知",
+        "人不知而不愠",
+        "君子求诸己",
+        "不患莫己知"
+      ]
+    },
+    {
+      "caseId": "word-empathy-poetry",
+      "repeat": 1,
+      "inputHash": "4cd4c2c384ce3be2ef524f2e205562ceea4d054eaaa76c6dc2732786ef6a0b12",
+      "elapsedMs": 1484,
+      "status": "ok",
+      "sense": "以己度人、推己及人的体谅之道，孔子视为可终身奉行的一言。",
+      "direction": "可对照《中庸》“忠恕违道不远”与《孟子》论强恕而行，看恕如何从待人方法通向求仁之途。",
+      "terms": [
+        "其恕乎",
+        "己所不欲，勿施于人",
+        "忠恕违道不远",
+        "强恕而行",
+        "终身行之"
+      ]
+    },
+    {
+      "caseId": "deep-discernment-core",
+      "repeat": 1,
+      "inputHash": "fcdf31d4a4aaed6a04d08ff0ff576f4d04c5d4d904e2e3ed706ac91b62222c28",
+      "elapsedMs": 1115,
+      "status": "ok",
+      "sense": "选择、择取，从他人言行中分辨可取与当改之处。",
+      "direction": "可对照《论语》中“多闻，择其善者而从之”与“择不处仁”等语，看孔子言“择”时如何以分辨为前提。",
+      "terms": [
+        "择其善者而从之",
+        "多闻，择其善者而从之",
+        "择不处仁",
+        "三人行，必有我师焉"
+      ]
+    },
+    {
+      "caseId": "deep-shared-joy-poetry",
+      "repeat": 1,
+      "inputHash": "b5b4d3bd9bd9a4c6aab36317d630dd7c229f0da49cb6c58a553c720129814792",
+      "elapsedMs": 1467,
+      "status": "ok",
+      "sense": "前一个“乐”读yuè，指欣赏音乐；后一个“乐”读lè，指感到快乐。",
+      "direction": "孟子把“独乐”与“与人乐”“与众乐”层层对举，可沿《论语》“乐节礼乐”与《礼记·乐记》看儒家如何由乐声通人心。",
+      "terms": [
+        "独乐乐",
+        "与人乐乐",
+        "与众乐乐",
+        "乐记",
+        "乐节礼乐"
+      ]
+    },
+    {
+      "caseId": "word-learning-joy-core",
+      "repeat": 1,
+      "inputHash": "a38480f6e5fdd93c0d6f09251c42c33b0398f25bf54004ca56507d67605ff3c9",
+      "elapsedMs": 1339,
+      "status": "ok",
+      "sense": "以之为乐，从中获得内在喜悦",
+      "direction": "可对照《孟子》论“乐”与“好”的层次，看儒家如何由喜好进到自得之乐。",
+      "terms": [
+        "乐之者",
+        "好之者",
+        "知之者",
+        "乐在其中",
+        "反身而诚",
+        "自得"
+      ]
+    },
+    {
+      "caseId": "word-practice-poetry",
+      "repeat": 1,
+      "inputHash": "8bdc5f6ca0e6f4936bb7bd3afb7b41acae4c31aa40b240cc6ad4ef299b9010a2",
+      "elapsedMs": 1594,
+      "status": "ok",
+      "sense": "温习、演练所学，反复实践",
+      "direction": "可对照《礼记·学记》与《中庸》博学审问慎思明辨笃行，看“习”如何由诵数演练通向践行。",
+      "terms": [
+        "学而时习之",
+        "温故而知新",
+        "博学之，审问之，慎思之，明辨之，笃行之",
+        "时习"
+      ]
+    },
+    {
+      "caseId": "word-recognition-core",
+      "repeat": 2,
+      "inputHash": "0f66e12e4ed08d09dbdc6655cc8dde2175c5a4e05b060a712f23db9871c0e33e",
+      "elapsedMs": 1058,
+      "status": "ok",
+      "sense": "心中含怒、因不被理解而生的怨气。",
+      "direction": "可对照《论语》中“不患人之不己知”与《孟子》论“人不知”的处己之道，看儒家如何把被了解的期待转为自省。",
+      "terms": [
+        "不患人之不己知",
+        "人不知而不愠",
+        "君子求诸己",
+        "不患莫己知"
+      ]
+    },
+    {
+      "caseId": "word-empathy-poetry",
+      "repeat": 2,
+      "inputHash": "4cd4c2c384ce3be2ef524f2e205562ceea4d054eaaa76c6dc2732786ef6a0b12",
+      "elapsedMs": 1344,
+      "status": "ok",
+      "sense": "以己之心推度他人，不把己所不欲加于人。",
+      "direction": "可对照《大学》絜矩之道与《中庸》忠恕之教，看推己及人如何成为终身可行的准则。",
+      "terms": [
+        "其恕乎",
+        "己所不欲，勿施于人",
+        "絜矩之道",
+        "忠恕违道不远",
+        "施诸己而不愿"
+      ]
+    },
+    {
+      "caseId": "deep-discernment-core",
+      "repeat": 2,
+      "inputHash": "fcdf31d4a4aaed6a04d08ff0ff576f4d04c5d4d904e2e3ed706ac91b62222c28",
+      "elapsedMs": 1562,
+      "status": "ok",
+      "sense": "选择、择取，从他人言行中分辨善与不善而有所取舍。",
+      "direction": "《论语》中“择”常与“从”“改”相连，可对照《里仁》“择不处仁”看择取与自身修养的关系。",
+      "terms": [
+        "择其善者而从之",
+        "择不处仁",
+        "见贤思齐",
+        "见不贤而内自省",
+        "多闻择其善者而从之"
+      ]
+    },
+    {
+      "caseId": "deep-shared-joy-poetry",
+      "repeat": 2,
+      "inputHash": "b5b4d3bd9bd9a4c6aab36317d630dd7c229f0da49cb6c58a553c720129814792",
+      "elapsedMs": 1616,
+      "status": "ok",
+      "sense": "前一个“乐”读yuè，指欣赏音乐；后一个“乐”读lè，指感到快乐。",
+      "direction": "孟子把“独乐”与“众乐”对举，可对照《论语》“与人乐乐”式的共享之乐，追问快乐为何因分享而更厚。",
+      "terms": [
+        "独乐乐",
+        "与人乐乐",
+        "钟鼓之声",
+        "管籥之音",
+        "与众乐乐"
+      ]
+    },
+    {
+      "caseId": "word-learning-joy-core",
+      "repeat": 2,
+      "inputHash": "a38480f6e5fdd93c0d6f09251c42c33b0398f25bf54004ca56507d67605ff3c9",
+      "elapsedMs": 1437,
+      "status": "ok",
+      "sense": "以之为乐，在其中获得深长喜悦",
+      "direction": "可对照《孟子》论“乐”与“好”的层次，看儒家如何由喜好进到内心安乐的境界。",
+      "terms": [
+        "乐之者",
+        "好之者",
+        "知之者",
+        "乐在其中",
+        "反身而诚"
+      ]
+    },
+    {
+      "caseId": "word-practice-poetry",
+      "repeat": 2,
+      "inputHash": "8bdc5f6ca0e6f4936bb7bd3afb7b41acae4c31aa40b240cc6ad4ef299b9010a2",
+      "elapsedMs": 1087,
+      "status": "ok",
+      "sense": "温习、演习所学，反复实践",
+      "direction": "可对照《礼记·学记》中“时教必有正业”与“藏焉修焉，息焉游焉”，看古人如何安排习练与心志。",
+      "terms": [
+        "学而时习之",
+        "时教必有正业",
+        "藏焉修焉",
+        "息焉游焉"
+      ]
+    },
+    {
+      "caseId": "word-recognition-core",
+      "repeat": 3,
+      "inputHash": "0f66e12e4ed08d09dbdc6655cc8dde2175c5a4e05b060a712f23db9871c0e33e",
+      "elapsedMs": 1683,
+      "status": "ok",
+      "sense": "心中含怒、因不被理解而生的怨气。",
+      "direction": "可对照《论语》中“不患人之不己知”与《孟子》论“人不知”的处境，看儒家如何把被了解的期待转向自省。",
+      "terms": [
+        "不患人之不己知",
+        "人不知而不愠",
+        "君子求诸己",
+        "不怨天不尤人"
+      ]
+    },
+    {
+      "caseId": "word-empathy-poetry",
+      "repeat": 3,
+      "inputHash": "4cd4c2c384ce3be2ef524f2e205562ceea4d054eaaa76c6dc2732786ef6a0b12",
+      "elapsedMs": 1644,
+      "status": "ok",
+      "sense": "推己及人，以自身感受为尺度体谅他人。",
+      "direction": "可对照《大学》絜矩之道与《中庸》忠恕违道不远，看恕如何从待人方法通向修身。",
+      "terms": [
+        "己所不欲，勿施于人",
+        "絜矩之道",
+        "忠恕违道不远",
+        "施诸己而不愿"
+      ]
+    },
+    {
+      "caseId": "deep-discernment-core",
+      "repeat": 3,
+      "inputHash": "fcdf31d4a4aaed6a04d08ff0ff576f4d04c5d4d904e2e3ed706ac91b62222c28",
+      "elapsedMs": 1263,
+      "status": "ok",
+      "sense": "选择、择取，从他人言行中分辨可取之处",
+      "direction": "孔子以“择”连接“从”与“改”，可对照《论语》中“择不处仁”“择乎中庸”等语，看择取与自省如何相成。",
+      "terms": [
+        "择其善者而从之",
+        "择不处仁",
+        "择乎中庸",
+        "见贤思齐",
+        "见不贤而内自省"
+      ]
+    },
+    {
+      "caseId": "deep-shared-joy-poetry",
+      "repeat": 3,
+      "inputHash": "b5b4d3bd9bd9a4c6aab36317d630dd7c229f0da49cb6c58a553c720129814792",
+      "elapsedMs": 2496,
+      "status": "ok",
+      "sense": "前一个“乐”读yuè，指欣赏音乐；后一个“乐”读lè，指感到快乐。",
+      "direction": "孟子为何用“独乐乐”与“与人乐乐”的对比，把君王好乐引向与民同乐？可对照《论语》“乐云乐云，钟鼓云乎哉”与《礼记·乐记》论乐与人心、政教的关系。",
+      "terms": [
+        "独乐乐",
+        "与人乐乐",
+        "钟鼓云乎哉",
+        "乐记",
+        "与民同乐"
+      ]
+    },
+    {
+      "caseId": "word-learning-joy-core",
+      "repeat": 3,
+      "inputHash": "a38480f6e5fdd93c0d6f09251c42c33b0398f25bf54004ca56507d67605ff3c9",
+      "elapsedMs": 2204,
+      "status": "ok",
+      "sense": "以之为乐，沉浸其中而自得",
+      "direction": "可对照《孟子》“乐则生矣”与《礼记·学记》“安其学而亲其师”，看儒家如何由好入乐。",
+      "terms": [
+        "乐之者",
+        "好之者",
+        "乐则生矣",
+        "安其学而亲其师",
+        "知之者"
+      ]
+    },
+    {
+      "caseId": "word-practice-poetry",
+      "repeat": 3,
+      "inputHash": "8bdc5f6ca0e6f4936bb7bd3afb7b41acae4c31aa40b240cc6ad4ef299b9010a2",
+      "elapsedMs": 1283,
+      "status": "ok",
+      "sense": "温习、演练所学，反复实践",
+      "direction": "可对照《论语》其他言“学”与“习”处，看孔子如何把反复实践与德性养成相连。",
+      "terms": [
+        "学而时习之",
+        "温故而知新",
+        "学而不思则罔",
+        "性相近也，习相远也"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,567 @@
+{
+  "cases": [
+    {
+      "id": "word-recognition-core",
+      "cohort": "diagnostic",
+      "depth": 1,
+      "seed": "别人没看见我的用心，我想看看这句说如何处置自己的怨气。",
+      "need": "此处的愠是因不被了解而怨恼。下一段要具体推进到区分他人认识与自己可做的事，或从求被理解转到理解他人。",
+      "parent": {
+        "sourceId": "rysxguji-lunyu-1-1",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "837b84cefcca5c5406e785f55652d0c2c853fb020688ab9ef8d4928e8cca24ae",
+        "start": 27,
+        "end": 41,
+        "quote": "人不知，而不愠，不亦君子乎？"
+      },
+      "prior": [],
+      "selection": {
+        "start": 33,
+        "end": 34,
+        "textHash": "837b84cefcca5c5406e785f55652d0c2c853fb020688ab9ef8d4928e8cca24ae",
+        "corpusVersion": "guji-core-v1"
+      },
+      "plannerInput": {
+        "word": "愠",
+        "source": "论语",
+        "chapter": "第1章 学而第一",
+        "surface": "quote",
+        "quote": "人不知，而不愠，不亦君子乎？",
+        "before": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不",
+        "after": "，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧言令色，鲜矣仁！”曾子曰：“吾日三省吾身：为人谋而不",
+        "focus": "别人未能了解自己时，该如何看待由此生出的怨气？",
+        "targetScope": {
+          "coreSources": [
+            "论语",
+            "大学",
+            "中庸",
+            "孟子",
+            "诗经",
+            "尚书",
+            "周易",
+            "礼记",
+            "仪礼",
+            "周礼",
+            "春秋左传",
+            "墨子",
+            "荀子",
+            "韩非子"
+          ],
+          "poetryEnabled": false
+        }
+      },
+      "inputHash": "0f66e12e4ed08d09dbdc6655cc8dde2175c5a4e05b060a712f23db9871c0e33e",
+      "scopeFingerprint": "47c0d2253cfbb2512337c633",
+      "recall": {
+        "op": "branch",
+        "scope": [
+          "core"
+        ],
+        "exclude": [
+          "rysxguji-lunyu-1-1"
+        ],
+        "previousQuotes": [
+          "人不知，而不愠，不亦君子乎？"
+        ],
+        "semantics": [],
+        "gold": [
+          [
+            {
+              "sourceId": "rysxguji-lunyu-1-12",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "3729cc6e597832895f9402a508814b07cd32860ba69ae95ec814670b86a24e7e",
+              "start": 4,
+              "end": 17,
+              "quote": "不患人之不己知，患不知人也"
+            }
+          ],
+          [
+            {
+              "sourceId": "rysxguji-lunyu-14-32",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "1993e890d138d6ee3b16b018f7b5f17be5aa7f8de523b9d2b4d08dbe1f02a6dc",
+              "start": 4,
+              "end": 17,
+              "quote": "不患人之不己知，患其不能也"
+            },
+            {
+              "sourceId": "rysxguji-lunyu-4-12",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "3661c883c6332764cf376539aae95bcb2ce5384813606fc38b89a4c8e951deaa",
+              "start": 42,
+              "end": 53,
+              "quote": "不患莫己知，求为可知也"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "id": "word-empathy-poetry",
+      "cohort": "holdout",
+      "depth": 1,
+      "seed": "我知道不能把自己的意愿强加给别人，也想弄明白从体谅别人还能往哪里读。",
+      "need": "从现句的推己及人继续，举出主动成就他人或落实到双方处境的做法，区分禁止强加与鼓励支持。",
+      "parent": {
+        "sourceId": "rysxguji-lunyu-15-21",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "2561d010fa3463d2358c3f670136cbbc6f91046c7539d271ae73bd974482d832",
+        "start": 24,
+        "end": 38,
+        "quote": "其恕乎！己所不欲，勿施于人。"
+      },
+      "prior": [],
+      "selection": {
+        "start": 25,
+        "end": 26,
+        "textHash": "2561d010fa3463d2358c3f670136cbbc6f91046c7539d271ae73bd974482d832",
+        "corpusVersion": "guji-core-v1"
+      },
+      "plannerInput": {
+        "word": "恕",
+        "source": "论语",
+        "chapter": "第15章 卫灵公第十五",
+        "surface": "quote",
+        "quote": "其恕乎！己所不欲，勿施于人。",
+        "before": "子贡问曰：“有一言而可以终身行之者乎？”子曰：“其",
+        "after": "乎！己所不欲，勿施于人。”",
+        "focus": "孔子以一言概括可以终身奉行的处世准则。",
+        "targetScope": {
+          "coreSources": [
+            "论语",
+            "大学",
+            "中庸",
+            "孟子",
+            "诗经",
+            "尚书",
+            "周易",
+            "礼记",
+            "仪礼",
+            "周礼",
+            "春秋左传",
+            "墨子",
+            "荀子",
+            "韩非子"
+          ],
+          "poetryEnabled": true
+        }
+      },
+      "inputHash": "4cd4c2c384ce3be2ef524f2e205562ceea4d054eaaa76c6dc2732786ef6a0b12",
+      "scopeFingerprint": "8de84a73ddcfdff0a0024250",
+      "recall": {
+        "op": "branch",
+        "scope": [
+          "core",
+          "poetry"
+        ],
+        "exclude": [
+          "rysxguji-lunyu-15-21"
+        ],
+        "previousQuotes": [
+          "其恕乎！己所不欲，勿施于人。"
+        ],
+        "semantics": [],
+        "gold": [
+          [
+            {
+              "sourceId": "rysxguji-lunyu-6-26",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "4db00e51d3de9e0469a4004cf733dd5216048c51cb415de2cfc791941f4661d0",
+              "start": 51,
+              "end": 77,
+              "quote": "己欲立而立人；己欲达而达人。能近取譬，可谓仁之方也已"
+            }
+          ],
+          [
+            {
+              "sourceId": "rysxguji-daxue-1-22",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "ef5bc6804318defd3201c1374daf482a4ab0e14ddb011bd97547546566b4b2d3",
+              "start": 0,
+              "end": 19,
+              "quote": "所恶于上，毋以使下，所恶于下，毋以事上"
+            },
+            {
+              "sourceId": "rysxguji-liji-40-11",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "af07e6d22002f411ae740f8fc7af9423c6a490739ab04979bfb4266400e910e5",
+              "start": 46,
+              "end": 65,
+              "quote": "所恶于上，毋以使下；所恶于下，毋以事上"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "id": "deep-discernment-core",
+      "cohort": "diagnostic",
+      "depth": 2,
+      "seed": "已经读到每个人都有可学的地方，我想继续分辨怎么判断可学之处。",
+      "need": "承接所点的选择动作，推进到辨别所学或不盲信权威。泛泛劝多交朋友或多听别人的意见不够。",
+      "parent": {
+        "sourceId": "rysxguji-lunyu-7-20",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "8ab19344ff60bcba95a4099a33f69b13908b3d3158996b27ba3bf15f04f20fa4",
+        "start": 4,
+        "end": 30,
+        "quote": "三人行，必有我师焉：择其善者而从之，其不善者而改之。"
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-lunyu-2-12",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "68b0ecb1364dbe40fd729ffb91b44682d8f171973d2e7f2c5316ab56b8218fe5",
+          "start": 4,
+          "end": 20,
+          "quote": "学而不思，则罔；思而不学，则殆。"
+        }
+      ],
+      "selection": {
+        "start": 14,
+        "end": 15,
+        "textHash": "8ab19344ff60bcba95a4099a33f69b13908b3d3158996b27ba3bf15f04f20fa4",
+        "corpusVersion": "guji-core-v1"
+      },
+      "plannerInput": {
+        "word": "择",
+        "source": "论语",
+        "chapter": "第7章 述而第七",
+        "surface": "quote",
+        "quote": "三人行，必有我师焉：择其善者而从之，其不善者而改之。",
+        "before": "子曰：“三人行，必有我师焉：",
+        "after": "其善者而从之，其不善者而改之。”",
+        "focus": "同行者有善与不善，都能成为反观自己的材料。",
+        "targetScope": {
+          "coreSources": [
+            "论语",
+            "大学",
+            "中庸",
+            "孟子",
+            "诗经",
+            "尚书",
+            "周易",
+            "礼记",
+            "仪礼",
+            "周礼",
+            "春秋左传",
+            "墨子",
+            "荀子",
+            "韩非子"
+          ],
+          "poetryEnabled": false
+        }
+      },
+      "inputHash": "fcdf31d4a4aaed6a04d08ff0ff576f4d04c5d4d904e2e3ed706ac91b62222c28",
+      "scopeFingerprint": "47c0d2253cfbb2512337c633",
+      "recall": {
+        "op": "branch",
+        "scope": [
+          "core"
+        ],
+        "exclude": [
+          "rysxguji-lunyu-7-20"
+        ],
+        "previousQuotes": [
+          "学而不思，则罔；思而不学，则殆。",
+          "三人行，必有我师焉：择其善者而从之，其不善者而改之。"
+        ],
+        "semantics": [],
+        "gold": [
+          [
+            {
+              "sourceId": "rysxguji-mengzi-12-3",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "d2c3e8ece4661b10b02f2bc17c202fb87447eb30769f0fc85d176f4057e79ba7",
+              "start": 5,
+              "end": 18,
+              "quote": "尽信《书》，则不如无《书》"
+            }
+          ],
+          [
+            {
+              "sourceId": "rysxguji-zhongyong-1-31",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "c1e0da2ad3688d5e0d50ba01b79a6c1452d92729471357d3b47355b248b03919",
+              "start": 5,
+              "end": 20,
+              "quote": "审问之，慎思之，明辨之，笃行之"
+            },
+            {
+              "sourceId": "rysxguji-liji-29-22",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "07311ab29cb2dbf2b50501fba71aba1a78d02c5f4987401a1d58ca92ceeb46b4",
+              "start": 126,
+              "end": 141,
+              "quote": "审问之，慎思之，明辨之，笃行之"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "id": "deep-shared-joy-poetry",
+      "cohort": "holdout",
+      "depth": 2,
+      "seed": "上一步读到亲近的人和旁人都应被照顾，这里想继续理解音乐这段说的与众同乐。",
+      "need": "指出《孟子》讨论统治者如何与民共享乐与忧。延展到与民同乐的语境或公共处境。普通社交或享乐建议不够。",
+      "parent": {
+        "sourceId": "rysxguji-mengzi-2-1",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "9da7755c10d1482978298fcb96b9533f1ea844208d240eef22b4aa15d48e56aa",
+        "start": 147,
+        "end": 159,
+        "quote": "独乐乐，与人乐乐，孰乐？"
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-mengzi-1-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "4506b52b02952f860edd313d23f41f4cddb5cb7ea469ef6e3f4c78d8d0194ca6",
+          "start": 275,
+          "end": 295,
+          "quote": "老吾老，以及人之老；幼吾幼，以及人之幼。"
+        }
+      ],
+      "selection": {
+        "start": 157,
+        "end": 158,
+        "textHash": "9da7755c10d1482978298fcb96b9533f1ea844208d240eef22b4aa15d48e56aa",
+        "corpusVersion": "guji-core-v1"
+      },
+      "plannerInput": {
+        "word": "乐",
+        "source": "孟子",
+        "chapter": "第2章 卷二 梁惠王下",
+        "surface": "quote",
+        "quote": "独乐乐，与人乐乐，孰乐？",
+        "before": "”他日，见於王，曰：“王尝语庄子以好乐，有诸？”王变乎色，曰：“寡人非能好先王之乐也，直好世俗之乐耳。”曰：“王之好乐甚，则齐其庶几乎！今之乐犹古之乐也。”曰：“可得闻与？”曰：“独乐乐，与人乐乐，孰",
+        "after": "？”曰：“不若与人。”曰：“与少乐乐，与众乐乐，孰乐？”曰：“不若与众。”“臣请为王言乐。今王鼓乐於此，百姓闻王钟鼓之声，管籥之音，举疾首蹙頞而相告曰：‘吾王之好鼓乐，夫何使我至於此极也？父子不相见，",
+        "focus": "孟子以一场关于听音乐的问答，回应君王所谈的好乐。",
+        "targetScope": {
+          "coreSources": [
+            "论语",
+            "大学",
+            "中庸",
+            "孟子",
+            "诗经",
+            "尚书",
+            "周易",
+            "礼记",
+            "仪礼",
+            "周礼",
+            "春秋左传",
+            "墨子",
+            "荀子",
+            "韩非子"
+          ],
+          "poetryEnabled": true
+        }
+      },
+      "inputHash": "b5b4d3bd9bd9a4c6aab36317d630dd7c229f0da49cb6c58a553c720129814792",
+      "scopeFingerprint": "8de84a73ddcfdff0a0024250",
+      "recall": {
+        "op": "branch",
+        "scope": [
+          "core",
+          "poetry"
+        ],
+        "exclude": [
+          "rysxguji-mengzi-2-1"
+        ],
+        "previousQuotes": [
+          "老吾老，以及人之老；幼吾幼，以及人之幼。",
+          "独乐乐，与人乐乐，孰乐？"
+        ],
+        "semantics": [],
+        "gold": [
+          [
+            {
+              "sourceId": "rysxguji-mengzi-2-6",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "d419b7baeb720ea52d4c231438fde4934e95df739fb921e165c6cce9aa3549a8",
+              "start": 90,
+              "end": 110,
+              "quote": "乐以天下，忧以天下，然而不王者，未之有也"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "id": "word-learning-joy-core",
+      "cohort": "holdout",
+      "depth": 1,
+      "seed": "读到孔子把知道、喜欢和感到快乐分开，想知道这几者差在哪里。",
+      "need": "这里是以所实践的事为乐。找能推进投入如何形成内在乐趣的原文。公共政治中的同乐或单纯音乐讨论不够。",
+      "parent": {
+        "sourceId": "rysxguji-lunyu-6-18",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "5cbbe52e7379831fe977c744ca7365e2fcb1d07e234849998789e44da7c0472e",
+        "start": 4,
+        "end": 24,
+        "quote": "知之者，不如好之者；好之者，不如乐之者。"
+      },
+      "prior": [],
+      "selection": {
+        "start": 20,
+        "end": 21,
+        "textHash": "5cbbe52e7379831fe977c744ca7365e2fcb1d07e234849998789e44da7c0472e",
+        "corpusVersion": "guji-core-v1"
+      },
+      "plannerInput": {
+        "word": "乐",
+        "source": "论语",
+        "chapter": "第6章 雍也第六",
+        "surface": "quote",
+        "quote": "知之者，不如好之者；好之者，不如乐之者。",
+        "before": "子曰：“知之者，不如好之者；好之者，不如",
+        "after": "之者。”",
+        "focus": "孔子区分了知道一件事、喜欢它和由此获得乐趣。",
+        "targetScope": {
+          "coreSources": [
+            "论语",
+            "大学",
+            "中庸",
+            "孟子",
+            "诗经",
+            "尚书",
+            "周易",
+            "礼记",
+            "仪礼",
+            "周礼",
+            "春秋左传",
+            "墨子",
+            "荀子",
+            "韩非子"
+          ],
+          "poetryEnabled": false
+        }
+      },
+      "inputHash": "a38480f6e5fdd93c0d6f09251c42c33b0398f25bf54004ca56507d67605ff3c9",
+      "scopeFingerprint": "47c0d2253cfbb2512337c633",
+      "recall": {
+        "op": "branch",
+        "scope": [
+          "core"
+        ],
+        "exclude": [
+          "rysxguji-lunyu-6-18"
+        ],
+        "previousQuotes": [
+          "知之者，不如好之者；好之者，不如乐之者。"
+        ],
+        "semantics": [],
+        "gold": [
+          [
+            {
+              "sourceId": "rysxguji-lunyu-7-17",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "6e912edbbbe0ba3d4ecb952b66544a49240f4904051bfae9db6c78b679227af5",
+              "start": 28,
+              "end": 46,
+              "quote": "发愤忘食，乐以忘忧，不知老之将至云尔"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "id": "word-practice-poetry",
+      "cohort": "holdout",
+      "depth": 1,
+      "seed": "为什么学了还要按时实践？想沿着开篇一句往下读。",
+      "need": "回应已经学过还要复习或实践如何产生新的理解。只说初学的勤奋、读书泛论或社交不够。",
+      "parent": {
+        "sourceId": "rysxguji-lunyu-1-1",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "837b84cefcca5c5406e785f55652d0c2c853fb020688ab9ef8d4928e8cca24ae",
+        "start": 4,
+        "end": 15,
+        "quote": "学而时习之，不亦说乎？"
+      },
+      "prior": [],
+      "selection": {
+        "start": 7,
+        "end": 8,
+        "textHash": "837b84cefcca5c5406e785f55652d0c2c853fb020688ab9ef8d4928e8cca24ae",
+        "corpusVersion": "guji-core-v1"
+      },
+      "plannerInput": {
+        "word": "习",
+        "source": "论语",
+        "chapter": "第1章 学而第一",
+        "surface": "quote",
+        "quote": "学而时习之，不亦说乎？",
+        "before": "子曰：“学而时",
+        "after": "之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”子曰：“巧",
+        "focus": "《论语》开篇将学过之后按时去习与心里的喜悦相连。",
+        "targetScope": {
+          "coreSources": [
+            "论语",
+            "大学",
+            "中庸",
+            "孟子",
+            "诗经",
+            "尚书",
+            "周易",
+            "礼记",
+            "仪礼",
+            "周礼",
+            "春秋左传",
+            "墨子",
+            "荀子",
+            "韩非子"
+          ],
+          "poetryEnabled": true
+        }
+      },
+      "inputHash": "8bdc5f6ca0e6f4936bb7bd3afb7b41acae4c31aa40b240cc6ad4ef299b9010a2",
+      "scopeFingerprint": "8de84a73ddcfdff0a0024250",
+      "recall": {
+        "op": "branch",
+        "scope": [
+          "core",
+          "poetry"
+        ],
+        "exclude": [
+          "rysxguji-lunyu-1-1"
+        ],
+        "previousQuotes": [
+          "学而时习之，不亦说乎？"
+        ],
+        "semantics": [],
+        "gold": [
+          [
+            {
+              "sourceId": "rysxguji-lunyu-2-8",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+              "start": 34,
+              "end": 45,
+              "quote": "温故而知新，可以为师矣"
+            },
+            {
+              "sourceId": "rysxguji-liji-29-29",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "4ce71b75ce149d811c9a11788d64fde7a177277e3e777ad3db76259eae5b9377",
+              "start": 85,
+              "end": 96,
+              "quote": "温故而知新，敦厚以崇礼"
+            }
+          ],
+          [
+            {
+              "sourceId": "rysxguji-lunyu-19-3",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "a55e8e8920f0c53436b23df663a0c996365472a721b79c51bb1910f6b79ebab9",
+              "start": 139,
+              "end": 151,
+              "quote": "日知其所亡，月无忘其所能"
+            }
+          ]
+        ]
+      }
+    }
+  ]
+}

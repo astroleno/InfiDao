@@ -1,0 +1,534 @@
+{
+  "model": "deepseek-flash",
+  "promptVersion": "connected-text-v17-source-stance",
+  "serverBaseline": "3c9eb31",
+  "liveModelCalls": 12,
+  "links": [
+    {
+      "reviewId": "e711f64e",
+      "replayInput": {
+        "id": "word-recognition-core",
+        "op": "branch",
+        "terms": [
+          "不患人之不己知",
+          "人不知而不愠",
+          "君子求诸己",
+          "不怨天，不尤人"
+        ],
+        "focus": "「愠」在《论语》原文此处：心中含怒、因不被理解而生的怨气。；可对照《论语》中“不患人之不己知”与《孟子》论“人不知”的处己之道，看儒家如何把被了解的期待转为自省。",
+        "exclude": [
+          "rysxguji-lunyu-1-1"
+        ],
+        "previousQuotes": [
+          "人不知，而不愠，不亦君子乎？",
+          "人不知，而不愠，不亦君子乎？"
+        ],
+        "semantics": [],
+        "scope": [
+          "core"
+        ],
+        "gold": [
+          [
+            {
+              "sourceId": "rysxguji-lunyu-1-12",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "3729cc6e597832895f9402a508814b07cd32860ba69ae95ec814670b86a24e7e",
+              "start": 4,
+              "end": 17,
+              "quote": "不患人之不己知，患不知人也"
+            }
+          ],
+          [
+            {
+              "sourceId": "rysxguji-lunyu-14-32",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "1993e890d138d6ee3b16b018f7b5f17be5aa7f8de523b9d2b4d08dbe1f02a6dc",
+              "start": 4,
+              "end": 17,
+              "quote": "不患人之不己知，患其不能也"
+            },
+            {
+              "sourceId": "rysxguji-lunyu-4-12",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "3661c883c6332764cf376539aae95bcb2ce5384813606fc38b89a4c8e951deaa",
+              "start": 42,
+              "end": 53,
+              "quote": "不患莫己知，求为可知也"
+            }
+          ]
+        ]
+      },
+      "scopeFingerprint": "47c0d2253cfbb2512337c633",
+      "modelCalls": 3,
+      "serverMilestonesMs": [
+        {
+          "type": "head",
+          "ms": 5240
+        },
+        {
+          "type": "progress",
+          "ms": 5347
+        },
+        {
+          "type": "progress",
+          "ms": 5897
+        },
+        {
+          "type": "frame",
+          "ms": 6264
+        },
+        {
+          "type": "done",
+          "ms": 6265
+        }
+      ],
+      "recall": {
+        "hitAt40": 1,
+        "hitAt12": 1,
+        "recallAt40": 1,
+        "recallAt12": 1
+      },
+      "delivered": {
+        "sourceId": "rysxguji-lunyu-14-35",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "ec2afda77f38f2ecb62b58954648f122d11565bed6b10fabdbff7204617131e2",
+        "quoteStart": 29,
+        "quoteEnd": 50,
+        "quote": "不怨天，不尤人，下学而上达。知我者其天乎！",
+        "meaning": "不怨恨天，不责怪人；从日常处向下学，向上通达。了解我的大概只有天吧。",
+        "reflection": "“人不知而不愠”说的是别人不了解自己时不起怨怒；这里更进一步：孔子明说“莫我知”，却把“不怨天，不尤人”落在“下学而上达”上。被理解的期待没有消失，只是不再向外索求，转而收进自己可做的学习与通达里。"
+      },
+      "review": {
+        "verdict": "PASS",
+        "reason": "「莫我知」承接不被理解，原文「不尤人、下学」具体给出自己仍能做的事。"
+      }
+    },
+    {
+      "reviewId": "b2350132",
+      "replayInput": {
+        "id": "word-empathy-poetry",
+        "op": "branch",
+        "terms": [
+          "其恕乎",
+          "己所不欲，勿施于人",
+          "忠恕",
+          "絜矩之道",
+          "终身行之"
+        ],
+        "focus": "「恕」在《论语》原文此处：以己度人、推己及人的体谅之道，终身可行的恕道。；可对照《大学》《中庸》中“絜矩”与“忠恕”的表述，看恕道如何从待人推及治世。",
+        "exclude": [
+          "rysxguji-lunyu-15-21"
+        ],
+        "previousQuotes": [
+          "其恕乎！己所不欲，勿施于人。",
+          "其恕乎！己所不欲，勿施于人。"
+        ],
+        "semantics": [],
+        "scope": [
+          "core",
+          "poetry"
+        ],
+        "gold": [
+          [
+            {
+              "sourceId": "rysxguji-lunyu-6-26",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "4db00e51d3de9e0469a4004cf733dd5216048c51cb415de2cfc791941f4661d0",
+              "start": 51,
+              "end": 77,
+              "quote": "己欲立而立人；己欲达而达人。能近取譬，可谓仁之方也已"
+            }
+          ],
+          [
+            {
+              "sourceId": "rysxguji-daxue-1-22",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "ef5bc6804318defd3201c1374daf482a4ab0e14ddb011bd97547546566b4b2d3",
+              "start": 0,
+              "end": 19,
+              "quote": "所恶于上，毋以使下，所恶于下，毋以事上"
+            },
+            {
+              "sourceId": "rysxguji-liji-40-11",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "af07e6d22002f411ae740f8fc7af9423c6a490739ab04979bfb4266400e910e5",
+              "start": 46,
+              "end": 65,
+              "quote": "所恶于上，毋以使下；所恶于下，毋以事上"
+            }
+          ]
+        ]
+      },
+      "scopeFingerprint": "8de84a73ddcfdff0a0024250",
+      "modelCalls": 3,
+      "serverMilestonesMs": [
+        {
+          "type": "head",
+          "ms": 5489
+        },
+        {
+          "type": "progress",
+          "ms": 5756
+        },
+        {
+          "type": "progress",
+          "ms": 6444
+        },
+        {
+          "type": "frame",
+          "ms": 6816
+        },
+        {
+          "type": "done",
+          "ms": 6816
+        }
+      ],
+      "recall": {
+        "hitAt40": 1,
+        "hitAt12": 0,
+        "recallAt40": 0.5,
+        "recallAt12": 0
+      },
+      "delivered": {
+        "sourceId": "rysxguji-liji-29-13",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+        "quoteStart": 66,
+        "quoteEnd": 86,
+        "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "meaning": "忠恕离道不远：自己不愿承受的，也不要加给别人。",
+        "reflection": "《论语》里“恕”是终身可行的一言，这里却说“违道不远”，语气留了余地：以己度人可作日常准绳，却仍不是道的全部。读时可留意“不远”二字，它让恕道成为可实践又需不断校准的起点，而非一劳永逸的终点。"
+      },
+      "review": {
+        "verdict": "PARTIAL",
+        "reason": "忠恕释义准确，交付未推进到先为他人做些什么；同一送模摘窗已有「所求乎朋友先施之」。"
+      }
+    },
+    {
+      "reviewId": "f98ee1da",
+      "replayInput": {
+        "id": "deep-discernment-core",
+        "op": "branch",
+        "terms": [
+          "择其善者而从之",
+          "多闻，择其善者而从之",
+          "择不处仁",
+          "三人行，必有我师焉"
+        ],
+        "focus": "「择」在《论语》原文此处：选择、择取，从同行者身上分辨可取与当改之处。；可对照《论语》中“多闻，择其善者而从之”与“择不处仁”等语，看孔子言“择”时如何以他人为镜。",
+        "exclude": [
+          "rysxguji-lunyu-7-20"
+        ],
+        "previousQuotes": [
+          "学而不思，则罔；思而不学，则殆。",
+          "三人行，必有我师焉：择其善者而从之，其不善者而改之。",
+          "三人行，必有我师焉：择其善者而从之，其不善者而改之。"
+        ],
+        "semantics": [],
+        "scope": [
+          "core"
+        ],
+        "gold": [
+          [
+            {
+              "sourceId": "rysxguji-mengzi-12-3",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "d2c3e8ece4661b10b02f2bc17c202fb87447eb30769f0fc85d176f4057e79ba7",
+              "start": 5,
+              "end": 18,
+              "quote": "尽信《书》，则不如无《书》"
+            }
+          ],
+          [
+            {
+              "sourceId": "rysxguji-zhongyong-1-31",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "c1e0da2ad3688d5e0d50ba01b79a6c1452d92729471357d3b47355b248b03919",
+              "start": 5,
+              "end": 20,
+              "quote": "审问之，慎思之，明辨之，笃行之"
+            },
+            {
+              "sourceId": "rysxguji-liji-29-22",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "07311ab29cb2dbf2b50501fba71aba1a78d02c5f4987401a1d58ca92ceeb46b4",
+              "start": 126,
+              "end": 141,
+              "quote": "审问之，慎思之，明辨之，笃行之"
+            }
+          ]
+        ]
+      },
+      "scopeFingerprint": "47c0d2253cfbb2512337c633",
+      "modelCalls": 3,
+      "serverMilestonesMs": [
+        {
+          "type": "head",
+          "ms": 5579
+        },
+        {
+          "type": "progress",
+          "ms": 5744
+        },
+        {
+          "type": "progress",
+          "ms": 6343
+        },
+        {
+          "type": "frame",
+          "ms": 6591
+        },
+        {
+          "type": "done",
+          "ms": 6591
+        }
+      ],
+      "recall": {
+        "hitAt40": 0,
+        "hitAt12": 0,
+        "recallAt40": 0,
+        "recallAt12": 0
+      },
+      "delivered": {
+        "sourceId": "rysxguji-lunyu-7-26",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "1600aeb54c78544c6d0ef74e7f3254ae110101ed23493477541a4caac9412014",
+        "quoteStart": 18,
+        "quoteEnd": 40,
+        "quote": "多闻，择其善者而从之；多见而识之；知之次也。",
+        "meaning": "多听，选择其中好的来遵从；多看而记住，这是次一等的知。",
+        "reflection": "“择其善者而从之”之前先有“多闻”，说明取舍不是凭一时直觉，而是先让见闻进来，再在其中分辨。“多见而识之”则停在记住，尚未到“从之”的践行；两处并置，可见“择”是从积累走向取舍的一步，而非凭空判断。"
+      },
+      "review": {
+        "verdict": "PASS",
+        "reason": "把选择放回多闻之后，区分记住所见与择善而从。"
+      }
+    },
+    {
+      "reviewId": "8f7dcd1f",
+      "replayInput": {
+        "id": "deep-shared-joy-poetry",
+        "op": "branch",
+        "terms": [
+          "独乐乐",
+          "与人乐乐",
+          "钟鼓之声",
+          "管籥之音",
+          "乐民之乐"
+        ],
+        "focus": "「乐」在《孟子》原文此处：前一个“乐”读yuè，指欣赏音乐；后一个“乐”读lè，指感到快乐。；孟子把“独乐”与“与人乐”对举，可沿《论语》“乐”的群体性，追问快乐为何须共享。",
+        "exclude": [
+          "rysxguji-mengzi-2-1"
+        ],
+        "previousQuotes": [
+          "老吾老，以及人之老；幼吾幼，以及人之幼。",
+          "独乐乐，与人乐乐，孰乐？",
+          "独乐乐，与人乐乐，孰乐？"
+        ],
+        "semantics": [],
+        "scope": [
+          "core",
+          "poetry"
+        ],
+        "gold": [
+          [
+            {
+              "sourceId": "rysxguji-mengzi-2-6",
+              "corpusVersion": "guji-core-v1",
+              "textHash": "d419b7baeb720ea52d4c231438fde4934e95df739fb921e165c6cce9aa3549a8",
+              "start": 90,
+              "end": 110,
+              "quote": "乐以天下，忧以天下，然而不王者，未之有也"
+            }
+          ]
+        ]
+      },
+      "scopeFingerprint": "8de84a73ddcfdff0a0024250",
+      "modelCalls": 3,
+      "serverMilestonesMs": [
+        {
+          "type": "head",
+          "ms": 4911
+        },
+        {
+          "type": "progress",
+          "ms": 4914
+        },
+        {
+          "type": "progress",
+          "ms": 5271
+        },
+        {
+          "type": "frame",
+          "ms": 5614
+        },
+        {
+          "type": "done",
+          "ms": 5614
+        }
+      ],
+      "recall": {
+        "hitAt40": 1,
+        "hitAt12": 1,
+        "recallAt40": 1,
+        "recallAt12": 1
+      },
+      "delivered": {
+        "sourceId": "rysxguji-mengzi-2-2",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "213c2b2e5863b48319a95165a631d5e95a2efaf177b5ab8ae1b063f6c46b49be",
+        "quoteStart": 103,
+        "quoteEnd": 113,
+        "quote": "此无他，与民同乐也。",
+        "meaning": "这没有别的原因，只因君王能与百姓一同享乐。",
+        "reflection": "前句只问“孰乐”，此处把“与人乐”落到具体情景：百姓听见钟鼓、望见车马，先为君王安康而喜。乐不只是同看一场鼓乐，而是彼此的安好进入对方的喜悦里。"
+      },
+      "review": {
+        "verdict": "PASS",
+        "reason": "沿「孰乐」的末字推进到百姓闻乐替君王安康欣喜，保留君民语境。"
+      }
+    }
+  ],
+  "sampleWindowReview": [
+    {
+      "caseId": "word-recognition-core",
+      "repeat": 1,
+      "reviewId": "bba65321",
+      "inspectedWindows": 12,
+      "verdict": "D",
+      "reason": "从别人能否了解自己转向自己如何修养或了解别人。",
+      "evidence": [
+        {
+          "windowId": "abe09842",
+          "sourceId": "rysxguji-lunyu-1-12",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3729cc6e597832895f9402a508814b07cd32860ba69ae95ec814670b86a24e7e",
+          "start": 0,
+          "end": 18
+        },
+        {
+          "windowId": "35aa58dc",
+          "sourceId": "rysxguji-lunyu-4-12",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3661c883c6332764cf376539aae95bcb2ce5384813606fc38b89a4c8e951deaa",
+          "start": 0,
+          "end": 54
+        }
+      ]
+    },
+    {
+      "caseId": "word-empathy-poetry",
+      "repeat": 1,
+      "reviewId": "6e019df0",
+      "inspectedWindows": 12,
+      "verdict": "D",
+      "reason": "《中庸》「所求乎朋友先施之」把懂得他人处境推进到自己先做。",
+      "evidence": [
+        {
+          "windowId": "4615ae71",
+          "sourceId": "rysxguji-liji-29-13",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+          "start": 0,
+          "end": 190
+        }
+      ]
+    },
+    {
+      "caseId": "deep-discernment-core",
+      "repeat": 1,
+      "reviewId": "b5df8ec4",
+      "inspectedWindows": 12,
+      "verdict": "D",
+      "reason": "《论语》以多闻支撑择善；《左传》以具体举荐判断示怎样辨善。",
+      "evidence": [
+        {
+          "windowId": "5b506ebe",
+          "sourceId": "rysxguji-lunyu-7-26",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1600aeb54c78544c6d0ef74e7f3254ae110101ed23493477541a4caac9412014",
+          "start": 0,
+          "end": 40
+        },
+        {
+          "windowId": "c9598b66",
+          "sourceId": "rysxguji-chunqiu-zuozhuan-210-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "e1994f1784be00d1d27af9f29ecdd0c470e4332dd1a55e5ef9e0ff66beeda64a",
+          "start": 0,
+          "end": 347
+        }
+      ]
+    },
+    {
+      "caseId": "deep-shared-joy-poetry",
+      "repeat": 1,
+      "reviewId": "50d7970f",
+      "inspectedWindows": 12,
+      "verdict": "P",
+      "reason": "《长恨歌》可对读宫廷享乐与政事的冲突，未呈现百姓视角。",
+      "evidence": [
+        {
+          "windowId": "6967cf00",
+          "sourceId": "poetry-3ed6d1a39bea3686cb781f52b0eb67ec-0",
+          "corpusVersion": "poetry:23d4d3a5821a7f905a56abf1",
+          "textHash": "5206100c09b9f1ab127e655e7b9bd851afe39d99577e00128921c1c9a26c6576",
+          "start": 0,
+          "end": 407
+        }
+      ]
+    },
+    {
+      "caseId": "word-learning-joy-core",
+      "repeat": 1,
+      "reviewId": "5b691acd",
+      "inspectedWindows": 12,
+      "verdict": "D",
+      "reason": "《荀子》展示反复实践养成喜爱；《孟子》具体解释反身自得之乐。",
+      "evidence": [
+        {
+          "windowId": "d58b6f7b",
+          "sourceId": "rysxguji-mengzi-11-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "c1eb999e0b02f5792eeb718ffed272a490a184712f8a4e830e0458469fca0864",
+          "start": 0,
+          "end": 34
+        },
+        {
+          "windowId": "f29911fc",
+          "sourceId": "rysxguji-xunzi-9-18",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "2b517370034204721a000683798fea2e74fa4acd61e5e5935f87359cf858912d",
+          "start": 0,
+          "end": 246
+        }
+      ]
+    },
+    {
+      "caseId": "word-practice-poetry",
+      "repeat": 1,
+      "reviewId": "a08d7f50",
+      "inspectedWindows": 12,
+      "verdict": "D",
+      "reason": "「温故而知新」及其道问学语境直接说明复习如何得到新知。",
+      "evidence": [
+        {
+          "windowId": "35d929cd",
+          "sourceId": "rysxguji-liji-29-29",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "4ce71b75ce149d811c9a11788d64fde7a177277e3e777ad3db76259eae5b9377",
+          "start": 0,
+          "end": 150
+        },
+        {
+          "windowId": "8f14b0ba",
+          "sourceId": "rysxguji-lunyu-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+          "start": 0,
+          "end": 46
+        }
+      ]
+    }
+  ]
+}
