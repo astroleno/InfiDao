@@ -9,9 +9,15 @@ import { createFlowBudget } from '@/lib/flow/request-budget';
 import { createSessionStore, MemoryDocumentBackend } from '@/lib/flow/session-store';
 import { reviewRelations } from '@/lib/flow/relations';
 import { selectedLexeme, planLexeme } from '@/lib/flow/lexemes';
+import * as contentScope from '@/lib/content/scope';
+import type { FlowRequest } from '@/lib/flow/contracts';
 
 jest.mock('@/lib/flow/model', () => ({ flowJson: jest.fn(), flowModelConfig: () => ({ model: 'test' }) }));
 jest.mock('@/lib/flow/relations', () => ({ reviewRelations: jest.fn(async frames => frames) }));
+jest.mock('@/lib/content/scope', () => {
+  const actual = jest.requireActual<typeof contentScope>('@/lib/content/scope');
+  return { ...actual, resolveContentScope: jest.fn(actual.resolveContentScope) };
+});
 jest.mock('@/lib/flow/candidates', () => ({ ...jest.requireActual('@/lib/flow/candidates'),
   flowCorpus: jest.fn(), candidatesFor: jest.fn(), planFocus: jest.fn(async () => ({ focus: '本末', terms: ['本末', '知止'] })) }));
 const source = (id: string, text: string): PassageRecord => ({ id, text, source: '大学', chapter: '经一章', section: 1,
@@ -20,7 +26,10 @@ const rows = [source('s1', '知止而后有定，定而后能静。'), source('s
 const item = (id: string, text: string) => ({ sourceId: id, quote: text, meaning: '原文的方向与次序',
   reflection: '先辨明本末，再看先后。', relevance: 0.95, anchors: [{ label: '本末', sense: '根本与末节', direction: '辨别轻重次序', terms: ['本末'],
     target: { sourceId: 's2', quote: rows[1]!.text, meaning: '事物有根本与末节。' } }] });
-beforeEach(() => { jest.clearAllMocks(); resetFlowState(); jest.mocked(candidatesFor).mockResolvedValue(rows); jest.mocked(flowCorpus).mockResolvedValue(rows); });
+beforeEach(() => {
+  jest.clearAllMocks(); resetFlowState(); jest.mocked(candidatesFor).mockResolvedValue(rows); jest.mocked(flowCorpus).mockResolvedValue(rows);
+  jest.mocked(contentScope.resolveContentScope).mockReset().mockImplementation(jest.requireActual<typeof contentScope>('@/lib/content/scope').resolveContentScope);
+});
 
 test('local retrieval observer reports the actual request and windows independently of public events', async () => {
   const observer = jest.fn(), events: FlowEvent[] = [];
@@ -709,4 +718,184 @@ test('invalid word-planning output produces a readable retry message instead of 
   jest.mocked(flowJson).mockResolvedValueOnce({ sense: '安止', direction: '长'.repeat(121), terms: ['物有本末', '知所先后'] });
   await expect(planLexeme(frame, { start: 1, end: 2, textHash: frame.textHash, corpusVersion: frame.corpusVersion }, '方向', new AbortController().signal))
     .rejects.toMatchObject({ code: 'LEXEME_UNRESOLVED', message: '这个字词的联系还未理清，可以留在原句或重试。' });
+});
+
+async function reuseFixture() {
+  let idSequence = 0;
+  const backend = new MemoryDocumentBackend();
+  const store = createSessionStore(backend, { createId: () => String(++idSequence) });
+  const scope = await contentScope.resolveContentScope();
+  const plan = { sense: '此处指安止', direction: '辨明所止和所先的关系', terms: ['物有本末', '知所先后'] };
+  const draft = (sourceIndex = 1, reflection = '分辨本末有助于选择进路。') =>
+    ({ frames: [{ ...item(rows[sourceIndex]!.id, rows[sourceIndex]!.text), anchors: [], reflection }] });
+  const append = async (id: string, overrides: {
+    owner?: string; focus?: string; seed?: string; graph?: true; priorQuotes?: string[]; reflection?: string; parentChainId?: string; legacyScope?: true;
+  } = {}) => {
+    const owner = overrides.owner || 'owner';
+    const frame = { ...verifyGenerated({ frames: [item('s1', rows[0]!.text)] }, rows, 1)[0]!, id: 'parent-' + id };
+    if (overrides.reflection) frame.reflection = overrides.reflection;
+    const chain: FlowChain = { chainId: id, version: 'test-v1', kind: 'remote', seed: overrides.seed ?? ' 起念 ',
+      seedOrigin: 'user', focus: overrides.focus || '本末', parentChainId: overrides.parentChainId ?? null, entry: null,
+      frames: [frame], cursor: '0', exhausted: false,
+      ...(overrides.legacyScope ? {} : { contentScope: scope }), ...(overrides.graph ? { graph: true as const } : {}) };
+    const key = 'fixture:' + id;
+    const { lease } = await store.reserve(owner, { key, requestId: key, fingerprint: key });
+    const state = { owner, chain, terms: plan.terms, seen: [frame.sourceId], nodes: { [frame.id]: frame },
+      branches: {}, updated: 0, generationKey: key, initial: chain, recentReadings: [],
+      ...(overrides.priorQuotes ? { priorQuotes: overrides.priorQuotes } : {}) };
+    await store.commitHead(owner, lease!, state);
+    await store.commitComplete(owner, lease!, state, '0');
+    return { chainId: id, frameId: frame.id, selection: { start: 1, end: 2, textHash: frame.textHash, corpusVersion: frame.corpusVersion }, owner };
+  };
+  const events: FlowEvent[] = [], observer = jest.fn();
+  const branch = ({ owner, chainId, frameId, selection }: Awaited<ReturnType<typeof append>>,
+    requestId: string, extra: Partial<FlowRequest> = {}, signal = new AbortController().signal) => runFlow({
+    op: 'branch', requestId, chainId, fromFrameId: frameId, selection, ...extra,
+  }, owner, signal, event => events.push(event), store, observer);
+  const latest = () => (events.at(-1) as { chain: FlowChain }).chain;
+  const entries = async () => {
+    const requestId = 'probe:' + events.length;
+    const result = await store.reserve('owner', { key: requestId, requestId, fingerprint: requestId, includeVerifiedBranches: true });
+    await store.release('owner', result.lease!);
+    return result.verifiedBranches;
+  };
+  return { backend, store, scope, plan, draft, append, branch, events, observer, latest, entries };
+}
+
+test('a new operation on an equivalent parent reuses the exact verified quote and still generates and reviews fresh prose', async () => {
+  const f = await reuseFixture();
+  const first = await f.append('reuse-a'), second = await f.append('reuse-b');
+  const reserve = jest.spyOn(f.store, 'reserve');
+  const reserveModels = jest.fn(async (_count: number) => {});
+  const budget = { reserveModels, chargeModel: jest.fn() };
+  jest.mocked(flowJson).mockResolvedValueOnce(f.plan).mockResolvedValueOnce(f.draft());
+  await withFlowModelBudget(budget, () => f.branch(first, 'cold'));
+  const cold = f.latest().frames[0]!;
+  expect(f.observer.mock.calls[0]![0].force).toBeUndefined();
+  expect(f.events.some(event => event.type === 'head')).toBe(false);
+  expect((await f.entries())?.[0]?.target).toMatchObject({ quote: cold.quote, quoteStart: cold.quoteStart, quoteEnd: cold.quoteEnd });
+  f.events.length = 0;
+  jest.mocked(flowJson).mockResolvedValueOnce(f.draft(1, '这是重新生成的理解。'));
+  await withFlowModelBudget(budget, () => f.branch(second, 'reuse'));
+  const warm = f.latest().frames[0]!;
+  expect(warm.id).not.toBe(cold.id);
+  expect(warm).toMatchObject({ sourceId: cold.sourceId, corpusVersion: cold.corpusVersion, textHash: cold.textHash,
+    quoteStart: cold.quoteStart, quoteEnd: cold.quoteEnd, quote: cold.quote, reflection: '这是重新生成的理解。' });
+  expect(f.events[0]).toMatchObject({ type: 'head', chain: { frames: [{ quote: cold.quote, meaning: '', reflection: '', ready: false }] } });
+  expect(f.observer.mock.calls[1]![0].force).toEqual({ sourceId: cold.sourceId, quote: cold.quote });
+  expect(reserve.mock.calls.filter(([, input]) => input.key.startsWith('branch:')).map(([, input]) => input.key))
+    .toEqual([expect.stringContaining('branch:reuse-a:'), expect.stringContaining('branch:reuse-b:')]);
+  expect(reserveModels.mock.calls).toEqual([[3], [2]]);
+  expect(flowJson).toHaveBeenCalledTimes(3);
+  expect(reviewRelations).toHaveBeenCalledTimes(2);
+  await withFlowModelBudget(budget, () => f.branch(second, 'same-operation-again'));
+  expect(f.latest().frames[0]!.id).toBe(warm.id);
+  expect(reserveModels.mock.calls).toEqual([[3], [2]]);
+  expect(flowJson).toHaveBeenCalledTimes(3);
+});
+
+test.each(['owner', 'focus', 'quote history', 'recent reflection', 'seed', 'graph', 'word position', 'stale target',
+  'scope', 'unavailable scope', 'unknown scope', 'anchor conflict', 'explicit seed', 'source lookup failure'] as const)
+('a change in %s falls back to word planning', async mismatch => {
+  const f = await reuseFixture();
+  const first = await f.append('match-a');
+  jest.mocked(flowJson).mockResolvedValueOnce(f.plan).mockResolvedValueOnce(f.draft());
+  await f.branch(first, 'cold');
+  const second = await f.append('match-b',
+    mismatch === 'owner' ? { owner: 'another' } :
+      mismatch === 'focus' ? { focus: '另一阅读角度' } :
+        mismatch === 'quote history' ? { priorQuotes: ['已读的前文。'] } :
+          mismatch === 'recent reflection' ? { reflection: '此前已谈过另一点。' } :
+            mismatch === 'seed' ? { seed: '另一念' } :
+              mismatch === 'graph' ? { graph: true } : mismatch === 'unknown scope' ? { legacyScope: true } : {});
+  if (mismatch === 'word position') {
+    const frame = (await f.store.getChain(second.owner, second.chainId)).nodes[second.frameId]!;
+    second.selection = { ...second.selection, start: 0, end: frame.lexicalBreaks![0]! };
+  }
+  if (mismatch === 'stale target') jest.mocked(flowCorpus).mockResolvedValue(
+    rows.map(row => row.id === 's2' ? { ...row, textHash: 'changed' } : row));
+  if (mismatch === 'source lookup failure') {
+    jest.mocked(flowCorpus).mockResolvedValueOnce(rows).mockRejectedValueOnce(new Error('unavailable canonical target'));
+  }
+  jest.mocked(flowJson).mockResolvedValueOnce(f.plan).mockResolvedValueOnce(f.draft(2));
+  if (mismatch === 'scope' || mismatch === 'unavailable scope') {
+    jest.mocked(contentScope.resolveContentScope).mockResolvedValueOnce(mismatch === 'scope'
+      ? { ...f.scope, packIds: ['core', 'poetry'], fingerprint: 'poetry-v1' }
+      : { ...f.scope, unavailable: ['poetry'] });
+  }
+  await f.branch(second, 'mismatch', mismatch === 'anchor conflict' ? { anchorId: 'unrelated-anchor' } :
+    mismatch === 'explicit seed' ? { seed: '起念' } : {});
+  expect(f.observer.mock.calls[1]![0].force).toBeUndefined();
+  expect(flowJson).toHaveBeenCalledTimes(4);
+  expect(f.latest().frames[0]!.sourceId).toBe('s3');
+});
+
+test.each(['missing ancestor', 'legacy partial snapshot', 'retention boundary'] as const)
+('a %s propagates incomplete ancestry without changing generation or publishing memory', async reason => {
+  const f = await reuseFixture();
+  const origin = await f.append('incomplete-ancestor', reason === 'missing ancestor' ? { parentChainId: 'expired' } :
+    reason === 'legacy partial snapshot' ? { parentChainId: 'expired', priorQuotes: ['仅保留下来的前文。'] } :
+      { priorQuotes: Array.from({ length: 64 }, (_, i) => '已读原文' + i + '。') });
+  jest.mocked(flowJson).mockResolvedValueOnce(f.plan).mockResolvedValueOnce(f.draft());
+  await f.branch(origin, 'first-generation-after-loss');
+  const child = f.latest(), childFrame = child.frames[0]!;
+  const saved = await f.store.getChain(origin.owner, child.chainId);
+  expect(saved.priorQuotesComplete).toBe(false);
+  expect(saved.priorQuotes).toContain(rows[0]!.text);
+  expect(await f.entries()).toEqual([]);
+  jest.mocked(flowJson).mockResolvedValueOnce(f.plan).mockResolvedValueOnce(f.draft(2));
+  await f.branch({ owner: origin.owner, chainId: child.chainId, frameId: childFrame.id,
+    selection: { start: 0, end: childFrame.lexicalBreaks![0]!, textHash: childFrame.textHash, corpusVersion: childFrame.corpusVersion } }, 'descendant-after-loss');
+  expect(f.latest().frames[0]!.sourceId).toBe('s3');
+  expect((await f.store.getChain(origin.owner, f.latest().chainId)).priorQuotesComplete).toBe(false);
+  expect(await f.entries()).toEqual([]);
+  expect(f.observer.mock.calls.every(([row]) => row.force === undefined)).toBe(true);
+});
+
+test('an exact memory whose target is already read falls back even in graph mode', async () => {
+  const f = await reuseFixture();
+  const first = await f.append('graph-a', { graph: true, priorQuotes: [rows[2]!.text] });
+  const second = await f.append('graph-b', { graph: true, priorQuotes: [rows[2]!.text] });
+  jest.mocked(flowJson).mockResolvedValueOnce(f.plan).mockResolvedValueOnce(f.draft());
+  await f.branch(first, 'cold-graph');
+  const key = 'flow:session:' + first.owner, { value } = await f.backend.read(key);
+  const stored = JSON.parse(value!);
+  stored.verifiedBranches[0].target = { sourceId: 's3', corpusVersion: rows[2]!.corpusVersion, textHash: rows[2]!.textHash,
+    quote: rows[2]!.text, quoteStart: 0, quoteEnd: rows[2]!.text.length };
+  await f.backend.compareSwap(key, value, JSON.stringify(stored), 60_000);
+  jest.mocked(flowJson).mockResolvedValueOnce(f.plan).mockResolvedValueOnce(f.draft());
+  await f.branch(second, 'graph-target-read');
+  expect(flowJson).toHaveBeenCalledTimes(4);
+  expect(f.observer.mock.calls[1]![0].force).toBeUndefined();
+  expect(f.latest().frames[0]!.sourceId).toBe('s2');
+});
+
+test('review rejection and cancellation publish no entry, but a completed resume can publish once', async () => {
+  const f = await reuseFixture();
+  const first = await f.append('unverified');
+  jest.mocked(flowJson).mockResolvedValueOnce(f.plan).mockResolvedValueOnce(f.draft());
+  jest.mocked(reviewRelations).mockResolvedValueOnce([]);
+  await expect(f.branch(first, 'reject')).rejects.toMatchObject({ code: 'RELATION_UNVERIFIED' });
+  expect(await f.entries()).toEqual([]);
+
+  const second = await f.append('interrupted');
+  const controller = new AbortController();
+  jest.mocked(flowJson).mockResolvedValueOnce(f.plan).mockResolvedValueOnce(f.draft());
+  jest.mocked(reviewRelations).mockImplementationOnce(async (frames, _seed, _focus, _candidates, signal, _context, publish) => {
+    await publish!({ ...frames[0]!, ready: false, meaning: '', reflection: '' });
+    controller.abort(); signal.throwIfAborted();
+    return frames;
+  });
+  await expect(f.branch(second, 'abort', {}, controller.signal)).rejects.toMatchObject({ name: 'AbortError' });
+  const child = f.latest();
+  expect(f.events.at(-1)).toMatchObject({ type: 'head', chain: { frames: [{ ready: false }] } });
+  expect(await f.entries()).toEqual([]);
+  jest.mocked(flowJson).mockResolvedValueOnce(f.draft());
+  await runFlow({ op: 'open', requestId: 'resume-aborted', chainId: child.chainId }, second.owner, new AbortController().signal,
+    event => f.events.push(event), f.store);
+  expect(await f.entries()).toHaveLength(1);
+  jest.mocked(flowJson).mockResolvedValueOnce(f.draft(2));
+  await runFlow({ op: 'next', requestId: 'continue-complete', chainId: child.chainId, cursor: f.latest().cursor! },
+    second.owner, new AbortController().signal, event => f.events.push(event), f.store);
+  expect(await f.entries()).toEqual([expect.objectContaining({ target: expect.objectContaining({ sourceId: 's2' }) })]);
 });

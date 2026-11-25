@@ -1,0 +1,483 @@
+{
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "deviceScaleFactor": 3
+  },
+  "knownAnchorTokenCount": 1,
+  "maxModelCalls": 28,
+  "modelCalls": 22,
+  "results": [
+    {
+      "caseId": "word-recognition-core",
+      "mode": "cold",
+      "modelCalls": 3,
+      "finished": true,
+      "clickToCueMs": null,
+      "cueToTapMs": null,
+      "tapToReadableMs": null,
+      "clickToReadableMs": 4798,
+      "glass": true,
+      "scrollBefore": 0,
+      "scrollAfter": 0,
+      "events": [
+        {
+          "type": "head",
+          "ms": 4633
+        },
+        {
+          "type": "progress",
+          "ms": 4731
+        },
+        {
+          "type": "progress",
+          "ms": 5518
+        },
+        {
+          "type": "frame",
+          "ms": 5735
+        },
+        {
+          "type": "done",
+          "ms": 5735
+        }
+      ],
+      "delivered": {
+        "sourceId": "rysxguji-mengzi-11-7",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "4f9045382e4c693ab0d20de042ae1fb91d683a24a504b67f5107c4030fcb9431",
+        "quoteStart": 121,
+        "quoteEnd": 134,
+        "quote": "人知之亦嚣嚣；人不知亦嚣嚣",
+        "meaning": "嚣嚣：自得无求的样子。别人了解我，我自得；别人不了解我，我仍自得。",
+        "reflection": "《论语》说“人不知而不愠”，落点在不让怨气生出；孟子把“人知”与“人不知”并置，两端都“嚣嚣”，重心便从压住愠怒移到一种不因外知而增减的自得。读“愠”时，可留意这层差别：不只是忍住，而是知与不知都不改其乐。"
+      },
+      "review": {
+        "id": "c7dfbd01",
+        "verdict": "PASS",
+        "reason": "将人知也纳入比较，说明两种处境中都能保持自得。"
+      }
+    },
+    {
+      "caseId": "word-recognition-core",
+      "mode": "reuse",
+      "modelCalls": 2,
+      "finished": true,
+      "clickToCueMs": null,
+      "cueToTapMs": null,
+      "tapToReadableMs": null,
+      "clickToReadableMs": 214,
+      "glass": true,
+      "scrollBefore": 0,
+      "scrollAfter": 0,
+      "events": [
+        {
+          "type": "head",
+          "ms": 2
+        },
+        {
+          "type": "progress",
+          "ms": 3531
+        },
+        {
+          "type": "progress",
+          "ms": 3783
+        },
+        {
+          "type": "progress",
+          "ms": 4894
+        },
+        {
+          "type": "frame",
+          "ms": 5390
+        },
+        {
+          "type": "done",
+          "ms": 5390
+        }
+      ],
+      "delivered": {
+        "sourceId": "rysxguji-mengzi-11-7",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "4f9045382e4c693ab0d20de042ae1fb91d683a24a504b67f5107c4030fcb9431",
+        "quoteStart": 121,
+        "quoteEnd": 134,
+        "quote": "人知之亦嚣嚣；人不知亦嚣嚣",
+        "meaning": "嚣嚣，自得无求之貌；无论世人了解与否，都安然自足。",
+        "reflection": "“愠”是被了解落空后心中含怒；孟子说“人不知亦嚣嚣”，把自得放在知与不知之外。可留意：这份安然并非压抑怨气，而是所乐在道、不系于他人评价，故知与不知都不改其态。"
+      },
+      "review": {
+        "id": "04ff56ef",
+        "verdict": "PASS",
+        "reason": "从怨气推进到知与不知都能自持。所乐在道可与前段对读。"
+      }
+    },
+    {
+      "caseId": "word-recognition-core",
+      "mode": "anchor",
+      "modelCalls": 2,
+      "finished": true,
+      "clickToCueMs": null,
+      "cueToTapMs": null,
+      "tapToReadableMs": null,
+      "clickToReadableMs": 215,
+      "glass": true,
+      "scrollBefore": 0,
+      "scrollAfter": 0,
+      "events": [
+        {
+          "type": "head",
+          "ms": 1
+        },
+        {
+          "type": "progress",
+          "ms": 2264
+        },
+        {
+          "type": "progress",
+          "ms": 2412
+        },
+        {
+          "type": "progress",
+          "ms": 2877
+        },
+        {
+          "type": "frame",
+          "ms": 3353
+        },
+        {
+          "type": "done",
+          "ms": 3353
+        }
+      ],
+      "delivered": {
+        "sourceId": "rysxguji-lunyu-14-35",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "ec2afda77f38f2ecb62b58954648f122d11565bed6b10fabdbff7204617131e2",
+        "quoteStart": 29,
+        "quoteEnd": 50,
+        "quote": "不怨天，不尤人，下学而上达。知我者其天乎！",
+        "meaning": "不怨恨天，不责怪人；从日常处学习而上达。了解我的大概只有天吧。",
+        "reflection": "“愠”是心中含怒，此处却把不被了解的落空转为“不怨天，不尤人”。不是压住怒气，而是把注意力放回“下学而上达”：了解与否不全由人定，自己仍可在所学中向上。"
+      },
+      "review": {
+        "id": "d5fecf72",
+        "verdict": "PASS",
+        "reason": "以不尤人与下学上达区分外部理解和自己仍可做的事。"
+      }
+    },
+    {
+      "caseId": "word-empathy-poetry",
+      "mode": "cold",
+      "modelCalls": 3,
+      "finished": true,
+      "clickToCueMs": 4013,
+      "cueToTapMs": 324,
+      "tapToReadableMs": 11,
+      "clickToReadableMs": 4348,
+      "glass": true,
+      "scrollBefore": 0,
+      "scrollAfter": 515,
+      "events": [
+        {
+          "type": "head",
+          "ms": 3841
+        },
+        {
+          "type": "progress",
+          "ms": 3942
+        },
+        {
+          "type": "progress",
+          "ms": 4470
+        },
+        {
+          "type": "frame",
+          "ms": 4753
+        },
+        {
+          "type": "done",
+          "ms": 4753
+        }
+      ],
+      "delivered": {
+        "sourceId": "rysxguji-mengzi-11-4",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "c1eb999e0b02f5792eeb718ffed272a490a184712f8a4e830e0458469fca0864",
+        "quoteStart": 23,
+        "quoteEnd": 33,
+        "quote": "强恕而行，求仁莫近焉",
+        "meaning": "勉力按推己及人的恕道去做，是接近仁德最切近的途径。",
+        "reflection": "“强”字点出恕不是一次自然生出的体谅，而是要在不情愿时仍勉强自己去做。己所不欲容易知道，难的是把这份知道坚持落到对方身上；孟子说这样反复用力，才是求仁最近的路。"
+      },
+      "review": {
+        "id": "2e505518",
+        "verdict": "PARTIAL",
+        "reason": "解释了行恕需要持续用力，缺少对方的具体处境或帮助行动。"
+      }
+    },
+    {
+      "caseId": "word-empathy-poetry",
+      "mode": "reuse",
+      "modelCalls": 2,
+      "finished": true,
+      "clickToCueMs": 181,
+      "cueToTapMs": 368,
+      "tapToReadableMs": 32,
+      "clickToReadableMs": 581,
+      "glass": true,
+      "scrollBefore": 0,
+      "scrollAfter": 515,
+      "events": [
+        {
+          "type": "head",
+          "ms": 2
+        },
+        {
+          "type": "progress",
+          "ms": 2795
+        },
+        {
+          "type": "progress",
+          "ms": 2882
+        },
+        {
+          "type": "progress",
+          "ms": 3632
+        },
+        {
+          "type": "frame",
+          "ms": 3916
+        },
+        {
+          "type": "done",
+          "ms": 3916
+        }
+      ],
+      "delivered": {
+        "sourceId": "rysxguji-mengzi-11-4",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "c1eb999e0b02f5792eeb718ffed272a490a184712f8a4e830e0458469fca0864",
+        "quoteStart": 23,
+        "quoteEnd": 33,
+        "quote": "强恕而行，求仁莫近焉",
+        "meaning": "勉力推行恕道，求仁没有比这更近的路。",
+        "reflection": "《论语》里的恕是“己所不欲，勿施于人”，像一条可以终身照看的准则；孟子在前面加一个“强”字，说明知道该体谅，并不等于当下就做得到。不愿让出的位置、一时不肯退让的心，都要靠勉力才挪得动。恕因此不只是待人的方法，也是求仁路上要反复用力的一段。"
+      },
+      "review": {
+        "id": "05dca497",
+        "verdict": "PARTIAL",
+        "reason": "解释勉力并举例，但仍未交代如何回应对方的需要。"
+      }
+    },
+    {
+      "caseId": "deep-discernment-core",
+      "mode": "cold",
+      "modelCalls": 3,
+      "finished": true,
+      "clickToCueMs": 3998,
+      "cueToTapMs": 324,
+      "tapToReadableMs": 26,
+      "clickToReadableMs": 4348,
+      "glass": true,
+      "scrollBefore": 0,
+      "scrollAfter": 636,
+      "events": [
+        {
+          "type": "head",
+          "ms": 3810
+        },
+        {
+          "type": "progress",
+          "ms": 3873
+        },
+        {
+          "type": "progress",
+          "ms": 4476
+        },
+        {
+          "type": "frame",
+          "ms": 4868
+        },
+        {
+          "type": "done",
+          "ms": 4868
+        }
+      ],
+      "delivered": {
+        "sourceId": "rysxguji-lunyu-7-26",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "1600aeb54c78544c6d0ef74e7f3254ae110101ed23493477541a4caac9412014",
+        "quoteStart": 18,
+        "quoteEnd": 40,
+        "quote": "多闻，择其善者而从之；多见而识之；知之次也。",
+        "meaning": "识，记住。孔子自述不凭空造作，靠多听多看、择善而记来求知。",
+        "reflection": "这里的“择”不是凭一时印象下判断，而是先多闻多见，让可比较的材料多起来，再从中挑出值得跟从的。与来路相比，择取多了一层次序：先积累，后分辨；善不善的取舍，也因见闻渐广而更有依据。"
+      },
+      "review": {
+        "id": "a52a5a5a",
+        "verdict": "PARTIAL",
+        "reason": "多闻再取舍的推进成立，释义混合了择善从之与多见而记。"
+      }
+    },
+    {
+      "caseId": "deep-discernment-core",
+      "mode": "reuse",
+      "modelCalls": 2,
+      "finished": true,
+      "clickToCueMs": 179,
+      "cueToTapMs": 318,
+      "tapToReadableMs": 32,
+      "clickToReadableMs": 529,
+      "glass": true,
+      "scrollBefore": 0,
+      "scrollAfter": 635,
+      "events": [
+        {
+          "type": "head",
+          "ms": 3
+        },
+        {
+          "type": "progress",
+          "ms": 2480
+        },
+        {
+          "type": "progress",
+          "ms": 2549
+        },
+        {
+          "type": "progress",
+          "ms": 3201
+        },
+        {
+          "type": "frame",
+          "ms": 3516
+        },
+        {
+          "type": "done",
+          "ms": 3516
+        }
+      ],
+      "delivered": {
+        "sourceId": "rysxguji-lunyu-7-26",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "1600aeb54c78544c6d0ef74e7f3254ae110101ed23493477541a4caac9412014",
+        "quoteStart": 18,
+        "quoteEnd": 40,
+        "quote": "多闻，择其善者而从之；多见而识之；知之次也。",
+        "meaning": "识，通“志”，记住。孔子说多听而择善相从、多见而记于心，是次一等的知。",
+        "reflection": "“三人行”里的择，是在眼前具体言行中分辨；“多闻”则把择放到更宽的见闻里。先广泛接触，再从中挑出可取的，这并非生来就有的判断，而是靠积累见闻慢慢形成的次一等之知。"
+      },
+      "review": {
+        "id": "aa993c17",
+        "verdict": "PASS",
+        "reason": "分清从与识，并把择善放回广泛见闻产生的比较材料。"
+      }
+    },
+    {
+      "caseId": "deep-shared-joy-poetry",
+      "mode": "cold",
+      "modelCalls": 3,
+      "finished": true,
+      "clickToCueMs": null,
+      "cueToTapMs": null,
+      "tapToReadableMs": null,
+      "clickToReadableMs": 4232,
+      "glass": true,
+      "scrollBefore": 0,
+      "scrollAfter": 0,
+      "events": [
+        {
+          "type": "head",
+          "ms": 4057
+        },
+        {
+          "type": "progress",
+          "ms": 4093
+        },
+        {
+          "type": "progress",
+          "ms": 5101
+        },
+        {
+          "type": "frame",
+          "ms": 5114
+        },
+        {
+          "type": "done",
+          "ms": 5114
+        }
+      ],
+      "delivered": {
+        "sourceId": "rysxguji-mengzi-2-1",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "9da7755c10d1482978298fcb96b9533f1ea844208d240eef22b4aa15d48e56aa",
+        "quoteStart": 330,
+        "quoteEnd": 341,
+        "quote": "此无他，不与民同乐也。",
+        "meaning": "这没有别的原因，只是不与百姓共享快乐。",
+        "reflection": "前文只问“孰乐”，此处给出答案的反面：不与民同乐。钟鼓、田猎本身不是问题，百姓“疾首蹙頞”才显出乐只属于君王一人。由此看，“乐”的层次不在声音大小，而在听者是否被纳入同一份愉悦。"
+      },
+      "review": {
+        "id": "276c4bde",
+        "verdict": "PARTIAL",
+        "reason": "选对百姓蹙额的方向，将同乐写成分享愉悦而漏掉亲人离散的缘由。"
+      }
+    },
+    {
+      "caseId": "deep-shared-joy-poetry",
+      "mode": "reuse",
+      "modelCalls": 2,
+      "finished": true,
+      "clickToCueMs": null,
+      "cueToTapMs": null,
+      "tapToReadableMs": null,
+      "clickToReadableMs": 182,
+      "glass": true,
+      "scrollBefore": 0,
+      "scrollAfter": 0,
+      "events": [
+        {
+          "type": "head",
+          "ms": 2
+        },
+        {
+          "type": "progress",
+          "ms": 3735
+        },
+        {
+          "type": "progress",
+          "ms": 3981
+        },
+        {
+          "type": "progress",
+          "ms": 4584
+        },
+        {
+          "type": "frame",
+          "ms": 5032
+        },
+        {
+          "type": "done",
+          "ms": 5033
+        }
+      ],
+      "delivered": {
+        "sourceId": "rysxguji-mengzi-2-1",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "9da7755c10d1482978298fcb96b9533f1ea844208d240eef22b4aa15d48e56aa",
+        "quoteStart": 330,
+        "quoteEnd": 341,
+        "quote": "此无他，不与民同乐也。",
+        "meaning": "这没有别的原因，只是不能与百姓共享快乐。",
+        "reflection": "前文只问“孰乐”，此句给出反面证据：百姓听见钟鼓、望见羽旄，却疾首蹙頞，因为父子兄弟离散。于是“同乐”不只是君主多几个人陪着听乐，而要看鼓乐之时百姓是否还能安其家。乐声相同，处境不同，快乐便分属两处。"
+      },
+      "review": {
+        "id": "9c8c276f",
+        "verdict": "PASS",
+        "reason": "抓住百姓闻乐想到亲人离散，联系到百姓能否安其家。"
+      }
+    }
+  ],
+  "scenario": "Local browser on 3c9eb31 client assets; real runFlow service on the verified-branch changes, isolated owner-bound memory store."
+}

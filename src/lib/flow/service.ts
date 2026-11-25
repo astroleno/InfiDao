@@ -1,4 +1,5 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
+import { isDeepStrictEqual } from 'node:util';
 import { z } from "zod";
 import { createSessionStore, MemoryDocumentBackend, type StoredChain, type FlowSessionStore } from "./session-store";
 import type { PassageRecord } from "@/types";
@@ -14,6 +15,7 @@ import { compactCandidates, familyDecisionGuidance, quotationKey, repeatsQuotati
 import type { ContentPackId, ContentScope } from '@/lib/content/contracts';
 import type { SemanticEntry } from './semantic-index';
 import { recentReadingsFor } from './reading-history';
+import { verifiedBranchSignature, type VerifiedBranch, type VerifiedBranchDraft } from './verified-branch';
 async function lookupPassage(id: string, version?: string) {
   return id.startsWith('poetry-') ? findFlowPassage(id, version) : (await flowCorpus()).find(row => row.id === id);
 }
@@ -32,20 +34,52 @@ function quotationSpellings(text: string) {
 async function precedingQuotes(parent: StoredChain, owner: string, store: FlowSessionStore) {
   let current = parent;
   const seen = new Set<string>(), quotes: string[] = [];
+  let complete = false;
+  let retainedAll = true;
   // New chains carry their inherited context. Older chains can recover it
   // from their existing, owner-bound ancestors without changing public IDs.
   for (let depth = 0; depth < 128; depth++) {
     if (seen.has(current.chain.chainId)) break;
     seen.add(current.chain.chainId);
-    quotes.unshift(...(current.fromQuote ? [current.fromQuote] : []), ...Object.values(current.nodes).map(frame => frame.quote));
-    if (current.priorQuotes) { quotes.unshift(...current.priorQuotes); break; }
-    if (!current.chain.parentChainId) break;
+    const nodes = Object.values(current.nodes);
+    if (current.priorQuotesComplete === false || nodes.length >= 64 || (current.priorQuotes?.length ?? 0) >= 64) retainedAll = false;
+    quotes.unshift(...(current.fromQuote ? [current.fromQuote] : []), ...nodes.map(frame => frame.quote));
+    if (current.priorQuotes) {
+      quotes.unshift(...current.priorQuotes);
+      complete = !current.chain.parentChainId || current.priorQuotesComplete === true;
+      break;
+    }
+    if (!current.chain.parentChainId) { complete = true; break; }
     try { current = await store.getChain(owner, current.chain.parentChainId); }
     catch (error) { if (error instanceof FlowError && error.code === 'CHAIN_EXPIRED') break; throw error; }
   }
   // Match the existing 64-node retention bound; never turn path depth into
   // an unbounded generation prompt or a new storage schema.
-  return [...new Map(quotes.map(quote => [quotationKey(quote), quote])).values()].slice(-64);
+  const unique = [...new Map(quotes.map(quote => [quotationKey(quote), quote])).values()];
+  return { quotes: unique.slice(-64), complete: complete && retainedAll && unique.length < 64 };
+}
+
+function verifiedBranchVersion() {
+  try {
+    const { model, endpoint } = flowModelConfig();
+    return createHash('sha256').update(JSON.stringify([FLOW_VERSION, FLOW_PROMPT_VERSION, model, endpoint])).digest('hex');
+  } catch (error) {
+    if (error instanceof FlowError && error.code === 'MODEL_UNAVAILABLE') return undefined;
+    throw error;
+  }
+}
+
+async function verifiedBranchHead(record: VerifiedBranch, scope: ContentScope, priorQuotes: string[]) {
+  const target = record.target;
+  if ((target.sourceId.startsWith('poetry-') && !scope.packIds.includes('poetry')) || repeatsQuotation(target.quote, priorQuotes)) return;
+  const passage = await lookupPassage(target.sourceId).catch(() => undefined);
+  if (!passage || passage.corpusVersion !== target.corpusVersion || passage.textHash !== target.textHash ||
+    target.quoteEnd !== target.quoteStart + target.quote.length || passage.text.slice(target.quoteStart, target.quoteEnd) !== target.quote) return;
+  try { return frameFrom(passage, target.quote, '', 1, undefined, target.quoteStart); }
+  catch (error) {
+    if (!(error instanceof FlowError) || error.code !== 'UNVERIFIED_QUOTE') throw error;
+    return undefined;
+  }
 }
 
 function frameFrom(passage: PassageRecord, quote: string, meaning: string, ordinal: number, id: string = randomUUID(), quoteStart?: number): FlowFrame {
@@ -252,7 +286,13 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
   // Explicit historical resumes retain their original complete generation key.
   if (!(request.op === 'open' && request.chainId)) operationKey += ':prompt:' + FLOW_PROMPT_VERSION;
   if (graph && request.op !== 'open') operationKey += ':graph';
-  const reservation = await store.reserve(owner, { requestId: request.requestId, fingerprint: requestFingerprint(request), key: operationKey });
+  const mayReuse = request.op === 'branch' && request.seed === undefined && !request.rebaseFrom && !request.selection?.surface && !anchor && lexical &&
+    (!request.anchorId || request.anchorId === lexical.id) &&
+    parentFrame?.ready === true && lexical.start >= parentFrame.quoteStart && lexical.end <= parentFrame.quoteEnd &&
+    parent?.recentReadings !== undefined && parent.chain.contentScope?.fingerprint === scope.fingerprint && !scope.unavailable.length &&
+    (!parentFrame.sourceId.startsWith('poetry-') || scope.packIds.includes('poetry'));
+  const reservation = await store.reserve(owner, { requestId: request.requestId, fingerprint: requestFingerprint(request), key: operationKey,
+    ...(mayReuse ? { includeVerifiedBranches: true } : {}) });
   if (reservation.result) { emit({ type: 'done', requestId: request.requestId, chain: reservation.result }); return; }
   let lease = reservation.lease!;
   let leaseError: unknown = null, renewing = false;
@@ -267,14 +307,20 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
   try {
     assertCurrent();
     let state = reservation.chain || resumed;
-    if (state && graph) state.chain.graph = true;
+    if (state && graph && !state.chain.graph) {
+      delete state.pendingVerifiedBranch;
+      state.chain.graph = true;
+    }
     if (state && !state.priorQuotes && state.chain.parentChainId) {
       try {
         const ancestor = await store.getChain(owner, state.chain.parentChainId);
-        state.priorQuotes = await precedingQuotes(ancestor, owner, store);
+        const previous = await precedingQuotes(ancestor, owner, store);
+        state.priorQuotes = previous.quotes;
+        state.priorQuotesComplete = state.priorQuotesComplete !== false && previous.complete;
       } catch (error) {
         if (!(error instanceof FlowError) || error.code !== 'CHAIN_EXPIRED') throw error;
         state.priorQuotes = state.fromQuote ? [state.fromQuote] : [];
+        state.priorQuotesComplete = false;
       }
     }
     let head: FlowFrame | undefined;
@@ -282,21 +328,47 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
     if (request.op === 'next') {
       if (!state || !request.cursor || request.cursor !== state.chain.cursor) throw new FlowError('CURSOR_CHANGED', '阅读进度已更新，请继续当前经文。', 409);
     }
+    const seed = (request.seed || parent?.chain.seed || '').trim();
+    let inheritedQuotes: Awaited<ReturnType<typeof precedingQuotes>> | undefined;
+    let inheritedReadings: Awaited<ReturnType<typeof recentReadingsFor>> | undefined;
+    let signature: string | undefined, version: string | undefined;
+    let reused: VerifiedBranch | undefined;
+    if (!state && mayReuse && parent && parentFrame && lexical) {
+      inheritedQuotes = await precedingQuotes(parent, owner, store);
+      if (inheritedQuotes.complete) version = verifiedBranchVersion();
+      const passage = version && await lookupPassage(parentFrame.sourceId).catch(() => undefined);
+      if (version && passage && passage.corpusVersion === parentFrame.corpusVersion && passage.textHash === parentFrame.textHash &&
+          passage.text === parentFrame.fullText && passage.source === parentFrame.source && passage.chapter === parentFrame.chapterLabel &&
+          isDeepStrictEqual(passage.work, parentFrame.work) &&
+          passage.text.slice(parentFrame.quoteStart, parentFrame.quoteEnd) === parentFrame.quote) {
+        inheritedReadings = await recentReadingsFor(parent, owner, store, parentFrame);
+        signature = verifiedBranchSignature({ frame: parentFrame, word: lexical, scope, version, focus: parent.chain.focus,
+          seed, graph: !!graph, priorQuotes: inheritedQuotes.quotes, recentReadings: inheritedReadings });
+        const match = reservation.verifiedBranches?.find(entry => entry.signature === signature && entry.version === version);
+        if (match && (graph || match.target.sourceId !== parentFrame.sourceId)) {
+          head = await verifiedBranchHead(match, scope, inheritedQuotes.quotes);
+          if (head) reused = match;
+        }
+      }
+    }
     // Completed replays return above. New work needs generation + review,
     // and one planning call only when no stored plan/anchor is available.
-    const needsPlan = !state && (parent ? !anchor || parentScopeChanged : Boolean(request.restartFrom || request.seed?.trim()));
+    const needsPlan = !state && !reused && (parent ? !anchor || parentScopeChanged : Boolean(request.restartFrom || request.seed?.trim()));
     // Check that three foreground calls remain available without holding
     // them: the reader can spend those calls even while preparation finishes.
     await reserveFlowModels(needsPlan ? 3 : 2, request.prefetch ? 3 : undefined);
     assertCurrent();
     if (!state) {
-      const seed = (request.seed || parent?.chain.seed || '').trim();
-      const priorQuotes = parent ? await precedingQuotes(parent, owner, store) : [];
+      const previous = inheritedQuotes ?? (parent ? await precedingQuotes(parent, owner, store) : undefined);
+      const priorQuotes = previous?.quotes ?? [];
+      let pendingVerifiedBranch: VerifiedBranchDraft | undefined;
       let focus: string, terms: string[], fromQuote: string | undefined, readingContext: FlowReadingContext | undefined;
       if (parent && parentFrame && !request.rebaseFrom) {
-        const plan = anchor && !parentScopeChanged ? anchor : await measureFlowPhase('plan', () => request.selection ?
+        const plan = reused?.plan || (anchor && !parentScopeChanged ? anchor : await measureFlowPhase('plan', () => request.selection ?
           planLexeme(parentFrame!, request.selection, parent!.chain.focus, signal, scope.packIds) :
-          planAnchor(parentFrame!, anchor!, parent!.chain.focus, signal, scope.packIds));
+          planAnchor(parentFrame!, anchor!, parent!.chain.focus, signal, scope.packIds)));
+        if (!reused && signature && version) pendingVerifiedBranch = { signature, version,
+          plan: { sense: plan.sense, direction: plan.direction, terms: plan.terms } };
         const surface = request.selection ? request.selection.surface || 'quote' : anchor?.surface || 'reflection';
         focus = '「' + (lexical || anchor!).label + '」在《' + parentFrame.source + '》' +
           (surface === 'meaning' ? '的现代释义中' : surface === 'reflection' ? '的生成联系中' : '原文此处') + '：' + plan.sense + '；' + plan.direction;
@@ -330,8 +402,10 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
         }
       }
       assertCurrent();
-      const recentReadings = parent ? await recentReadingsFor(parent, owner, store, parentFrame) : [];
+      const recentReadings = inheritedReadings ?? (parent ? await recentReadingsFor(parent, owner, store, parentFrame) : []);
       state = { owner, terms, seen: [], nodes: head ? { [head.id]: head } : {}, branches: {}, updated: Date.now(), generationKey: operationKey, recentReadings,
+        ...(pendingVerifiedBranch ? { pendingVerifiedBranch } : {}),
+        ...(previous ? { priorQuotesComplete: previous.complete } : request.rebaseFrom ? { priorQuotesComplete: false } : {}),
         ...(fromQuote ? { fromQuote } : {}), ...(priorQuotes.length ? { priorQuotes } : {}), ...(readingContext ? { readingContext } : {}),
         chain: { chainId: randomUUID(), version: parent?.chain.version || [FLOW_VERSION, FLOW_PROMPT_VERSION, (await flowCorpus())[0]?.corpusVersion || 'unknown', flowModelConfig().model].join(':'),
           seed, seedOrigin: seed ? 'user' : 'example', focus, parentChainId: parent?.chain.chainId || null,
@@ -436,7 +510,8 @@ async function executeFlow(request: FlowRequest, owner: string, signal: AbortSig
     state.chain = { ...state.chain, frames, cursor: frames.length ? randomUUID() : null, exhausted: !frames.length };
     if (request.op !== 'next') state.initial = clone(state.chain);
     assertCurrent();
-    const complete = await store.commitComplete(owner, lease, state, previousCursor);
+    const complete = await store.commitComplete(owner, lease, state, previousCursor,
+      request.op !== 'next' && state.pendingVerifiedBranch && !scope.unavailable.length ? verifiedBranchVersion() : undefined, signal);
     emit({ type: 'frame', requestId: request.requestId, chain: complete });
     emit({ type: 'done', requestId: request.requestId, chain: clone(complete) });
   } finally {

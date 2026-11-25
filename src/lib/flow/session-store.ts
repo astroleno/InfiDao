@@ -1,22 +1,31 @@
 import { FlowError, type FlowChain, type FlowFrame, type FlowReadingContext } from './contracts';
 import { retainSemantics, type SemanticEntry } from './semantic-index';
 import type { RecentReading } from './reading-history';
+import type { VerifiedBranch, VerifiedBranchDraft } from './verified-branch';
 
 export const SESSION_TTL_MS = 6 * 60 * 60 * 1000;
 export const OPERATION_LEASE_MS = 45_000;
+const VERIFIED_BRANCH_LIMIT = 24;
 export type StoredChain = {
   owner: string; chain: FlowChain; terms: string[]; seen: string[];
   nodes: Record<string, FlowFrame>; branches: Record<string, string>;
   initial?: FlowChain; fromQuote?: string; priorQuotes?: string[]; generationKey: string; updated: number;
+  priorQuotesComplete?: boolean;
   readingContext?: FlowReadingContext;
   recentReadings?: RecentReading[];
+  pendingVerifiedBranch?: VerifiedBranchDraft;
 };
 export type OperationLease = { key: string; holder: string; version: number; expiresAt: number };
+type Reservation = { semantics: SemanticEntry[]; verifiedBranches?: VerifiedBranch[] } & (
+  | { result: FlowChain; lease: null; chain: null }
+  | { result: null; lease: OperationLease; chain: StoredChain | null }
+);
 type Operation = { version: number; holder: string; expiresAt: number; updated: number; chainId?: string; result?: FlowChain };
 type SessionDocument = {
   schemaVersion: 1; revision: number; chains: Record<string, StoredChain>; operations: Record<string, Operation>;
   requests: Record<string, { fingerprint: string; key: string; updated: number }>;
   semantics?: SemanticEntry[];
+  verifiedBranches?: VerifiedBranch[];
 };
 export type AtomicDocumentBackend = {
   read: (key: string) => Promise<{ value: string | null; now: number }>;
@@ -61,13 +70,15 @@ export function createSessionStore(backend: AtomicDocumentBackend, options: { cr
   const leaseMs = options.leaseMs || OPERATION_LEASE_MS;
   function prune(document: SessionDocument, now: number) {
     document.semantics = retainSemantics(document.semantics || [], [], now);
+    if (document.verifiedBranches) document.verifiedBranches = document.verifiedBranches.filter(entry => entry.updated + SESSION_TTL_MS > now);
     for (const [key, chain] of Object.entries(document.chains)) if (chain.updated + SESSION_TTL_MS <= now) delete document.chains[key];
     for (const [key, operation] of Object.entries(document.operations)) if (operation.updated + SESSION_TTL_MS <= now) delete document.operations[key];
     for (const [key, request] of Object.entries(document.requests)) if (request.updated + SESSION_TTL_MS <= now) delete document.requests[key];
   }
-  async function mutate<T>(owner: string, change: (document: SessionDocument, now: number) => T, lease?: OperationLease): Promise<T> {
+  async function mutate<T>(owner: string, change: (document: SessionDocument, now: number) => T, lease?: OperationLease, signal?: AbortSignal): Promise<T> {
     const key = prefix + owner;
     for (let attempt = 0; attempt < 20; attempt++) {
+      signal?.throwIfAborted();
       const saved = await backend.read(key), document: SessionDocument = saved.value ? JSON.parse(saved.value) : fresh();
       if (document.schemaVersion !== 1) throw new FlowError('SESSION_VERSION', '这次在线阅读的格式已经变化，已保存的经文仍可阅读。', 409);
       prune(document, saved.now);
@@ -79,6 +90,7 @@ export function createSessionStore(backend: AtomicDocumentBackend, options: { cr
       }
       const value = JSON.stringify(document);
       if (value.length > 4 * 1024 * 1024) throw new FlowError('SESSION_FULL', '这次阅读的在线记录已满，已保存的经文仍可阅读。', 429);
+      signal?.throwIfAborted();
       const committed = await backend.compareSwap(key, saved.value, value, SESSION_TTL_MS, lease);
       if (committed === 'lost') throw lost();
       if (committed === 'ok') return result;
@@ -96,8 +108,8 @@ export function createSessionStore(backend: AtomicDocumentBackend, options: { cr
   }
   return {
     getChain,
-    reserve(owner: string, input: { requestId: string; fingerprint: string; key: string }) {
-      return mutate(owner, (document, now) => {
+    reserve(owner: string, input: { requestId: string; fingerprint: string; key: string; includeVerifiedBranches?: boolean }) {
+      return mutate<Reservation>(owner, (document, now) => {
         const requestKey = 'request:' + input.requestId;
         const previous = document.requests[requestKey];
         if (previous && (previous.fingerprint !== input.fingerprint || previous.key !== input.key)) {
@@ -114,7 +126,8 @@ export function createSessionStore(backend: AtomicDocumentBackend, options: { cr
         document.requests[requestKey] = { fingerprint: input.fingerprint, key: input.key, updated: now };
         const chain = next.chainId ? document.chains[next.chainId] : null;
         return { lease: { key: input.key, holder: next.holder, version: next.version, expiresAt: next.expiresAt }, result: null,
-          chain: chain ? clone(chain) : null, semantics: clone(document.semantics || []) };
+          chain: chain ? clone(chain) : null, semantics: clone(document.semantics || []),
+          ...(input.includeVerifiedBranches && !chain ? { verifiedBranches: clone(document.verifiedBranches || []) } : {}) };
       });
     },
     commitHead(owner: string, lease: OperationLease, state: StoredChain, parent?: { id: string; edge: string }) {
@@ -155,7 +168,8 @@ export function createSessionStore(backend: AtomicDocumentBackend, options: { cr
         return clone(saved);
       }, lease);
     },
-    commitComplete(owner: string, lease: OperationLease, state: StoredChain, expectedCursor: string | null) {
+    commitComplete(owner: string, lease: OperationLease, state: StoredChain, expectedCursor: string | null,
+      verifiedBranchVersion?: string, signal?: AbortSignal) {
       return mutate(owner, (document, now) => {
         const current = document.chains[state.chain.chainId];
         if (!current || current.owner !== owner) throw expired();
@@ -164,12 +178,21 @@ export function createSessionStore(backend: AtomicDocumentBackend, options: { cr
         // Always retain those freshly committed edges, not a worker's old copy.
         const saved = { ...clone(state), branches: { ...current.branches }, updated: now };
         document.semantics = retainSemantics(document.semantics || [], state.chain.frames, now, state.chain.contentScope?.fingerprint);
+        const pending = current.pendingVerifiedBranch, frame = saved.chain.frames[0];
+        if (!current.initial && lease.key.startsWith('branch:') && lease.key === current.generationKey &&
+            pending && pending.version === verifiedBranchVersion && frame?.ready === true && frame.provenance === 'model') {
+          const { sourceId, corpusVersion, textHash, quoteStart, quoteEnd, quote } = frame;
+          const entry = { ...pending, target: { sourceId, corpusVersion, textHash, quoteStart, quoteEnd, quote }, updated: now };
+          document.verifiedBranches = [...(document.verifiedBranches || []).filter(item => item.signature !== entry.signature), entry]
+            .slice(-VERIFIED_BRANCH_LIMIT);
+        }
+        delete saved.pendingVerifiedBranch;
         document.chains[state.chain.chainId] = saved;
         const operation = document.operations[lease.key]!;
         operation.result = clone(state.chain); operation.chainId = state.chain.chainId;
         operation.expiresAt = 0; operation.updated = now;
         return clone(saved.chain);
-      }, lease);
+      }, lease, signal);
     },
     renew(owner: string, lease: OperationLease) {
       return mutate(owner, (document, now) => {

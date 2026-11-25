@@ -46,6 +46,70 @@ test('only completed verified semantics survive a new worker and remain isolated
   expect((await restarted.reserve(owner, { key: 'probe:expired', requestId: 'expired', fingerprint: 'expired' })).semantics).toEqual([]);
 });
 
+test('verified word branches publish atomically, stay owner-scoped and expire while the owner document stays live', async () => {
+  const f = fixture();
+  const makeBranch = (index: number) => {
+    const key = 'branch:parent-' + index;
+    return { key, requestId: key, fingerprint: key };
+  };
+  const probe = async (id: string, reader = owner) => {
+    const { verifiedBranches, lease } = await f.store.reserve(reader, { key: id, requestId: id, fingerprint: id, includeVerifiedBranches: true });
+    await f.store.release(reader, lease!);
+    return verifiedBranches;
+  };
+  const plan = { sense: '此处的义项', direction: '进一步的方向', terms: ['本末', '先后'] };
+  for (let index = 0; index < 25; index++) {
+    const branch = makeBranch(index), { lease } = await f.store.reserve(owner, branch);
+    const pending = { ...state('child-' + index, branch.key), pendingVerifiedBranch: { signature: String(index), version: 'test', plan } };
+    await f.store.commitHead(owner, lease!, pending);
+    if (index === 0) expect(await probe('head-only')).toEqual([]);
+    const frame = verifiedFrame('target-' + index);
+    pending.chain.frames = [frame];
+    await f.store.commitComplete(owner, lease!, { ...pending, initial: pending.chain }, '0', 'test');
+    expect((await f.store.getChain(owner, pending.chain.chainId)).pendingVerifiedBranch).toBeUndefined();
+  }
+  const remembered = await probe('remembered');
+  expect(remembered?.map(entry => entry.signature)).toEqual(Array.from({ length: 24 }, (_, index) => String(index + 1)));
+  expect(remembered?.at(-1)).toEqual({
+    signature: '24', version: 'test', plan, updated: 1000,
+    target: { sourceId: 'target-24', corpusVersion: 'corpus-v1', textHash: 'hash', quoteStart: 0, quoteEnd: 2, quote: '知止' },
+  });
+  expect((await f.store.reserve(owner, { ...makeBranch(24), includeVerifiedBranches: true })).verifiedBranches).toBeUndefined();
+  expect((await f.store.reserve(owner, opening)).verifiedBranches).toBeUndefined();
+  expect(await probe('another-owner', 'reader-b')).toEqual([]);
+  f.advance(SESSION_TTL_MS - 1);
+  expect(await probe('keep-owner-active')).toHaveLength(24);
+  f.advance(1);
+  expect(await probe('expired-memory')).toEqual([]);
+});
+
+test.each(['aborted before CAS', 'lost lease', 'wrong version', 'not ready', 'curated'] as const)
+('verified word branch is not published when %s', async failure => {
+  const f = fixture();
+  const key = 'branch:parent';
+  const { lease } = await f.store.reserve(owner, { key, requestId: key, fingerprint: key });
+  const pending = { ...state('child', key), pendingVerifiedBranch: { signature: 'same', version: 'test',
+    plan: { sense: '义项', direction: '方向', terms: ['本末', '先后'] } } };
+  await f.store.commitHead(owner, lease!, pending);
+  pending.chain.frames = [{ ...verifiedFrame(), ...(failure === 'not ready' ? { ready: false } : {}),
+    ...(failure === 'curated' ? { provenance: 'curated' as const } : {}) }];
+  const controller = new AbortController();
+  if (failure === 'lost lease') f.advance(101);
+  if (failure === 'aborted before CAS') {
+    const read = f.backend.read.bind(f.backend);
+    jest.spyOn(f.backend, 'read').mockImplementationOnce(async key => {
+      const result = await read(key); controller.abort(); return result;
+    });
+  }
+  const complete = f.store.commitComplete(owner, lease!, { ...pending, initial: pending.chain }, '0',
+    failure === 'wrong version' ? 'other' : 'test', controller.signal);
+  if (failure === 'lost lease') await expect(complete).rejects.toMatchObject({ code: 'OPERATION_EXPIRED' });
+  else if (failure === 'aborted before CAS') await expect(complete).rejects.toMatchObject({ name: 'AbortError' });
+  else await complete;
+  const after = await f.store.reserve(owner, { key: 'probe', requestId: 'probe', fingerprint: 'probe', includeVerifiedBranches: true });
+  expect(after.verifiedBranches).toEqual([]);
+});
+
 test('semantic retention is bounded, versioned and excludes incomplete or curated frames', () => {
   const frames = Array.from({ length: SEMANTIC_LIMIT + 1 }, (_, i) => verifiedFrame(String(i)));
   let entries = retainSemantics([], frames, 1000);
