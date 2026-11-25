@@ -8,7 +8,7 @@ import { createBrowserController, type FlowController, type ControllerState } fr
 import { observeFlowViewport } from '@/lib/flow-browser/viewport';
 import { createPathId, deleteNote, listNotes, loadPath, restoreNote, saveNote, loadDraft, saveDraft, type FlowPathRecord, type PersonalNote, type ReadingSnapshot } from '@/lib/flow-browser/storage';
 import { connectedRecords, entryKey, streamEntries, type StreamEntry } from '@/lib/flow-browser/continuity';
-import { FlowStream, type FlowArrival } from './FlowStream';
+import { FlowStream, type FlowArrival, type FlowArrivalAction } from './FlowStream';
 import { SeedSheet } from './SeedSheet';
 import { FlowResume, FlowWaiting } from './FlowWaiting';
 import { LibrarySheet } from './LibrarySheet';
@@ -564,20 +564,42 @@ export function FlowExperience() {
     }] : [];
   });
   const awaitingQuote = busy || !frames.some(item => item.ready === false);
-  const waitingLabel = connecting?.label || (!awaitingQuote && arrival?.kind === 'word' &&
-    arrival.targetKey === `${records.at(-1)?.pathId}:${frames[0]?.id}` ? chain?.entry?.label : undefined);
+  const currentWordArrival = !busy && !connecting && arrival?.kind === 'word' &&
+    arrival.targetKey === `${records.at(-1)?.pathId}:${frames[0]?.id}` ? arrival : null;
+  const waitingLabel = connecting?.label || (currentWordArrival ? chain?.entry?.label : undefined);
   const canResume = flowError?.code === 'INCOMPLETE' && !pending &&
     controllerRef.current?.getState().record?.completion === 'stopped';
+  const stopWaiting = () => { wordArrivalSelection.current = null; controllerRef.current?.cancel(); };
+  const resumeCompletion = () => { void controllerRef.current?.retry(); };
+  const showWaiting = pending && (!currentWordArrival || !awaitingQuote);
+  const restartForError = flowError && ['CHAIN_EXPIRED', 'CORPUS_CHANGED', 'CONNECTION_REQUIRED', 'CONTENT_SCOPE_CHANGED'].includes(flowError.code);
+  const canRetryError = flowError?.code !== 'BUDGET_REACHED';
+  const retryError = () => {
+    if (restartForError) {
+      const selected = lastSelectionRef.current;
+      if (selected?.pathId && selected.pathId !== recordRef.current?.pathId) void controllerRef.current?.branch(selected);
+      else void controllerRef.current?.restart(selected || (currentFrame ? { frameId: currentFrame.id } : undefined));
+    } else if (currentWordArrival) resumeCompletion();
+    else readOnAfterRetry();
+  };
+  const dismissError = () => controllerRef.current?.dismissError();
+  const dismissErrorLabel = flowError?.code === 'BUDGET_REACHED' ? '回到已读经文' : '留在原句';
+  let arrivalAction: FlowArrivalAction | undefined;
+  if (currentWordArrival && !seedOpen && !awaitingQuote) {
+    const { id } = currentWordArrival;
+    if (showWaiting || canResume) {
+      arrivalAction = { id, kind: showWaiting ? 'stop' : 'resume', onAction: showWaiting ? stopWaiting : resumeCompletion };
+    } else if (flowError) {
+      arrivalAction = { id, kind: 'error', message: flowError.message,
+        onRetry: canRetryError ? retryError : undefined, onDismiss: dismissError, dismissLabel: dismissErrorLabel };
+    }
+  }
   const errorFeedback = flowError && !canResume ? <div className={styles.streamError} role="status">
     <p>{flowError.message}</p>
-    {flowError.code !== 'BUDGET_REACHED' && (['CHAIN_EXPIRED', 'CORPUS_CHANGED', 'CONNECTION_REQUIRED', 'CONTENT_SCOPE_CHANGED'].includes(flowError.code)
-      ? <button className={styles.textButton} type="button" onClick={() => {
-        const selected = lastSelectionRef.current;
-        if (selected?.pathId && selected.pathId !== recordRef.current?.pathId) void controllerRef.current?.branch(selected);
-        else void controllerRef.current?.restart(selected || (currentFrame ? { frameId: currentFrame.id } : undefined));
-      }}>{lastSelectionRef.current?.selection ? '沿此词重新展开' : '从原句重新展开'}</button>
-      : <button className={styles.textButton} type="button" onClick={readOnAfterRetry}>重试</button>)}
-    <button className={styles.textButton} type="button" onClick={() => controllerRef.current?.dismissError()}>{flowError.code === 'BUDGET_REACHED' ? '回到已读经文' : '留在原句'}</button>
+    {canRetryError && <button className={styles.textButton} type="button" onClick={retryError}>
+      {restartForError ? lastSelectionRef.current?.selection ? '沿此词重新展开' : '从原句重新展开' : '重试'}
+    </button>}
+    <button className={styles.textButton} type="button" onClick={dismissError}>{dismissErrorLabel}</button>
   </div> : undefined;
   return (
     <main ref={experienceRef} className={styles.experience}>
@@ -592,7 +614,7 @@ export function FlowExperience() {
           motionCandidate: motion.available ? { enabled: motion.variant === 'liquid-live', onToggle: motion.toggle } : undefined }}
         motionVariant={motion.variant}
         paused={paused || seedOpen || libraryOpen || !!keepsakeSource} reducedMotion={reducedMotion} pending={pending}
-        connecting={connecting} arrival={arrival}
+        connecting={connecting} arrival={arrival} arrivalAction={arrivalAction}
         arrivalObscured={loadingActive || loadingOverlayVisible || seedOpen || libraryOpen || !!keepsakeSource} restore={restorePosition}
         canContinue={!!chain?.cursor && !chain.exhausted && !flowError && frames.every(item => item.ready !== false)}
         onContinue={continueReading} onPrepareNext={() => controllerRef.current?.prepareNext()}
@@ -603,12 +625,13 @@ export function FlowExperience() {
           <button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button>
         </div> : undefined}
         onScroll={top => { readingScrollRef.current = top; }} onBranch={selection => void handleBranch(selection)}
-        waiting={!seedOpen && (pending ? <FlowWaiting compact busy={awaitingQuote} label={waitingLabel} onCancel={() => {
-          wordArrivalSelection.current = null; controllerRef.current?.cancel();
-        }} />
-          : canResume ? <FlowResume onResume={readOnAfterRetry} /> : errorFeedback)}
+        waiting={!seedOpen && (showWaiting ? <FlowWaiting compact busy={awaitingQuote} label={waitingLabel} onCancel={stopWaiting} />
+          : canResume ? <FlowResume onResume={currentWordArrival ? resumeCompletion : readOnAfterRetry} /> : errorFeedback)}
         sourceOpen={sourceOpen} onToggleSource={onToggleSource} bookmarkKeys={bookmarkKeys} onBookmark={() => void toggleBookmark()}
-        onSourceBranch={(pathId, frame, selection, label) => { pauseReading(); void controllerRef.current?.sourceBranch?.(pathId,frame,selection,label).catch(() => notify('原阅读记录暂不可用，当前经文仍在。')); }}
+        onSourceBranch={(pathId, frame, selection, label) => {
+          pauseReading(); clearSelection(); setArrival(null);
+          void controllerRef.current?.sourceBranch?.(pathId, frame, selection, label).catch(() => notify('原阅读记录暂不可用，当前经文仍在。'));
+        }}
         notesFrameId={notesFrameId} notes={notes} savingNote={savingNote}
         onSaveNote={onSaveNote} onDeleteNote={onDeleteNote} onUndoNote={onUndoNote} onUpdateNote={onUpdateNote} onKeepsake={currentKeepsake} />
 

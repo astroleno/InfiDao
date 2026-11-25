@@ -368,9 +368,9 @@ describe('branch arrival under reading overlays', () => {
   afterEach(() => { cleanup(); jest.restoreAllMocks(); jest.useRealTimers(); });
 
   test.each([
-    { dockedHeight: 780, initialTop: 145, afterDockTop: 145, readableTop: 160 },
-    { dockedHeight: 440, initialTop: 700, afterDockTop: 360, readableTop: 320 },
-  ])('the dock keeps the original reading band but rejects clipping at height $dockedHeight', ({ dockedHeight, initialTop, afterDockTop, readableTop }) => {
+    { dockedHeight: 780, initialTop: 760, afterDockTop: 700, readableTop: 640 },
+    { dockedHeight: 440, initialTop: -30, afterDockTop: 360, readableTop: 320 },
+  ])('the dock keeps the cue while its rail clips an otherwise readable quote at height $dockedHeight', ({ dockedHeight, initialTop, afterDockTop, readableTop }) => {
     const view = render(<FlowStream {...props} entries={[entry, second]} arrival={arrival} />);
     const viewport = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
     const stream = viewport.parentElement!;
@@ -388,7 +388,105 @@ describe('branch arrival under reading overlays', () => {
     expect(target).not.toHaveFocus();
     position.mockReturnValue({ top: readableTop, height: 100 } as DOMRect);
     fireEvent.scroll(viewport);
+    advance();
     expect(go()).not.toBeInTheDocument();
+  });
+
+  test('a fully readable quote below 68 percent does not trigger a cue', () => {
+    const view = render(<FlowStream {...props} entries={[entry, second]} arrival={arrival} />);
+    const viewport = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    Object.defineProperty(viewport.parentElement, 'clientHeight', { value: 844 });
+    Object.defineProperty(viewport, 'clientHeight', { value: 844 });
+    const heading = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    jest.spyOn(heading, 'getBoundingClientRect').mockReturnValue({ top: 616, height: 100 } as DOMRect);
+    advance();
+    expect(go()).not.toBeInTheDocument();
+    expect(heading).not.toHaveFocus();
+  });
+
+  test('a long quote needs its leading lines even when the visible tail is substantial', () => {
+    const view = render(<FlowStream {...props} entries={[entry, second]} arrival={arrival} />);
+    const viewport = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    const heading = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    const position = jest.spyOn(heading, 'getBoundingClientRect').mockReturnValue({ top: -200, height: 760 } as DOMRect);
+    const [firstWord, secondWord] = heading.querySelectorAll<HTMLElement>('[data-flow-optic]');
+    const firstLine = jest.spyOn(firstWord!, 'getBoundingClientRect').mockReturnValue({ top: -190, bottom: -160, height: 30 } as DOMRect);
+    const secondLine = jest.spyOn(secondWord!, 'getBoundingClientRect').mockReturnValue({ top: -130, bottom: -100, height: 30 } as DOMRect);
+    advance();
+    expect(go()).toBeInTheDocument();
+    position.mockReturnValue({ top: 150, height: 760 } as DOMRect);
+    firstLine.mockReturnValue({ top: 160, bottom: 190, height: 30 } as DOMRect);
+    secondLine.mockReturnValue({ top: 220, bottom: 250, height: 30 } as DOMRect);
+    fireEvent.scroll(viewport);
+    advance();
+    expect(go()).not.toBeInTheDocument();
+  });
+
+  test('the handoff positions the heading inside a panned visual viewport', () => {
+    const original = Object.getOwnPropertyDescriptor(window, 'visualViewport');
+    const visual = Object.assign(new EventTarget(), { offsetTop: 280, height: 280 });
+    Object.defineProperty(window, 'visualViewport', { configurable: true, value: visual });
+    try {
+      const view = render(<FlowStream {...props} entries={[entry, second]} arrival={arrival} />);
+      const viewport = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+      Object.defineProperty(viewport, 'scrollHeight', { value: 2200 });
+      const heading = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+      jest.spyOn(heading, 'getBoundingClientRect').mockImplementation(() => ({ top: 900 - viewport.scrollTop, height: 170 } as DOMRect));
+      advance();
+      fireEvent.click(screen.getByRole('button', { name: '去读' }));
+      expect(heading).toHaveFocus();
+      expect(viewport.scrollTop).toBe(550);
+      expect(heading.getBoundingClientRect().top).toBe(350);
+      expect(go()).not.toBeInTheDocument();
+    } finally {
+      if (original) Object.defineProperty(window, 'visualViewport', original);
+      else Reflect.deleteProperty(window, 'visualViewport');
+    }
+  });
+
+  test('docking a matched completion replaces its inline waiting and keeps the two actions separate', () => {
+    const onStop = jest.fn(), onRead = jest.fn();
+    const options = { ...props, entries: [entry, second], arrival, onRead, pending: true,
+      waiting: <FlowWaiting compact busy={false} label="止" onCancel={onStop} />,
+      arrivalAction: { id: arrival.id, kind: 'stop' as const, onAction: onStop },
+    };
+    const view = render(<FlowStream {...options} />);
+    const viewport = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    const heading = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    Object.defineProperty(viewport, 'scrollHeight', { value: 2200 });
+    jest.spyOn(heading, 'getBoundingClientRect').mockReturnValue({ top: 900, height: 100 } as DOMRect);
+    advance();
+    expect(screen.getByRole('status')).toHaveTextContent('沿「止」已接续 · 补全中');
+    expect(screen.queryByRole('button', { name: '停止展开' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '停止补全' }));
+    expect(onStop).toHaveBeenCalledTimes(1);
+    expect(onRead).not.toHaveBeenCalled();
+    expect(viewport.scrollTop).toBe(0);
+    fireEvent.click(screen.getByRole('button', { name: '去读' }));
+    expect(onRead).toHaveBeenCalledWith(second);
+    expect(heading).toHaveFocus();
+    expect(screen.getByRole('status')).toHaveTextContent('正在补全「止」的联系…');
+    expect(screen.getByRole('button', { name: '停止展开' })).toBeInTheDocument();
+  });
+
+  test('a failed completion keeps the recovery actions in the dock and lets the reader stay put', () => {
+    const onRetry = jest.fn(), onDismiss = jest.fn(), onRead = jest.fn();
+    const view = render(<FlowStream {...props} entries={[entry, second]} arrival={arrival} onRead={onRead}
+      arrivalAction={{ id: arrival.id, kind: 'error', message: '连接已中断', onRetry, onDismiss, dismissLabel: '留在原句' }}
+      waiting={<div role="status">连接已中断</div>} />);
+    const viewport = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    const heading = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    jest.spyOn(heading, 'getBoundingClientRect').mockReturnValue({ top: 900, height: 100 } as DOMRect);
+    advance();
+    expect(screen.getByRole('status')).toHaveTextContent('补全未完成。连接已中断');
+    fireEvent.click(screen.getByRole('button', { name: '重试' }));
+    expect(onRetry).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole('button', { name: '留在原句' }));
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+    expect(go()).not.toBeInTheDocument();
+    expect(onRead).not.toHaveBeenCalled();
+    expect(viewport.scrollTop).toBe(0);
+    expect(viewport).toHaveFocus();
   });
 
   test.each([true, false])('rechecks the current reading zone when an overlay closes (in zone: %s)', inZone => {
@@ -457,7 +555,7 @@ describe('branch arrival under reading overlays', () => {
     expect(viewport.scrollTop).toBe(800);
   });
 
-  test.each([true, false])('only a word arrival settles the in-zone quote early (word: %s)', word => {
+  test.each([true, false])('only a word arrival settles the in-zone quote and verified reflection early (word: %s)', word => {
     jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(50);
     jest.spyOn(HTMLElement.prototype, 'offsetTop', 'get').mockReturnValue(180);
     jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement) => {
@@ -476,9 +574,9 @@ describe('branch arrival under reading overlays', () => {
     view.rerender(<FlowStream {...options} arrival={word ? { ...arrival, kind: 'word' } : arrival} />);
     advance(); advance();
     expect(target).toHaveAttribute('data-ink-phase', word ? 'settled' : 'entering');
-    expect(target).toHaveAttribute('data-entry-phase', 'entering');
+    expect(target).toHaveAttribute('data-entry-phase', word ? 'settled' : 'entering');
     expect(source).toHaveAttribute('data-ink-phase', 'entering');
-    expect(reflection).toHaveAttribute('data-ink-phase', 'entering');
+    expect(reflection).toHaveAttribute('data-ink-phase', word ? 'settled' : 'entering');
     expect(target).not.toHaveFocus();
     expect(panel.scrollTop).toBe(0);
     expect(go()).not.toBeInTheDocument();
@@ -536,7 +634,7 @@ describe('branch arrival under reading overlays', () => {
     expect(target).toHaveAttribute('data-ink-phase', 'waiting');
     fireEvent.click(screen.getByRole('button', { name: '去读' }));
     advance(); advance();
-    expect(panel.scrollTop).toBe(750);
+    expect(panel.scrollTop).toBe(714);
     expect(onRead).toHaveBeenLastCalledWith(second);
     expect(target).toHaveFocus();
     expect(target).toHaveAttribute('data-ink-phase', 'settled');

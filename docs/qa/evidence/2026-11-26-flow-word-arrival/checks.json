@@ -1,0 +1,635 @@
+[
+  {
+    "name": "chromium-390",
+    "initial": {
+      "viewport": 844,
+      "top": 0,
+      "optics": "ready",
+      "quote": null,
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": null,
+      "zone": 0.0971563981042654,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "沿「恕」接续中…"
+      ]
+    },
+    "docked": {
+      "viewport": 780,
+      "top": 0,
+      "optics": "ready",
+      "quote": {
+        "x": 70.203125,
+        "y": 752.6720581054688,
+        "width": 249.59375,
+        "height": 166.5,
+        "bottom": 919.1720581054688,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": {
+        "x": 48.84375,
+        "y": 786,
+        "width": 292.3125,
+        "height": 50,
+        "bottom": 836
+      },
+      "zone": 0.010256410256410256,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "沿「恕」已接续 · 补全中"
+      ]
+    },
+    "atQuote": {
+      "viewport": 844,
+      "top": 554,
+      "optics": "ready",
+      "quote": {
+        "x": 70.203125,
+        "y": 199.37481689453125,
+        "width": 249.59375,
+        "height": 166.5,
+        "bottom": 365.87481689453125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": null,
+      "zone": 0.009478672985781991,
+      "moving": false,
+      "paused": true,
+      "focused": true,
+      "statuses": [
+        "正在补全「恕」的联系…"
+      ]
+    },
+    "atResponse": {
+      "viewport": 844,
+      "top": 554,
+      "optics": "ready",
+      "quote": {
+        "x": 70.203125,
+        "y": 199.37481689453125,
+        "width": 249.59375,
+        "height": 166.5,
+        "bottom": 365.87481689453125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": {
+        "x": 20,
+        "y": 389.87481689453125,
+        "width": 350,
+        "height": 114,
+        "bottom": 503.87481689453125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "firstResponse": {
+        "x": 20,
+        "y": 389.87481689453125,
+        "width": 40,
+        "height": 38,
+        "bottom": 427.87481689453125
+      },
+      "firstStyle": {
+        "opacity": "1",
+        "filter": "none",
+        "bent": false
+      },
+      "rail": null,
+      "zone": 0.009478672985781991,
+      "moving": false,
+      "paused": true,
+      "focused": true,
+      "statuses": [
+        "正在补全「恕」的联系…"
+      ]
+    },
+    "atEdge": {
+      "viewport": 844,
+      "top": 164,
+      "optics": "ready",
+      "quote": {
+        "x": 70.203125,
+        "y": 589.3748168945312,
+        "width": 249.59375,
+        "height": 166.5,
+        "bottom": 755.8748168945312,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": {
+        "x": 20,
+        "y": 779.8748168945312,
+        "width": 350,
+        "height": 114,
+        "bottom": 893.8748168945312,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "firstResponse": {
+        "x": 20,
+        "y": 779.8748168945312,
+        "width": 40,
+        "height": 38,
+        "bottom": 817.8748168945312
+      },
+      "firstStyle": {
+        "opacity": "1",
+        "filter": "none",
+        "bent": false
+      },
+      "rail": null,
+      "zone": 0.009478672985781991,
+      "moving": false,
+      "paused": true,
+      "focused": true,
+      "statuses": [
+        "正在补全「恕」的联系…"
+      ]
+    },
+    "done": {
+      "viewport": 844,
+      "top": 554,
+      "optics": "ready",
+      "quote": {
+        "x": 70.203125,
+        "y": 199.37481689453125,
+        "width": 249.59375,
+        "height": 166.5,
+        "bottom": 365.87481689453125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": {
+        "x": 20,
+        "y": 389.87481689453125,
+        "width": 350,
+        "height": 114,
+        "bottom": 503.87481689453125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "firstResponse": {
+        "x": 20,
+        "y": 389.87481689453125,
+        "width": 40,
+        "height": 38,
+        "bottom": 427.87481689453125
+      },
+      "firstStyle": {
+        "opacity": "1",
+        "filter": "none",
+        "bent": false
+      },
+      "rail": null,
+      "zone": 0.009478672985781991,
+      "moving": false,
+      "paused": true,
+      "focused": true,
+      "statuses": []
+    }
+  },
+  {
+    "name": "webkit-390",
+    "docked": {
+      "viewport": 780,
+      "top": 0,
+      "optics": "ready",
+      "quote": {
+        "x": 70.203125,
+        "y": 752.4366455078125,
+        "width": 249.59375,
+        "height": 166.5,
+        "bottom": 918.9366455078125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": {
+        "x": 51.296875,
+        "y": 786,
+        "width": 287.390625,
+        "height": 50,
+        "bottom": 836
+      },
+      "zone": 0.010256410256410256,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "沿「恕」已接续 · 补全中"
+      ]
+    },
+    "retrying": {
+      "viewport": 780,
+      "top": 0,
+      "optics": "ready",
+      "quote": {
+        "x": 70.203125,
+        "y": 752.4366455078125,
+        "width": 249.59375,
+        "height": 166.5,
+        "bottom": 918.9366455078125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": {
+        "x": 51.296875,
+        "y": 786,
+        "width": 287.390625,
+        "height": 50,
+        "bottom": 836
+      },
+      "zone": 0.010256410256410256,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "沿「恕」已接续 · 补全中"
+      ]
+    },
+    "resumed": {
+      "viewport": 780,
+      "top": 0,
+      "optics": "ready",
+      "quote": {
+        "x": 70.203125,
+        "y": 752.4366455078125,
+        "width": 249.59375,
+        "height": 166.5,
+        "bottom": 918.9366455078125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": {
+        "x": 20,
+        "y": 942.9366455078125,
+        "width": 350,
+        "height": 114.03125,
+        "bottom": 1056.9678955078125,
+        "entry": "waiting",
+        "ink": "waiting"
+      },
+      "firstResponse": {
+        "x": 20,
+        "y": 942.9366455078125,
+        "width": 38.3125,
+        "height": 38,
+        "bottom": 980.9366455078125
+      },
+      "firstStyle": {
+        "opacity": "1",
+        "filter": "none",
+        "bent": false
+      },
+      "rail": {
+        "x": 109.34375,
+        "y": 786,
+        "width": 171.296875,
+        "height": 50,
+        "bottom": 836
+      },
+      "zone": 0.010256410256410256,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "沿「恕」已接续"
+      ]
+    }
+  },
+  {
+    "name": "webkit-320-short",
+    "initial": {
+      "viewport": 568,
+      "top": 0,
+      "optics": "ready",
+      "quote": null,
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": null,
+      "zone": 0.12,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "沿「恕」接续中…"
+      ]
+    },
+    "docked": {
+      "viewport": 504,
+      "top": 234,
+      "optics": "ready",
+      "quote": {
+        "x": 57.59375,
+        "y": 542.12939453125,
+        "width": 204.796875,
+        "height": 166.5,
+        "bottom": 708.62939453125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": {
+        "x": 16.296875,
+        "y": 510,
+        "width": 287.390625,
+        "height": 50,
+        "bottom": 560
+      },
+      "zone": 0.12,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "沿「恕」已接续 · 补全中"
+      ]
+    },
+    "atQuote": {
+      "viewport": 568,
+      "top": 619,
+      "optics": "ready",
+      "quote": {
+        "x": 57.59375,
+        "y": 156.71998596191406,
+        "width": 204.796875,
+        "height": 166.49998474121094,
+        "bottom": 323.219970703125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": null,
+      "zone": 0.014084507042253521,
+      "moving": false,
+      "paused": true,
+      "focused": true,
+      "statuses": [
+        "正在补全「恕」的联系…"
+      ]
+    },
+    "atResponse": {
+      "viewport": 568,
+      "top": 619,
+      "optics": "ready",
+      "quote": {
+        "x": 57.59375,
+        "y": 156.71998596191406,
+        "width": 204.796875,
+        "height": 166.49998474121094,
+        "bottom": 323.219970703125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": {
+        "x": 20,
+        "y": 347.219970703125,
+        "width": 280,
+        "height": 152.046875,
+        "bottom": 499.266845703125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "firstResponse": {
+        "x": 20,
+        "y": 347.219970703125,
+        "width": 38.3125,
+        "height": 38,
+        "bottom": 385.219970703125
+      },
+      "firstStyle": {
+        "opacity": "1",
+        "filter": "none",
+        "bent": false
+      },
+      "rail": null,
+      "zone": 0.014084507042253521,
+      "moving": false,
+      "paused": true,
+      "focused": true,
+      "statuses": [
+        "正在补全「恕」的联系…"
+      ]
+    },
+    "atEdge": null,
+    "done": {
+      "viewport": 568,
+      "top": 619,
+      "optics": "ready",
+      "quote": {
+        "x": 57.59375,
+        "y": 156.71998596191406,
+        "width": 204.796875,
+        "height": 166.49998474121094,
+        "bottom": 323.219970703125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": {
+        "x": 20,
+        "y": 347.219970703125,
+        "width": 280,
+        "height": 152.046875,
+        "bottom": 499.266845703125,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "firstResponse": {
+        "x": 20,
+        "y": 347.219970703125,
+        "width": 38.3125,
+        "height": 38,
+        "bottom": 385.219970703125
+      },
+      "firstStyle": {
+        "opacity": "1",
+        "filter": "none",
+        "bent": false
+      },
+      "rail": null,
+      "zone": 0.014084507042253521,
+      "moving": false,
+      "paused": true,
+      "focused": true,
+      "statuses": []
+    }
+  },
+  {
+    "name": "webkit-failed-320",
+    "docked": {
+      "viewport": 504,
+      "top": 233,
+      "optics": "ready",
+      "quote": {
+        "x": 57.59375,
+        "y": 542.6654052734375,
+        "width": 204.796875,
+        "height": 166.5,
+        "bottom": 709.1654052734375,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": {
+        "x": 16.296875,
+        "y": 510,
+        "width": 287.390625,
+        "height": 50,
+        "bottom": 560
+      },
+      "zone": 0.12,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "沿「恕」已接续 · 补全中"
+      ]
+    },
+    "failed": {
+      "viewport": 504,
+      "top": 233,
+      "optics": "ready",
+      "quote": {
+        "x": 57.59375,
+        "y": 542.6654052734375,
+        "width": 204.796875,
+        "height": 166.5,
+        "bottom": 709.1654052734375,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": {
+        "x": 16,
+        "y": 510,
+        "width": 288,
+        "height": 50,
+        "bottom": 560
+      },
+      "zone": 0.12,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "补全未完成。连接已中断，已到达的经文仍可阅读。"
+      ]
+    }
+  },
+  {
+    "name": "webkit-reduced-390",
+    "initial": {
+      "viewport": 844,
+      "top": 0,
+      "optics": "reduced",
+      "quote": null,
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": null,
+      "zone": 0.46,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "沿「恕」接续中…"
+      ]
+    },
+    "head": {
+      "viewport": 844,
+      "top": 137,
+      "optics": "reduced",
+      "quote": {
+        "x": 70.203125,
+        "y": 616.140625,
+        "width": 249.59375,
+        "height": 166.5,
+        "bottom": 782.640625,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": null,
+      "zone": 0.46,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "正在补全「恕」的联系…"
+      ]
+    }
+  },
+  {
+    "name": "chromium-native-390",
+    "initial": {
+      "viewport": 844,
+      "top": 0,
+      "optics": "unavailable",
+      "quote": null,
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": null,
+      "zone": 0.46,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "沿「恕」接续中…"
+      ]
+    },
+    "head": {
+      "viewport": 844,
+      "top": 137,
+      "optics": "unavailable",
+      "quote": {
+        "x": 70.203125,
+        "y": 616.046875,
+        "width": 249.59375,
+        "height": 166.5,
+        "bottom": 782.546875,
+        "entry": "settled",
+        "ink": "settled"
+      },
+      "response": null,
+      "firstResponse": null,
+      "firstStyle": null,
+      "rail": null,
+      "zone": 0.009478672985781991,
+      "moving": false,
+      "paused": true,
+      "focused": false,
+      "statuses": [
+        "正在补全「恕」的联系…"
+      ]
+    }
+  }
+]

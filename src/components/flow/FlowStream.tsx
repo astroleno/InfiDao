@@ -33,6 +33,46 @@ const RetainedLinkedText = memo(LinkedText);
 const VISUAL_READY_TIMEOUT_MS = 1400;
 
 export type FlowArrival = { id: string; sourceKey: string; targetKey: string; label: string; kind?: 'word' };
+export type FlowArrivalAction = { id: string; kind: 'stop' | 'resume'; onAction: () => void } | {
+  id: string; kind: 'error'; message: string; onRetry: (() => void) | undefined; onDismiss: () => void; dismissLabel: string;
+};
+
+function visibleReadingBounds(panel: HTMLElement, fold: number) {
+  const panelTop = panel.getBoundingClientRect().top;
+  const viewport = window.visualViewport;
+  const top = Math.max(panelTop + fold, viewport?.offsetTop ?? panelTop);
+  const visibleBottom = viewport ? viewport.offsetTop + viewport.height : Infinity;
+  const bottom = Math.min(visibleBottom, panelTop + panel.clientHeight - fold);
+  const undockedBottom = Math.min(visibleBottom, panelTop + (panel.parentElement?.clientHeight || panel.clientHeight) - fold);
+  return { top, bottom, undockedHeight: undockedBottom - top };
+}
+
+function headingIsReadable(heading: HTMLElement, top: number, bottom: number, undockedHeight: number) {
+  const rect = heading.getBoundingClientRect();
+  if (top >= bottom || rect.height <= 0) return false;
+  if (rect.top >= top && rect.top + rect.height <= bottom) return true;
+  if (rect.height <= undockedHeight) return false;
+
+  // A quote taller than the entire clear area can only be read in sections.
+  // Use its leading lines, even when the reader has exposed only its tail.
+  const lines: { top: number; bottom: number }[] = [];
+  for (const word of heading.querySelectorAll<HTMLElement>('[data-flow-optic]')) {
+    const box = word.getBoundingClientRect();
+    if (!box.height) continue;
+    const line = lines.at(-1);
+    if (line && box.top < line.bottom && box.bottom > line.top) {
+      line.top = Math.min(line.top, box.top);
+      line.bottom = Math.max(line.bottom, box.bottom);
+    } else {
+      if (lines.length === 2) break;
+      lines.push({ top: box.top, bottom: box.bottom });
+    }
+  }
+  const [first, second] = lines;
+  if (!first) return false;
+  const last = second && second.bottom - first.top <= undockedHeight ? second : first;
+  return first.top >= top && last.bottom <= bottom;
+}
 
 type Props = {
   entries: StreamEntry[];
@@ -52,6 +92,7 @@ type Props = {
   pending: boolean;
   connecting: FlowSelection | null;
   arrival?: FlowArrival | null;
+  arrivalAction?: FlowArrivalAction | undefined;
   arrivalObscured?: boolean;
   waiting?: ReactNode;
   restore: { revision: number; top: number; frameId?: string; entryKey?: string; source?: boolean };
@@ -99,11 +140,10 @@ export function FlowStream(props: Props) {
   const [shownArrivalId, setShownArrivalId] = useState<string | null>(null);
   const shownArrival = useRef<string | null>(null);
   const arrivalDismissed = useRef('');
-  const visibleWordArrival = useRef<FlowArrival | null>(null);
-  const settledWordArrival = useRef('');
-  const arrivalHeadings = useRef(new Map<string, { entry: StreamEntry; heading: HTMLElement }>());
+  const arrivalHeadings = useRef(new Map<string, { entry: StreamEntry; heading: HTMLElement; reflection: HTMLElement | null }>());
   const arrivalCovered = useRef(false);
   const arrivalCheckFrame = useRef<number | null>(null);
+  const readingFold = useRef(0);
   const [scrollMotion] = useState(() => new StreamScrollMotion(props.restore.top));
   const [manualScroll] = useState(() => new StreamManualScroll());
   const [meaningFor, setMeaningFor] = useState<string | null>(null);
@@ -155,6 +195,7 @@ export function FlowStream(props: Props) {
   arrivalCovered.current = arrivalObscured;
   const visibleArrival = !arrivalObscured && props.arrival?.id === shownArrivalId ? props.arrival : null;
   const arrivalDocked = !!visibleArrival;
+  const dockAction = visibleArrival && props.arrivalAction?.id === visibleArrival.id ? props.arrivalAction : null;
 
   useLayoutEffect(() => {
     const panel = panelRef.current;
@@ -225,12 +266,13 @@ export function FlowStream(props: Props) {
 
   useLayoutEffect(() => { measure.current(); }, [props.entries, props.sourceOpen, notesFor, arrivalDocked]);
 
-  function positionAt(target: HTMLElement, focus = true) {
+  function positionAt(target: HTMLElement, visibleY?: number) {
     const panel = panelRef.current;
     if (!panel) return;
     pause();
+    const anchor = visibleY ?? panel.getBoundingClientRect().top + panel.clientHeight * .25;
     const top = Math.max(0, Math.min(panel.scrollHeight - panel.clientHeight,
-      panel.scrollTop + target.getBoundingClientRect().top - panel.getBoundingClientRect().top - panel.clientHeight * .25));
+      panel.scrollTop + target.getBoundingClientRect().top - anchor));
     panel.scrollTop = top;
     scrollMotion.reset(top, panel.scrollTop);
     if (contentRef.current) contentRef.current.style.translate = `0 ${-(top - panel.scrollTop)}px`;
@@ -238,7 +280,7 @@ export function FlowStream(props: Props) {
     props.onScroll(top);
     measure.current();
     optics.current();
-    if (focus) target.focus({ preventScroll: true });
+    target.focus({ preventScroll: true });
   }
 
   useEffect(() => {
@@ -263,35 +305,24 @@ export function FlowStream(props: Props) {
   const checkArrival = useCallback(() => {
     const arrival = live.current.arrival;
     const panel = panelRef.current;
-    if (arrivalCovered.current || !arrival || !panel || (arrivalDismissed.current === arrival.id &&
-      (arrival.kind !== 'word' || settledWordArrival.current === arrival.id || visualAnnounced.current === 'native'))) {
-      visibleWordArrival.current = null;
+    if (arrivalCovered.current || !arrival || !panel || arrivalDismissed.current === arrival.id) {
       showArrival(null);
       return;
     }
     const target = arrivalHeadings.current.get(arrival.targetKey)?.heading;
     if (!target || !panel.contains(target)) {
-      visibleWordArrival.current = null;
       showArrival(null);
       return;
     }
-    const bounds = panel.getBoundingClientRect(), rect = target.getBoundingClientRect();
-    // The notice can shorten the viewport. Its own presence must not move the
-    // reading-zone threshold, and a clipped heading still needs the handoff.
-    const readingHeight = panel.parentElement?.clientHeight || panel.clientHeight;
-    const visible = rect.top >= bounds.top + readingHeight * .18 &&
-      rect.top + Math.min(rect.height, 100) <= bounds.top + Math.min(readingHeight * .68, panel.clientHeight);
-    const word = visible && arrival.kind === 'word' ? arrival : null;
-    if (word !== visibleWordArrival.current) {
-      visibleWordArrival.current = word;
-      if (word) optics.current();
-    }
-    if (visible) arrivalDismissed.current = arrival.id;
-    showArrival(arrivalDismissed.current === arrival.id ? null : arrival.id);
+    const { top, bottom, undockedHeight } = visibleReadingBounds(panel, readingFold.current);
+    const readable = headingIsReadable(target, top, bottom, undockedHeight);
+    if (readable) arrivalDismissed.current = arrival.id;
+    showArrival(readable ? null : arrival.id);
   }, [showArrival]);
 
   const scheduleArrivalCheck = useCallback(() => {
-    if (arrivalCovered.current || !live.current.arrival || arrivalCheckFrame.current !== null) return;
+    const arrival = live.current.arrival;
+    if (arrivalCovered.current || !arrival || arrival.id === arrivalDismissed.current || arrivalCheckFrame.current !== null) return;
     arrivalCheckFrame.current = requestAnimationFrame(() => {
       arrivalCheckFrame.current = null;
       checkArrival();
@@ -300,10 +331,10 @@ export function FlowStream(props: Props) {
 
   useLayoutEffect(() => {
     if (arrivalObscured || !props.arrival) {
-      visibleWordArrival.current = null;
       showArrival(null);
     }
-    else scheduleArrivalCheck();
+    optics.current();
+    scheduleArrivalCheck();
   }, [arrivalObscured, props.arrival, scheduleArrivalCheck, showArrival]);
 
   useLayoutEffect(() => () => {
@@ -353,6 +384,7 @@ export function FlowStream(props: Props) {
     const rise = new ArrivalRise();
     let openingLanded = false;
     let calmGlass = false;
+    let protectedQuote: Part | undefined, protectedReflection: Part | undefined;
     const cadence = new IdleCadence();
     let idleTimer = 0, fullRatePending = false, lastTop = Infinity, lensWasActive = false, lastLens = 0;
     // A device that keeps missing frames steps the material down; ?quality=0-4 pins it.
@@ -421,6 +453,18 @@ export function FlowStream(props: Props) {
       const settleAll = !!live.current.settleEntrance || live.current.reducedMotion;
       if (settleAll && !settledAll) parts.forEach(finishPart);
       settledAll = settleAll;
+      const arrival = live.current.arrival;
+      const target = (calmGlass || nativeFallback) && !moved && live.current.paused && !arrivalCovered.current && arrival?.kind === 'word'
+        ? headings.get(arrival.targetKey) : undefined;
+      const visiblePart = (element: HTMLElement | null | undefined) => {
+        const part = element ? partRecords.get(element) : undefined;
+        return part && part.top < scrollTop + height && part.bottom > scrollTop ? part : undefined;
+      };
+      const clearQuote = visiblePart(target?.heading), clearReflection = visiblePart(target?.reflection);
+      if (clearQuote !== protectedQuote || clearReflection !== protectedReflection) {
+        protectedQuote = clearQuote; protectedReflection = clearReflection;
+        planner.invalidate('motion');
+      }
       // A jump can skip years of retained history. Remember the boundary and
       // settle a skipped paragraph only when it becomes relevant again.
       passedUntil = Math.max(passedUntil, scrollTop);
@@ -428,19 +472,14 @@ export function FlowStream(props: Props) {
       partIndex.visible(scrollTop, scrollTop + height - 24, visibleParts);
       for (const part of visibleParts) workParts.add(part);
       for (const part of activeParts) workParts.add(part);
+      if (clearQuote) workParts.add(clearQuote);
+      if (clearReflection) workParts.add(clearReflection);
       const focusedPart = activeElement instanceof Element ? partRecords.get(activeElement.closest<HTMLElement>('[data-flow-entrance]')!) : undefined;
       if (focusedPart) workParts.add(focusedPart);
-      const arrival = live.current.arrival;
-      const wordHeading = canvasOwnsGlyphs && !holdEntrance && !rise.active && !arrivalCovered.current &&
-        arrival && visibleWordArrival.current === arrival && settledWordArrival.current !== arrival.id
-        ? headings.get(arrival.targetKey)?.heading : undefined;
       for (const part of workParts) {
-        if (part.bottom < passedUntil) { finishPart(part); continue; }
+        if (part.bottom < passedUntil || part === clearQuote || part === clearReflection) { finishPart(part); continue; }
         const previousOffset = Math.round(part.motion.offset * 1000), previousInk = part.ink.revision;
-        if (part.element === wordHeading && arrival) {
-          part.ink.finish();
-          settledWordArrival.current = arrival.id;
-        } else if (fastManualScroll) part.ink.finish();
+        if (fastManualScroll) part.ink.finish();
         if (part.element.contains(activeElement)) {
           if (part.motion.waiting) part.motion.finish();
           else part.motion.pause(time);
@@ -475,19 +514,26 @@ export function FlowStream(props: Props) {
         ...(quality.maxDpr !== undefined ? { maxDpr: quality.maxDpr } : {}),
         ...(lensActive ? { lens: [lens.current.x / width, 1 - lens.current.y / height, LENS.radius, lensStrength] as [number, number, number, number] } : {}) };
       const wideReadingBand = calmGlass && width <= 600;
+      const clearArrival = !!(clearQuote || clearReflection);
       if (calmGlass) {
         if (bend.adhesion !== undefined) bend.adhesion *= .45;
         if (bend.ripple !== undefined) bend.ripple *= .25;
       }
-      if (wideReadingBand) {
+      if (wideReadingBand || clearArrival) {
         // The moving fold magnifies its rim horizontally. Keep resting prose
         // inside the mobile gutters and leave a narrow optical edge.
-        const zoneScale = Math.min(1, .12 / bend.zone, 82 / height / bend.zone);
+        const edge = clearArrival ? 8 : 82;
+        const zoneScale = Math.min(1, .12 / bend.zone, edge / height / bend.zone);
         bend.zone *= zoneScale;
         bend.rounding *= zoneScale;
         if (bend.flare !== undefined) bend.flare *= .04;
       }
       const zone = bend.zone * height;
+      const fold = canvasOwnsGlyphs ? zone : 0;
+      if (fold !== readingFold.current) {
+        readingFold.current = fold;
+        scheduleArrivalCheck();
+      }
       if (variant === 'liquid-live' || variant === 'liquid-live-before') {
         let motion = surfaceMotions.get(variant);
         if (!motion) {
@@ -542,7 +588,8 @@ export function FlowStream(props: Props) {
           scrollTop, reducedMotion: staticGlass,
         }, variant);
         const focused = word.element.contains(activeElement);
-        const clearReading = wideReadingBand && screenY >= zone && screenY <= height - zone;
+        const clearReading = (wideReadingBand || (word.part && (word.part === clearQuote || word.part === clearReflection))) &&
+          screenY >= fold && screenY <= height - fold;
         const blur = focused || word.quiet || clearReading ? 0 : projection.blur;
         const opacity = clearReading ? 1 : projection.opacity;
         const offset = word.part?.motion.offset || 0;
@@ -733,7 +780,7 @@ export function FlowStream(props: Props) {
         const entry = entriesByKey.get(key);
         if (!entry) return [];
         const heading = element.querySelector<HTMLElement>('[data-flow-heading]');
-        if (heading) headings.set(key, { entry, heading });
+        if (heading) headings.set(key, { entry, heading, reflection: element.querySelector('[data-flow-entrance="reflection"]') });
         const { y } = positionOf(element);
         return [{ top: y - element.offsetHeight / 2, bottom: y + element.offsetHeight / 2, order, entry }];
       }));
@@ -743,8 +790,8 @@ export function FlowStream(props: Props) {
         layoutProbe.count++; layoutProbe.lastMs = performance.now() - started;
         layoutProbe.totalMs += layoutProbe.lastMs; layoutProbe.reason = reason;
       }
-      scheduleArrivalCheck();
       schedule();
+      scheduleArrivalCheck();
     };
     measure.current = remeasure;
     // Font and size notifications can describe the same layout in one frame.
@@ -757,6 +804,8 @@ export function FlowStream(props: Props) {
     resize?.observe(panel);
     const fontChanged = () => { planner.invalidate('font'); pendingMeasure = 'font'; schedule(); };
     document.fonts?.addEventListener('loadingdone', fontChanged);
+    window.visualViewport?.addEventListener('resize', scheduleArrivalCheck);
+    window.visualViewport?.addEventListener('scroll', scheduleArrivalCheck);
     // Verified FontFaces are loaded before document.fonts.add(), so adding a
     // late ancestor's face need not emit loadingdone or change line geometry.
     // The installed family list is the typography contract used by native text.
@@ -803,6 +852,8 @@ export function FlowStream(props: Props) {
       resize?.disconnect();
       fontStyles.disconnect();
       document.fonts?.removeEventListener('loadingdone', fontChanged);
+      window.visualViewport?.removeEventListener('resize', scheduleArrivalCheck);
+      window.visualViewport?.removeEventListener('scroll', scheduleArrivalCheck);
       panel.removeEventListener('focusin', onFocus);
       panel.removeEventListener('focusout', schedule);
       document.removeEventListener('visibilitychange', onVisibilityChange);
@@ -894,7 +945,7 @@ export function FlowStream(props: Props) {
     optics.current();
     const top = scrollMotion.position(panel.scrollTop);
     props.onScroll(top);
-    checkArrival();
+    scheduleArrivalCheck();
     const edge = top + panel.clientHeight * .38;
     const entry = articleScene.current.atOrBefore(edge)?.entry;
     const focused = document.activeElement;
@@ -1041,7 +1092,7 @@ export function FlowStream(props: Props) {
             {current && (notesFor === key || notesFor === item.id) && <NotesPanel key={key} draftKey={JSON.stringify([entry.chainId, item.id])}
               notes={props.notes} saving={props.savingNote} onSave={props.onSaveNote} onDelete={props.onDeleteNote}
               onUndo={props.onUndoNote} onUpdate={props.onUpdateNote} onKeepsake={props.onKeepsake} />}
-            {waitingKey && key === entryKey(waitingKey) && props.waiting && <div className={styles.streamWaiting}>{props.waiting}</div>}
+            {waitingKey && key === entryKey(waitingKey) && props.waiting && !dockAction && <div className={styles.streamWaiting}>{props.waiting}</div>}
           </article>;
         })}
         <div className={styles.streamEnd}>
@@ -1052,18 +1103,31 @@ export function FlowStream(props: Props) {
       </div>
     </div>
     {(!props.riseOnReveal || openingSettled) && !menuPresent && !meaningEntry?.entry.frame.meaning && !notesFor && !visibleArrival && props.firstHint}
-    {visibleArrival && <div className={styles.branchArrival} data-flow-arrival role="status">
-      <span>{visibleArrival.label}</span>
+    {visibleArrival && <div className={styles.branchArrival} data-flow-arrival>
+      <span role="status">{dockAction?.kind === 'error' ? <>补全未完成<span className={styles.srOnly}>。{dockAction.message}</span></>
+        : <>{visibleArrival.label}{dockAction?.kind === 'stop' ? ' · 补全中' : ''}</>}</span>
       <button type="button" className={styles.textButton} onClick={() => {
         const target = arrivalHeadings.current.get(visibleArrival.targetKey);
-        if (!target || !panelRef.current?.contains(target.heading)) return;
+        const panel = panelRef.current;
+        if (!target || !panel?.contains(target.heading)) return;
+        const { top, bottom } = visibleReadingBounds(panel, readingFold.current);
         const { entry, heading } = target;
         arrivalDismissed.current = visibleArrival.id;
         showArrival(null);
         props.onRead(entry); setNotesFor(null);
         heading.tabIndex = -1;
-        positionAt(heading);
+        positionAt(heading, bottom > top ? top + (bottom - top) * .25 : undefined);
       }}>去读</button>
+      {dockAction?.kind === 'error' ? <>
+        {dockAction.onRetry && <button type="button" className={styles.textButton} onClick={dockAction.onRetry}>重试</button>}
+        <button type="button" className={styles.textButton} onClick={() => {
+          arrivalDismissed.current = visibleArrival.id;
+          showArrival(null);
+          dockAction.onDismiss();
+          panelRef.current?.focus({ preventScroll: true });
+        }}>{dockAction.dismissLabel}</button>
+      </> : dockAction && <button type="button" className={styles.textButton} onClick={dockAction.onAction}
+        aria-label={dockAction.kind === 'stop' ? '停止补全' : undefined}>{dockAction.kind === 'stop' ? '停止' : '继续补全'}</button>}
     </div>}
     <FlowMenu {...props.navigation} gestureSurface={panelRef} onPresenceChange={setMenuPresent} onGestureStart={target => {
       cancelMeaningPress();
