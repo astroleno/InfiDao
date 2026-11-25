@@ -1,0 +1,4256 @@
+{
+  "commit": "feb1c803f314ed929c1ee88f48e6e61b5f4b4f22",
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "dpr": 3
+  },
+  "started": "2026-11-25T17:32:40.188Z",
+  "caps": {
+    "open": 2,
+    "branch": 4
+  },
+  "sent": {
+    "open": 2,
+    "branch": 2
+  },
+  "opening": {
+    "A": {
+      "http": 200,
+      "sessionStatus": 200,
+      "resources": [
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json",
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/base-serif-c2701e3fde99183cf3b9.woff",
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/base-supplement-7ae6002e9d58b6a75354.woff"
+      ],
+      "call": {
+        "request": {
+          "contentPacks": [
+            "core"
+          ],
+          "seed": "",
+          "graph": true,
+          "op": "open",
+          "requestId": "opaque-1"
+        },
+        "at": 6238.799999982119,
+        "events": [
+          {
+            "at": 7389.9000000059605,
+            "event": {
+              "type": "head",
+              "requestId": "opaque-1",
+              "chain": {
+                "chainId": "opaque-2",
+                "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                "seed": "",
+                "seedOrigin": "example",
+                "focus": "辨明方向，再安顿当下",
+                "parentChainId": null,
+                "entry": null,
+                "frames": [
+                  {
+                    "id": "opaque-3",
+                    "ordinal": 1,
+                    "sourceId": "rysxguji-daxue-1-2",
+                    "corpusVersion": "guji-core-v1",
+                    "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                    "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "quoteStart": 0,
+                    "quoteEnd": 31,
+                    "source": "大学",
+                    "chapterLabel": "第1章 正文",
+                    "fullText": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "lexicalBreaks": [
+                      1,
+                      2,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      10,
+                      11,
+                      12,
+                      13,
+                      14,
+                      16,
+                      17,
+                      18,
+                      19,
+                      20,
+                      22,
+                      23,
+                      24,
+                      25,
+                      26,
+                      28,
+                      29,
+                      30,
+                      31
+                    ],
+                    "meaning": "",
+                    "reflection": "",
+                    "reflectionSpans": [],
+                    "anchors": [],
+                    "provenance": "curated",
+                    "ready": false
+                  }
+                ],
+                "cursor": "0",
+                "exhausted": false,
+                "kind": "remote",
+                "contentScope": {
+                  "packIds": [
+                    "core"
+                  ],
+                  "versions": {
+                    "core": "guji-core-v1"
+                  },
+                  "unavailable": [],
+                  "fingerprint": "47c0d2253cfbb2512337c633"
+                },
+                "graph": true
+              }
+            }
+          },
+          {
+            "at": 9390.5,
+            "event": {
+              "type": "progress",
+              "requestId": "opaque-1",
+              "chain": {
+                "chainId": "opaque-2",
+                "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                "seed": "",
+                "seedOrigin": "example",
+                "focus": "辨明方向，再安顿当下",
+                "parentChainId": null,
+                "entry": null,
+                "frames": [
+                  {
+                    "id": "opaque-3",
+                    "ordinal": 1,
+                    "sourceId": "rysxguji-daxue-1-2",
+                    "corpusVersion": "guji-core-v1",
+                    "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                    "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "quoteStart": 0,
+                    "quoteEnd": 31,
+                    "source": "大学",
+                    "chapterLabel": "第1章 正文",
+                    "fullText": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "lexicalBreaks": [
+                      1,
+                      2,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      10,
+                      11,
+                      12,
+                      13,
+                      14,
+                      16,
+                      17,
+                      18,
+                      19,
+                      20,
+                      22,
+                      23,
+                      24,
+                      25,
+                      26,
+                      28,
+                      29,
+                      30,
+                      31
+                    ],
+                    "meaning": "",
+                    "reflection": "",
+                    "reflectionSpans": [],
+                    "anchors": [],
+                    "provenance": "model",
+                    "ready": false,
+                    "settled": {
+                      "meaning": false,
+                      "reflection": false
+                    },
+                    "textBreaks": {
+                      "meaning": [],
+                      "reflection": []
+                    }
+                  }
+                ],
+                "cursor": "0",
+                "exhausted": false,
+                "kind": "remote",
+                "contentScope": {
+                  "packIds": [
+                    "core"
+                  ],
+                  "versions": {
+                    "core": "guji-core-v1"
+                  },
+                  "unavailable": [],
+                  "fingerprint": "47c0d2253cfbb2512337c633"
+                },
+                "graph": true
+              }
+            }
+          },
+          {
+            "at": 9406.799999982119,
+            "event": {
+              "type": "progress",
+              "requestId": "opaque-1",
+              "chain": {
+                "chainId": "opaque-2",
+                "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                "seed": "",
+                "seedOrigin": "example",
+                "focus": "辨明方向，再安顿当下",
+                "parentChainId": null,
+                "entry": null,
+                "frames": [
+                  {
+                    "id": "opaque-3",
+                    "ordinal": 1,
+                    "sourceId": "rysxguji-daxue-1-2",
+                    "corpusVersion": "guji-core-v1",
+                    "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                    "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "quoteStart": 0,
+                    "quoteEnd": 31,
+                    "source": "大学",
+                    "chapterLabel": "第1章 正文",
+                    "fullText": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "lexicalBreaks": [
+                      1,
+                      2,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      10,
+                      11,
+                      12,
+                      13,
+                      14,
+                      16,
+                      17,
+                      18,
+                      19,
+                      20,
+                      22,
+                      23,
+                      24,
+                      25,
+                      26,
+                      28,
+                      29,
+                      30,
+                      31
+                    ],
+                    "meaning": "",
+                    "reflection": "",
+                    "reflectionSpans": [],
+                    "anchors": [],
+                    "provenance": "model",
+                    "ready": false,
+                    "settled": {
+                      "meaning": true,
+                      "reflection": false
+                    },
+                    "textBreaks": {
+                      "meaning": [],
+                      "reflection": []
+                    }
+                  }
+                ],
+                "cursor": "0",
+                "exhausted": false,
+                "kind": "remote",
+                "contentScope": {
+                  "packIds": [
+                    "core"
+                  ],
+                  "versions": {
+                    "core": "guji-core-v1"
+                  },
+                  "unavailable": [],
+                  "fingerprint": "47c0d2253cfbb2512337c633"
+                },
+                "graph": true
+              }
+            }
+          },
+          {
+            "at": 9937.90000000596,
+            "event": {
+              "type": "progress",
+              "requestId": "opaque-1",
+              "chain": {
+                "chainId": "opaque-2",
+                "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                "seed": "",
+                "seedOrigin": "example",
+                "focus": "辨明方向，再安顿当下",
+                "parentChainId": null,
+                "entry": null,
+                "frames": [
+                  {
+                    "id": "opaque-3",
+                    "ordinal": 1,
+                    "sourceId": "rysxguji-daxue-1-2",
+                    "corpusVersion": "guji-core-v1",
+                    "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                    "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "quoteStart": 0,
+                    "quoteEnd": 31,
+                    "source": "大学",
+                    "chapterLabel": "第1章 正文",
+                    "fullText": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "lexicalBreaks": [
+                      1,
+                      2,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      10,
+                      11,
+                      12,
+                      13,
+                      14,
+                      16,
+                      17,
+                      18,
+                      19,
+                      20,
+                      22,
+                      23,
+                      24,
+                      25,
+                      26,
+                      28,
+                      29,
+                      30,
+                      31
+                    ],
+                    "meaning": "",
+                    "reflection": "“知止”先落在所止之处：目标、分际或位置一旦明确，心才有所归依。由此生出定、静、安，思虑才不散乱，所得也不是偶然。辨明方向，正是先给当下一个可止的坐标。",
+                    "reflectionSpans": [],
+                    "anchors": [],
+                    "provenance": "model",
+                    "ready": false,
+                    "settled": {
+                      "meaning": true,
+                      "reflection": true
+                    },
+                    "textBreaks": {
+                      "meaning": [],
+                      "reflection": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        20,
+                        22,
+                        24,
+                        25,
+                        26,
+                        28,
+                        29,
+                        30,
+                        31,
+                        32,
+                        34,
+                        36,
+                        37,
+                        38,
+                        39,
+                        40,
+                        41,
+                        42,
+                        43,
+                        44,
+                        46,
+                        48,
+                        49,
+                        51,
+                        54,
+                        56,
+                        57,
+                        59,
+                        61,
+                        62,
+                        64,
+                        65,
+                        66,
+                        68,
+                        70,
+                        71,
+                        72,
+                        73,
+                        75,
+                        76
+                      ]
+                    }
+                  }
+                ],
+                "cursor": "0",
+                "exhausted": false,
+                "kind": "remote",
+                "contentScope": {
+                  "packIds": [
+                    "core"
+                  ],
+                  "versions": {
+                    "core": "guji-core-v1"
+                  },
+                  "unavailable": [],
+                  "fingerprint": "47c0d2253cfbb2512337c633"
+                },
+                "graph": true
+              }
+            }
+          },
+          {
+            "at": 10236.09999999404,
+            "event": {
+              "type": "frame",
+              "requestId": "opaque-1",
+              "chain": {
+                "chainId": "opaque-2",
+                "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                "seed": "",
+                "seedOrigin": "example",
+                "focus": "辨明方向，再安顿当下",
+                "parentChainId": null,
+                "entry": null,
+                "frames": [
+                  {
+                    "id": "opaque-3",
+                    "ordinal": 1,
+                    "sourceId": "rysxguji-daxue-1-2",
+                    "corpusVersion": "guji-core-v1",
+                    "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                    "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "quoteStart": 0,
+                    "quoteEnd": 31,
+                    "source": "大学",
+                    "chapterLabel": "第1章 正文",
+                    "fullText": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "lexicalBreaks": [
+                      1,
+                      2,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      10,
+                      11,
+                      12,
+                      13,
+                      14,
+                      16,
+                      17,
+                      18,
+                      19,
+                      20,
+                      22,
+                      23,
+                      24,
+                      25,
+                      26,
+                      28,
+                      29,
+                      30,
+                      31
+                    ],
+                    "meaning": "",
+                    "reflection": "“知止”先落在所止之处：目标、分际或位置一旦明确，心才有所归依。由此生出定、静、安，思虑才不散乱，所得也不是偶然。辨明方向，正是先给当下一个可止的坐标。",
+                    "reflectionSpans": [
+                      {
+                        "text": "“知止”先落在所止之处：目标、分际或位置一旦明确，心才有所归依。由此生出定、静、安，思虑才不散乱，所得也不是偶然。辨明方向，正是先给当下一个可止的坐标。"
+                      }
+                    ],
+                    "anchors": [],
+                    "provenance": "model",
+                    "ready": true,
+                    "settled": {
+                      "meaning": true,
+                      "reflection": true
+                    },
+                    "knowledge": {
+                      "topics": [
+                        "知止",
+                        "定静",
+                        "思虑所得"
+                      ],
+                      "relation": {
+                        "type": "related",
+                        "description": "当前阅读角度强调辨明方向，本句说明知止是定静安虑的前提，方向落定后当下才有所安顿。"
+                      }
+                    },
+                    "textBreaks": {
+                      "meaning": [],
+                      "reflection": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        20,
+                        22,
+                        24,
+                        25,
+                        26,
+                        28,
+                        29,
+                        30,
+                        31,
+                        32,
+                        34,
+                        36,
+                        37,
+                        38,
+                        39,
+                        40,
+                        41,
+                        42,
+                        43,
+                        44,
+                        46,
+                        48,
+                        49,
+                        51,
+                        54,
+                        56,
+                        57,
+                        59,
+                        61,
+                        62,
+                        64,
+                        65,
+                        66,
+                        68,
+                        70,
+                        71,
+                        72,
+                        73,
+                        75,
+                        76
+                      ]
+                    }
+                  }
+                ],
+                "cursor": "opaque-4",
+                "exhausted": false,
+                "kind": "remote",
+                "contentScope": {
+                  "packIds": [
+                    "core"
+                  ],
+                  "versions": {
+                    "core": "guji-core-v1"
+                  },
+                  "unavailable": [],
+                  "fingerprint": "47c0d2253cfbb2512337c633"
+                },
+                "graph": true
+              }
+            }
+          },
+          {
+            "at": 10236.09999999404,
+            "event": {
+              "type": "done",
+              "requestId": "opaque-1",
+              "chain": {
+                "chainId": "opaque-2",
+                "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                "seed": "",
+                "seedOrigin": "example",
+                "focus": "辨明方向，再安顿当下",
+                "parentChainId": null,
+                "entry": null,
+                "frames": [
+                  {
+                    "id": "opaque-3",
+                    "ordinal": 1,
+                    "sourceId": "rysxguji-daxue-1-2",
+                    "corpusVersion": "guji-core-v1",
+                    "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                    "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "quoteStart": 0,
+                    "quoteEnd": 31,
+                    "source": "大学",
+                    "chapterLabel": "第1章 正文",
+                    "fullText": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "lexicalBreaks": [
+                      1,
+                      2,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      10,
+                      11,
+                      12,
+                      13,
+                      14,
+                      16,
+                      17,
+                      18,
+                      19,
+                      20,
+                      22,
+                      23,
+                      24,
+                      25,
+                      26,
+                      28,
+                      29,
+                      30,
+                      31
+                    ],
+                    "meaning": "",
+                    "reflection": "“知止”先落在所止之处：目标、分际或位置一旦明确，心才有所归依。由此生出定、静、安，思虑才不散乱，所得也不是偶然。辨明方向，正是先给当下一个可止的坐标。",
+                    "reflectionSpans": [
+                      {
+                        "text": "“知止”先落在所止之处：目标、分际或位置一旦明确，心才有所归依。由此生出定、静、安，思虑才不散乱，所得也不是偶然。辨明方向，正是先给当下一个可止的坐标。"
+                      }
+                    ],
+                    "anchors": [],
+                    "provenance": "model",
+                    "ready": true,
+                    "settled": {
+                      "meaning": true,
+                      "reflection": true
+                    },
+                    "knowledge": {
+                      "topics": [
+                        "知止",
+                        "定静",
+                        "思虑所得"
+                      ],
+                      "relation": {
+                        "type": "related",
+                        "description": "当前阅读角度强调辨明方向，本句说明知止是定静安虑的前提，方向落定后当下才有所安顿。"
+                      }
+                    },
+                    "textBreaks": {
+                      "meaning": [],
+                      "reflection": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        20,
+                        22,
+                        24,
+                        25,
+                        26,
+                        28,
+                        29,
+                        30,
+                        31,
+                        32,
+                        34,
+                        36,
+                        37,
+                        38,
+                        39,
+                        40,
+                        41,
+                        42,
+                        43,
+                        44,
+                        46,
+                        48,
+                        49,
+                        51,
+                        54,
+                        56,
+                        57,
+                        59,
+                        61,
+                        62,
+                        64,
+                        65,
+                        66,
+                        68,
+                        70,
+                        71,
+                        72,
+                        73,
+                        75,
+                        76
+                      ]
+                    }
+                  }
+                ],
+                "cursor": "opaque-4",
+                "exhausted": false,
+                "kind": "remote",
+                "contentScope": {
+                  "packIds": [
+                    "core"
+                  ],
+                  "versions": {
+                    "core": "guji-core-v1"
+                  },
+                  "unavailable": [],
+                  "fingerprint": "47c0d2253cfbb2512337c633"
+                },
+                "graph": true
+              }
+            }
+          }
+        ],
+        "status": 200,
+        "end": 10259.09999999404
+      },
+      "ready": true
+    },
+    "B": {
+      "http": 200,
+      "sessionStatus": 200,
+      "resources": [
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json",
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/base-serif-c2701e3fde99183cf3b9.woff",
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/base-supplement-7ae6002e9d58b6a75354.woff"
+      ],
+      "call": {
+        "request": {
+          "contentPacks": [
+            "core"
+          ],
+          "seed": "",
+          "graph": true,
+          "op": "open",
+          "requestId": "opaque-5"
+        },
+        "at": 7618.200000017881,
+        "events": [
+          {
+            "at": 8271.40000000596,
+            "event": {
+              "type": "head",
+              "requestId": "opaque-5",
+              "chain": {
+                "chainId": "opaque-6",
+                "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                "seed": "",
+                "seedOrigin": "example",
+                "focus": "辨明方向，再安顿当下",
+                "parentChainId": null,
+                "entry": null,
+                "frames": [
+                  {
+                    "id": "opaque-7",
+                    "ordinal": 1,
+                    "sourceId": "rysxguji-daxue-1-2",
+                    "corpusVersion": "guji-core-v1",
+                    "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                    "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "quoteStart": 0,
+                    "quoteEnd": 31,
+                    "source": "大学",
+                    "chapterLabel": "第1章 正文",
+                    "fullText": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "lexicalBreaks": [
+                      1,
+                      2,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      10,
+                      11,
+                      12,
+                      13,
+                      14,
+                      16,
+                      17,
+                      18,
+                      19,
+                      20,
+                      22,
+                      23,
+                      24,
+                      25,
+                      26,
+                      28,
+                      29,
+                      30,
+                      31
+                    ],
+                    "meaning": "",
+                    "reflection": "",
+                    "reflectionSpans": [],
+                    "anchors": [],
+                    "provenance": "curated",
+                    "ready": false
+                  }
+                ],
+                "cursor": "0",
+                "exhausted": false,
+                "kind": "remote",
+                "contentScope": {
+                  "packIds": [
+                    "core"
+                  ],
+                  "versions": {
+                    "core": "guji-core-v1"
+                  },
+                  "unavailable": [],
+                  "fingerprint": "47c0d2253cfbb2512337c633"
+                },
+                "graph": true
+              }
+            }
+          },
+          {
+            "at": 10283.700000017881,
+            "event": {
+              "type": "progress",
+              "requestId": "opaque-5",
+              "chain": {
+                "chainId": "opaque-6",
+                "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                "seed": "",
+                "seedOrigin": "example",
+                "focus": "辨明方向，再安顿当下",
+                "parentChainId": null,
+                "entry": null,
+                "frames": [
+                  {
+                    "id": "opaque-7",
+                    "ordinal": 1,
+                    "sourceId": "rysxguji-daxue-1-2",
+                    "corpusVersion": "guji-core-v1",
+                    "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                    "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "quoteStart": 0,
+                    "quoteEnd": 31,
+                    "source": "大学",
+                    "chapterLabel": "第1章 正文",
+                    "fullText": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "lexicalBreaks": [
+                      1,
+                      2,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      10,
+                      11,
+                      12,
+                      13,
+                      14,
+                      16,
+                      17,
+                      18,
+                      19,
+                      20,
+                      22,
+                      23,
+                      24,
+                      25,
+                      26,
+                      28,
+                      29,
+                      30,
+                      31
+                    ],
+                    "meaning": "",
+                    "reflection": "",
+                    "reflectionSpans": [],
+                    "anchors": [],
+                    "provenance": "model",
+                    "ready": false,
+                    "settled": {
+                      "meaning": false,
+                      "reflection": false
+                    },
+                    "textBreaks": {
+                      "meaning": [],
+                      "reflection": []
+                    }
+                  }
+                ],
+                "cursor": "0",
+                "exhausted": false,
+                "kind": "remote",
+                "contentScope": {
+                  "packIds": [
+                    "core"
+                  ],
+                  "versions": {
+                    "core": "guji-core-v1"
+                  },
+                  "unavailable": [],
+                  "fingerprint": "47c0d2253cfbb2512337c633"
+                },
+                "graph": true
+              }
+            }
+          },
+          {
+            "at": 10283.700000017881,
+            "event": {
+              "type": "progress",
+              "requestId": "opaque-5",
+              "chain": {
+                "chainId": "opaque-6",
+                "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                "seed": "",
+                "seedOrigin": "example",
+                "focus": "辨明方向，再安顿当下",
+                "parentChainId": null,
+                "entry": null,
+                "frames": [
+                  {
+                    "id": "opaque-7",
+                    "ordinal": 1,
+                    "sourceId": "rysxguji-daxue-1-2",
+                    "corpusVersion": "guji-core-v1",
+                    "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                    "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "quoteStart": 0,
+                    "quoteEnd": 31,
+                    "source": "大学",
+                    "chapterLabel": "第1章 正文",
+                    "fullText": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "lexicalBreaks": [
+                      1,
+                      2,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      10,
+                      11,
+                      12,
+                      13,
+                      14,
+                      16,
+                      17,
+                      18,
+                      19,
+                      20,
+                      22,
+                      23,
+                      24,
+                      25,
+                      26,
+                      28,
+                      29,
+                      30,
+                      31
+                    ],
+                    "meaning": "",
+                    "reflection": "",
+                    "reflectionSpans": [],
+                    "anchors": [],
+                    "provenance": "model",
+                    "ready": false,
+                    "settled": {
+                      "meaning": true,
+                      "reflection": false
+                    },
+                    "textBreaks": {
+                      "meaning": [],
+                      "reflection": []
+                    }
+                  }
+                ],
+                "cursor": "0",
+                "exhausted": false,
+                "kind": "remote",
+                "contentScope": {
+                  "packIds": [
+                    "core"
+                  ],
+                  "versions": {
+                    "core": "guji-core-v1"
+                  },
+                  "unavailable": [],
+                  "fingerprint": "47c0d2253cfbb2512337c633"
+                },
+                "graph": true
+              }
+            }
+          },
+          {
+            "at": 11064,
+            "event": {
+              "type": "progress",
+              "requestId": "opaque-5",
+              "chain": {
+                "chainId": "opaque-6",
+                "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                "seed": "",
+                "seedOrigin": "example",
+                "focus": "辨明方向，再安顿当下",
+                "parentChainId": null,
+                "entry": null,
+                "frames": [
+                  {
+                    "id": "opaque-7",
+                    "ordinal": 1,
+                    "sourceId": "rysxguji-daxue-1-2",
+                    "corpusVersion": "guji-core-v1",
+                    "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                    "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "quoteStart": 0,
+                    "quoteEnd": 31,
+                    "source": "大学",
+                    "chapterLabel": "第1章 正文",
+                    "fullText": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "lexicalBreaks": [
+                      1,
+                      2,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      10,
+                      11,
+                      12,
+                      13,
+                      14,
+                      16,
+                      17,
+                      18,
+                      19,
+                      20,
+                      22,
+                      23,
+                      24,
+                      25,
+                      26,
+                      28,
+                      29,
+                      30,
+                      31
+                    ],
+                    "meaning": "",
+                    "reflection": "“知止”是先认清所要止于何处，方向有了着落，心才渐次定、静、安。若方向未明就急着求安顿，次序便倒了；不妨先问自己此刻要守住的是哪一件事。",
+                    "reflectionSpans": [],
+                    "anchors": [],
+                    "provenance": "model",
+                    "ready": false,
+                    "settled": {
+                      "meaning": true,
+                      "reflection": true
+                    },
+                    "textBreaks": {
+                      "meaning": [],
+                      "reflection": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        8,
+                        10,
+                        12,
+                        14,
+                        15,
+                        17,
+                        19,
+                        20,
+                        21,
+                        22,
+                        23,
+                        24,
+                        26,
+                        27,
+                        28,
+                        29,
+                        30,
+                        31,
+                        32,
+                        33,
+                        35,
+                        37,
+                        38,
+                        40,
+                        41,
+                        43,
+                        44,
+                        46,
+                        47,
+                        49,
+                        50,
+                        52,
+                        53,
+                        54,
+                        56,
+                        58,
+                        59,
+                        61,
+                        63,
+                        64,
+                        67,
+                        68
+                      ]
+                    }
+                  }
+                ],
+                "cursor": "0",
+                "exhausted": false,
+                "kind": "remote",
+                "contentScope": {
+                  "packIds": [
+                    "core"
+                  ],
+                  "versions": {
+                    "core": "guji-core-v1"
+                  },
+                  "unavailable": [],
+                  "fingerprint": "47c0d2253cfbb2512337c633"
+                },
+                "graph": true
+              }
+            }
+          },
+          {
+            "at": 11064,
+            "event": {
+              "type": "frame",
+              "requestId": "opaque-5",
+              "chain": {
+                "chainId": "opaque-6",
+                "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                "seed": "",
+                "seedOrigin": "example",
+                "focus": "辨明方向，再安顿当下",
+                "parentChainId": null,
+                "entry": null,
+                "frames": [
+                  {
+                    "id": "opaque-7",
+                    "ordinal": 1,
+                    "sourceId": "rysxguji-daxue-1-2",
+                    "corpusVersion": "guji-core-v1",
+                    "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                    "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "quoteStart": 0,
+                    "quoteEnd": 31,
+                    "source": "大学",
+                    "chapterLabel": "第1章 正文",
+                    "fullText": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "lexicalBreaks": [
+                      1,
+                      2,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      10,
+                      11,
+                      12,
+                      13,
+                      14,
+                      16,
+                      17,
+                      18,
+                      19,
+                      20,
+                      22,
+                      23,
+                      24,
+                      25,
+                      26,
+                      28,
+                      29,
+                      30,
+                      31
+                    ],
+                    "meaning": "",
+                    "reflection": "“知止”是先认清所要止于何处，方向有了着落，心才渐次定、静、安。若方向未明就急着求安顿，次序便倒了；不妨先问自己此刻要守住的是哪一件事。",
+                    "reflectionSpans": [
+                      {
+                        "text": "“知止”是先认清所要止于何处，方向有了着落，心才渐次定、静、安。若方向未明就急着求安顿，次序便倒了；不妨先问自己此刻要守住的是哪一件事。"
+                      }
+                    ],
+                    "anchors": [],
+                    "provenance": "model",
+                    "ready": true,
+                    "settled": {
+                      "meaning": true,
+                      "reflection": true
+                    },
+                    "knowledge": {
+                      "topics": [
+                        "知止",
+                        "定静",
+                        "次序"
+                      ],
+                      "relation": {
+                        "type": "related",
+                        "description": "当前阅读角度关注方向与安顿的先后，此句正给出止、定、静、安的次第。"
+                      }
+                    },
+                    "textBreaks": {
+                      "meaning": [],
+                      "reflection": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        8,
+                        10,
+                        12,
+                        14,
+                        15,
+                        17,
+                        19,
+                        20,
+                        21,
+                        22,
+                        23,
+                        24,
+                        26,
+                        27,
+                        28,
+                        29,
+                        30,
+                        31,
+                        32,
+                        33,
+                        35,
+                        37,
+                        38,
+                        40,
+                        41,
+                        43,
+                        44,
+                        46,
+                        47,
+                        49,
+                        50,
+                        52,
+                        53,
+                        54,
+                        56,
+                        58,
+                        59,
+                        61,
+                        63,
+                        64,
+                        67,
+                        68
+                      ]
+                    }
+                  }
+                ],
+                "cursor": "opaque-8",
+                "exhausted": false,
+                "kind": "remote",
+                "contentScope": {
+                  "packIds": [
+                    "core"
+                  ],
+                  "versions": {
+                    "core": "guji-core-v1"
+                  },
+                  "unavailable": [],
+                  "fingerprint": "47c0d2253cfbb2512337c633"
+                },
+                "graph": true
+              }
+            }
+          },
+          {
+            "at": 11064,
+            "event": {
+              "type": "done",
+              "requestId": "opaque-5",
+              "chain": {
+                "chainId": "opaque-6",
+                "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                "seed": "",
+                "seedOrigin": "example",
+                "focus": "辨明方向，再安顿当下",
+                "parentChainId": null,
+                "entry": null,
+                "frames": [
+                  {
+                    "id": "opaque-7",
+                    "ordinal": 1,
+                    "sourceId": "rysxguji-daxue-1-2",
+                    "corpusVersion": "guji-core-v1",
+                    "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                    "quote": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "quoteStart": 0,
+                    "quoteEnd": 31,
+                    "source": "大学",
+                    "chapterLabel": "第1章 正文",
+                    "fullText": "知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。",
+                    "lexicalBreaks": [
+                      1,
+                      2,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      10,
+                      11,
+                      12,
+                      13,
+                      14,
+                      16,
+                      17,
+                      18,
+                      19,
+                      20,
+                      22,
+                      23,
+                      24,
+                      25,
+                      26,
+                      28,
+                      29,
+                      30,
+                      31
+                    ],
+                    "meaning": "",
+                    "reflection": "“知止”是先认清所要止于何处，方向有了着落，心才渐次定、静、安。若方向未明就急着求安顿，次序便倒了；不妨先问自己此刻要守住的是哪一件事。",
+                    "reflectionSpans": [
+                      {
+                        "text": "“知止”是先认清所要止于何处，方向有了着落，心才渐次定、静、安。若方向未明就急着求安顿，次序便倒了；不妨先问自己此刻要守住的是哪一件事。"
+                      }
+                    ],
+                    "anchors": [],
+                    "provenance": "model",
+                    "ready": true,
+                    "settled": {
+                      "meaning": true,
+                      "reflection": true
+                    },
+                    "knowledge": {
+                      "topics": [
+                        "知止",
+                        "定静",
+                        "次序"
+                      ],
+                      "relation": {
+                        "type": "related",
+                        "description": "当前阅读角度关注方向与安顿的先后，此句正给出止、定、静、安的次第。"
+                      }
+                    },
+                    "textBreaks": {
+                      "meaning": [],
+                      "reflection": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        8,
+                        10,
+                        12,
+                        14,
+                        15,
+                        17,
+                        19,
+                        20,
+                        21,
+                        22,
+                        23,
+                        24,
+                        26,
+                        27,
+                        28,
+                        29,
+                        30,
+                        31,
+                        32,
+                        33,
+                        35,
+                        37,
+                        38,
+                        40,
+                        41,
+                        43,
+                        44,
+                        46,
+                        47,
+                        49,
+                        50,
+                        52,
+                        53,
+                        54,
+                        56,
+                        58,
+                        59,
+                        61,
+                        63,
+                        64,
+                        67,
+                        68
+                      ]
+                    }
+                  }
+                ],
+                "cursor": "opaque-8",
+                "exhausted": false,
+                "kind": "remote",
+                "contentScope": {
+                  "packIds": [
+                    "core"
+                  ],
+                  "versions": {
+                    "core": "guji-core-v1"
+                  },
+                  "unavailable": [],
+                  "fingerprint": "47c0d2253cfbb2512337c633"
+                },
+                "graph": true
+              }
+            }
+          }
+        ],
+        "status": 200,
+        "end": 11069.40000000596
+      },
+      "ready": true
+    }
+  },
+  "comparisons": {
+    "comparable": false,
+    "fields": {
+      "sourceId": true,
+      "source": true,
+      "corpusVersion": true,
+      "textHash": true,
+      "chapterLabel": true,
+      "work": true,
+      "quoteStart": true,
+      "quoteEnd": true,
+      "fullText": true,
+      "quote": true,
+      "reflection": false,
+      "contentScope": true,
+      "focus": true,
+      "graph": true,
+      "seed": true,
+      "version": true,
+      "independentParents": true,
+      "singleFrame": true,
+      "ready": true,
+      "availableScope": true
+    },
+    "frameCounts": [
+      1,
+      1
+    ],
+    "reflectionHashes": [
+      "4a975e352acf6442cb08ff85759e3bb74a94ea0b6329b903c75c9ac9f22b84e1",
+      "8eb45a880b1e2ccc854243772c1ff8423fd26c0ede35036863be5ad7ccc6f280"
+    ],
+    "words": [
+      [
+        {
+          "word": "虑",
+          "start": 23,
+          "end": 24,
+          "selectable": true,
+          "anchor": null
+        },
+        {
+          "word": "虑",
+          "start": 23,
+          "end": 24,
+          "selectable": true,
+          "anchor": null
+        }
+      ],
+      [
+        {
+          "word": "安",
+          "start": 17,
+          "end": 18,
+          "selectable": true,
+          "anchor": null
+        },
+        {
+          "word": "安",
+          "start": 17,
+          "end": 18,
+          "selectable": true,
+          "anchor": null
+        }
+      ],
+      [
+        {
+          "word": "止",
+          "start": 1,
+          "end": 2,
+          "selectable": true,
+          "anchor": null
+        },
+        {
+          "word": "止",
+          "start": 1,
+          "end": 2,
+          "selectable": true,
+          "anchor": null
+        }
+      ],
+      [
+        {
+          "word": "静",
+          "start": 11,
+          "end": 12,
+          "selectable": true,
+          "anchor": null
+        },
+        {
+          "word": "静",
+          "start": 11,
+          "end": 12,
+          "selectable": true,
+          "anchor": null
+        }
+      ],
+      [
+        {
+          "word": "得",
+          "start": 29,
+          "end": 30,
+          "selectable": true,
+          "anchor": null
+        },
+        {
+          "word": "得",
+          "start": 29,
+          "end": 30,
+          "selectable": true,
+          "anchor": null
+        }
+      ],
+      [
+        {
+          "word": "定",
+          "start": 5,
+          "end": 6,
+          "selectable": true,
+          "anchor": null
+        },
+        {
+          "word": "定",
+          "start": 5,
+          "end": 6,
+          "selectable": true,
+          "anchor": null
+        }
+      ]
+    ]
+  },
+  "attempts": [
+    {
+      "label": "A",
+      "group": "cold",
+      "word": "虑",
+      "start": 23,
+      "end": 24,
+      "selectable": true,
+      "anchor": null,
+      "inDOM": true,
+      "pointer": {
+        "x": 246,
+        "y": 362.24468994140625,
+        "hit": true
+      },
+      "goPointer": {
+        "x": 235.15625,
+        "y": 811,
+        "hit": true
+      },
+      "screenshot": "A-虑-readable.png",
+      "sent": true,
+      "trace": {
+        "calls": [
+          {
+            "request": {
+              "contentPacks": [
+                "core"
+              ],
+              "chainId": "opaque-2",
+              "fromFrameId": "opaque-3",
+              "anchorId": "text:23:24",
+              "selection": {
+                "start": 23,
+                "end": 24,
+                "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                "corpusVersion": "guji-core-v1"
+              },
+              "graph": true,
+              "op": "branch",
+              "requestId": "opaque-9"
+            },
+            "at": 21849.5,
+            "events": [
+              {
+                "at": 25463.40000000596,
+                "event": {
+                  "type": "head",
+                  "requestId": "opaque-9",
+                  "chain": {
+                    "chainId": "opaque-10",
+                    "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                    "seed": "",
+                    "seedOrigin": "example",
+                    "focus": "「虑」在《大学》原文此处：心安定后能周详思虑，进而有所得；可对照《论语》\"学而不思则罔\"与《中庸》\"博学之，审问之，慎思之，明辨之\"，看思虑如何承接安定而来。",
+                    "parentChainId": "opaque-2",
+                    "entry": {
+                      "fromFrameId": "opaque-3",
+                      "anchorId": "text:23:24",
+                      "label": "虑"
+                    },
+                    "frames": [
+                      {
+                        "id": "opaque-11",
+                        "ordinal": 1,
+                        "sourceId": "rysxguji-lunyu-2-12",
+                        "corpusVersion": "guji-core-v1",
+                        "textHash": "68b0ecb1364dbe40fd729ffb91b44682d8f171973d2e7f2c5316ab56b8218fe5",
+                        "quote": "学而不思，则罔；思而不学，则殆。",
+                        "quoteStart": 4,
+                        "quoteEnd": 20,
+                        "source": "论语",
+                        "chapterLabel": "第2章 为政第二",
+                        "fullText": "子曰：“学而不思，则罔；思而不学，则殆。”",
+                        "lexicalBreaks": [
+                          2,
+                          3,
+                          4,
+                          8,
+                          9,
+                          10,
+                          11,
+                          12,
+                          13,
+                          15,
+                          16,
+                          17,
+                          18,
+                          19,
+                          20,
+                          21
+                        ],
+                        "meaning": "",
+                        "reflection": "",
+                        "reflectionSpans": [],
+                        "anchors": [],
+                        "provenance": "model",
+                        "ready": false,
+                        "settled": {
+                          "meaning": false,
+                          "reflection": false
+                        },
+                        "textBreaks": {
+                          "meaning": [],
+                          "reflection": []
+                        }
+                      }
+                    ],
+                    "cursor": "0",
+                    "exhausted": false,
+                    "kind": "remote",
+                    "contentScope": {
+                      "packIds": [
+                        "core"
+                      ],
+                      "versions": {
+                        "core": "guji-core-v1"
+                      },
+                      "unavailable": [],
+                      "fingerprint": "47c0d2253cfbb2512337c633"
+                    },
+                    "graph": true
+                  }
+                }
+              },
+              {
+                "at": 25842.79999998212,
+                "event": {
+                  "type": "progress",
+                  "requestId": "opaque-9",
+                  "chain": {
+                    "chainId": "opaque-10",
+                    "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                    "seed": "",
+                    "seedOrigin": "example",
+                    "focus": "「虑」在《大学》原文此处：心安定后能周详思虑，进而有所得；可对照《论语》\"学而不思则罔\"与《中庸》\"博学之，审问之，慎思之，明辨之\"，看思虑如何承接安定而来。",
+                    "parentChainId": "opaque-2",
+                    "entry": {
+                      "fromFrameId": "opaque-3",
+                      "anchorId": "text:23:24",
+                      "label": "虑"
+                    },
+                    "frames": [
+                      {
+                        "id": "opaque-11",
+                        "ordinal": 1,
+                        "sourceId": "rysxguji-lunyu-2-12",
+                        "corpusVersion": "guji-core-v1",
+                        "textHash": "68b0ecb1364dbe40fd729ffb91b44682d8f171973d2e7f2c5316ab56b8218fe5",
+                        "quote": "学而不思，则罔；思而不学，则殆。",
+                        "quoteStart": 4,
+                        "quoteEnd": 20,
+                        "source": "论语",
+                        "chapterLabel": "第2章 为政第二",
+                        "fullText": "子曰：“学而不思，则罔；思而不学，则殆。”",
+                        "lexicalBreaks": [
+                          2,
+                          3,
+                          4,
+                          8,
+                          9,
+                          10,
+                          11,
+                          12,
+                          13,
+                          15,
+                          16,
+                          17,
+                          18,
+                          19,
+                          20,
+                          21
+                        ],
+                        "meaning": "只学不思考会迷惘无所得，只思考不学习会危疑不安。",
+                        "reflection": "",
+                        "reflectionSpans": [],
+                        "anchors": [],
+                        "provenance": "model",
+                        "ready": false,
+                        "settled": {
+                          "meaning": true,
+                          "reflection": false
+                        },
+                        "textBreaks": {
+                          "meaning": [
+                            1,
+                            2,
+                            3,
+                            5,
+                            6,
+                            8,
+                            9,
+                            11,
+                            12,
+                            13,
+                            15,
+                            16,
+                            18,
+                            19,
+                            20,
+                            21,
+                            23,
+                            24
+                          ],
+                          "reflection": []
+                        }
+                      }
+                    ],
+                    "cursor": "0",
+                    "exhausted": false,
+                    "kind": "remote",
+                    "contentScope": {
+                      "packIds": [
+                        "core"
+                      ],
+                      "versions": {
+                        "core": "guji-core-v1"
+                      },
+                      "unavailable": [],
+                      "fingerprint": "47c0d2253cfbb2512337c633"
+                    },
+                    "graph": true
+                  }
+                }
+              },
+              {
+                "at": 26115.69999998808,
+                "event": {
+                  "type": "progress",
+                  "requestId": "opaque-9",
+                  "chain": {
+                    "chainId": "opaque-10",
+                    "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                    "seed": "",
+                    "seedOrigin": "example",
+                    "focus": "「虑」在《大学》原文此处：心安定后能周详思虑，进而有所得；可对照《论语》\"学而不思则罔\"与《中庸》\"博学之，审问之，慎思之，明辨之\"，看思虑如何承接安定而来。",
+                    "parentChainId": "opaque-2",
+                    "entry": {
+                      "fromFrameId": "opaque-3",
+                      "anchorId": "text:23:24",
+                      "label": "虑"
+                    },
+                    "frames": [
+                      {
+                        "id": "opaque-11",
+                        "ordinal": 1,
+                        "sourceId": "rysxguji-lunyu-2-12",
+                        "corpusVersion": "guji-core-v1",
+                        "textHash": "68b0ecb1364dbe40fd729ffb91b44682d8f171973d2e7f2c5316ab56b8218fe5",
+                        "quote": "学而不思，则罔；思而不学，则殆。",
+                        "quoteStart": 4,
+                        "quoteEnd": 20,
+                        "source": "论语",
+                        "chapterLabel": "第2章 为政第二",
+                        "fullText": "子曰：“学而不思，则罔；思而不学，则殆。”",
+                        "lexicalBreaks": [
+                          2,
+                          3,
+                          4,
+                          8,
+                          9,
+                          10,
+                          11,
+                          12,
+                          13,
+                          15,
+                          16,
+                          17,
+                          18,
+                          19,
+                          20,
+                          21
+                        ],
+                        "meaning": "只学不思考会迷惘无所得，只思考不学习会危疑不安。",
+                        "reflection": "《大学》说安而后能虑，把思虑放在心定之后；此句则从反面提醒，思虑本身还需学作依据。安定使思虑不散乱，学使所思有所本，两者合看，才见“虑”既需心的安顿，也需闻见的支撑。",
+                        "reflectionSpans": [],
+                        "anchors": [],
+                        "provenance": "model",
+                        "ready": false,
+                        "settled": {
+                          "meaning": true,
+                          "reflection": true
+                        },
+                        "textBreaks": {
+                          "meaning": [
+                            1,
+                            2,
+                            3,
+                            5,
+                            6,
+                            8,
+                            9,
+                            11,
+                            12,
+                            13,
+                            15,
+                            16,
+                            18,
+                            19,
+                            20,
+                            21,
+                            23,
+                            24
+                          ],
+                          "reflection": [
+                            1,
+                            3,
+                            4,
+                            5,
+                            6,
+                            8,
+                            9,
+                            10,
+                            11,
+                            12,
+                            13,
+                            14,
+                            16,
+                            17,
+                            18,
+                            20,
+                            21,
+                            22,
+                            23,
+                            24,
+                            25,
+                            27,
+                            29,
+                            30,
+                            31,
+                            32,
+                            34,
+                            35,
+                            36,
+                            37,
+                            38,
+                            40,
+                            41,
+                            43,
+                            44,
+                            45,
+                            46,
+                            47,
+                            49,
+                            50,
+                            51,
+                            52,
+                            53,
+                            54,
+                            56,
+                            57,
+                            58,
+                            60,
+                            61,
+                            62,
+                            63,
+                            64,
+                            65,
+                            66,
+                            67,
+                            68,
+                            69,
+                            70,
+                            71,
+                            72,
+                            74,
+                            75,
+                            76,
+                            77,
+                            78,
+                            79,
+                            80,
+                            82,
+                            83
+                          ]
+                        }
+                      }
+                    ],
+                    "cursor": "0",
+                    "exhausted": false,
+                    "kind": "remote",
+                    "contentScope": {
+                      "packIds": [
+                        "core"
+                      ],
+                      "versions": {
+                        "core": "guji-core-v1"
+                      },
+                      "unavailable": [],
+                      "fingerprint": "47c0d2253cfbb2512337c633"
+                    },
+                    "graph": true
+                  }
+                }
+              },
+              {
+                "at": 26258.09999999404,
+                "event": {
+                  "type": "frame",
+                  "requestId": "opaque-9",
+                  "chain": {
+                    "chainId": "opaque-10",
+                    "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                    "seed": "",
+                    "seedOrigin": "example",
+                    "focus": "「虑」在《大学》原文此处：心安定后能周详思虑，进而有所得；可对照《论语》\"学而不思则罔\"与《中庸》\"博学之，审问之，慎思之，明辨之\"，看思虑如何承接安定而来。",
+                    "parentChainId": "opaque-2",
+                    "entry": {
+                      "fromFrameId": "opaque-3",
+                      "anchorId": "text:23:24",
+                      "label": "虑"
+                    },
+                    "frames": [
+                      {
+                        "id": "opaque-11",
+                        "ordinal": 1,
+                        "sourceId": "rysxguji-lunyu-2-12",
+                        "corpusVersion": "guji-core-v1",
+                        "textHash": "68b0ecb1364dbe40fd729ffb91b44682d8f171973d2e7f2c5316ab56b8218fe5",
+                        "quote": "学而不思，则罔；思而不学，则殆。",
+                        "quoteStart": 4,
+                        "quoteEnd": 20,
+                        "source": "论语",
+                        "chapterLabel": "第2章 为政第二",
+                        "fullText": "子曰：“学而不思，则罔；思而不学，则殆。”",
+                        "lexicalBreaks": [
+                          2,
+                          3,
+                          4,
+                          8,
+                          9,
+                          10,
+                          11,
+                          12,
+                          13,
+                          15,
+                          16,
+                          17,
+                          18,
+                          19,
+                          20,
+                          21
+                        ],
+                        "meaning": "只学不思考会迷惘无所得，只思考不学习会危疑不安。",
+                        "reflection": "《大学》说安而后能虑，把思虑放在心定之后；此句则从反面提醒，思虑本身还需学作依据。安定使思虑不散乱，学使所思有所本，两者合看，才见“虑”既需心的安顿，也需闻见的支撑。",
+                        "reflectionSpans": [
+                          {
+                            "text": "《大学》说安而后能虑，把思虑放在心定之后；此句则从反面提醒，思虑本身还需学作依据。安定使思虑不散乱，学使所思有所本，两者合看，才见“虑”既需心的安顿，也需闻见的支撑。"
+                          }
+                        ],
+                        "anchors": [],
+                        "provenance": "model",
+                        "ready": true,
+                        "settled": {
+                          "meaning": true,
+                          "reflection": true
+                        },
+                        "knowledge": {
+                          "topics": [
+                            "思与学",
+                            "安定与思虑",
+                            "为学次序"
+                          ],
+                          "relation": {
+                            "type": "contrast",
+                            "description": "《大学》言安而后能虑，此句则指出思虑若无学依托会陷于危疑，形成条件上的对照。"
+                          }
+                        },
+                        "textBreaks": {
+                          "meaning": [
+                            1,
+                            2,
+                            3,
+                            5,
+                            6,
+                            8,
+                            9,
+                            11,
+                            12,
+                            13,
+                            15,
+                            16,
+                            18,
+                            19,
+                            20,
+                            21,
+                            23,
+                            24
+                          ],
+                          "reflection": [
+                            1,
+                            3,
+                            4,
+                            5,
+                            6,
+                            8,
+                            9,
+                            10,
+                            11,
+                            12,
+                            13,
+                            14,
+                            16,
+                            17,
+                            18,
+                            20,
+                            21,
+                            22,
+                            23,
+                            24,
+                            25,
+                            27,
+                            29,
+                            30,
+                            31,
+                            32,
+                            34,
+                            35,
+                            36,
+                            37,
+                            38,
+                            40,
+                            41,
+                            43,
+                            44,
+                            45,
+                            46,
+                            47,
+                            49,
+                            50,
+                            51,
+                            52,
+                            53,
+                            54,
+                            56,
+                            57,
+                            58,
+                            60,
+                            61,
+                            62,
+                            63,
+                            64,
+                            65,
+                            66,
+                            67,
+                            68,
+                            69,
+                            70,
+                            71,
+                            72,
+                            74,
+                            75,
+                            76,
+                            77,
+                            78,
+                            79,
+                            80,
+                            82,
+                            83
+                          ]
+                        }
+                      }
+                    ],
+                    "cursor": "opaque-12",
+                    "exhausted": false,
+                    "kind": "remote",
+                    "contentScope": {
+                      "packIds": [
+                        "core"
+                      ],
+                      "versions": {
+                        "core": "guji-core-v1"
+                      },
+                      "unavailable": [],
+                      "fingerprint": "47c0d2253cfbb2512337c633"
+                    },
+                    "graph": true
+                  }
+                }
+              },
+              {
+                "at": 26258.09999999404,
+                "event": {
+                  "type": "done",
+                  "requestId": "opaque-9",
+                  "chain": {
+                    "chainId": "opaque-10",
+                    "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                    "seed": "",
+                    "seedOrigin": "example",
+                    "focus": "「虑」在《大学》原文此处：心安定后能周详思虑，进而有所得；可对照《论语》\"学而不思则罔\"与《中庸》\"博学之，审问之，慎思之，明辨之\"，看思虑如何承接安定而来。",
+                    "parentChainId": "opaque-2",
+                    "entry": {
+                      "fromFrameId": "opaque-3",
+                      "anchorId": "text:23:24",
+                      "label": "虑"
+                    },
+                    "frames": [
+                      {
+                        "id": "opaque-11",
+                        "ordinal": 1,
+                        "sourceId": "rysxguji-lunyu-2-12",
+                        "corpusVersion": "guji-core-v1",
+                        "textHash": "68b0ecb1364dbe40fd729ffb91b44682d8f171973d2e7f2c5316ab56b8218fe5",
+                        "quote": "学而不思，则罔；思而不学，则殆。",
+                        "quoteStart": 4,
+                        "quoteEnd": 20,
+                        "source": "论语",
+                        "chapterLabel": "第2章 为政第二",
+                        "fullText": "子曰：“学而不思，则罔；思而不学，则殆。”",
+                        "lexicalBreaks": [
+                          2,
+                          3,
+                          4,
+                          8,
+                          9,
+                          10,
+                          11,
+                          12,
+                          13,
+                          15,
+                          16,
+                          17,
+                          18,
+                          19,
+                          20,
+                          21
+                        ],
+                        "meaning": "只学不思考会迷惘无所得，只思考不学习会危疑不安。",
+                        "reflection": "《大学》说安而后能虑，把思虑放在心定之后；此句则从反面提醒，思虑本身还需学作依据。安定使思虑不散乱，学使所思有所本，两者合看，才见“虑”既需心的安顿，也需闻见的支撑。",
+                        "reflectionSpans": [
+                          {
+                            "text": "《大学》说安而后能虑，把思虑放在心定之后；此句则从反面提醒，思虑本身还需学作依据。安定使思虑不散乱，学使所思有所本，两者合看，才见“虑”既需心的安顿，也需闻见的支撑。"
+                          }
+                        ],
+                        "anchors": [],
+                        "provenance": "model",
+                        "ready": true,
+                        "settled": {
+                          "meaning": true,
+                          "reflection": true
+                        },
+                        "knowledge": {
+                          "topics": [
+                            "思与学",
+                            "安定与思虑",
+                            "为学次序"
+                          ],
+                          "relation": {
+                            "type": "contrast",
+                            "description": "《大学》言安而后能虑，此句则指出思虑若无学依托会陷于危疑，形成条件上的对照。"
+                          }
+                        },
+                        "textBreaks": {
+                          "meaning": [
+                            1,
+                            2,
+                            3,
+                            5,
+                            6,
+                            8,
+                            9,
+                            11,
+                            12,
+                            13,
+                            15,
+                            16,
+                            18,
+                            19,
+                            20,
+                            21,
+                            23,
+                            24
+                          ],
+                          "reflection": [
+                            1,
+                            3,
+                            4,
+                            5,
+                            6,
+                            8,
+                            9,
+                            10,
+                            11,
+                            12,
+                            13,
+                            14,
+                            16,
+                            17,
+                            18,
+                            20,
+                            21,
+                            22,
+                            23,
+                            24,
+                            25,
+                            27,
+                            29,
+                            30,
+                            31,
+                            32,
+                            34,
+                            35,
+                            36,
+                            37,
+                            38,
+                            40,
+                            41,
+                            43,
+                            44,
+                            45,
+                            46,
+                            47,
+                            49,
+                            50,
+                            51,
+                            52,
+                            53,
+                            54,
+                            56,
+                            57,
+                            58,
+                            60,
+                            61,
+                            62,
+                            63,
+                            64,
+                            65,
+                            66,
+                            67,
+                            68,
+                            69,
+                            70,
+                            71,
+                            72,
+                            74,
+                            75,
+                            76,
+                            77,
+                            78,
+                            79,
+                            80,
+                            82,
+                            83
+                          ]
+                        }
+                      }
+                    ],
+                    "cursor": "opaque-12",
+                    "exhausted": false,
+                    "kind": "remote",
+                    "contentScope": {
+                      "packIds": [
+                        "core"
+                      ],
+                      "versions": {
+                        "core": "guji-core-v1"
+                      },
+                      "unavailable": [],
+                      "fingerprint": "47c0d2253cfbb2512337c633"
+                    },
+                    "graph": true
+                  }
+                }
+              }
+            ],
+            "status": 200,
+            "end": 26259.59999999404
+          }
+        ],
+        "clicks": [
+          {
+            "kind": "word",
+            "at": 21692,
+            "trusted": true,
+            "parentId": "opaque-3"
+          },
+          {
+            "kind": "go",
+            "at": 25586.29999998212,
+            "trusted": true
+          }
+        ],
+        "goAvailable": 25510.29999998212,
+        "visual": {
+          "id": "opaque-11",
+          "at": 25593.29999998212,
+          "geometry": {
+            "top": 199.05999755859375,
+            "bottom": 421.05999755859375,
+            "left": 70.203125,
+            "right": 319.796875,
+            "viewportTop": 0,
+            "viewportBottom": 844,
+            "viewportLeft": 0,
+            "viewportRight": 390,
+            "ink": "settled",
+            "entry": "settled"
+          },
+          "verifiedAt": 25642.90000000596
+        },
+        "lastGeometry": {
+          "top": 199.05999755859375,
+          "bottom": 421.05999755859375,
+          "left": 70.203125,
+          "right": 319.796875,
+          "viewportTop": 0,
+          "viewportBottom": 844,
+          "viewportLeft": 0,
+          "viewportRight": 390,
+          "ink": "settled",
+          "entry": "settled"
+        }
+      },
+      "final": {
+        "relation": "pass",
+        "child": "opaque-10",
+        "isChild": true,
+        "head": {
+          "id": "opaque-11",
+          "ordinal": 1,
+          "sourceId": "rysxguji-lunyu-2-12",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "68b0ecb1364dbe40fd729ffb91b44682d8f171973d2e7f2c5316ab56b8218fe5",
+          "quote": "学而不思，则罔；思而不学，则殆。",
+          "quoteStart": 4,
+          "quoteEnd": 20,
+          "source": "论语",
+          "chapterLabel": "第2章 为政第二",
+          "fullText": "子曰：“学而不思，则罔；思而不学，则殆。”",
+          "lexicalBreaks": [
+            2,
+            3,
+            4,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21
+          ],
+          "meaning": "",
+          "reflection": "",
+          "reflectionSpans": [],
+          "anchors": [],
+          "provenance": "model",
+          "ready": false,
+          "settled": {
+            "meaning": false,
+            "reflection": false
+          },
+          "textBreaks": {
+            "meaning": [],
+            "reflection": []
+          }
+        },
+        "frame": {
+          "id": "opaque-11",
+          "ordinal": 1,
+          "sourceId": "rysxguji-lunyu-2-12",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "68b0ecb1364dbe40fd729ffb91b44682d8f171973d2e7f2c5316ab56b8218fe5",
+          "quote": "学而不思，则罔；思而不学，则殆。",
+          "quoteStart": 4,
+          "quoteEnd": 20,
+          "source": "论语",
+          "chapterLabel": "第2章 为政第二",
+          "fullText": "子曰：“学而不思，则罔；思而不学，则殆。”",
+          "lexicalBreaks": [
+            2,
+            3,
+            4,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21
+          ],
+          "meaning": "只学不思考会迷惘无所得，只思考不学习会危疑不安。",
+          "reflection": "《大学》说安而后能虑，把思虑放在心定之后；此句则从反面提醒，思虑本身还需学作依据。安定使思虑不散乱，学使所思有所本，两者合看，才见“虑”既需心的安顿，也需闻见的支撑。",
+          "reflectionSpans": [
+            {
+              "text": "《大学》说安而后能虑，把思虑放在心定之后；此句则从反面提醒，思虑本身还需学作依据。安定使思虑不散乱，学使所思有所本，两者合看，才见“虑”既需心的安顿，也需闻见的支撑。"
+            }
+          ],
+          "anchors": [],
+          "provenance": "model",
+          "ready": true,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          },
+          "knowledge": {
+            "topics": [
+              "思与学",
+              "安定与思虑",
+              "为学次序"
+            ],
+            "relation": {
+              "type": "contrast",
+              "description": "《大学》言安而后能虑，此句则指出思虑若无学依托会陷于危疑，形成条件上的对照。"
+            }
+          },
+          "textBreaks": {
+            "meaning": [
+              1,
+              2,
+              3,
+              5,
+              6,
+              8,
+              9,
+              11,
+              12,
+              13,
+              15,
+              16,
+              18,
+              19,
+              20,
+              21,
+              23,
+              24
+            ],
+            "reflection": [
+              1,
+              3,
+              4,
+              5,
+              6,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              16,
+              17,
+              18,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              27,
+              29,
+              30,
+              31,
+              32,
+              34,
+              35,
+              36,
+              37,
+              38,
+              40,
+              41,
+              43,
+              44,
+              45,
+              46,
+              47,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              56,
+              57,
+              58,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              82,
+              83
+            ]
+          }
+        },
+        "done": {
+          "id": "opaque-11",
+          "ordinal": 1,
+          "sourceId": "rysxguji-lunyu-2-12",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "68b0ecb1364dbe40fd729ffb91b44682d8f171973d2e7f2c5316ab56b8218fe5",
+          "quote": "学而不思，则罔；思而不学，则殆。",
+          "quoteStart": 4,
+          "quoteEnd": 20,
+          "source": "论语",
+          "chapterLabel": "第2章 为政第二",
+          "fullText": "子曰：“学而不思，则罔；思而不学，则殆。”",
+          "lexicalBreaks": [
+            2,
+            3,
+            4,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21
+          ],
+          "meaning": "只学不思考会迷惘无所得，只思考不学习会危疑不安。",
+          "reflection": "《大学》说安而后能虑，把思虑放在心定之后；此句则从反面提醒，思虑本身还需学作依据。安定使思虑不散乱，学使所思有所本，两者合看，才见“虑”既需心的安顿，也需闻见的支撑。",
+          "reflectionSpans": [
+            {
+              "text": "《大学》说安而后能虑，把思虑放在心定之后；此句则从反面提醒，思虑本身还需学作依据。安定使思虑不散乱，学使所思有所本，两者合看，才见“虑”既需心的安顿，也需闻见的支撑。"
+            }
+          ],
+          "anchors": [],
+          "provenance": "model",
+          "ready": true,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          },
+          "knowledge": {
+            "topics": [
+              "思与学",
+              "安定与思虑",
+              "为学次序"
+            ],
+            "relation": {
+              "type": "contrast",
+              "description": "《大学》言安而后能虑，此句则指出思虑若无学依托会陷于危疑，形成条件上的对照。"
+            }
+          },
+          "textBreaks": {
+            "meaning": [
+              1,
+              2,
+              3,
+              5,
+              6,
+              8,
+              9,
+              11,
+              12,
+              13,
+              15,
+              16,
+              18,
+              19,
+              20,
+              21,
+              23,
+              24
+            ],
+            "reflection": [
+              1,
+              3,
+              4,
+              5,
+              6,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              16,
+              17,
+              18,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              27,
+              29,
+              30,
+              31,
+              32,
+              34,
+              35,
+              36,
+              37,
+              38,
+              40,
+              41,
+              43,
+              44,
+              45,
+              46,
+              47,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              56,
+              57,
+              58,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              82,
+              83
+            ]
+          }
+        }
+      },
+      "route": "cold",
+      "ms": {
+        "request": 157.5,
+        "firstQuote": 3771.4000000059605,
+        "goAvailable": 3818.2999999821186,
+        "go": 3894.2999999821186,
+        "readable": 3901.2999999821186,
+        "verified": 3950.9000000059605,
+        "frame": 4566.0999999940395,
+        "done": 4566.0999999940395,
+        "readableMinusGoWait": 3825.2999999821186
+      },
+      "corpus": {
+        "sourceId": "rysxguji-lunyu-2-12",
+        "corpusVersion": "guji-core-v1",
+        "interval": [
+          4,
+          20
+        ],
+        "inputSha256": "68b0ecb1364dbe40fd729ffb91b44682d8f171973d2e7f2c5316ab56b8218fe5",
+        "matchesHash": true,
+        "matchesFullText": true,
+        "matchesQuote": true
+      }
+    },
+    {
+      "label": "A",
+      "group": "cold",
+      "word": "安",
+      "start": 17,
+      "end": 18,
+      "selectable": true,
+      "anchor": null,
+      "inDOM": true,
+      "pointer": {
+        "x": 246,
+        "y": 306.74468994140625,
+        "hit": true
+      },
+      "screenshot": "A-安-readable.png",
+      "sent": true,
+      "trace": {
+        "calls": [
+          {
+            "request": {
+              "contentPacks": [
+                "core"
+              ],
+              "chainId": "opaque-2",
+              "fromFrameId": "opaque-3",
+              "anchorId": "text:17:18",
+              "selection": {
+                "start": 17,
+                "end": 18,
+                "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+                "corpusVersion": "guji-core-v1"
+              },
+              "graph": true,
+              "op": "branch",
+              "requestId": "opaque-13"
+            },
+            "at": 26450.69999998808,
+            "events": [
+              {
+                "at": 30386.09999999404,
+                "event": {
+                  "type": "head",
+                  "requestId": "opaque-13",
+                  "chain": {
+                    "chainId": "opaque-14",
+                    "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                    "seed": "",
+                    "seedOrigin": "example",
+                    "focus": "「安」在《大学》原文此处：内心安定、安稳，指心不妄动而安处其所；可对照《论语》\"君子食无求饱，居无求安\"与《孟子》\"安其危而利其菑\"，看\"安\"在儒家语境中如何由居处之安转为心性之安。",
+                    "parentChainId": "opaque-2",
+                    "entry": {
+                      "fromFrameId": "opaque-3",
+                      "anchorId": "text:17:18",
+                      "label": "安"
+                    },
+                    "frames": [
+                      {
+                        "id": "opaque-15",
+                        "ordinal": 1,
+                        "sourceId": "rysxguji-lunyu-1-9",
+                        "corpusVersion": "guji-core-v1",
+                        "textHash": "eef9c2f1744d2a22804a0254c8902e46ecfa0163f53253ef95ab4ecee1f8b91e",
+                        "quote": "君子食无求饱，居无求安",
+                        "quoteStart": 4,
+                        "quoteEnd": 15,
+                        "source": "论语",
+                        "chapterLabel": "第1章 学而第一",
+                        "fullText": "子曰：“君子食无求饱，居无求安，敏于事而慎于言，就有道而正焉，可谓好学也已。”",
+                        "lexicalBreaks": [
+                          2,
+                          3,
+                          4,
+                          6,
+                          10,
+                          11,
+                          12,
+                          13,
+                          14,
+                          15,
+                          16,
+                          17,
+                          18,
+                          19,
+                          20,
+                          21,
+                          22,
+                          23,
+                          24,
+                          26,
+                          27,
+                          28,
+                          29,
+                          30,
+                          31,
+                          33,
+                          35,
+                          36,
+                          37,
+                          38,
+                          39
+                        ],
+                        "meaning": "",
+                        "reflection": "",
+                        "reflectionSpans": [],
+                        "anchors": [],
+                        "provenance": "model",
+                        "ready": false,
+                        "settled": {
+                          "meaning": false,
+                          "reflection": false
+                        },
+                        "textBreaks": {
+                          "meaning": [],
+                          "reflection": []
+                        }
+                      }
+                    ],
+                    "cursor": "0",
+                    "exhausted": false,
+                    "kind": "remote",
+                    "contentScope": {
+                      "packIds": [
+                        "core"
+                      ],
+                      "versions": {
+                        "core": "guji-core-v1"
+                      },
+                      "unavailable": [],
+                      "fingerprint": "47c0d2253cfbb2512337c633"
+                    },
+                    "graph": true
+                  }
+                }
+              },
+              {
+                "at": 30476.40000000596,
+                "event": {
+                  "type": "progress",
+                  "requestId": "opaque-13",
+                  "chain": {
+                    "chainId": "opaque-14",
+                    "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                    "seed": "",
+                    "seedOrigin": "example",
+                    "focus": "「安」在《大学》原文此处：内心安定、安稳，指心不妄动而安处其所；可对照《论语》\"君子食无求饱，居无求安\"与《孟子》\"安其危而利其菑\"，看\"安\"在儒家语境中如何由居处之安转为心性之安。",
+                    "parentChainId": "opaque-2",
+                    "entry": {
+                      "fromFrameId": "opaque-3",
+                      "anchorId": "text:17:18",
+                      "label": "安"
+                    },
+                    "frames": [
+                      {
+                        "id": "opaque-15",
+                        "ordinal": 1,
+                        "sourceId": "rysxguji-lunyu-1-9",
+                        "corpusVersion": "guji-core-v1",
+                        "textHash": "eef9c2f1744d2a22804a0254c8902e46ecfa0163f53253ef95ab4ecee1f8b91e",
+                        "quote": "君子食无求饱，居无求安",
+                        "quoteStart": 4,
+                        "quoteEnd": 15,
+                        "source": "论语",
+                        "chapterLabel": "第1章 学而第一",
+                        "fullText": "子曰：“君子食无求饱，居无求安，敏于事而慎于言，就有道而正焉，可谓好学也已。”",
+                        "lexicalBreaks": [
+                          2,
+                          3,
+                          4,
+                          6,
+                          10,
+                          11,
+                          12,
+                          13,
+                          14,
+                          15,
+                          16,
+                          17,
+                          18,
+                          19,
+                          20,
+                          21,
+                          22,
+                          23,
+                          24,
+                          26,
+                          27,
+                          28,
+                          29,
+                          30,
+                          31,
+                          33,
+                          35,
+                          36,
+                          37,
+                          38,
+                          39
+                        ],
+                        "meaning": "饮食不刻意求饱足，居处不刻意求安逸。",
+                        "reflection": "",
+                        "reflectionSpans": [],
+                        "anchors": [],
+                        "provenance": "model",
+                        "ready": false,
+                        "settled": {
+                          "meaning": true,
+                          "reflection": false
+                        },
+                        "textBreaks": {
+                          "meaning": [
+                            2,
+                            3,
+                            5,
+                            6,
+                            8,
+                            9,
+                            11,
+                            12,
+                            14,
+                            15,
+                            17,
+                            18
+                          ],
+                          "reflection": []
+                        }
+                      }
+                    ],
+                    "cursor": "0",
+                    "exhausted": false,
+                    "kind": "remote",
+                    "contentScope": {
+                      "packIds": [
+                        "core"
+                      ],
+                      "versions": {
+                        "core": "guji-core-v1"
+                      },
+                      "unavailable": [],
+                      "fingerprint": "47c0d2253cfbb2512337c633"
+                    },
+                    "graph": true
+                  }
+                }
+              },
+              {
+                "at": 31027.69999998808,
+                "event": {
+                  "type": "progress",
+                  "requestId": "opaque-13",
+                  "chain": {
+                    "chainId": "opaque-14",
+                    "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                    "seed": "",
+                    "seedOrigin": "example",
+                    "focus": "「安」在《大学》原文此处：内心安定、安稳，指心不妄动而安处其所；可对照《论语》\"君子食无求饱，居无求安\"与《孟子》\"安其危而利其菑\"，看\"安\"在儒家语境中如何由居处之安转为心性之安。",
+                    "parentChainId": "opaque-2",
+                    "entry": {
+                      "fromFrameId": "opaque-3",
+                      "anchorId": "text:17:18",
+                      "label": "安"
+                    },
+                    "frames": [
+                      {
+                        "id": "opaque-15",
+                        "ordinal": 1,
+                        "sourceId": "rysxguji-lunyu-1-9",
+                        "corpusVersion": "guji-core-v1",
+                        "textHash": "eef9c2f1744d2a22804a0254c8902e46ecfa0163f53253ef95ab4ecee1f8b91e",
+                        "quote": "君子食无求饱，居无求安",
+                        "quoteStart": 4,
+                        "quoteEnd": 15,
+                        "source": "论语",
+                        "chapterLabel": "第1章 学而第一",
+                        "fullText": "子曰：“君子食无求饱，居无求安，敏于事而慎于言，就有道而正焉，可谓好学也已。”",
+                        "lexicalBreaks": [
+                          2,
+                          3,
+                          4,
+                          6,
+                          10,
+                          11,
+                          12,
+                          13,
+                          14,
+                          15,
+                          16,
+                          17,
+                          18,
+                          19,
+                          20,
+                          21,
+                          22,
+                          23,
+                          24,
+                          26,
+                          27,
+                          28,
+                          29,
+                          30,
+                          31,
+                          33,
+                          35,
+                          36,
+                          37,
+                          38,
+                          39
+                        ],
+                        "meaning": "饮食不刻意求饱足，居处不刻意求安逸。",
+                        "reflection": "《大学》的“安”是心有所止后的安稳，此句的“安”却是居处安逸，被好学之人主动放下。两处并非同一层：心可以安于所止，身却不以安逸为务。读“安”时，先分清它落在心上还是落在居处上，才不至于把求安稳误当成心定。",
+                        "reflectionSpans": [],
+                        "anchors": [],
+                        "provenance": "model",
+                        "ready": false,
+                        "settled": {
+                          "meaning": true,
+                          "reflection": true
+                        },
+                        "textBreaks": {
+                          "meaning": [
+                            2,
+                            3,
+                            5,
+                            6,
+                            8,
+                            9,
+                            11,
+                            12,
+                            14,
+                            15,
+                            17,
+                            18
+                          ],
+                          "reflection": [
+                            1,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            10,
+                            12,
+                            13,
+                            14,
+                            15,
+                            17,
+                            18,
+                            19,
+                            20,
+                            21,
+                            22,
+                            23,
+                            24,
+                            25,
+                            26,
+                            28,
+                            30,
+                            31,
+                            32,
+                            34,
+                            35,
+                            36,
+                            38,
+                            40,
+                            41,
+                            42,
+                            43,
+                            45,
+                            46,
+                            48,
+                            49,
+                            50,
+                            52,
+                            53,
+                            54,
+                            55,
+                            56,
+                            57,
+                            58,
+                            59,
+                            61,
+                            63,
+                            64,
+                            65,
+                            66,
+                            67,
+                            68,
+                            69,
+                            70,
+                            71,
+                            72,
+                            73,
+                            75,
+                            76,
+                            78,
+                            79,
+                            80,
+                            82,
+                            84,
+                            86,
+                            87,
+                            88,
+                            89,
+                            92,
+                            93,
+                            94,
+                            96,
+                            97,
+                            99,
+                            100,
+                            101,
+                            102
+                          ]
+                        }
+                      }
+                    ],
+                    "cursor": "0",
+                    "exhausted": false,
+                    "kind": "remote",
+                    "contentScope": {
+                      "packIds": [
+                        "core"
+                      ],
+                      "versions": {
+                        "core": "guji-core-v1"
+                      },
+                      "unavailable": [],
+                      "fingerprint": "47c0d2253cfbb2512337c633"
+                    },
+                    "graph": true
+                  }
+                }
+              },
+              {
+                "at": 31273.5,
+                "event": {
+                  "type": "frame",
+                  "requestId": "opaque-13",
+                  "chain": {
+                    "chainId": "opaque-14",
+                    "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                    "seed": "",
+                    "seedOrigin": "example",
+                    "focus": "「安」在《大学》原文此处：内心安定、安稳，指心不妄动而安处其所；可对照《论语》\"君子食无求饱，居无求安\"与《孟子》\"安其危而利其菑\"，看\"安\"在儒家语境中如何由居处之安转为心性之安。",
+                    "parentChainId": "opaque-2",
+                    "entry": {
+                      "fromFrameId": "opaque-3",
+                      "anchorId": "text:17:18",
+                      "label": "安"
+                    },
+                    "frames": [
+                      {
+                        "id": "opaque-15",
+                        "ordinal": 1,
+                        "sourceId": "rysxguji-lunyu-1-9",
+                        "corpusVersion": "guji-core-v1",
+                        "textHash": "eef9c2f1744d2a22804a0254c8902e46ecfa0163f53253ef95ab4ecee1f8b91e",
+                        "quote": "君子食无求饱，居无求安",
+                        "quoteStart": 4,
+                        "quoteEnd": 15,
+                        "source": "论语",
+                        "chapterLabel": "第1章 学而第一",
+                        "fullText": "子曰：“君子食无求饱，居无求安，敏于事而慎于言，就有道而正焉，可谓好学也已。”",
+                        "lexicalBreaks": [
+                          2,
+                          3,
+                          4,
+                          6,
+                          10,
+                          11,
+                          12,
+                          13,
+                          14,
+                          15,
+                          16,
+                          17,
+                          18,
+                          19,
+                          20,
+                          21,
+                          22,
+                          23,
+                          24,
+                          26,
+                          27,
+                          28,
+                          29,
+                          30,
+                          31,
+                          33,
+                          35,
+                          36,
+                          37,
+                          38,
+                          39
+                        ],
+                        "meaning": "饮食不刻意求饱足，居处不刻意求安逸。",
+                        "reflection": "《大学》的“安”是心有所止后的安稳，此句的“安”却是居处安逸，被好学之人主动放下。两处并非同一层：心可以安于所止，身却不以安逸为务。读“安”时，先分清它落在心上还是落在居处上，才不至于把求安稳误当成心定。",
+                        "reflectionSpans": [
+                          {
+                            "text": "《大学》的“安”是心有所止后的安稳，此句的“安”却是居处安逸，被好学之人主动放下。两处并非同一层：心可以安于所止，身却不以安逸为务。读“安”时，先分清它落在心上还是落在居处上，才不至于把求安稳误当成心定。"
+                          }
+                        ],
+                        "anchors": [],
+                        "provenance": "model",
+                        "ready": true,
+                        "settled": {
+                          "meaning": true,
+                          "reflection": true
+                        },
+                        "knowledge": {
+                          "topics": [
+                            "安",
+                            "居处",
+                            "好学",
+                            "心性"
+                          ],
+                          "relation": {
+                            "type": "contrast",
+                            "description": "《大学》的安指心定后的安稳，此句的安指居处安逸，二者层次不同可对照。"
+                          }
+                        },
+                        "textBreaks": {
+                          "meaning": [
+                            2,
+                            3,
+                            5,
+                            6,
+                            8,
+                            9,
+                            11,
+                            12,
+                            14,
+                            15,
+                            17,
+                            18
+                          ],
+                          "reflection": [
+                            1,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            10,
+                            12,
+                            13,
+                            14,
+                            15,
+                            17,
+                            18,
+                            19,
+                            20,
+                            21,
+                            22,
+                            23,
+                            24,
+                            25,
+                            26,
+                            28,
+                            30,
+                            31,
+                            32,
+                            34,
+                            35,
+                            36,
+                            38,
+                            40,
+                            41,
+                            42,
+                            43,
+                            45,
+                            46,
+                            48,
+                            49,
+                            50,
+                            52,
+                            53,
+                            54,
+                            55,
+                            56,
+                            57,
+                            58,
+                            59,
+                            61,
+                            63,
+                            64,
+                            65,
+                            66,
+                            67,
+                            68,
+                            69,
+                            70,
+                            71,
+                            72,
+                            73,
+                            75,
+                            76,
+                            78,
+                            79,
+                            80,
+                            82,
+                            84,
+                            86,
+                            87,
+                            88,
+                            89,
+                            92,
+                            93,
+                            94,
+                            96,
+                            97,
+                            99,
+                            100,
+                            101,
+                            102
+                          ]
+                        }
+                      }
+                    ],
+                    "cursor": "opaque-16",
+                    "exhausted": false,
+                    "kind": "remote",
+                    "contentScope": {
+                      "packIds": [
+                        "core"
+                      ],
+                      "versions": {
+                        "core": "guji-core-v1"
+                      },
+                      "unavailable": [],
+                      "fingerprint": "47c0d2253cfbb2512337c633"
+                    },
+                    "graph": true
+                  }
+                }
+              },
+              {
+                "at": 31273.5,
+                "event": {
+                  "type": "done",
+                  "requestId": "opaque-13",
+                  "chain": {
+                    "chainId": "opaque-14",
+                    "version": "flow-v1:connected-text-v17-source-stance:guji-core-v1:deepseek-flash",
+                    "seed": "",
+                    "seedOrigin": "example",
+                    "focus": "「安」在《大学》原文此处：内心安定、安稳，指心不妄动而安处其所；可对照《论语》\"君子食无求饱，居无求安\"与《孟子》\"安其危而利其菑\"，看\"安\"在儒家语境中如何由居处之安转为心性之安。",
+                    "parentChainId": "opaque-2",
+                    "entry": {
+                      "fromFrameId": "opaque-3",
+                      "anchorId": "text:17:18",
+                      "label": "安"
+                    },
+                    "frames": [
+                      {
+                        "id": "opaque-15",
+                        "ordinal": 1,
+                        "sourceId": "rysxguji-lunyu-1-9",
+                        "corpusVersion": "guji-core-v1",
+                        "textHash": "eef9c2f1744d2a22804a0254c8902e46ecfa0163f53253ef95ab4ecee1f8b91e",
+                        "quote": "君子食无求饱，居无求安",
+                        "quoteStart": 4,
+                        "quoteEnd": 15,
+                        "source": "论语",
+                        "chapterLabel": "第1章 学而第一",
+                        "fullText": "子曰：“君子食无求饱，居无求安，敏于事而慎于言，就有道而正焉，可谓好学也已。”",
+                        "lexicalBreaks": [
+                          2,
+                          3,
+                          4,
+                          6,
+                          10,
+                          11,
+                          12,
+                          13,
+                          14,
+                          15,
+                          16,
+                          17,
+                          18,
+                          19,
+                          20,
+                          21,
+                          22,
+                          23,
+                          24,
+                          26,
+                          27,
+                          28,
+                          29,
+                          30,
+                          31,
+                          33,
+                          35,
+                          36,
+                          37,
+                          38,
+                          39
+                        ],
+                        "meaning": "饮食不刻意求饱足，居处不刻意求安逸。",
+                        "reflection": "《大学》的“安”是心有所止后的安稳，此句的“安”却是居处安逸，被好学之人主动放下。两处并非同一层：心可以安于所止，身却不以安逸为务。读“安”时，先分清它落在心上还是落在居处上，才不至于把求安稳误当成心定。",
+                        "reflectionSpans": [
+                          {
+                            "text": "《大学》的“安”是心有所止后的安稳，此句的“安”却是居处安逸，被好学之人主动放下。两处并非同一层：心可以安于所止，身却不以安逸为务。读“安”时，先分清它落在心上还是落在居处上，才不至于把求安稳误当成心定。"
+                          }
+                        ],
+                        "anchors": [],
+                        "provenance": "model",
+                        "ready": true,
+                        "settled": {
+                          "meaning": true,
+                          "reflection": true
+                        },
+                        "knowledge": {
+                          "topics": [
+                            "安",
+                            "居处",
+                            "好学",
+                            "心性"
+                          ],
+                          "relation": {
+                            "type": "contrast",
+                            "description": "《大学》的安指心定后的安稳，此句的安指居处安逸，二者层次不同可对照。"
+                          }
+                        },
+                        "textBreaks": {
+                          "meaning": [
+                            2,
+                            3,
+                            5,
+                            6,
+                            8,
+                            9,
+                            11,
+                            12,
+                            14,
+                            15,
+                            17,
+                            18
+                          ],
+                          "reflection": [
+                            1,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            10,
+                            12,
+                            13,
+                            14,
+                            15,
+                            17,
+                            18,
+                            19,
+                            20,
+                            21,
+                            22,
+                            23,
+                            24,
+                            25,
+                            26,
+                            28,
+                            30,
+                            31,
+                            32,
+                            34,
+                            35,
+                            36,
+                            38,
+                            40,
+                            41,
+                            42,
+                            43,
+                            45,
+                            46,
+                            48,
+                            49,
+                            50,
+                            52,
+                            53,
+                            54,
+                            55,
+                            56,
+                            57,
+                            58,
+                            59,
+                            61,
+                            63,
+                            64,
+                            65,
+                            66,
+                            67,
+                            68,
+                            69,
+                            70,
+                            71,
+                            72,
+                            73,
+                            75,
+                            76,
+                            78,
+                            79,
+                            80,
+                            82,
+                            84,
+                            86,
+                            87,
+                            88,
+                            89,
+                            92,
+                            93,
+                            94,
+                            96,
+                            97,
+                            99,
+                            100,
+                            101,
+                            102
+                          ]
+                        }
+                      }
+                    ],
+                    "cursor": "opaque-16",
+                    "exhausted": false,
+                    "kind": "remote",
+                    "contentScope": {
+                      "packIds": [
+                        "core"
+                      ],
+                      "versions": {
+                        "core": "guji-core-v1"
+                      },
+                      "unavailable": [],
+                      "fingerprint": "47c0d2253cfbb2512337c633"
+                    },
+                    "graph": true
+                  }
+                }
+              }
+            ],
+            "status": 200,
+            "end": 31275.40000000596
+          }
+        ],
+        "clicks": [
+          {
+            "kind": "word",
+            "at": 26322.69999998808,
+            "trusted": true,
+            "parentId": "opaque-3"
+          }
+        ],
+        "goAvailable": null,
+        "visual": {
+          "id": "opaque-15",
+          "at": 30426.29999998212,
+          "geometry": {
+            "top": 715.4946899414062,
+            "bottom": 826.4946899414062,
+            "left": 70.203125,
+            "right": 319.796875,
+            "viewportTop": 0,
+            "viewportBottom": 844,
+            "viewportLeft": 0,
+            "viewportRight": 390,
+            "ink": "settled",
+            "entry": "settled"
+          },
+          "verifiedAt": 30442.69999998808
+        },
+        "lastGeometry": {
+          "top": 715.4946899414062,
+          "bottom": 826.4946899414062,
+          "left": 70.203125,
+          "right": 319.796875,
+          "viewportTop": 0,
+          "viewportBottom": 844,
+          "viewportLeft": 0,
+          "viewportRight": 390,
+          "ink": "settled",
+          "entry": "settled"
+        }
+      },
+      "final": {
+        "relation": "pass",
+        "child": "opaque-14",
+        "isChild": true,
+        "head": {
+          "id": "opaque-15",
+          "ordinal": 1,
+          "sourceId": "rysxguji-lunyu-1-9",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "eef9c2f1744d2a22804a0254c8902e46ecfa0163f53253ef95ab4ecee1f8b91e",
+          "quote": "君子食无求饱，居无求安",
+          "quoteStart": 4,
+          "quoteEnd": 15,
+          "source": "论语",
+          "chapterLabel": "第1章 学而第一",
+          "fullText": "子曰：“君子食无求饱，居无求安，敏于事而慎于言，就有道而正焉，可谓好学也已。”",
+          "lexicalBreaks": [
+            2,
+            3,
+            4,
+            6,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            33,
+            35,
+            36,
+            37,
+            38,
+            39
+          ],
+          "meaning": "",
+          "reflection": "",
+          "reflectionSpans": [],
+          "anchors": [],
+          "provenance": "model",
+          "ready": false,
+          "settled": {
+            "meaning": false,
+            "reflection": false
+          },
+          "textBreaks": {
+            "meaning": [],
+            "reflection": []
+          }
+        },
+        "frame": {
+          "id": "opaque-15",
+          "ordinal": 1,
+          "sourceId": "rysxguji-lunyu-1-9",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "eef9c2f1744d2a22804a0254c8902e46ecfa0163f53253ef95ab4ecee1f8b91e",
+          "quote": "君子食无求饱，居无求安",
+          "quoteStart": 4,
+          "quoteEnd": 15,
+          "source": "论语",
+          "chapterLabel": "第1章 学而第一",
+          "fullText": "子曰：“君子食无求饱，居无求安，敏于事而慎于言，就有道而正焉，可谓好学也已。”",
+          "lexicalBreaks": [
+            2,
+            3,
+            4,
+            6,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            33,
+            35,
+            36,
+            37,
+            38,
+            39
+          ],
+          "meaning": "饮食不刻意求饱足，居处不刻意求安逸。",
+          "reflection": "《大学》的“安”是心有所止后的安稳，此句的“安”却是居处安逸，被好学之人主动放下。两处并非同一层：心可以安于所止，身却不以安逸为务。读“安”时，先分清它落在心上还是落在居处上，才不至于把求安稳误当成心定。",
+          "reflectionSpans": [
+            {
+              "text": "《大学》的“安”是心有所止后的安稳，此句的“安”却是居处安逸，被好学之人主动放下。两处并非同一层：心可以安于所止，身却不以安逸为务。读“安”时，先分清它落在心上还是落在居处上，才不至于把求安稳误当成心定。"
+            }
+          ],
+          "anchors": [],
+          "provenance": "model",
+          "ready": true,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          },
+          "knowledge": {
+            "topics": [
+              "安",
+              "居处",
+              "好学",
+              "心性"
+            ],
+            "relation": {
+              "type": "contrast",
+              "description": "《大学》的安指心定后的安稳，此句的安指居处安逸，二者层次不同可对照。"
+            }
+          },
+          "textBreaks": {
+            "meaning": [
+              2,
+              3,
+              5,
+              6,
+              8,
+              9,
+              11,
+              12,
+              14,
+              15,
+              17,
+              18
+            ],
+            "reflection": [
+              1,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              13,
+              14,
+              15,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              28,
+              30,
+              31,
+              32,
+              34,
+              35,
+              36,
+              38,
+              40,
+              41,
+              42,
+              43,
+              45,
+              46,
+              48,
+              49,
+              50,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              61,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              75,
+              76,
+              78,
+              79,
+              80,
+              82,
+              84,
+              86,
+              87,
+              88,
+              89,
+              92,
+              93,
+              94,
+              96,
+              97,
+              99,
+              100,
+              101,
+              102
+            ]
+          }
+        },
+        "done": {
+          "id": "opaque-15",
+          "ordinal": 1,
+          "sourceId": "rysxguji-lunyu-1-9",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "eef9c2f1744d2a22804a0254c8902e46ecfa0163f53253ef95ab4ecee1f8b91e",
+          "quote": "君子食无求饱，居无求安",
+          "quoteStart": 4,
+          "quoteEnd": 15,
+          "source": "论语",
+          "chapterLabel": "第1章 学而第一",
+          "fullText": "子曰：“君子食无求饱，居无求安，敏于事而慎于言，就有道而正焉，可谓好学也已。”",
+          "lexicalBreaks": [
+            2,
+            3,
+            4,
+            6,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            33,
+            35,
+            36,
+            37,
+            38,
+            39
+          ],
+          "meaning": "饮食不刻意求饱足，居处不刻意求安逸。",
+          "reflection": "《大学》的“安”是心有所止后的安稳，此句的“安”却是居处安逸，被好学之人主动放下。两处并非同一层：心可以安于所止，身却不以安逸为务。读“安”时，先分清它落在心上还是落在居处上，才不至于把求安稳误当成心定。",
+          "reflectionSpans": [
+            {
+              "text": "《大学》的“安”是心有所止后的安稳，此句的“安”却是居处安逸，被好学之人主动放下。两处并非同一层：心可以安于所止，身却不以安逸为务。读“安”时，先分清它落在心上还是落在居处上，才不至于把求安稳误当成心定。"
+            }
+          ],
+          "anchors": [],
+          "provenance": "model",
+          "ready": true,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          },
+          "knowledge": {
+            "topics": [
+              "安",
+              "居处",
+              "好学",
+              "心性"
+            ],
+            "relation": {
+              "type": "contrast",
+              "description": "《大学》的安指心定后的安稳，此句的安指居处安逸，二者层次不同可对照。"
+            }
+          },
+          "textBreaks": {
+            "meaning": [
+              2,
+              3,
+              5,
+              6,
+              8,
+              9,
+              11,
+              12,
+              14,
+              15,
+              17,
+              18
+            ],
+            "reflection": [
+              1,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              13,
+              14,
+              15,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              28,
+              30,
+              31,
+              32,
+              34,
+              35,
+              36,
+              38,
+              40,
+              41,
+              42,
+              43,
+              45,
+              46,
+              48,
+              49,
+              50,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              61,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              75,
+              76,
+              78,
+              79,
+              80,
+              82,
+              84,
+              86,
+              87,
+              88,
+              89,
+              92,
+              93,
+              94,
+              96,
+              97,
+              99,
+              100,
+              101,
+              102
+            ]
+          }
+        }
+      },
+      "route": "cold",
+      "ms": {
+        "request": 128,
+        "firstQuote": 4063.4000000059605,
+        "readable": 4103.5999999940395,
+        "verified": 4120,
+        "frame": 4950.800000011921,
+        "done": 4950.800000011921
+      },
+      "corpus": {
+        "sourceId": "rysxguji-lunyu-1-9",
+        "corpusVersion": "guji-core-v1",
+        "interval": [
+          4,
+          15
+        ],
+        "inputSha256": "eef9c2f1744d2a22804a0254c8902e46ecfa0163f53253ef95ab4ecee1f8b91e",
+        "matchesHash": true,
+        "matchesFullText": true,
+        "matchesQuote": true
+      }
+    }
+  ],
+  "blocked": [
+    {
+      "browser": "A",
+      "path": "/api/flow",
+      "op": "next",
+      "prefetch": true,
+      "contentPacks": [
+        "core"
+      ]
+    },
+    {
+      "browser": "B",
+      "path": "/api/flow",
+      "op": "next",
+      "prefetch": true,
+      "contentPacks": [
+        "core"
+      ]
+    }
+  ],
+  "fontReleaseId": "infidao-42d12afceb1f46a1",
+  "appReleaseId": "infidao-42d12afceb1f46a1",
+  "appManifest": "https://aitoshuu.me/flow-releases/infidao-42d12afceb1f46a1.json",
+  "publicScripts": [
+    "/_next/static/chunks/app/infidao/page-85af3d502c87d0fa.js",
+    "/_next/static/chunks/app/layout-2da3aa91efdae539.js",
+    "/_next/static/chunks/commons-9dc6e0845f53d85a.js",
+    "/_next/static/chunks/lib-0e21a148-9df2cd160486cd4f.js",
+    "/_next/static/chunks/lib-7815f9af-ab8b6dc5c906229c.js",
+    "/_next/static/chunks/main-app-9fbef5e5d4e70271.js",
+    "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+    "/_next/static/chunks/shared-c1807312d93902c7.js",
+    "/_next/static/chunks/webpack-8a873c7cc2baf872.js"
+  ],
+  "manifestCommit": "feb1c803f314ed929c1ee88f48e6e61b5f4b4f22",
+  "sameAnonymousOwner": true,
+  "coldRoot": "A",
+  "eligibility": [
+    {
+      "word": "虑",
+      "start": 23,
+      "end": 24,
+      "selectable": true,
+      "anchor": null,
+      "inDOM": true
+    },
+    {
+      "word": "安",
+      "start": 17,
+      "end": 18,
+      "selectable": true,
+      "anchor": null,
+      "inDOM": true
+    },
+    {
+      "word": "止",
+      "start": 1,
+      "end": 2,
+      "selectable": true,
+      "anchor": null,
+      "inDOM": true
+    },
+    {
+      "word": "静",
+      "start": 11,
+      "end": 12,
+      "selectable": true,
+      "anchor": null,
+      "inDOM": true
+    },
+    {
+      "word": "得",
+      "start": 29,
+      "end": 30,
+      "selectable": true,
+      "anchor": null,
+      "inDOM": true
+    },
+    {
+      "word": "定",
+      "start": 5,
+      "end": 6,
+      "selectable": true,
+      "anchor": null,
+      "inDOM": true
+    }
+  ],
+  "selected": [
+    {
+      "word": "虑",
+      "start": 23,
+      "end": 24,
+      "selectable": true,
+      "anchor": null,
+      "inDOM": true
+    },
+    {
+      "word": "安",
+      "start": 17,
+      "end": 18,
+      "selectable": true,
+      "anchor": null,
+      "inDOM": true
+    }
+  ],
+  "finished": "2026-11-25T17:33:14.956Z",
+  "summary": {
+    "cold": {
+      "sent": 2,
+      "routeVerified": 2,
+      "pass": 2,
+      "fail": 0,
+      "unknown": 0,
+      "allSentFinal": [
+        {
+          "word": "虑",
+          "relation": "pass",
+          "route": "cold"
+        },
+        {
+          "word": "安",
+          "relation": "pass",
+          "route": "cold"
+        }
+      ],
+      "n": 2,
+      "range": [
+        3901.2999999821186,
+        4103.5999999940395
+      ],
+      "p50": 4002.449999988079
+    },
+    "reuse": {
+      "sent": 0,
+      "routeVerified": 0,
+      "pass": 0,
+      "fail": 0,
+      "unknown": 0,
+      "allSentFinal": [],
+      "n": 0,
+      "range": null,
+      "p50": null
+    }
+  }
+}
