@@ -17,11 +17,19 @@ test('names the selected word, explains a long wait, and keeps cancellation avai
 });
 
 test('compact waiting names the word and keeps a short visible cancel action', () => {
+  jest.useFakeTimers();
   const cancel = jest.fn();
   const view = render(<FlowWaiting compact busy label="知止" onCancel={cancel} />);
   expect(screen.getByRole('status')).toHaveTextContent('沿「知止」接续中…');
   const button = screen.getByRole('button', { name: '停止展开' });
-  expect(button).toHaveTextContent(/^停止$/); fireEvent.click(button);
-  expect(cancel).toHaveBeenCalledTimes(1);
+  expect(button).toHaveTextContent(/^停止$/);
+  act(() => { jest.advanceTimersByTime(12_000); });
+  expect(screen.getByRole('status')).toHaveTextContent('仍在沿「知止」接续，可停止等待。');
+  fireEvent.click(button);
+  view.rerender(<FlowWaiting compact busy={false} label="知止" onCancel={cancel} />);
+  expect(screen.getByRole('status')).toHaveTextContent('正在补全「知止」的联系…');
+  fireEvent.click(screen.getByRole('button', { name: '停止展开' }));
+  expect(cancel).toHaveBeenCalledTimes(2);
   view.unmount();
+  jest.useRealTimers();
 });

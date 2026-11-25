@@ -146,3 +146,23 @@ test.each(['打开温故', '切换诗词范围'])('an expired word branch retain
   await act(async () => { await mockPresent(restored, { current: () => true, navigation: 'push' }); });
   expect(screen.getByLabelText('接续来路')).toHaveTextContent('ordinary:沿「止」已接续');
 });
+
+test.each([true, false])('a streamed head keeps only a matched word in the completion status (%s)', async clicked => {
+  render(<FlowExperience />);
+  await waitFor(() => expect(readingStorage.listBookmarks).toHaveBeenCalledTimes(2));
+  if (clicked) fireEvent.click(screen.getByRole('button', { name: '点原文字词' }));
+  act(() => mockState({ ...mockControllerState, pending: true, busy: true }));
+  if (clicked) expect(screen.getByText('沿「止」接续中…')).toBeInTheDocument();
+  const origin = { fromFrameId: 'first', anchorId: 'text:1:2', selection: mockWord, label: '止' };
+  const head: FlowPathRecord = {
+    ...mockRecord, pathId: 'partial-child', parentPathId: mockRecord.pathId, parentEntry: origin,
+    chain: { ...mockRecord.chain, chainId: 'partial-child', entry: origin,
+      frames: [{ ...mockRecord.chain.frames[0], id: 'second', ready: false, quote: '本末。' }] },
+  };
+  await act(async () => {
+    await mockPresent(head, { current: () => true, navigation: 'push' });
+    mockState({ ...mockControllerState, record: head, pending: true, busy: false });
+  });
+  expect(screen.getByText(clicked ? '正在补全「止」的联系…' : '正在补全联系…')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: '停止展开' })).toBeInTheDocument();
+});

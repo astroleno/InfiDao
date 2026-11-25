@@ -90,7 +90,11 @@
   overflow: hidden;
 }
 
-.streamGlass { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.stream[data-arrival-docked] {
+  --flow-arrival-bottom: calc(var(--flow-visible-bottom, 0px) + max(8px, env(safe-area-inset-bottom)));
+  --flow-arrival-rail: calc(var(--flow-arrival-bottom) + 56px);
+}
+.streamGlass { position: absolute; inset: 0 0 auto; width: 100%; height: calc(100% - var(--flow-arrival-rail, 0px)); pointer-events: none; }
 /* Folded glyphs are in the same optical canvas; their native buttons stay live.
    Loss/reduced-motion removes this rule immediately, restoring readable DOM. */
 .streamGlass[data-optics="ready"] + .streamViewport :is([data-flow-bent], [data-flow-ink]) { opacity: 0 !important; }
@@ -98,7 +102,7 @@
 .streamViewport {
   position: absolute;
   z-index: 1;
-  inset: 0;
+  inset: 0 0 var(--flow-arrival-rail, 0px);
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -200,6 +204,16 @@
   .streamContent { padding: max(150px, 24dvh) 0 44dvh; }
   .streamQuote { font-size: 30px; margin-bottom: 24px; }
   .streamMeaning, .streamReflection { font-size: var(--flow-size-body); line-height: 1.9; }
+  .streamReflection {
+    --prose-left: max(20px, env(safe-area-inset-left));
+    --prose-right: max(20px, env(safe-area-inset-right));
+    width: calc(100vw - var(--prose-left) - var(--prose-right));
+    max-width: none;
+    margin-inline: calc(50% - 50vw + var(--prose-left)) calc(50% - 50vw + var(--prose-right));
+    text-align: left;
+    text-wrap: wrap;
+    overflow-wrap: anywhere;
+  }
   .streamNode { padding-bottom: 56px; }
 }
 
@@ -369,6 +383,7 @@
   inset: 0;
   z-index: 50;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   place-items: center;
   padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
   background: rgba(0, 0, 0, .56);
@@ -376,7 +391,10 @@
 .meaningPopover {
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   width: min(100%, 560px);
+  min-inline-size: 0;
+  max-inline-size: 100%;
   max-height: calc(var(--flow-visible-height, 100dvh) - 64px);
   padding: 24px;
   border: 1px solid var(--halo);
@@ -386,12 +404,18 @@
   animation: meaning-enter 180ms cubic-bezier(.22, 1, .36, 1) both;
 }
 .meaningHeader { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.meaningHeader > div { min-inline-size: 0; overflow-wrap: anywhere; }
 .meaningHeader h2 { margin: 7px 0 0; color: var(--flow-muted); font-size: var(--flow-size-caption); line-height: 1.6; font-weight: var(--flow-weight-regular); }
 .meaningClose { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; margin: -10px -10px 0 0; border: 0; border-radius: 8px; background: transparent; color: var(--flow-muted); cursor: pointer; }
 .meaningClose svg { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
 .meaningClose:focus-visible, .meaningBody:focus-visible { outline: 1px solid var(--flow-focus); outline-offset: 3px; }
-.meaningBody { min-height: 0; overflow: auto; overscroll-behavior: contain; margin-top: 18px; padding: 2px; color: var(--optical-text); font-size: var(--flow-size-body); line-height: 1.95; }
+.meaningBody { min-height: 0; min-inline-size: 0; overflow: auto; overscroll-behavior: contain; margin-top: 18px; padding: 2px; color: var(--optical-text); font-size: var(--flow-size-body); line-height: 1.95; }
 .meaningBody > p { margin: 0; white-space: pre-line; }
+@media (max-width: 600px) {
+  .meaningBackdrop { padding-inline: max(8px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-right)); }
+  .meaningPopover { padding-inline: 10px; }
+  .meaningBody { text-align: left; text-wrap: wrap; overflow-wrap: anywhere; }
+}
 @keyframes meaning-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
 .sectionLabel {
@@ -797,9 +821,18 @@
 .firstHint .textButton { flex-shrink: 0; padding-inline: 8px; }
 .readingFeedback { position: absolute; z-index: 5; left: 50%; bottom: calc(var(--flow-visible-bottom, 0px) + max(28px, env(safe-area-inset-bottom))); width: max-content; max-width: calc(100% - 40px); padding: 10px 18px; border: 1px solid var(--halo); border-radius: 999px; background: rgba(9, 13, 14, .96); color: var(--beam); font-size: var(--flow-size-caption); line-height: 1.7; pointer-events: none; opacity: 0; visibility: hidden; transform: translate(-50%, 4px); transition: opacity 160ms ease-out, transform 160ms ease-out, visibility 160ms; }
 .readingFeedback[data-visible="true"] { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
-.branchArrival { position: absolute; z-index: 4; left: 50%; bottom: calc(var(--flow-visible-bottom, 0px) + max(88px, env(safe-area-inset-bottom))); display: flex; align-items: center; gap: 8px; width: max-content; max-width: calc(100% - 40px); padding: 2px 4px 2px 16px; border: 1px solid var(--halo); border-radius: 999px; background: #090d0e; color: var(--flow-muted); font-size: var(--flow-size-caption); transform: translateX(-50%); }
+.branchArrival {
+  --arrival-left: max(16px, env(safe-area-inset-left));
+  --arrival-right: max(16px, env(safe-area-inset-right));
+  position: absolute; z-index: 4;
+  inset: auto var(--arrival-right) var(--flow-arrival-bottom) var(--arrival-left);
+  display: flex; align-items: center; gap: 8px; box-sizing: border-box; width: max-content;
+  max-width: calc(100% - var(--arrival-left) - var(--arrival-right)); margin-inline: auto;
+  padding: 2px 4px 2px 16px; border: 1px solid var(--halo); border-radius: 999px; background: #090d0e;
+  color: var(--flow-muted); font-size: var(--flow-size-caption);
+}
 .branchArrival > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.branchArrival .textButton { flex-shrink: 0; min-height: 44px; color: var(--beam); }
+.branchArrival .textButton { flex-shrink: 0; min-width: 44px; min-height: 44px; color: var(--beam); }
 .noteBody { width: 100%; min-width: 0; overflow-wrap: anywhere; }
 .noteBody textarea { margin-bottom: 8px; }
 .librarySheet { display: flex; flex-direction: column; width: min(100%, 640px); overflow: clip; }

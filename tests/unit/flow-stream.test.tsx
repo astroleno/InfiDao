@@ -9,6 +9,7 @@ import { EntranceMotion } from '@/lib/flow-browser/entrance-motion';
 import { ARRIVAL_RISE } from '@/lib/flow-browser/arrival-rise';
 import { LENS } from '@/lib/flow-browser/lens-motion';
 import { StreamGlass } from '@/lib/flow-browser/stream-glass';
+import { bendDisplayPoint } from '@/lib/flow-browser/bend';
 
 jest.mock('@/lib/flow-browser/stream-glass', () => ({
   StreamGlass: jest.fn().mockImplementation(() => ({ draw: jest.fn(), destroy: jest.fn() })),
@@ -338,6 +339,7 @@ test('offscreen branch arrival offers an explicit handoff without moving the old
   await act(async () => { await new Promise<void>(resolve => requestAnimationFrame(() => resolve())); });
   expect(viewport.scrollTop).toBe(31);
   const go = screen.getByRole('button', { name: '去读' });
+  expect(go.closest('[data-flow-stream]')).toHaveAttribute('data-arrival-docked');
   const scan = jest.spyOn(viewport, 'querySelectorAll');
   for (let offset = 32; offset < 72; offset++) {
     viewport.scrollTop = offset;
@@ -352,6 +354,7 @@ test('offscreen branch arrival offers an explicit handoff without moving the old
   expect(target).toHaveFocus();
   expect(viewport.scrollTop).toBe(1220);
   expect(screen.queryByRole('button', { name: '去读' })).not.toBeInTheDocument();
+  expect(view.container.querySelector('[data-flow-stream]')).not.toHaveAttribute('data-arrival-docked');
 });
 
 describe('branch arrival under reading overlays', () => {
@@ -363,6 +366,30 @@ describe('branch arrival under reading overlays', () => {
     jest.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(600);
   });
   afterEach(() => { cleanup(); jest.restoreAllMocks(); jest.useRealTimers(); });
+
+  test.each([
+    { dockedHeight: 780, initialTop: 145, afterDockTop: 145, readableTop: 160 },
+    { dockedHeight: 440, initialTop: 700, afterDockTop: 360, readableTop: 320 },
+  ])('the dock keeps the original reading band but rejects clipping at height $dockedHeight', ({ dockedHeight, initialTop, afterDockTop, readableTop }) => {
+    const view = render(<FlowStream {...props} entries={[entry, second]} arrival={arrival} />);
+    const viewport = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    const stream = viewport.parentElement!;
+    Object.defineProperty(stream, 'clientHeight', { value: 844 });
+    Object.defineProperty(viewport, 'clientHeight', { get: () => stream.hasAttribute('data-arrival-docked') ? dockedHeight : 844 });
+    const target = view.container.querySelector<HTMLElement>('[data-flow-frame="second"] [data-flow-heading]')!;
+    const position = jest.spyOn(target, 'getBoundingClientRect').mockReturnValue({ top: initialTop, height: 100 } as DOMRect);
+    advance();
+    expect(go()).toBeInTheDocument();
+    position.mockReturnValue({ top: afterDockTop, height: 100 } as DOMRect);
+    advance();
+    fireEvent.scroll(viewport);
+    expect(go()).toBeInTheDocument();
+    expect(viewport.scrollTop).toBe(0);
+    expect(target).not.toHaveFocus();
+    position.mockReturnValue({ top: readableTop, height: 100 } as DOMRect);
+    fireEvent.scroll(viewport);
+    expect(go()).not.toBeInTheDocument();
+  });
 
   test.each([true, false])('rechecks the current reading zone when an overlay closes (in zone: %s)', inZone => {
     const options = { ...props, entries: [entry, second], arrival };
@@ -1043,6 +1070,68 @@ describe('quality tiers reach the glass', () => {
     expect(staticGlass).toBe(false);
     expect(shape.ripple).toBe(1);
     expect(shape.maxDpr).toBeUndefined();
+  });
+
+  test.each([[320, 740], [390, 844]])('a still %i × %i glass keeps the prose within frame and resolves the displayed word', (width, height) => {
+    sized('clientWidth', width);
+    sized('clientHeight', height);
+    jest.spyOn(HTMLElement.prototype, 'offsetTop', 'get').mockReturnValue(26);
+    jest.spyOn(HTMLElement.prototype, 'offsetLeft', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.textContent?.startsWith('止') ? 126 : 90;
+    });
+    jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(38);
+    jest.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(22);
+    const draw = jest.fn<void, Parameters<StreamGlass['draw']>>();
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement) => {
+      canvas.dataset.optics = 'ready';
+      return { draw, destroy: jest.fn() } as unknown as StreamGlass;
+    });
+    const onBranch = jest.fn(), options = { ...props, reducedMotion: false, settleEntrance: true, onBranch };
+    const view = render(<FlowStream {...options} pending />);
+    const panel = view.container.querySelector<HTMLElement>('[data-flow-viewport]')!;
+    jest.spyOn(panel, 'getBoundingClientRect').mockReturnValue({ left: 16, top: 12, width, height } as DOMRect);
+    Object.defineProperty(panel, 'scrollHeight', { value: 1200 });
+    act(() => { jest.advanceTimersByTime(64); });
+    const [runs, , , , calm] = draw.mock.calls.at(-1)!;
+    expect(calm?.ripple).toBe(.25);
+    expect(calm?.adhesion).toBeCloseTo(.18);
+    expect(calm?.dispersion).toBeCloseTo(.18);
+    expect(calm?.zone).toBeCloseTo(Math.min(.12, 82 / height));
+    expect(calm?.flare).toBeCloseTo(.02);
+    const leftProse = bendDisplayPoint(20, 18, calm!);
+    const rightProse = bendDisplayPoint(width - 20, height - 18, calm!);
+    expect(leftProse.x).toBeGreaterThan(8);
+    expect(rightProse.x).toBeLessThan(width - 8);
+    const word = runs.find(item => item.text.startsWith('止'))!;
+    const displayed = bendDisplayPoint(word.x, word.y, calm!);
+    fireEvent.click(panel, { detail: 1, clientX: displayed.x + 16, clientY: displayed.y + 12 });
+    expect(onBranch).toHaveBeenCalledWith(expect.objectContaining({
+      frameId: 'first', label: '止', selection: expect.objectContaining({ start: 1, end: 2 }),
+    }));
+
+    panel.scrollTop = 20;
+    fireEvent.scroll(panel);
+    act(() => { jest.advanceTimersByTime(16); });
+    expect(draw.mock.calls.at(-1)?.[4]).toMatchObject({ ripple: 1, adhesion: .4, zone: .46, flare: .5 });
+    act(() => { jest.advanceTimersByTime(64); });
+    expect(draw.mock.calls.at(-1)?.[4]?.ripple).toBe(.25);
+    view.rerender(<FlowStream {...options} paused={false} />);
+    act(() => { jest.advanceTimersByTime(64); });
+    expect(panel.scrollTop).toBeGreaterThan(20);
+    expect(draw.mock.calls.at(-1)?.[4]).toMatchObject({ ripple: 1, adhesion: .4, zone: .46, flare: .5 });
+  });
+
+  test('a settled paused glass without ambient water stops requesting frames', () => {
+    const raf = jest.spyOn(window, 'requestAnimationFrame');
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement) => {
+      canvas.dataset.optics = 'ready';
+      return { draw: jest.fn(), destroy: jest.fn() } as unknown as StreamGlass;
+    });
+    render(<FlowStream {...props} reducedMotion={false} settleEntrance motionVariant="current" />);
+    act(() => { jest.advanceTimersByTime(128); });
+    raf.mockClear();
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(raf).not.toHaveBeenCalled();
   });
 
   test.each([['?quality=1', 1], ['?quality=2', .8], ['?quality=3', .67]])(

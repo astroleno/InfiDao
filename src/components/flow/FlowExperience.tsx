@@ -564,6 +564,8 @@ export function FlowExperience() {
     }] : [];
   });
   const awaitingQuote = busy || !frames.some(item => item.ready === false);
+  const waitingLabel = connecting?.label || (!awaitingQuote && arrival?.kind === 'word' &&
+    arrival.targetKey === `${records.at(-1)?.pathId}:${frames[0]?.id}` ? chain?.entry?.label : undefined);
   const canResume = flowError?.code === 'INCOMPLETE' && !pending &&
     controllerRef.current?.getState().record?.completion === 'stopped';
   const errorFeedback = flowError && !canResume ? <div className={styles.streamError} role="status">
@@ -601,7 +603,7 @@ export function FlowExperience() {
           <button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button>
         </div> : undefined}
         onScroll={top => { readingScrollRef.current = top; }} onBranch={selection => void handleBranch(selection)}
-        waiting={!seedOpen && (pending ? <FlowWaiting compact busy={awaitingQuote} label={connecting?.label} onCancel={() => {
+        waiting={!seedOpen && (pending ? <FlowWaiting compact busy={awaitingQuote} label={waitingLabel} onCancel={() => {
           wordArrivalSelection.current = null; controllerRef.current?.cancel();
         }} />
           : canResume ? <FlowResume onResume={readOnAfterRetry} /> : errorFeedback)}

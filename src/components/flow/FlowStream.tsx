@@ -154,6 +154,7 @@ export function FlowStream(props: Props) {
   const arrivalObscured = !!(props.arrivalObscured || menuPresent || meaningEntry?.entry.frame.meaning);
   arrivalCovered.current = arrivalObscured;
   const visibleArrival = !arrivalObscured && props.arrival?.id === shownArrivalId ? props.arrival : null;
+  const arrivalDocked = !!visibleArrival;
 
   useLayoutEffect(() => {
     const panel = panelRef.current;
@@ -222,7 +223,7 @@ export function FlowStream(props: Props) {
     };
   }, [cancelMeaningPress, manualScroll]);
 
-  useLayoutEffect(() => { measure.current(); }, [props.entries, props.sourceOpen, notesFor]);
+  useLayoutEffect(() => { measure.current(); }, [props.entries, props.sourceOpen, notesFor, arrivalDocked]);
 
   function positionAt(target: HTMLElement, focus = true) {
     const panel = panelRef.current;
@@ -275,8 +276,11 @@ export function FlowStream(props: Props) {
       return;
     }
     const bounds = panel.getBoundingClientRect(), rect = target.getBoundingClientRect();
-    const visible = rect.top >= bounds.top + panel.clientHeight * .18 &&
-      rect.top + Math.min(rect.height, 100) <= bounds.top + panel.clientHeight * .68;
+    // The notice can shorten the viewport. Its own presence must not move the
+    // reading-zone threshold, and a clipped heading still needs the handoff.
+    const readingHeight = panel.parentElement?.clientHeight || panel.clientHeight;
+    const visible = rect.top >= bounds.top + readingHeight * .18 &&
+      rect.top + Math.min(rect.height, 100) <= bounds.top + Math.min(readingHeight * .68, panel.clientHeight);
     const word = visible && arrival.kind === 'word' ? arrival : null;
     if (word !== visibleWordArrival.current) {
       visibleWordArrival.current = word;
@@ -348,6 +352,7 @@ export function FlowStream(props: Props) {
     const energy = new OpticalEnergy();
     const rise = new ArrivalRise();
     let openingLanded = false;
+    let calmGlass = false;
     const cadence = new IdleCadence();
     let idleTimer = 0, fullRatePending = false, lastTop = Infinity, lensWasActive = false, lastLens = 0;
     // A device that keeps missing frames steps the material down; ?quality=0-4 pins it.
@@ -362,7 +367,7 @@ export function FlowStream(props: Props) {
       activeParts.delete(part);
     };
 
-    const paint = (time: number) => {
+    const paint = (time: number, moved: boolean) => {
       frameWordsVisited = 0;
       entranceAdvancing = false;
       lensAdvancing = false;
@@ -408,6 +413,11 @@ export function FlowStream(props: Props) {
       energy.sample(scrollTop, time, live.current.reducedMotion);
       if (energy.level !== energyLevel) planner.invalidate('motion');
       moving = energy.moving || rise.active;
+      const canCalm = canvasOwnsGlyphs && !holdEntrance && (!live.current.riseOnReveal || openingLanded);
+      const calm = canCalm && !moved;
+      if (calm !== calmGlass) { calmGlass = calm; planner.invalidate('motion'); }
+      // Give the last moving frame one follow-up to paint the resting material.
+      if (canCalm && moved) moving = true;
       const settleAll = !!live.current.settleEntrance || live.current.reducedMotion;
       if (settleAll && !settledAll) parts.forEach(finishPart);
       settledAll = settleAll;
@@ -461,9 +471,22 @@ export function FlowStream(props: Props) {
       lensWasActive = lensActive;
       lastLens = lensStrength;
       const bend: BendSettings = { ...streamBendSettings(width, height, variant, scrollTop),
-        dispersion: energy.dispersion, sheen: energy.sheen, blur: energy.blur,
+        dispersion: energy.dispersion * (calmGlass ? .4 : 1), sheen: energy.sheen, blur: energy.blur,
         ...(quality.maxDpr !== undefined ? { maxDpr: quality.maxDpr } : {}),
         ...(lensActive ? { lens: [lens.current.x / width, 1 - lens.current.y / height, LENS.radius, lensStrength] as [number, number, number, number] } : {}) };
+      const wideReadingBand = calmGlass && width <= 600;
+      if (calmGlass) {
+        if (bend.adhesion !== undefined) bend.adhesion *= .45;
+        if (bend.ripple !== undefined) bend.ripple *= .25;
+      }
+      if (wideReadingBand) {
+        // The moving fold magnifies its rim horizontally. Keep resting prose
+        // inside the mobile gutters and leave a narrow optical edge.
+        const zoneScale = Math.min(1, .12 / bend.zone, 82 / height / bend.zone);
+        bend.zone *= zoneScale;
+        bend.rounding *= zoneScale;
+        if (bend.flare !== undefined) bend.flare *= .04;
+      }
       const zone = bend.zone * height;
       if (variant === 'liquid-live' || variant === 'liquid-live-before') {
         let motion = surfaceMotions.get(variant);
@@ -519,7 +542,9 @@ export function FlowStream(props: Props) {
           scrollTop, reducedMotion: staticGlass,
         }, variant);
         const focused = word.element.contains(activeElement);
-        const blur = focused || word.quiet ? 0 : projection.blur;
+        const clearReading = wideReadingBand && screenY >= zone && screenY <= height - zone;
+        const blur = focused || word.quiet || clearReading ? 0 : projection.blur;
+        const opacity = clearReading ? 1 : projection.opacity;
         const offset = word.part?.motion.offset || 0;
         // The glass draws lensed words itself, so the lens bends the word, not a copy.
         const lensed = lensActive && Math.abs(word.x - lens.current.x) < LENS.radius + word.wordWidth / 2
@@ -535,7 +560,7 @@ export function FlowStream(props: Props) {
           const run = word.run;
           run.x = width / 2 + (word.x - width / 2) * projection.scale + offset;
           run.y = screenY; run.scale = projection.scale; run.folded = folded;
-          run.opacity = projection.opacity; run.blur = blur; run.fire = projection.fire;
+          run.opacity = opacity; run.blur = blur; run.fire = projection.fire;
           run.ink = inking ? progress : undefined;
           run.highlighted = focused || !!word.element.querySelector('[data-bend-hover]');
           runs.push(run);
@@ -551,12 +576,12 @@ export function FlowStream(props: Props) {
         // only the canvas paints them. Updating their filters/transforms too
         // creates redundant paint and compositing work during fast scrolling.
         const canvasGlyph = canvasOwnsGlyphs && (folded || inking);
-        const profile = canvasGlyph ? 'canvas' : `${transform}:${blur.toFixed(3)}:${projection.opacity.toFixed(3)}`;
+        const profile = canvasGlyph ? 'canvas' : `${transform}:${blur.toFixed(3)}:${opacity.toFixed(3)}`;
         if (word.profile === profile) continue;
         word.profile = profile;
         word.element.style.transformOrigin = projection.origin;
         word.element.style.transform = canvasGlyph ? 'none' : transform;
-        word.element.style.opacity = canvasGlyph ? '1' : String(projection.opacity);
+        word.element.style.opacity = canvasGlyph ? '1' : String(opacity);
         word.element.style.filter = canvasGlyph || !blur ? 'none' : `blur(${blur.toFixed(3)}px)`;
       }
       const started = probe ? performance.now() : 0;
@@ -587,10 +612,11 @@ export function FlowStream(props: Props) {
       // the browser rounded away. Optical projection uses that same position.
       const remainder = scrollMotion.applied(panel.scrollTop);
       content.style.translate = remainder ? `0 ${-remainder}px` : '';
+      const initial = !Number.isFinite(lastTop);
       const moved = Math.abs(top - lastTop) > 1e-3;
       lastTop = top;
       const previousOptics = glassRef.current?.dataset.optics;
-      const moving = paint(time);
+      const moving = paint(time, !initial && moved);
       // A restored context publishes readiness only after a successful draw.
       // Sample again so the recovered glass takes ownership and the water resumes.
       const restored = (previousOptics === 'lost' || previousOptics === 'unavailable') && glassRef.current?.dataset.optics === 'ready';
@@ -614,6 +640,8 @@ export function FlowStream(props: Props) {
           indexedWordsVisited: frameWordsVisited, activeParts: activeParts.size, visibleParts: visibleParts.length,
           scrollTop: top, nativeScrollTop: panel.scrollTop, scrollRemainder: remainder,
           fastManualScroll, opticalEnergy: energy.value, idle: cadence.delay(time) > 0, moved, qualityTier: budget.tier, lens: lastLens,
+          material: drawn && { calm: calmGlass, zone: drawn.settings.zone, flare: drawn.settings.flare,
+            adhesion: drawn.settings.adhesion, ripple: drawn.settings.ripple, dispersion: drawn.settings.dispersion },
           drawMs, sceneMs: cpuMs - drawMs, layout: { ...layoutProbe }, render: glass?.diagnostics });
       }
     };
@@ -895,7 +923,8 @@ export function FlowStream(props: Props) {
   const menuEntry = props.entries.find(entry => entryKey(entry) === (menuFor || props.activeKey)) || props.entries[0];
   const menuCurrent = !!menuEntry && entryKey(menuEntry) === props.activeKey;
 
-  return <section className={styles.stream} aria-label="连续经文流" data-flow-stream data-motion-variant={props.motionVariant || 'liquid-live'} data-paused={props.paused} data-pending={props.pending}>
+  return <section className={styles.stream} aria-label="连续经文流" data-flow-stream data-motion-variant={props.motionVariant || 'liquid-live'} data-paused={props.paused} data-pending={props.pending}
+    data-arrival-docked={arrivalDocked || undefined}>
     <canvas ref={glassRef} className={styles.streamGlass} data-flow-glass aria-hidden="true" />
     <div ref={panelRef} className={styles.streamViewport} tabIndex={0} aria-label="经文阅读" data-flow-viewport
       aria-description={`${props.reducedMotion ? '上下滑动阅读。' : props.onResume ? '点空白停驻阅读，滚轮、上下滑动或翻页键继续流动。' : ''}向左滑动打开阅读选项。长按经文或按 Shift+F10 查看释义。`}
