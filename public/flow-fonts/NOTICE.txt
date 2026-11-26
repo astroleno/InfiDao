@@ -22,6 +22,7 @@ poetry-*.woff 是本项目生成的字形子集，内部字体名称已改为 In
 这些许可证仅适用于对应补字文件；原有字体及其版权说明保持各自适用范围。
 源地址、源字体 SHA-256、覆盖与字节统计见 data/poetry/font-coverage.json；构建流程见 scripts/poetry/build-fonts.py。
 
-网页经文的简体字形：
-web-sc/serif-sc-*.woff 是 Noto Serif CJK SC Regular 的子集，保留原文码位。适用 SIL OFL 1.1，见 web-sc/OFL.txt。
-上游 OTF 与 SHA-256 见 data/poetry/font-coverage.json。使用 FontTools 4.68.0 和 ICU 78，运行 python scripts/build-web-flow-sc-fonts.py PATH/TO/NotoSerifCJKsc-Regular.otf 后，再运行 npm run build:flow-release。
+网页经文的已核验简体字形：
+康熙字形在静、剧、谓、虑、乐、终的简体码位上显示靜、劇、謂、慮、樂、終。当前网页仅为这六个码位加载 web-sc/reviewed/serif-sc.woff，保留原文和选词位置。
+同字形笔画在 30px、DPR 3 下对照后，选用 Noto Serif SC 2.003 的静态 Medium 子集。适用 SIL OFL 1.1，见 web-sc/OFL.txt。上游 OTF、SHA-256 和 FontTools 4.68.0 重建方式见 scripts/build-web-flow-sc-fonts.py。
+其余字形沿用原覆盖，包括已核验的后、乱、梦。历史康熙字形尚未逐字核验。web-sc/serif-sc-*.woff 保留为历史版本使用，适用同一许可证。

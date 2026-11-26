@@ -24,6 +24,7 @@ test('the release binds the exact verified font shards, corpus manifest, and cur
     expect(bytes.byteLength).toBe(shard.bytes);
     expect(digest(bytes)).toBe(shard.sha256);
   }
+  expect(manifest.baseFonts[0].sha256).toBe('1366af1c5bc671f86f5dd7b57507fa30b8a4068ec99719c90542cf8e8609eb18');
   for (const [index, name] of ['serif', 'supplement'].entries()) {
     expect(read(base + '/' + manifest.baseFonts[index + 1].file).equals(Buffer.from(require(`../../miniprogram/assets/fonts/${name}-data`), 'base64'))).toBe(true);
   }
@@ -36,28 +37,43 @@ test('the release binds the exact verified font shards, corpus manifest, and cur
   expect(JSON.parse(read('public/flow-releases/' + FLOW_RELEASE.id + '.json').toString())).toMatchObject(FLOW_RELEASE);
 });
 
-test('simplified codepoints use corrected outlines through the Web glyph registry', () => {
+test('the reviewed simplified codepoints use corrected outlines and keep legacy coverage', () => {
   const base = 'public' + FLOW_RELEASE.fontBasePath;
   const manifest = JSON.parse(read(base + '/manifest.json').toString());
+  const previous = JSON.parse(read('public/flow-assets/v-094d7b612c674ac324e9/manifest.json').toString());
+  const coverage = ({ baseCharacters, shards }: typeof manifest) => new Set([
+    ...Array.from(baseCharacters), ...shards.flatMap(({ characters }: { characters: string }) => Array.from(characters)),
+  ]);
+  expect(coverage(manifest)).toEqual(coverage(previous));
+
   const { createGlyphRuntime, createGlyphSource } = require('../../miniprogram/flow/glyph-core');
   const runtime = createGlyphRuntime();
   const baseBuffers = manifest.baseFonts.map(({ file }: { file: string }) => read(base + '/' + file));
+  const opentype = require('../../miniprogram/flow/vendor/opentype');
+  const correctionCmap = opentype.parse(Uint8Array.from(baseBuffers[0]).buffer, { lowMemory: true }).tables.cmap.glyphIndexMap;
+  expect(Object.keys(correctionCmap).map(cp => String.fromCodePoint(Number(cp))).sort()).toEqual(Array.from('静剧谓虑乐终').sort());
+  expect(manifest.baseFonts[0].characters).toBe('静剧谓虑乐终');
   const legacy = createGlyphSource(baseBuffers.slice(1));
+  const correction = createGlyphSource(baseBuffers.slice(0, 1));
   runtime.installBaseFonts(baseBuffers, manifest.baseCharacters);
   for (const shard of manifest.shards) runtime.installFont(shard.id, shard.characters, read(base + '/' + shard.file));
 
-  for (const char of '谓静') {
-    expect(runtime.glyphOutline(char)).toEqual(createGlyphSource(baseBuffers.slice(0, 1))(char));
-    expect(runtime.glyphOutline(char).commands).not.toEqual(legacy(char).commands);
+  for (const [char, traditional] of Object.entries({ 静: '靜', 剧: '劇', 谓: '謂', 虑: '慮', 乐: '樂', 终: '終' })) {
+    expect(manifest.baseCharacters).toContain(char);
+    expect(manifest.shards.some(({ characters }: { characters: string }) => characters.includes(char))).toBe(false);
+    const originalAsset = previous.shards.find(({ characters }: { characters: string }) => characters.includes(char));
+    const previousOutline = previous.baseCharacters.includes(char) ? legacy :
+      createGlyphSource([read('public/flow-assets/v-094d7b612c674ac324e9/' + originalAsset.file)]);
+    expect(runtime.glyphOutline(char)).toEqual(correction(char));
+    expect(runtime.glyphOutline(char).commands).not.toEqual(previousOutline(char).commands);
+    expect(runtime.glyphOutline(char).commands).not.toEqual(runtime.glyphOutline(traditional).commands);
   }
-  const revised = manifest.shards.filter(({ characters }: { characters: string }) => characters.includes('剧'));
-  expect(revised).toHaveLength(1);
-  expect(revised[0].id).toMatch(/^serif-sc-/);
-  expect(runtime.glyphOutline('剧')).toEqual(createGlyphSource([read(base + '/' + revised[0].file)])('剧'));
-  // The explicit traditional codepoint still resolves to its historical shard.
-  const traditional = manifest.shards.find(({ characters }: { characters: string }) => characters.includes('劇'));
-  const original = JSON.parse(read('public/flow-fonts/manifest.json').toString()).shards.find(
-    ({ characters }: { characters: string }) => characters.includes('劇'));
-  expect(traditional.sha256).toBe(original.sha256);
-  expect(runtime.glyphOutline('剧').commands).not.toEqual(runtime.glyphOutline('劇').commands);
+  for (const char of '后乱梦不以知之') {
+    expect(() => correction(char)).toThrow('Missing font glyph');
+    const originalAsset = previous.shards.find(({ characters }: { characters: string }) => characters.includes(char));
+    const previousOutline = previous.baseCharacters.includes(char) ? legacy :
+      createGlyphSource([read('public/flow-assets/v-094d7b612c674ac324e9/' + originalAsset.file)]);
+    expect(runtime.glyphOutline(char)).toEqual(previousOutline(char));
+  }
+  for (const char of coverage(manifest)) runtime.glyphOutline(char);
 });
