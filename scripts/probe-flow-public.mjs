@@ -13,10 +13,11 @@ const cdn = 'https://assets.aitoshuu.me';
 const reader = origin + '/InfiDao';
 const repository = fileURLToPath(new URL('../', import.meta.url));
 const seedQuote = '知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。';
-const candidates = ['止', '静', '得', '定'];
+const candidates = ['静', '止', '得', '定'];
 const ownerName = '__Host-infidao_flow';
 const viewport = { width: 390, height: 844 };
 const caps = { open: 2, branch: 4 };
+const postDoneMs = 1000;
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const releasePattern = /^infidao-[0-9a-f]{16}$/;
 const commitPattern = /^[0-9a-f]{40}$/;
@@ -116,8 +117,42 @@ function loadCorpus(release) {
 
 // This function is serialized into each isolated browser context. Raw response
 // records stay in memory so opaque request and chain IDs never reach disk.
-function instrument() {
+function instrument(settleMs) {
   const probe = window.flowPublicProbe = { calls: [], clicks: [], target: null };
+  const clock = () => performance.now();
+  const boundsOf = panel => {
+    const rect = panel.getBoundingClientRect();
+    const view = window.visualViewport;
+    return {
+      top: Math.max(rect.top, view?.offsetTop ?? 0),
+      bottom: Math.min(rect.bottom, (view?.offsetTop ?? 0) + (view?.height ?? innerHeight)),
+      left: Math.max(rect.left, view?.offsetLeft ?? 0),
+      right: Math.min(rect.right, (view?.offsetLeft ?? 0) + (view?.width ?? innerWidth)),
+    };
+  };
+  const overlaps = (a, b, clip) => Math.max(a.left, b.left, clip.left) < Math.min(a.right, b.right, clip.right) &&
+    Math.max(a.top, b.top, clip.top) < Math.min(a.bottom, b.bottom, clip.bottom);
+  const displayed = el => el.checkVisibility({ opacityProperty: true, visibilityProperty: true });
+  const hitTestable = el => {
+    if (!el || !displayed(el)) return false;
+    const rect = el.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0 && el.contains(document.elementFromPoint(
+      rect.left + rect.width / 2, rect.top + rect.height / 2,
+    ));
+  };
+  function hintState(panel, bounds, heading) {
+    const button = [...panel.parentElement.querySelectorAll(':scope > div > button')]
+      .find(el => el.textContent.trim() === '知道了');
+    const container = button?.parentElement;
+    const rect = container?.getBoundingClientRect();
+    const visible = !!rect && displayed(container) && displayed(button) && overlaps(rect, bounds, bounds);
+    return { present: !!button, visible, hitTestable: visible && hitTestable(button),
+      obstructs: visible && !!heading && displayed(heading) && overlaps(rect, heading.getBoundingClientRect(), bounds) };
+  }
+  probe.hint = () => {
+    const panel = document.querySelector('[data-flow-viewport]');
+    return panel && { at: clock(), ...hintState(panel, boundsOf(panel)) };
+  };
   const original = window.fetch.bind(window);
   window.fetch = async (input, init) => {
     const url = new URL(typeof input === 'string' ? input : input.url || input.href, location.href);
@@ -125,7 +160,8 @@ function instrument() {
         !['/api/flow', '/api/flow/session'].includes(url.pathname)) return original(input, init);
     const request = JSON.parse(init.body);
     const target = probe.target;
-    if (target && request.op === 'branch' && !request.prefetch && request.fromFrameId === target.parentId) {
+    if (target?.clickedAt !== undefined && request.op === 'branch' && !request.prefetch &&
+        request.chainId === target.chainId && request.fromFrameId === target.parentId && request.anchorId === target.anchorId) {
       target.requestId ??= request.requestId;
     }
     const call = { path: url.pathname, request, at: performance.now(), events: [] };
@@ -143,7 +179,7 @@ function instrument() {
         const record = line => {
           if (!line.trim()) return;
           const event = JSON.parse(line);
-          if (event.requestId === request.requestId) call.events.push({ at: performance.now(), event });
+          if (event.requestId === request.requestId) call.events.push({ at: clock(), event });
         };
         let pending = '';
         while (true) {
@@ -172,10 +208,14 @@ function instrument() {
     const button = el.closest?.('button');
     const parent = button?.closest('[data-flow-frame]');
     const target = probe.target;
-    const at = performance.now();
-    if (target && parent?.dataset.flowFrame === target.parentId && button.closest('[data-flow-heading]') &&
-        button.textContent.trim() === target.word) probe.clicks.push({ kind: 'word', at, trusted: true });
-    else if (target && button?.closest('[data-flow-arrival]') && button.textContent.trim() === '去读') {
+    const at = clock();
+    if (button?.textContent.trim() === '知道了') probe.clicks.push({ kind: 'hint', at, trusted: true });
+    else if (target && parent?.dataset.flowFrame === target.parentId && button.closest('[data-flow-heading]') &&
+        button.textContent.trim() === target.word) {
+      target.clickedAt ??= at;
+      target.hintAtClick ??= probe.hint();
+      probe.clicks.push({ kind: 'word', at, trusted: true });
+    } else if (target && button?.closest('[data-flow-arrival]') && button.textContent.trim() === '去读') {
       probe.clicks.push({ kind: 'go', at, trusted: true });
     } else if (el.closest?.('[data-flow-viewport]') && !el.closest('[data-flow-frame], button, a, input, textarea')) {
       probe.clicks.push({ kind: 'blank', at, trusted: true });
@@ -183,55 +223,85 @@ function instrument() {
   }, true);
 
   probe.call = () => probe.target && probe.calls.find(call => call.request.requestId === probe.target.requestId);
-  const clock = () => performance.now();
-  function sample() {
-    requestAnimationFrame(sample);
+  const frameKey = frame => ({ id: frame.id, sourceId: frame.sourceId, corpusVersion: frame.corpusVersion,
+    textHash: frame.textHash, quoteStart: frame.quoteStart, quoteEnd: frame.quoteEnd });
+  function trackHint(target, frame, state, source, terminal, settled, now) {
+    const audit = target.hintAudit ??= {
+      ...frameKey(frame), firstAt: now, lastAt: now, samples: { frame: 0, mutation: 0 },
+      present: { ticks: 0, episodes: 0, ended: 0 }, visible: { ticks: 0, episodes: 0, ended: 0 },
+      overlap: { ticks: 0, episodes: 0, ended: 0 }, postTerminal: { frame: 0, mutation: 0 },
+    };
+    audit.samples[source]++;
+    audit.lastAt = now;
+    for (const [kind, active] of Object.entries({ present: state.present, visible: state.visible, overlap: state.obstructs })) {
+      const tally = audit[kind];
+      if (active) {
+        tally.ticks++;
+        tally.firstAt ??= now;
+        tally.lastAt = now;
+        if (!tally.active) tally.episodes++;
+      } else if (tally.active) tally.ended++;
+      tally.active = active;
+    }
+    if (terminal) {
+      audit.terminalAt = terminal.at;
+      audit.terminal = terminal.event.type;
+      audit.postTerminal[source]++;
+      if (settled) audit.settledSince ??= now;
+      else {
+        delete audit.settledSince;
+        delete audit.confirmedAt;
+      }
+      if (Number.isFinite(audit.settledSince) && now - Math.max(audit.settledSince, terminal.at) >= settleMs &&
+          audit.postTerminal.frame > 1) audit.confirmedAt = now;
+    }
+  }
+
+  function sample(source) {
     const target = probe.target;
     const call = probe.call();
     if (!target || !call) return;
-    target.currentlyReadable = false;
-    const frame = call.events.flatMap(({ event }) => event.chain?.frames || []).find(f => f.id !== target.parentId &&
+    if (source === 'frame') target.currentlyReadable = false;
+    const terminal = call.events.find(({ event }) => event.type === 'done' || event.type === 'error');
+    const frame = target.canonicalFrame ??= call.events.map(({ event: { chain } }) =>
+      chain?.chainId !== target.chainId && chain?.parentChainId === target.chainId &&
+      chain?.entry?.fromFrameId === target.parentId && chain.entry.anchorId === target.anchorId &&
+      chain.entry.label === target.word ? chain.frames[0] : null).find(f => f && f.id !== target.parentId &&
       typeof f.fullText === 'string' && f.quote && Number.isInteger(f.quoteStart) && f.quoteStart >= 0 &&
       f.quoteEnd === f.quoteStart + f.quote.length && f.fullText.slice(f.quoteStart, f.quoteEnd) === f.quote);
     if (!frame) return;
     const dock = [...document.querySelectorAll('[data-flow-arrival] button')].find(el => el.textContent.trim() === '去读');
-    const dockRect = dock?.getBoundingClientRect();
-    if (dockRect?.width && dockRect.height && dock.contains(document.elementFromPoint(
-      dockRect.left + dockRect.width / 2, dockRect.top + dockRect.height / 2,
-    ))) target.goAvailable ??= clock();
-    const article = [...document.querySelectorAll('[data-flow-frame]')].find(el => el.dataset.flowFrame === frame.id);
-    const heading = article?.querySelector('[data-flow-heading]');
+    if (hitTestable(dock)) target.goAvailable ??= clock();
     const panel = document.querySelector('[data-flow-viewport]');
-    if (!heading || !panel) return;
+    if (!panel) return;
+    const articles = [...panel.querySelectorAll('[data-flow-frame]')].filter(el => el.dataset.flowFrame === frame.id);
+    const article = articles.length === 1 ? articles[0] : null;
+    const heading = article?.querySelector('[data-flow-heading]');
+    // Optical token groups contain exactly the quote, without the hidden keyboard help.
+    const exact = heading && [...heading.querySelectorAll('[data-flow-optic]')].map(el => el.textContent).join('') === frame.quote;
+    const bounds = boundsOf(panel);
+    const hint = hintState(panel, bounds, exact ? heading : null);
+    const ink = heading?.dataset.inkPhase;
+    const settledInk = ink === 'settled' && !heading.querySelector('[data-flow-ink], [data-flow-bent]');
+    if (exact || target.hintAudit) {
+      const settled = panel.parentElement.dataset.pending === 'false' && (terminal?.event.type === 'error' ||
+        !!exact && article.dataset.flowReady === 'true' && settledInk && displayed(heading));
+      trackHint(target, frame, hint, source, terminal, settled, clock());
+    }
+    if (source !== 'frame') return;
+    if (!exact) {
+      target.previous = null;
+      return;
+    }
 
     const rect = heading.getBoundingClientRect();
-    const panelRect = panel.getBoundingClientRect();
-    const view = window.visualViewport;
-    const bounds = {
-      top: Math.max(panelRect.top, view?.offsetTop ?? 0),
-      bottom: Math.min(panelRect.bottom, (view?.offsetTop ?? 0) + (view?.height ?? innerHeight)),
-      left: Math.max(panelRect.left, view?.offsetLeft ?? 0),
-      right: Math.min(panelRect.right, (view?.offsetLeft ?? 0) + (view?.width ?? innerWidth)),
-    };
-    const overlap = overlay => overlay.width > 0 && overlay.height > 0 && rect.left < overlay.right &&
-      rect.right > overlay.left && rect.top < overlay.bottom && rect.bottom > overlay.top;
-    const hint = [...panel.parentElement.querySelectorAll(':scope > div > button')].find(button => button.textContent.trim() === '知道了');
     const overlays = [...document.querySelectorAll('[data-flow-arrival], [data-flow-tools], [data-phase][data-has-quote]')];
-    const displayed = el => {
-      const style = getComputedStyle(el);
-      return style.visibility === 'visible' && Number(style.opacity) > 0;
-    };
-    const hintVisible = !!hint && displayed(hint.parentElement);
-    const hintObstructed = hintVisible && overlap(hint.parentElement.getBoundingClientRect());
-    const obstructed = hintObstructed || overlays.some(el => displayed(el) && overlap(el.getBoundingClientRect()));
-    const ink = heading.dataset.inkPhase;
-    const geometry = { edges: [rect.top, rect.bottom, rect.left, rect.right], bounds, ink, obstructed, hintVisible, hintObstructed };
+    const obstructed = hint.obstructs || overlays.some(el => displayed(el) && overlaps(rect, el.getBoundingClientRect(), bounds));
+    const geometry = { edges: [rect.top, rect.bottom, rect.left, rect.right], bounds, ink, obstructed,
+      hintVisible: hint.visible, hintObstructed: hint.obstructs };
     target.lastGeometry = geometry;
     const visible = rect.width > 0 && rect.height > 0 && rect.top >= bounds.top && rect.bottom <= bounds.bottom &&
-      rect.left >= bounds.left && rect.right <= bounds.right && !obstructed && ink === 'settled' &&
-      !heading.querySelector('[data-flow-ink], [data-flow-bent]') &&
-      getComputedStyle(heading).visibility === 'visible' && Number(getComputedStyle(heading).opacity) > 0 &&
-      heading.textContent.includes(frame.quote);
+      rect.left >= bounds.left && rect.right <= bounds.right && !obstructed && settledInk && displayed(heading);
     target.currentlyReadable = visible;
     if (target.visual) return;
     if (!visible) {
@@ -241,11 +311,22 @@ function instrument() {
     if (target.previous?.id === frame.id && geometry.edges.every((value, index) => Math.abs(value - target.previous.geometry.edges[index]) < 0.5)) {
       target.visual = { ...target.previous, verifiedAt: clock() };
     } else target.previous = {
-      id: frame.id, sourceId: frame.sourceId, corpusVersion: frame.corpusVersion,
-      textHash: frame.textHash, quoteStart: frame.quoteStart, quoteEnd: frame.quoteEnd, at: clock(), geometry,
+      ...frameKey(frame), at: clock(), geometry,
     };
   }
-  requestAnimationFrame(sample);
+  const observer = new MutationObserver(() => sample('mutation'));
+  let observedStream;
+  function animate() {
+    requestAnimationFrame(animate);
+    const stream = document.querySelector('[data-flow-stream]');
+    if (stream !== observedStream) {
+      observer.disconnect();
+      if (stream) observer.observe(stream, { childList: true });
+      observedStream = stream;
+    }
+    sample('frame');
+  }
+  requestAnimationFrame(animate);
 }
 
 function requestMatches(body, permit) {
@@ -302,7 +383,7 @@ async function browserSlot(browser, owner, report, label) {
     permit.signal?.();
     return route.continue();
   });
-  await page.addInitScript(instrument);
+  await page.addInitScript(instrument, postDoneMs);
   return slot;
 }
 
@@ -383,6 +464,17 @@ async function openRoot(slot, report) {
     slot.parent = parent;
     result.reflectionSha256 = sha(parent.reflection);
     await heading(slot).waitFor({ state: 'visible', timeout: 12000 });
+    // Before pausing the moving root, give its opening reveal a chance to
+    // expose the hint. An absent hint makes the hint trial inconclusive.
+    await page.waitForFunction(() => window.flowPublicProbe.hint()?.hitTestable,
+      null, { timeout: 12000 }).catch(() => {});
+    result.beforeBlank = await page.evaluate(() => {
+      const panel = document.querySelector('[data-flow-viewport]');
+      const stream = panel?.parentElement;
+      const loading = document.querySelector('[data-phase][data-has-quote]');
+      return { hint: window.flowPublicProbe.hint(), pending: stream?.dataset.pending, paused: stream?.dataset.paused,
+        rising: panel?.hasAttribute('data-flow-rising'), loadingHidden: loading?.getAttribute('aria-hidden') };
+    });
     result.blank = await trustedBlank(page);
     slot.rootPath = await page.evaluate(() => history.state?.flowPathId);
     result.ready = !!slot.rootPath;
@@ -463,6 +555,20 @@ function branchEvidence(call, slot, word, corpus, release, cold) {
     relationError, checkedCorpus, first, firstFrame, final, childId: done?.chainId };
 }
 
+const frameMatches = (sample, frame) => sample && frame &&
+  ['id', 'sourceId', 'corpusVersion', 'textHash', 'quoteStart', 'quoteEnd'].every(key => sample[key] === frame[key]);
+
+function hintEvidence(audit, click) {
+  const relative = at => Number.isFinite(at) ? at - click.at : null;
+  const counts = tally => ({ ticks: tally.ticks, episodes: tally.episodes, ended: tally.ended,
+    reappearances: Math.max(0, tally.episodes - 1), firstMs: relative(tally.firstAt), lastMs: relative(tally.lastAt) });
+  return { samples: audit.samples, firstMs: relative(audit.firstAt), lastMs: relative(audit.lastAt),
+    present: counts(audit.present), visible: counts(audit.visible), overlap: counts(audit.overlap),
+    flashes: audit.visible.ended, terminal: audit.terminal ?? null, terminalMs: relative(audit.terminalAt),
+    postTerminalSamples: audit.postTerminal, settledSinceMs: relative(audit.settledSince),
+    settledConfirmedMs: relative(audit.confirmedAt), postTerminalMs: audit.lastAt - audit.terminalAt || null };
+}
+
 async function tryBranch(slot, word, report, corpus, cold) {
   const { page, parent, chain } = slot;
   const attempt = { root: slot.label, word: word.word, expectedRoute: cold ? 'reuse' : 'cold', selection: word.selection };
@@ -471,6 +577,8 @@ async function tryBranch(slot, word, report, corpus, cold) {
   const dispatched = new Promise(done => { permit.signal = done; });
   let armed = false;
   let screenshot;
+  let rootHintScreenshot;
+  let postDoneScreenshot;
   let checkpoint = 'restoring root';
   try {
     await page.bringToFront();
@@ -478,15 +586,24 @@ async function tryBranch(slot, word, report, corpus, cold) {
       await page.goBack({ timeout: 8000 });
       await page.waitForFunction(path => history.state?.flowPathId === path, slot.rootPath, { timeout: 8000 });
     }
+    const fresh = !slot.hasSentWord;
+    if (fresh && await page.evaluate(() => window.flowPublicProbe.hint()?.hitTestable)) {
+      rootHintScreenshot = await page.screenshot({ timeout: 4500 }).catch(() => null);
+    }
     checkpoint = 'pausing by blank click';
     attempt.blank = await trustedBlank(page);
+    attempt.hintBeforeWord = { expected: fresh ? 'visible' : 'dismissed', ...await page.evaluate(() => {
+      const { at, ...state } = window.flowPublicProbe.hint() || {};
+      return state;
+    }) };
     checkpoint = 'clicking canonical word';
     const title = '沿「' + word.word + '」接续';
     const button = heading(slot).getByTitle(title, { exact: true }).first();
     await page.evaluate(target => {
       const probe = window.flowPublicProbe;
       probe.target = { ...target, clickIndex: probe.clicks.length };
-    }, { parentId: parent.id, word: word.word });
+    }, { parentId: parent.id, chainId: chain.chainId, word: word.word,
+      anchorId: 'text:' + word.selection.start + ':' + word.selection.end });
     armed = true;
     slot.permit = permit;
     attempt.pointer = await hitButton(page, button);
@@ -521,12 +638,26 @@ async function tryBranch(slot, word, report, corpus, cold) {
     checkpoint = 'waiting for stream end';
     await page.waitForFunction(() => window.flowPublicProbe.call()?.end,
       null, { timeout: Math.max(1, deadline - Date.now()) }).catch(() => {});
+    checkpoint = 'observing hint after stream terminal';
+    const terminal = await page.evaluate(() => window.flowPublicProbe.call()?.events
+      .find(({ event }) => event.type === 'done' || event.type === 'error')?.event.type);
+    if (terminal) {
+      await page.waitForFunction(() => {
+        const probe = window.flowPublicProbe;
+        const audit = probe.target.hintAudit;
+        return audit?.confirmedAt || probe.call()?.end && !probe.target.canonicalFrame;
+      }, null, { timeout: 10000 }).catch(() => {});
+      if (terminal === 'done' && await page.evaluate(() => !!window.flowPublicProbe.target.hintAudit?.confirmedAt)) {
+        postDoneScreenshot = await page.screenshot({ timeout: 4500 }).catch(() => null);
+      }
+    }
   } catch {
     attempt.interrupted = checkpoint;
   } finally {
     slot.permit = null;
   }
   attempt.sent = !!permit.sent;
+  slot.hasSentWord ||= attempt.sent;
   const sample = armed && await page.evaluate(requestId => {
     const p = window.flowPublicProbe;
     return { call: p.calls.find(c => c.request.requestId === requestId), target: p.target, clicks: p.clicks.slice(p.target.clickIndex) };
@@ -545,9 +676,19 @@ async function tryBranch(slot, word, report, corpus, cold) {
   attempt.error = result.relationError;
   attempt.checkedCorpus = result.checkedCorpus;
   attempt.events = call?.events.map(({ event: e }) => e.type);
-  const visual = target?.visual && result.firstFrame &&
-    ['id', 'sourceId', 'corpusVersion', 'textHash', 'quoteStart', 'quoteEnd'].every(key =>
-      target.visual[key] === result.firstFrame[key]) ? target.visual : null;
+  const visual = frameMatches(target?.visual, result.firstFrame) ? target.visual : null;
+  if (click && target.hintAtClick) {
+    const { at, ...state } = target.hintAtClick;
+    attempt.hintAtTrustedWord = state;
+  }
+  attempt.trustedHintClicks = clicks?.filter(item => item.kind === 'hint').length || 0;
+  if (click && frameMatches(target?.hintAudit, result.firstFrame)) {
+    attempt.hintAfterArrival = hintEvidence(target.hintAudit, click);
+  }
+  attempt.hintCovered = !!(click && (attempt.hintBeforeWord?.expected === 'visible'
+    ? attempt.hintAtTrustedWord?.hitTestable : attempt.hintAtTrustedWord?.present === false) &&
+    attempt.trustedHintClicks === 0 && attempt.hintAfterArrival?.terminal === 'done' &&
+    attempt.hintAfterArrival.settledConfirmedMs !== null);
   attempt.geometry = visual?.geometry || target?.lastGeometry;
   if (click) {
     const timing = { request: call?.at, firstQuote: result.first?.at, goAvailable: target?.goAvailable, go: go?.at,
@@ -563,6 +704,16 @@ async function tryBranch(slot, word, report, corpus, cold) {
     const name = slot.label + '-' + word.word + '-readable.png';
     await writeFile(resolve(report.output, name), screenshot, { mode: 0o600 })
       .then(() => { attempt.screenshot = name; }).catch(() => {});
+  }
+  if (attempt.hintAtTrustedWord?.hitTestable && rootHintScreenshot) {
+    const name = slot.label + '-' + word.word + '-fresh-hint.png';
+    await writeFile(resolve(report.output, name), rootHintScreenshot, { mode: 0o600 });
+    attempt.freshHintScreenshot = name;
+  }
+  if (attempt.hintAfterArrival?.terminal === 'done' && attempt.hintAfterArrival.settledConfirmedMs !== null && postDoneScreenshot) {
+    const name = slot.label + '-' + word.word + '-post-done.png';
+    await writeFile(resolve(report.output, name), postDoneScreenshot, { mode: 0o600 });
+    attempt.postDoneScreenshot = name;
   }
   return { result, attempt };
 }

@@ -1,0 +1,115 @@
+{
+  "release": {
+    "commit": "66e34523588dfa77114fe15f41dda06b0ebb9ae0",
+    "id": "infidao-7d41dad93c8dd939",
+    "entrySha256": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d",
+    "entry": "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js"
+  },
+  "fixture": {
+    "mocked": true,
+    "actualModelPosts": 0,
+    "networkWrites": 0,
+    "posts": [
+      "session",
+      "open",
+      "branch"
+    ]
+  },
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "dpr": 3
+  },
+  "input": {
+    "word": "静",
+    "trusted": true,
+    "blank": {
+      "x": 15.6,
+      "y": 422
+    },
+    "pointer": {
+      "x": 246,
+      "y": 259.25347900390625
+    },
+    "go": null,
+    "hintAtClick": {
+      "at": 6751.0999999940395,
+      "present": true,
+      "visible": true,
+      "hitTestable": true,
+      "obstructs": false
+    }
+  },
+  "events": [
+    {
+      "type": "head",
+      "msFromWord": 384.5
+    },
+    {
+      "type": "progress",
+      "msFromWord": 1233.7999999821186
+    },
+    {
+      "type": "frame",
+      "msFromWord": 1984.0999999940395
+    },
+    {
+      "type": "done",
+      "msFromWord": 2133.9000000059605
+    }
+  ],
+  "canonical": {
+    "source": "荀子",
+    "quote": "不以梦剧乱知谓之静",
+    "textHash": "711d92f05206ad3316a5eded0387153ffc85e402c6fcaf4274ed8cc7f3e6fbaa",
+    "quoteStart": 180,
+    "quoteEnd": 189
+  },
+  "observation": {
+    "samples": {
+      "frame": 173,
+      "mutation": 0
+    },
+    "firstMs": 400.59999999403954,
+    "lastMs": 3265.2999999821186,
+    "present": {
+      "ticks": 0,
+      "episodes": 0,
+      "ended": 0,
+      "reappearances": 0,
+      "firstMs": null,
+      "lastMs": null
+    },
+    "visible": {
+      "ticks": 0,
+      "episodes": 0,
+      "ended": 0,
+      "reappearances": 0,
+      "firstMs": null,
+      "lastMs": null
+    },
+    "overlap": {
+      "ticks": 0,
+      "episodes": 0,
+      "ended": 0,
+      "reappearances": 0,
+      "firstMs": null,
+      "lastMs": null
+    },
+    "flashes": 0,
+    "terminal": "done",
+    "terminalMs": 2133.9000000059605,
+    "postTerminalSamples": {
+      "frame": 68,
+      "mutation": 0
+    },
+    "settledSinceMs": 2148.5999999940395,
+    "settledConfirmedMs": 3265.2999999821186,
+    "postTerminalMs": 1131.3999999761581
+  },
+  "screenshots": [
+    "fresh-hint.png",
+    "child-readable.png",
+    "post-done.png"
+  ]
+}
