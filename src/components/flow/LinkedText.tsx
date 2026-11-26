@@ -15,15 +15,18 @@ type Selection = { frameId: string; anchorId?: string; selection?: FlowSelection
 type Part = { text: string; anchorId?: string; selection?: FlowSelection; selected?: boolean };
 type TokenGroup = Array<{ part: Part; index: number }>;
 
-// Keep a short leading particle with the word it introduces. These are layout
-// groups only: each canonical link and optical glyph run stays independent.
+// Keep short particles with the words they introduce or close. Each canonical
+// link and optical glyph run still has its own node within the layout group.
 function quotePhrases(groups: TokenGroup[]) {
   const phrases: TokenGroup[][] = [];
-  for (const group of groups) {
+  for (const [index, group] of groups.entries()) {
     const previous = phrases.at(-1);
     const leading = previous?.at(-1)?.map(item => item.part.text).join('');
+    const ending = group.map(item => item.part.text).join('');
     const joined = [...(previous || []), group].flatMap(items => items.map(item => item.part.text)).join('');
-    if (previous && /^[于於乎以与與及而则則乃若欲将將不未勿毋]$/u.test(leading || '') && Array.from(joined).length <= 5) previous.push(group);
+    const followsParticle = /^[于於乎以与與及而则則乃若欲将將不未勿毋先]$/u.test(leading || '');
+    const closesClause = index === groups.length - 1 && /^[之也矣焉哉耳兮耶乎欤歟][\p{P}]*$/u.test(ending);
+    if (previous && (followsParticle || closesClause) && Array.from(joined).length <= 5) previous.push(group);
     else phrases.push([group]);
   }
   return phrases;

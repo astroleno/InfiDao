@@ -86,6 +86,7 @@ export function FlowExperience() {
   const savingBookmark = useRef(false);
   const bookmarkVersion = useRef(0);
   const savingNoteId = useRef<{ id: string; chainId: string; frameId: string; createdAt: number } | null>(null);
+  const hintDismissed = useRef(false);
 
   const controllerRef = useRef<FlowController | null>(null);
   const recordRef = useRef<FlowPathRecord | null>(null);
@@ -124,6 +125,13 @@ export function FlowExperience() {
   }
 
   function notify(text: string) { setFeedback({ text, revision: ++feedbackRevision.current }); }
+
+  function dismissFirstHint() {
+    if (hintDismissed.current) return;
+    hintDismissed.current = true;
+    setHint(false);
+    void readingStorage.dismissHint();
+  }
 
   useEffect(() => {
     setPoetryEnabled(currentContentPacks().includes('poetry'));
@@ -170,9 +178,11 @@ export function FlowExperience() {
           chosen.surface === continued.surface && chosen.surfaceText === continued.surfaceText &&
           chosen.textHash === continued.textHash && chosen.corpusVersion === continued.corpusVersion :
         selection.anchorId && selection.anchorId === origin.anchorId && !continued));
+    const wordArrival = matchedSelection && selection === wordArrivalSelection.current;
+    if (preserve && target && wordArrival) dismissFirstHint();
     setArrival(preserve && target && origin ? {
       id: String(++arrivalRevision.current), sourceKey: `${record.parentPathId}:${origin.fromFrameId}`, targetKey: entryKey(target),
-      ...(matchedSelection && selection === wordArrivalSelection.current ? { kind: 'word' } : {}),
+      ...(wordArrival ? { kind: 'word' } : {}),
       label: matchedSelection && selection?.label ? `沿「${selection.label}」已接续` : origin.thought ? '沿这一念已接续' : '经文已接续',
     } : null);
     clearSelection();
@@ -215,7 +225,11 @@ export function FlowExperience() {
 
   useEffect(() => {
     let alive = true;
-    void readingStorage.hintSeen().then(seen => { if (alive) setHint(!seen); });
+    void readingStorage.hintSeen().then(seen => {
+      if (!alive || hintDismissed.current) return;
+      hintDismissed.current = seen;
+      setHint(!seen);
+    });
     return () => { alive = false; };
   }, []);
 
@@ -622,7 +636,7 @@ export function FlowExperience() {
         onRead={handleReadEntry} onVisualReady={handoff.markVisualReady} holdEntrance={!handoff.revealed} riseOnReveal
         firstHint={showHint ? <div className={styles.firstHint}>
           <span>{reducedMotion ? '上下滑动阅读，点词接续。' : '点空白停驻，点词接续。'}</span>
-          <button type="button" className={styles.textButton} onClick={() => { setHint(false); void readingStorage.dismissHint(); }}>知道了</button>
+          <button type="button" className={styles.textButton} onClick={dismissFirstHint}>知道了</button>
         </div> : undefined}
         onScroll={top => { readingScrollRef.current = top; }} onBranch={selection => void handleBranch(selection)}
         waiting={!seedOpen && (showWaiting ? <FlowWaiting compact busy={awaitingQuote} label={waitingLabel} onCancel={stopWaiting} />

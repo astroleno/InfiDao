@@ -9,6 +9,21 @@ const mockRecord: FlowPathRecord = {
   snapshot: { version: 1, position: 0, rowOffset: 0, ambientPhase: 0, paused: false, sourceOpen: false, activeFrameId: 'first', readingPositions: {}, ribbon: null },
 } as FlowPathRecord;
 
+const mockSelection = { pathId: mockRecord.pathId, frameId: 'first', anchorId: 'text:1:2', label: '止',
+  selection: { start: 1, end: 2, textHash: 'first', corpusVersion: 'v1' } };
+const mockChild: FlowPathRecord = {
+  ...mockRecord, pathId: 'retry-child', parentPathId: mockRecord.pathId,
+  parentEntry: { fromFrameId: mockSelection.frameId, anchorId: mockSelection.anchorId,
+    label: mockSelection.label, selection: mockSelection.selection },
+  chain: { ...mockRecord.chain, chainId: 'retry-child-chain', frames: [
+    { ...mockRecord.chain.frames[0]!, id: 'second', quote: '本末。', fullText: '本末。', ready: false },
+  ] },
+};
+jest.mock('@/lib/flow-browser/storage', () => ({
+  ...jest.requireActual('@/lib/flow-browser/storage'),
+  loadPath: async (id: string) => id === mockRecord.pathId ? mockRecord : null,
+}));
+
 const mockRetry = jest.fn(async () => {});
 let mockHost: any;
 let mockVisualReady: (surface: 'native' | 'canvas') => void;
@@ -20,7 +35,7 @@ jest.mock('@/lib/flow-browser/controller-host', () => ({
         await host.present(mockRecord, { current: () => true, navigation: 'replace' });
         host.state({ record: mockRecord, busy: false, pending: false, error: null, storageWarning: false });
       },
-      retry: mockRetry, getState: () => ({ record: mockRecord }),
+      retry: mockRetry, branch: async () => {}, getState: () => ({ record: mockRecord }),
       checkpoint: async () => {}, dispose() {}, setVisible() {}, cancelPreparation() {},
     };
   },
@@ -30,6 +45,7 @@ jest.mock('@/components/flow/FlowStream', () => ({ FlowStream: (props: any) => {
   // Any press inside the stream holds the reading still, including a press
   // that lands on the error's own buttons.
   return <section data-testid="stream" data-paused={String(props.paused)} onPointerDown={() => props.onPause()}>
+    <button type="button" onClick={() => void props.onBranch(mockSelection)}>止</button>
     {props.waiting}{props.firstHint}
   </section>;
 } }));
@@ -113,4 +129,27 @@ test('native reduced-motion reveal provides only usable reading gestures', async
   act(() => mockVisualReady('native'));
   expect(screen.queryByText('知止。', { selector: 'p' })).not.toBeInTheDocument();
   expect(screen.getByText('上下滑动阅读，点词接续。')).toBeInTheDocument();
+});
+
+test.each([false, true])('a verified word continuation consumes the hint before completion (late read: %s)', async late => {
+  media(true);
+  let resolveHint = () => {};
+  const hintSeen = jest.mocked(readingStorage.hintSeen);
+  if (late) hintSeen.mockReturnValue(new Promise(resolve => { resolveHint = () => resolve(false); }));
+  else hintSeen.mockResolvedValue(false);
+  const dismiss = jest.spyOn(readingStorage, 'dismissHint').mockResolvedValue({ persisted: true });
+  render(<FlowExperience />);
+  await screen.findByText('知止。', { selector: 'p' });
+  act(() => mockVisualReady('native'));
+  if (!late) expect(screen.getByRole('button', { name: '知道了' })).toBeInTheDocument();
+
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: '止' })); });
+  const state = { record: mockChild, busy: false, pending: true, error: null, storageWarning: false };
+  act(() => mockHost.state(state));
+  expect(dismiss).not.toHaveBeenCalled();
+  await act(async () => { await mockHost.present(mockChild, { current: () => true, navigation: 'push' }); });
+  expect(dismiss).toHaveBeenCalledTimes(1);
+  await act(async () => { resolveHint(); });
+  act(() => mockHost.state({ ...state, pending: false }));
+  expect(screen.queryByRole('button', { name: '知道了' })).not.toBeInTheDocument();
 });

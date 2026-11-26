@@ -19,6 +19,27 @@ test('keeps punctuation attached visually and preserves exact canonical selectio
   expect(onSelect).toHaveBeenCalledWith({ frameId: 'one', anchorId: 'text:5:6', label: '之', selection: { start: 5, end: 6, textHash: 'hash', corpusVersion: 'v1' } });
 });
 
+test('keeps a short clause ending together without joining its optical runs or word selections', () => {
+  const quote = '所求乎朋友先施之，未能也。';
+  const onSelect = jest.fn();
+  render(<LinkedText frame={{ ...frame, fullText: quote, quote, quoteEnd: quote.length,
+    lexicalBreaks: [1, 2, 3, 5, 6, 7, 8, 9, 11, 12, 13] }} surface="quote" optical onSelect={onSelect} />);
+
+  const leading = screen.getByRole('button', { name: '先' });
+  const verb = screen.getByRole('button', { name: '施' });
+  const ending = screen.getByRole('button', { name: '之' });
+  const runs = [leading, verb, ending].map(button => button.closest('[data-flow-optic]'));
+  expect(new Set(runs).size).toBe(3);
+  expect(new Set(runs.map(run => run?.parentElement)).size).toBe(1);
+  expect(runs[0]?.parentElement?.textContent).toBe('先施之，');
+  act(() => verb.focus());
+  fireEvent.keyDown(verb, { key: 'ArrowRight' });
+  expect(ending).toHaveFocus();
+  fireEvent.click(ending);
+  expect(onSelect).toHaveBeenCalledWith({ frameId: 'one', anchorId: 'text:7:8', label: '之',
+    selection: { start: 7, end: 8, textHash: 'hash', corpusVersion: 'v1' } });
+});
+
 test('uses one tab stop per passage and arrow/Home/End to choose words', () => {
   render(<LinkedText frame={frame} surface="quote" onSelect={jest.fn()} />);
   const buttons = screen.getAllByRole('button');
