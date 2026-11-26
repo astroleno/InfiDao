@@ -24,6 +24,31 @@ const normalizesInsidePrior = (text: string, previous: string[]) => {
   return normal.length > 0 && previous.some(past => past.includes(normal));
 };
 
+function longestSharedText(text: string, previous: string[]) {
+  const chars = [...quotationKey(text)];
+  let length = 0, start = 0, priorIndex: number | null = null;
+  for (const [index, prior] of previous.entries()) {
+    const priorChars = [...prior];
+    let lengths = new Uint16Array(priorChars.length + 1);
+    for (const [i, char] of chars.entries()) {
+      const next = new Uint16Array(priorChars.length + 1);
+      for (const [j, priorChar] of priorChars.entries()) {
+        if (char !== priorChar) continue;
+        const size = lengths[j]! + 1;
+        next[j + 1] = size;
+        if (size <= length) continue;
+        length = size;
+        start = i + 1 - size;
+        priorIndex = index;
+      }
+      lengths = next;
+    }
+  }
+  return { text: chars.slice(start, start + length).join(''), length, priorIndex };
+}
+
+const sharesFour = (text: string, previous: string[]) => longestSharedText(text, previous).length >= 4;
+
 function soften(options: Option[]) {
   const ranked = [...options];
   for (let i = 0; i + 1 < ranked.length; i++) {
@@ -48,7 +73,7 @@ function covers(container: CandidateRange, target: CandidateRange) {
     container.textHash === target.textHash && container.start <= target.start && container.end >= target.end;
 }
 
-function rankOptions(caseId: string, windows: Span[], terms: string[], previous: string[]) {
+function rankOptions(caseId: string, windows: Span[], terms: string[], previous: string[], detectRepeat = normalizesInsidePrior) {
   return windows.flatMap((window, index): Option[] => {
     return [...window.text.matchAll(/[^。！？!?]+[。！？!?]*[”’」』]*/gu)].flatMap(match => {
       const text = match[0].trim();
@@ -60,12 +85,12 @@ function rankOptions(caseId: string, windows: Span[], terms: string[], previous:
       assert(window.text.slice(offset, offset + text.length) === text);
       const id = hash(JSON.stringify(['fixed-flow-blind-v1', caseId, window.sourceId, window.textHash, start, end])).slice(0, 16);
       return [{ ...window, id, rank: index + 1, tier: terms.some(term => text.includes(term)) ? 1 : 0,
-        text, start, end, repeated: normalizesInsidePrior(text, previous) }];
+        text, start, end, repeated: detectRepeat(text, previous) }];
     });
   }).sort((left, right) => right.tier - left.tier);
 }
 
-async function replay(entry: Case) {
+async function replay(entry: Case, detectRepeat = normalizesInsidePrior) {
   const { id, point, prior, evidence, terms, need, scope, op, seed } = entry;
   assert(op === 'open' ? seed && !point && !prior.length : point && !seed && prior.length > 0);
   const clickable = [];
@@ -91,7 +116,7 @@ async function replay(entry: Case) {
     const row = compaction.passages[index]!, input = compaction.input[index]!;
     assert(row.id === range.sourceId && row.text.slice(range.start, range.end) === input.text && input.text.length <= 480);
     return { ...range, source: input.source, chapter: input.chapter, text: input.text };
-  }), terms, previous);
+  }), terms, previous, detectRepeat);
   const trial = soften(baseline);
   const trialRanks = new Map(trial.map((option, index) => [option.id, index]));
   assert.equal(baseline.length, trialRanks.size);
@@ -197,14 +222,19 @@ type TrialArchive = {
   canonicalPreflight?: { pair: number; original: HistoricalQuote[]; proposals: HistoricalQuote[] }[];
 };
 
-async function archiveCandidates(path: string) {
+async function archiveCandidates(path: string, includeOverlap = false) {
   const archive = await readJson<TrialArchive>(path);
+  function mark(text: string, prior: string[]) {
+    if (!includeOverlap) return { repeated: normalizesInsidePrior(text, prior) };
+    const shared = longestSharedText(text, prior);
+    return { repeated: shared.length >= 4, shared };
+  }
   const deliveries = archive.responses.cases.map(response => {
     const mapping = archive.mapping.cases.find(item => item.id === response.id);
     assert(mapping);
     return {
       ...mapping, quote: response.delivered.quote,
-      repeated: normalizesInsidePrior(response.delivered.quote, response.recentReadings.map(reading => quotationKey(reading.quote))),
+      ...mark(response.delivered.quote, response.recentReadings.map(reading => quotationKey(reading.quote))),
     };
   });
   const proposals = [];
@@ -214,12 +244,14 @@ async function archiveCandidates(path: string) {
     assert(context);
     const prior = context.recentReadings.map(reading => quotationKey(reading.quote));
     const options = [];
-    for (const quote of item.proposals) {
+    for (const quote of includeOverlap ? [...item.original, ...item.proposals] : item.proposals) {
       const row = await findFlowPassage(quote.sourceId);
       assert(row?.textHash === quote.textHash && row.text.slice(quote.quoteStart, quote.quoteEnd) === quote.quote);
-      options.push({ ...quote, repeated: normalizesInsidePrior(quote.quote, prior) });
+      options.push({ ...quote, ...mark(quote.quote, prior) });
     }
-    proposals.push({ pair: item.pair, original: item.original, options });
+    proposals.push(includeOverlap
+      ? { pair: item.pair, original: options.slice(0, item.original.length), options: options.slice(item.original.length) }
+      : { pair: item.pair, original: item.original, options });
   }
   return { deliveries, proposals };
 }
@@ -255,13 +287,36 @@ async function calibration(paths: string[]) {
   return { oldRuns, v18: await archiveCandidates(v18Path), v20: await archiveCandidates(v20Path) };
 }
 
+async function overlapReport(points: Replayed[], grades: Grade[], archivePath: string, deckPath: string) {
+  assert.deepEqual(longestSharedText('𠮷，乙丙丁', [quotationKey('甲𠮷乙，丙丁')]), { text: '𠮷乙丙丁', length: 4, priorIndex: 0 });
+  assert.equal(sharesFour('𠮷乙丙', ['𠮷乙丙']), false, 'a surrogate pair is one code point');
+  assert.equal(sharesFour('甲乙丙丁', ['甲乙', '丙丁']), false, 'prior quotes are separate');
+  assert.equal(sharesFour('甲乙丙丁', ['甲乙間丙丁']), false, 'matches are contiguous');
+  assert.equal(sharesFour('甲乙丙丁', []), false);
+
+  for (const { baseline, trial } of points) assert.equal(baseline[0]?.id, trial[0]?.id, 'changed top quote requires fresh blind grading');
+  const deck = await readJson<{ items: ReturnType<typeof blindDeck> }>(deckPath);
+  assert.deepEqual(blindDeck(points), deck.items, 'the frozen blind entries must match before reusing grades');
+  const { summary } = report(points, grades);
+  const flagged = points.flatMap(({ entry, baseline, trial }) => {
+    const previous = entry.prior.map(span => quotationKey(span.text));
+    return baseline.flatMap((option, index) => option.repeated ? [{
+      point: entry.id, option, baselineRank: index + 1, trialRank: trial.findIndex(item => item.id === option.id) + 1,
+      shared: longestSharedText(option.text, previous),
+    }] : []);
+  });
+  const archive = await archiveCandidates(archivePath, true);
+  return { summary, flagged, archive };
+}
+
 async function main() {
-  const [mode, input, gradesPath] = process.argv.slice(2);
+  const [mode, input, gradesPath, archivePath, deckPath] = process.argv.slice(2);
   if (mode === 'calibration') {
     console.log(JSON.stringify(await calibration(process.argv.slice(3)), null, 2));
     return;
   }
-  assert(input && (mode === 'deck' || (mode === 'report' && gradesPath)), 'Usage: tsx scripts/run-flow-quote-rank-replay.ts <deck|report> <fixed-points.json> [grades.json]');
+  assert(input && (mode === 'deck' || (mode === 'report' && gradesPath) || (mode === 'overlap' && gradesPath && archivePath && deckPath)),
+    'Usage: tsx scripts/run-flow-quote-rank-replay.ts <deck|report|overlap> <fixed-points.json> [grades.json] [v20.json blind-deck.json]');
   const { cases, inputs } = await readJson<{ cases: Case[]; inputs: Record<string, string> }>(input);
   for (const [path, expected] of Object.entries(inputs)) assert.equal(hash(await readFile(path)), expected, path);
   assert.equal(cases.length, 18);
@@ -269,10 +324,14 @@ async function main() {
   const points = [];
   for (const entry of cases) {
     assert.equal(entry.prior.length, entry.op === 'open' ? 0 : entry.group === 'deep' ? 2 : 1);
-    points.push(await replay(entry));
+    points.push(await replay(entry, mode === 'overlap' ? sharesFour : normalizesInsidePrior));
   }
-  const result = mode === 'deck' ? { items: blindDeck(points) } :
-    report(points, (await readJson<{ grades: Grade[] }>(gradesPath!)).grades);
+  if (mode === 'deck') {
+    console.log(JSON.stringify({ items: blindDeck(points) }, null, 2));
+    return;
+  }
+  const { grades } = await readJson<{ grades: Grade[] }>(gradesPath!);
+  const result = mode === 'overlap' ? await overlapReport(points, grades, archivePath!, deckPath!) : report(points, grades);
   console.log(JSON.stringify(result, null, 2));
 }
 
