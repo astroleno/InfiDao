@@ -1,0 +1,311 @@
+{
+  "release": "infidao-dc8272afafb1d4fa",
+  "commit": "83552e6560082344fa70693118baec1ba2dacb1d",
+  "source": {
+    "sourceMode": "commit",
+    "sourceFiles": 860,
+    "sourceDigest": "dc8272afafb1d4fac3d56a7508b17e8b3398fb10feade85158f0c5d75eac63c1",
+    "sourceArchive": {
+      "bytes": 37661951,
+      "packagePath": "origin-source.tar.gz",
+      "sha256": "0135482e88ff3c924ac82cc4eaa8b65155efbeb0367d8b03dfa11a9c54837168"
+    }
+  },
+  "build": {
+    "node": "24.22.1",
+    "npm": "11.6.2",
+    "output": "standalone",
+    "constrained": true
+  },
+  "activation": {
+    "activatedAt": "2026-11-26T22:06:59+08:00",
+    "gatesPassedAt": "2026-11-26T22:07:15+08:00",
+    "activePath": "/opt/infidao-releases/infidao-dc8272afafb1d4fa/app",
+    "runtimeFileInventorySha256": "9fb9ae04bf309d0c98efe678424a38b89981f48442842fd5150edf425bec52e9",
+    "nonWebServiceProcessesMatch": true,
+    "configurationVerificationPassed": true,
+    "deploymentModelRequests": 0
+  },
+  "rollback": {
+    "release": "infidao-7d41dad93c8dd939",
+    "commit": "66e34523588dfa77114fe15f41dda06b0ebb9ae0",
+    "path": "/opt/infidao-releases/infidao-7d41dad93c8dd939",
+    "priorAssetSetSha256": "00e768a92a12a5d21482b3d99d9c96344b5ea0a209741255c8033d1aaddb4929"
+  },
+  "cdn": {
+    "base": "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-dc8272afafb1d4fa/flow-assets/v-87a1ae56979cf24934c0",
+    "bytes": 5489933,
+    "checkedFontFiles": 26,
+    "checkedObjects": 27,
+    "corsFor": [
+      "aitoshuu.me",
+      "tongye.me"
+    ],
+    "fontManifestSha256": "1e7345a1d05cf792e0aef3e2d36f0d1c45b48b2dd999b33bfb86f2777515a75c",
+    "manifestSha256": "00f5dd3f8b79b234a00f60383e1f52a264fee978d24c9e02117e24c1625a7f42",
+    "version": "87a1ae56979cf24934c0",
+    "createOnlyUploaded": 28,
+    "verifiedAt": "2026-11-26T14:05:29.229390+00:00",
+    "objects": [
+      {
+        "bytes": 236896,
+        "mime": "font/woff",
+        "path": "020dc1576aea903b72e8.woff",
+        "sha256": "020dc1576aea903b72e84c8dc68980bf456af6f5a1b275523e071a8f18367c7c"
+      },
+      {
+        "bytes": 224536,
+        "mime": "font/woff",
+        "path": "12ecaa387577e006ae0f.woff",
+        "sha256": "12ecaa387577e006ae0f95382d8d456a445d2b1f9ed74afb43e95883bad70b27"
+      },
+      {
+        "bytes": 165568,
+        "mime": "font/woff",
+        "path": "419d02169907afd14d7e.woff",
+        "sha256": "419d02169907afd14d7efff8afb07919060406d41be423ab75fd16afcb8a7739"
+      },
+      {
+        "bytes": 91280,
+        "mime": "font/woff",
+        "path": "432e4f76963af046bdee.woff",
+        "sha256": "432e4f76963af046bdee09fae43f932d2a94e38d57c115a718c281c4765f159b"
+      },
+      {
+        "bytes": 237840,
+        "mime": "font/woff",
+        "path": "49deefee994379707891.woff",
+        "sha256": "49deefee994379707891631ab2fe57f62bd10aa16ac7f4a09213e70d96e1cc12"
+      },
+      {
+        "bytes": 240772,
+        "mime": "font/woff",
+        "path": "4afaee2a55ac163430c5.woff",
+        "sha256": "4afaee2a55ac163430c57e6d54aafa05d513fa8a79d3f96485b881766ec9344d"
+      },
+      {
+        "bytes": 233008,
+        "mime": "font/woff",
+        "path": "4d6fe78392ef6ee18701.woff",
+        "sha256": "4d6fe78392ef6ee18701cc2abf09d57e5f24d55a34a1cbb25e7feac2c32dc9d6"
+      },
+      {
+        "bytes": 172336,
+        "mime": "font/woff",
+        "path": "57d337c0ade846a638d0.woff",
+        "sha256": "57d337c0ade846a638d07ee14c0db48e986307739c70995265ab06b0b5206e0a"
+      },
+      {
+        "bytes": 170720,
+        "mime": "font/woff",
+        "path": "866a45ad452a53cafa4f.woff",
+        "sha256": "866a45ad452a53cafa4f7b7e37265ffa511f6139805b83454e8b745a50d0391b"
+      },
+      {
+        "bytes": 185016,
+        "mime": "font/woff",
+        "path": "9cf9f8f73475a87f76d5.woff",
+        "sha256": "9cf9f8f73475a87f76d5355f413734ebc27f3bc675b29c02bd75727d219868e2"
+      },
+      {
+        "bytes": 242916,
+        "mime": "font/woff",
+        "path": "base-serif-c2701e3fde99183cf3b9.woff",
+        "sha256": "c2701e3fde99183cf3b987c45183d2f9308369087073757acee81d5b879acd7c"
+      },
+      {
+        "bytes": 16648,
+        "mime": "font/woff",
+        "path": "base-supplement-7ae6002e9d58b6a75354.woff",
+        "sha256": "7ae6002e9d58b6a75354da1770ac42cd895649b703f11ad3bbc2b727ef82f36b"
+      },
+      {
+        "bytes": 216048,
+        "mime": "font/woff",
+        "path": "d2522468f01d6cfeb3eb.woff",
+        "sha256": "d2522468f01d6cfeb3eb8d9acaf9dbb26325cb4c95ac4c9988b2166c172ad189"
+      },
+      {
+        "bytes": 239620,
+        "mime": "font/woff",
+        "path": "de71b830a8cf014574e2.woff",
+        "sha256": "de71b830a8cf014574e237283359bb61a8ffbce2c3662ef5388f17be3c281205"
+      },
+      {
+        "bytes": 124748,
+        "mime": "font/woff",
+        "path": "e3ca3b207f931e9b1c2a.woff",
+        "sha256": "e3ca3b207f931e9b1c2aa38a64f01dccff02c05833f44b63236792a87d21bc80"
+      },
+      {
+        "bytes": 32401,
+        "mime": "application/json; charset=utf-8",
+        "path": "manifest.json",
+        "sha256": "1e7345a1d05cf792e0aef3e2d36f0d1c45b48b2dd999b33bfb86f2777515a75c"
+      },
+      {
+        "bytes": 443512,
+        "mime": "font/woff",
+        "path": "poetry-1cfd4f347266d7043f7c.woff",
+        "sha256": "1cfd4f347266d7043f7cca30e640893211d67bd983ea2361655f893a0ee2db9b"
+      },
+      {
+        "bytes": 4412,
+        "mime": "font/woff",
+        "path": "poetry-528f55170befa37e6b24.woff",
+        "sha256": "528f55170befa37e6b24b0d063c2c94aae5e198b912e57d4dd87304f2a6da9a2"
+      },
+      {
+        "bytes": 202744,
+        "mime": "font/woff",
+        "path": "poetry-71aad0338d44b485ec0f.woff",
+        "sha256": "71aad0338d44b485ec0f3e36af2af08db787ef8de73e99bc0db00cb879b947a6"
+      },
+      {
+        "bytes": 403612,
+        "mime": "font/woff",
+        "path": "poetry-a0529a9178cbde0387e8.woff",
+        "sha256": "a0529a9178cbde0387e8e1be95bada07dc0d4a6b948126465bc074681de0cc70"
+      },
+      {
+        "bytes": 545908,
+        "mime": "font/woff",
+        "path": "poetry-ac0d1696ed4f031632e3.woff",
+        "sha256": "ac0d1696ed4f031632e33e1de40d5ed19a71a1e244c5c0497307fd6cb2a6dc03"
+      },
+      {
+        "bytes": 489844,
+        "mime": "font/woff",
+        "path": "poetry-bc96486eac80235abb1f.woff",
+        "sha256": "bc96486eac80235abb1f9ddae3d919a3fa5c12684992d27c260923220fb066e7"
+      },
+      {
+        "bytes": 130484,
+        "mime": "font/woff",
+        "path": "serif-sc-0618b204d0c0643fbc69.woff",
+        "sha256": "0618b204d0c0643fbc69e673013f2eed439273279bca7f4353a93d8990588928"
+      },
+      {
+        "bytes": 109292,
+        "mime": "font/woff",
+        "path": "serif-sc-28929ea9032b1dbe9a9b.woff",
+        "sha256": "28929ea9032b1dbe9a9b319f8c0d276ca137ba94563cc8c0ff6b513dccbb4faf"
+      },
+      {
+        "bytes": 131256,
+        "mime": "font/woff",
+        "path": "serif-sc-3f600a016b866cdd6687.woff",
+        "sha256": "3f600a016b866cdd668738724ab0a8eabddc8de1c67841bbd609cbf98a5e6e69"
+      },
+      {
+        "bytes": 71980,
+        "mime": "font/woff",
+        "path": "serif-sc-6a0f909cf2f77f465243.woff",
+        "sha256": "6a0f909cf2f77f465243681844e38b940b3e91e74dae1a502bcfa40ce99b0c42"
+      },
+      {
+        "bytes": 126536,
+        "mime": "font/woff",
+        "path": "serif-sc-e4526451d6899c3a4289.woff",
+        "sha256": "e4526451d6899c3a42899c250dc27167049e1a394e3f6f293ff3463bbe12d5fa"
+      }
+    ]
+  },
+  "runtime": {
+    "entry": {
+      "path": "/_next/static/chunks/app/infidao/page-25900034ccebf7fa.js",
+      "sha256": "899e24b7fec9d1ce5d1cc9075fe0b0155c517128570f80664d00f50db00175f8"
+    },
+    "assets": {
+      "/_next/static/chunks/app/infidao/page-25900034ccebf7fa.js": "899e24b7fec9d1ce5d1cc9075fe0b0155c517128570f80664d00f50db00175f8",
+      "/_next/static/chunks/app/layout-a02c3fbe90920995.js": "5ebccdd5ba0135800929ce5ad35612fb154bbd73e3499eb39681da3a0085df0d",
+      "/_next/static/chunks/commons-ee6107f47b3fcc3a.js": "b6ab5e91b40a5b15b3c802c338afc8a3bb242839837376a5cca0493503cb7c20",
+      "/_next/static/chunks/lib-0e1f97f1-685f023a1a46c72d.js": "d446680c903279196735cb90e7e903ef62e811efcefc784daafca0d861f39d78",
+      "/_next/static/chunks/lib-76422795-321ae6b56c2f37a4.js": "1f550c6528f7d3e85b308f2d2e8c0c60f03076fb136d1eb81908f22de654e29b",
+      "/_next/static/chunks/main-app-aa1312c9cce89881.js": "696b6fe9a104c850fc657be17e23a90a71cadcaa0d246d9e863dd9f680214ec3",
+      "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+      "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+      "/_next/static/chunks/webpack-275bdc12f723f642.js": "49598c965e30077ed2b42c15f4ea87dcfb21593a5c5d280c6dbb225ab6a850e5",
+      "/_next/static/css/7f910ce2c51ea1d7.css": "0a662af3185c0d536c25612a31e3add6d3430bc9fde144b8027113bf68f6372d",
+      "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b"
+    },
+    "assetSetSha256": "649a10a14204e1ff5b69566a95733613a683f6673ab5507f67773510f291da0d",
+    "manifestSha256": "34b8944595b482201d0ac839d1ba2dd08d8bcea963bc740f7d4192c4e7cc9253",
+    "referencedAssets": 11,
+    "retainedHistoricalResources": 1237,
+    "verifiedPriorAssets": 11,
+    "candidateChecks": {
+      "aitoshuu.me": {
+        "knownRevision": true,
+        "missingRevisionAndRoutes": true,
+        "signedSession": true,
+        "sources": true,
+        "zeroBudgetRejected": true
+      },
+      "tongye.me": {
+        "knownRevision": true,
+        "missingRevisionAndRoutes": true,
+        "signedSession": true,
+        "sources": true,
+        "zeroBudgetRejected": true
+      }
+    },
+    "candidatePortsClosed": true,
+    "public": {
+      "aitoshuu.me": {
+        "canonical": "https://aitoshuu.me/InfiDao",
+        "origin": "tencent-shanghai",
+        "observedAt": "2026-11-26T14:07:07.607921+00:00",
+        "noModelChecks": {
+          "knownRevision": true,
+          "missingRevisionAndRoutes": true,
+          "signedSession": true,
+          "sources": true
+        },
+        "candidateOriginAndPublicMatch": true
+      },
+      "tongye.me": {
+        "canonical": "https://tongye.me/InfiDao",
+        "origin": "tencent-shanghai",
+        "observedAt": "2026-11-26T14:07:14.059366+00:00",
+        "noModelChecks": {
+          "knownRevision": true,
+          "missingRevisionAndRoutes": true,
+          "signedSession": true,
+          "sources": true
+        },
+        "candidateOriginAndPublicMatch": true
+      }
+    },
+    "neighborChecks": {
+      "aitoshuu.me/": 200,
+      "aitoshuu.me/ArtDuo": 200,
+      "aitoshuu.me/CoScroll": 200,
+      "aitoshuu.me/CordIndex": 200,
+      "aitoshuu.me/FamilyTree": 200,
+      "aitoshuu.me/Focuence": 200,
+      "aitoshuu.me/LuBirth": 200,
+      "aitoshuu.me/OutSet": 200,
+      "aitoshuu.me/SonoScope": 200,
+      "tongye.me/": 200,
+      "tongye.me/ArtDuo": 200,
+      "tongye.me/CoScroll": 200,
+      "tongye.me/CordIndex": 200,
+      "tongye.me/FamilyTree": 200,
+      "tongye.me/Focuence": 200,
+      "tongye.me/LuBirth": 200,
+      "tongye.me/OutSet": 200,
+      "tongye.me/SonoScope": 200
+    }
+  },
+  "timings": {
+    "beforeActivation": "absent",
+    "enabledFrom": "2026-11-26T22:06:59+08:00",
+    "restoredAt": "2026-11-26T22:11:42+08:00",
+    "verifiedAt": "2026-11-26T22:12:07+08:00",
+    "afterCleanup": "absent",
+    "releaseAndRuntimeHashesMatch": true,
+    "publicSafetyChecksPassed": true,
+    "privateConfigAndNonWebProcessesMatch": true
+  }
+}
