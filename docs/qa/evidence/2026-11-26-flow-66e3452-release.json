@@ -1,0 +1,514 @@
+{
+  "activeOrigin": {
+    "pid": 2800724,
+    "proof": {
+      "aitoshuu.me": {
+        "assetSetSha256": "00e768a92a12a5d21482b3d99d9c96344b5ea0a209741255c8033d1aaddb4929",
+        "assets": {
+          "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d",
+          "/_next/static/chunks/app/layout-c0c40a07810809d2.js": "4504fa566ddacc534f3b34f1fb274bb06ab0167148642d3fa155296e2ff96dd4",
+          "/_next/static/chunks/commons-21e56b106c13f69f.js": "09624ce993c8e4e706d31edf0360ed1051b8b50078f5405e8e65b1126bd0090d",
+          "/_next/static/chunks/lib-7058dd59-d24b59d10040061a.js": "2b9af25ad64a9b3a09f51df8a4364556adbc712544fddea93ad66860f974d2dd",
+          "/_next/static/chunks/lib-80af1c25-dda263407edfc233.js": "43a302996660239de649699ff0d68f21e2c8402c3a22abb72f5462a680eac99e",
+          "/_next/static/chunks/main-app-1d9f74db2d833336.js": "40b820dc8799dbaaf3136c3ea7939d71846b8b1f7982c5d5942f263d1dfc6340",
+          "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+          "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+          "/_next/static/chunks/webpack-275bdc12f723f642.js": "49598c965e30077ed2b42c15f4ea87dcfb21593a5c5d280c6dbb225ab6a850e5",
+          "/_next/static/css/7f910ce2c51ea1d7.css": "0a662af3185c0d536c25612a31e3add6d3430bc9fde144b8027113bf68f6372d",
+          "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b"
+        },
+        "canonical": "https://aitoshuu.me/InfiDao",
+        "commit": "66e34523588dfa77114fe15f41dda06b0ebb9ae0",
+        "corpusVersion": "guji-core-v1",
+        "entry": {
+          "path": "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js",
+          "sha256": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d"
+        },
+        "fontSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+        "fonts": [
+          "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json"
+        ],
+        "htmlContainsReleaseId": false,
+        "manifestSha256": "af92d52ed125fa98f456363e3edd132cec066e7259b2eddcdfc20c1e3207bace",
+        "noModelChecks": {
+          "knownRevision": true,
+          "missingRevisionAndRoutes": true,
+          "signedSession": true,
+          "sources": true,
+          "zeroBudgetRejected": false
+        },
+        "observedAt": "2026-11-26T05:55:45.334864+00:00",
+        "origin": "loopback",
+        "release": "infidao-7d41dad93c8dd939",
+        "retainedAssets": 11
+      },
+      "tongye.me": {
+        "assetSetSha256": "00e768a92a12a5d21482b3d99d9c96344b5ea0a209741255c8033d1aaddb4929",
+        "assets": {
+          "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d",
+          "/_next/static/chunks/app/layout-c0c40a07810809d2.js": "4504fa566ddacc534f3b34f1fb274bb06ab0167148642d3fa155296e2ff96dd4",
+          "/_next/static/chunks/commons-21e56b106c13f69f.js": "09624ce993c8e4e706d31edf0360ed1051b8b50078f5405e8e65b1126bd0090d",
+          "/_next/static/chunks/lib-7058dd59-d24b59d10040061a.js": "2b9af25ad64a9b3a09f51df8a4364556adbc712544fddea93ad66860f974d2dd",
+          "/_next/static/chunks/lib-80af1c25-dda263407edfc233.js": "43a302996660239de649699ff0d68f21e2c8402c3a22abb72f5462a680eac99e",
+          "/_next/static/chunks/main-app-1d9f74db2d833336.js": "40b820dc8799dbaaf3136c3ea7939d71846b8b1f7982c5d5942f263d1dfc6340",
+          "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+          "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+          "/_next/static/chunks/webpack-275bdc12f723f642.js": "49598c965e30077ed2b42c15f4ea87dcfb21593a5c5d280c6dbb225ab6a850e5",
+          "/_next/static/css/7f910ce2c51ea1d7.css": "0a662af3185c0d536c25612a31e3add6d3430bc9fde144b8027113bf68f6372d",
+          "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b"
+        },
+        "canonical": "https://tongye.me/InfiDao",
+        "commit": "66e34523588dfa77114fe15f41dda06b0ebb9ae0",
+        "corpusVersion": "guji-core-v1",
+        "entry": {
+          "path": "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js",
+          "sha256": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d"
+        },
+        "fontSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+        "fonts": [
+          "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json"
+        ],
+        "htmlContainsReleaseId": false,
+        "manifestSha256": "af92d52ed125fa98f456363e3edd132cec066e7259b2eddcdfc20c1e3207bace",
+        "noModelChecks": {
+          "knownRevision": true,
+          "missingRevisionAndRoutes": true,
+          "signedSession": true,
+          "sources": true,
+          "zeroBudgetRejected": false
+        },
+        "observedAt": "2026-11-26T05:55:45.440637+00:00",
+        "origin": "loopback",
+        "release": "infidao-7d41dad93c8dd939",
+        "retainedAssets": 11
+      }
+    },
+    "releaseId": "infidao-7d41dad93c8dd939",
+    "restartAt": "2026-11-26T13:55:43+08:00",
+    "runtimeInventorySha256": "df6951f661635aca810ecb7ca183b3d8b543f728b8221a14552e30a45d181eb9",
+    "verificationComplete": "2026-11-26T13:56:00+08:00"
+  },
+  "before": {
+    "aitoshuu.me": {
+      "assetSetSha256": "1e7cbaacabdd8846b3b892c172ace0e07598f64f01d12903f3cca1a482d66e77",
+      "assets": {
+        "/_next/static/chunks/app/infidao/page-85af3d502c87d0fa.js": "9e4ac41c53339178dc68a5f6ac0fe583af1874e1125a8b06e9fc810d04bc0286",
+        "/_next/static/chunks/app/layout-2da3aa91efdae539.js": "3340243748571e927dc7cbae4a7f9e3a0ec9e56496264fd05073d35de0918066",
+        "/_next/static/chunks/commons-9dc6e0845f53d85a.js": "e5ecb97eec30db0a06deab90f5c0bfe8d17038def1f70dbd282567b938cd2b1e",
+        "/_next/static/chunks/lib-0e21a148-9df2cd160486cd4f.js": "0f60e3e67083b1fd47dc0a923d7baf77231980960e890ccfabc9579709d92118",
+        "/_next/static/chunks/lib-7815f9af-ab8b6dc5c906229c.js": "320d2ac29735951f4402b70f7f8a5500ecdca702ed6e5334b6253d297e8800ae",
+        "/_next/static/chunks/main-app-9fbef5e5d4e70271.js": "64fc7289e8559b00a080453a55049766719e9f94e4dc72f148046812bcdd1b24",
+        "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+        "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+        "/_next/static/chunks/webpack-8a873c7cc2baf872.js": "5f8822b5ddd0a7d1c20ead773dd0a830d038ac13d788057f57060f1efd765d9f",
+        "/_next/static/css/7f910ce2c51ea1d7.css": "0a662af3185c0d536c25612a31e3add6d3430bc9fde144b8027113bf68f6372d",
+        "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b"
+      },
+      "canonical": "https://aitoshuu.me/InfiDao",
+      "commit": "feb1c803f314ed929c1ee88f48e6e61b5f4b4f22",
+      "corpusVersion": "guji-core-v1",
+      "entry": {
+        "path": "/_next/static/chunks/app/infidao/page-85af3d502c87d0fa.js",
+        "sha256": "9e4ac41c53339178dc68a5f6ac0fe583af1874e1125a8b06e9fc810d04bc0286"
+      },
+      "fontSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+      "fonts": [
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json"
+      ],
+      "manifestSha256": "5a43a943bb4f714935d8df68e7e0d5a101e7ccd55ee1c98c69e49eb9cb42a883",
+      "noModelChecks": {
+        "knownRevision": true,
+        "missingRevisionAndRoutes": true,
+        "signedSession": true,
+        "sources": true,
+        "zeroBudgetRejected": false
+      },
+      "observedAt": "2026-11-26T05:51:33.368953+00:00",
+      "origin": "loopback",
+      "release": "infidao-42d12afceb1f46a1",
+      "retainedAssets": null
+    },
+    "tongye.me": {
+      "assetSetSha256": "1e7cbaacabdd8846b3b892c172ace0e07598f64f01d12903f3cca1a482d66e77",
+      "assets": {
+        "/_next/static/chunks/app/infidao/page-85af3d502c87d0fa.js": "9e4ac41c53339178dc68a5f6ac0fe583af1874e1125a8b06e9fc810d04bc0286",
+        "/_next/static/chunks/app/layout-2da3aa91efdae539.js": "3340243748571e927dc7cbae4a7f9e3a0ec9e56496264fd05073d35de0918066",
+        "/_next/static/chunks/commons-9dc6e0845f53d85a.js": "e5ecb97eec30db0a06deab90f5c0bfe8d17038def1f70dbd282567b938cd2b1e",
+        "/_next/static/chunks/lib-0e21a148-9df2cd160486cd4f.js": "0f60e3e67083b1fd47dc0a923d7baf77231980960e890ccfabc9579709d92118",
+        "/_next/static/chunks/lib-7815f9af-ab8b6dc5c906229c.js": "320d2ac29735951f4402b70f7f8a5500ecdca702ed6e5334b6253d297e8800ae",
+        "/_next/static/chunks/main-app-9fbef5e5d4e70271.js": "64fc7289e8559b00a080453a55049766719e9f94e4dc72f148046812bcdd1b24",
+        "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+        "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+        "/_next/static/chunks/webpack-8a873c7cc2baf872.js": "5f8822b5ddd0a7d1c20ead773dd0a830d038ac13d788057f57060f1efd765d9f",
+        "/_next/static/css/7f910ce2c51ea1d7.css": "0a662af3185c0d536c25612a31e3add6d3430bc9fde144b8027113bf68f6372d",
+        "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b"
+      },
+      "canonical": "https://tongye.me/InfiDao",
+      "commit": "feb1c803f314ed929c1ee88f48e6e61b5f4b4f22",
+      "corpusVersion": "guji-core-v1",
+      "entry": {
+        "path": "/_next/static/chunks/app/infidao/page-85af3d502c87d0fa.js",
+        "sha256": "9e4ac41c53339178dc68a5f6ac0fe583af1874e1125a8b06e9fc810d04bc0286"
+      },
+      "fontSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+      "fonts": [
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json"
+      ],
+      "manifestSha256": "5a43a943bb4f714935d8df68e7e0d5a101e7ccd55ee1c98c69e49eb9cb42a883",
+      "noModelChecks": {
+        "knownRevision": true,
+        "missingRevisionAndRoutes": true,
+        "signedSession": true,
+        "sources": true,
+        "zeroBudgetRejected": false
+      },
+      "observedAt": "2026-11-26T05:51:33.442043+00:00",
+      "origin": "loopback",
+      "release": "infidao-42d12afceb1f46a1",
+      "retainedAssets": null
+    }
+  },
+  "candidate": {
+    "isolatedLoopbackAndRedis": true,
+    "modelCalls": 0,
+    "node": "24.22.1",
+    "npm": "11.6.2",
+    "proof": {
+      "aitoshuu.me": {
+        "assetSetSha256": "00e768a92a12a5d21482b3d99d9c96344b5ea0a209741255c8033d1aaddb4929",
+        "assets": {
+          "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d",
+          "/_next/static/chunks/app/layout-c0c40a07810809d2.js": "4504fa566ddacc534f3b34f1fb274bb06ab0167148642d3fa155296e2ff96dd4",
+          "/_next/static/chunks/commons-21e56b106c13f69f.js": "09624ce993c8e4e706d31edf0360ed1051b8b50078f5405e8e65b1126bd0090d",
+          "/_next/static/chunks/lib-7058dd59-d24b59d10040061a.js": "2b9af25ad64a9b3a09f51df8a4364556adbc712544fddea93ad66860f974d2dd",
+          "/_next/static/chunks/lib-80af1c25-dda263407edfc233.js": "43a302996660239de649699ff0d68f21e2c8402c3a22abb72f5462a680eac99e",
+          "/_next/static/chunks/main-app-1d9f74db2d833336.js": "40b820dc8799dbaaf3136c3ea7939d71846b8b1f7982c5d5942f263d1dfc6340",
+          "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+          "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+          "/_next/static/chunks/webpack-275bdc12f723f642.js": "49598c965e30077ed2b42c15f4ea87dcfb21593a5c5d280c6dbb225ab6a850e5",
+          "/_next/static/css/7f910ce2c51ea1d7.css": "0a662af3185c0d536c25612a31e3add6d3430bc9fde144b8027113bf68f6372d",
+          "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b"
+        },
+        "canonical": "https://aitoshuu.me/InfiDao",
+        "commit": "66e34523588dfa77114fe15f41dda06b0ebb9ae0",
+        "corpusVersion": "guji-core-v1",
+        "entry": {
+          "path": "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js",
+          "sha256": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d"
+        },
+        "fontSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+        "fonts": [
+          "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json"
+        ],
+        "htmlContainsReleaseId": false,
+        "manifestSha256": "af92d52ed125fa98f456363e3edd132cec066e7259b2eddcdfc20c1e3207bace",
+        "noModelChecks": {
+          "knownRevision": true,
+          "missingRevisionAndRoutes": true,
+          "signedSession": true,
+          "sources": true,
+          "zeroBudgetRejected": true
+        },
+        "observedAt": "2026-11-26T05:54:37.554891+00:00",
+        "origin": "loopback",
+        "release": "infidao-7d41dad93c8dd939",
+        "retainedAssets": 11
+      },
+      "tongye.me": {
+        "assetSetSha256": "00e768a92a12a5d21482b3d99d9c96344b5ea0a209741255c8033d1aaddb4929",
+        "assets": {
+          "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d",
+          "/_next/static/chunks/app/layout-c0c40a07810809d2.js": "4504fa566ddacc534f3b34f1fb274bb06ab0167148642d3fa155296e2ff96dd4",
+          "/_next/static/chunks/commons-21e56b106c13f69f.js": "09624ce993c8e4e706d31edf0360ed1051b8b50078f5405e8e65b1126bd0090d",
+          "/_next/static/chunks/lib-7058dd59-d24b59d10040061a.js": "2b9af25ad64a9b3a09f51df8a4364556adbc712544fddea93ad66860f974d2dd",
+          "/_next/static/chunks/lib-80af1c25-dda263407edfc233.js": "43a302996660239de649699ff0d68f21e2c8402c3a22abb72f5462a680eac99e",
+          "/_next/static/chunks/main-app-1d9f74db2d833336.js": "40b820dc8799dbaaf3136c3ea7939d71846b8b1f7982c5d5942f263d1dfc6340",
+          "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+          "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+          "/_next/static/chunks/webpack-275bdc12f723f642.js": "49598c965e30077ed2b42c15f4ea87dcfb21593a5c5d280c6dbb225ab6a850e5",
+          "/_next/static/css/7f910ce2c51ea1d7.css": "0a662af3185c0d536c25612a31e3add6d3430bc9fde144b8027113bf68f6372d",
+          "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b"
+        },
+        "canonical": "https://tongye.me/InfiDao",
+        "commit": "66e34523588dfa77114fe15f41dda06b0ebb9ae0",
+        "corpusVersion": "guji-core-v1",
+        "entry": {
+          "path": "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js",
+          "sha256": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d"
+        },
+        "fontSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+        "fonts": [
+          "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json"
+        ],
+        "htmlContainsReleaseId": false,
+        "manifestSha256": "af92d52ed125fa98f456363e3edd132cec066e7259b2eddcdfc20c1e3207bace",
+        "noModelChecks": {
+          "knownRevision": true,
+          "missingRevisionAndRoutes": true,
+          "signedSession": true,
+          "sources": true,
+          "zeroBudgetRejected": true
+        },
+        "observedAt": "2026-11-26T05:54:37.644138+00:00",
+        "origin": "loopback",
+        "release": "infidao-7d41dad93c8dd939",
+        "retainedAssets": 11
+      }
+    },
+    "stopped": "2026-11-26T13:54:37+08:00"
+  },
+  "cdn": {
+    "bytes": 4919374,
+    "existingObjectsChecked": 22,
+    "fontManifestSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+    "immutablePrefix": "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9",
+    "individualWoffFiles": 21,
+    "publicManifestSha256": "f8048750ffc469219c84d6e0174b5944a9a6a409569ab1400d854e113d21eb2e",
+    "testedCorsFor": [
+      "aitoshuu.me",
+      "tongye.me"
+    ],
+    "uploadedObjects": 0
+  },
+  "preserved": {
+    "allowedModelCallsPerDay": [
+      30,
+      60,
+      200
+    ],
+    "nginxConfiguration": true,
+    "nonWebServicePids": true,
+    "privateConfigurationContents": true
+  },
+  "public": {
+    "aitoshuu.me": {
+      "assetSetSha256": "00e768a92a12a5d21482b3d99d9c96344b5ea0a209741255c8033d1aaddb4929",
+      "assets": {
+        "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d",
+        "/_next/static/chunks/app/layout-c0c40a07810809d2.js": "4504fa566ddacc534f3b34f1fb274bb06ab0167148642d3fa155296e2ff96dd4",
+        "/_next/static/chunks/commons-21e56b106c13f69f.js": "09624ce993c8e4e706d31edf0360ed1051b8b50078f5405e8e65b1126bd0090d",
+        "/_next/static/chunks/lib-7058dd59-d24b59d10040061a.js": "2b9af25ad64a9b3a09f51df8a4364556adbc712544fddea93ad66860f974d2dd",
+        "/_next/static/chunks/lib-80af1c25-dda263407edfc233.js": "43a302996660239de649699ff0d68f21e2c8402c3a22abb72f5462a680eac99e",
+        "/_next/static/chunks/main-app-1d9f74db2d833336.js": "40b820dc8799dbaaf3136c3ea7939d71846b8b1f7982c5d5942f263d1dfc6340",
+        "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+        "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+        "/_next/static/chunks/webpack-275bdc12f723f642.js": "49598c965e30077ed2b42c15f4ea87dcfb21593a5c5d280c6dbb225ab6a850e5",
+        "/_next/static/css/7f910ce2c51ea1d7.css": "0a662af3185c0d536c25612a31e3add6d3430bc9fde144b8027113bf68f6372d",
+        "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b"
+      },
+      "canonical": "https://aitoshuu.me/InfiDao",
+      "commit": "66e34523588dfa77114fe15f41dda06b0ebb9ae0",
+      "corpusVersion": "guji-core-v1",
+      "entry": {
+        "path": "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js",
+        "sha256": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d"
+      },
+      "fontSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+      "fonts": [
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json"
+      ],
+      "htmlContainsReleaseId": false,
+      "manifestSha256": "af92d52ed125fa98f456363e3edd132cec066e7259b2eddcdfc20c1e3207bace",
+      "noModelChecks": {
+        "knownRevision": true,
+        "missingRevisionAndRoutes": true,
+        "signedSession": true,
+        "sources": true,
+        "zeroBudgetRejected": false
+      },
+      "observedAt": "2026-11-26T05:55:51.878651+00:00",
+      "origin": "tencent-shanghai",
+      "release": "infidao-7d41dad93c8dd939",
+      "retainedAssets": 11
+    },
+    "neighbors": {
+      "aitoshuu.me/": {
+        "bytes": 994,
+        "origin": null,
+        "sha256": "de5f736ac5a9bd532b87d79a8c52a3271f6dcb34bde152b22563d017d671ac91",
+        "status": 200,
+        "url": "https://aitoshuu.me/"
+      },
+      "aitoshuu.me/ArtDuo": {
+        "bytes": 8799,
+        "origin": null,
+        "sha256": "770295a6d91ec7ba05ad3a22396278a727383f7699c47b828fc68ec452a21129",
+        "status": 200,
+        "url": "https://aitoshuu.me/ArtDuo"
+      },
+      "aitoshuu.me/CoScroll": {
+        "bytes": 48563,
+        "origin": "tencent-shanghai",
+        "sha256": "0574cddc6da392abbabcf071eab0444a5cc00bc477772e56e07b8ae18c68ed1d",
+        "status": 200,
+        "url": "https://aitoshuu.me/CoScroll/"
+      },
+      "aitoshuu.me/CordIndex": {
+        "bytes": 1683,
+        "origin": null,
+        "sha256": "13e3fc3fa1a5953e382ac32a82541a70d5822511367c71def699afe91959736d",
+        "status": 200,
+        "url": "https://aitoshuu.me/CordIndex/"
+      },
+      "aitoshuu.me/FamilyTree": {
+        "bytes": 1016,
+        "origin": null,
+        "sha256": "8fab693920b53bebd04baa43ba69a9895573b7ef0b4615c7c7e29fd95bba6d00",
+        "status": 200,
+        "url": "https://aitoshuu.me/FamilyTree"
+      },
+      "aitoshuu.me/Focuence": {
+        "bytes": 16540,
+        "origin": null,
+        "sha256": "fca04898830a991a2d0c95aec868256c79e26f04cef1b4d76031213f4944c3eb",
+        "status": 200,
+        "url": "https://aitoshuu.me/Focuence"
+      },
+      "aitoshuu.me/LuBirth": {
+        "bytes": 4996,
+        "origin": "tencent-shanghai",
+        "sha256": "50819c12cffcf78941b953351af2dbacadaa581491ec8f591cf8a0c9225b7589",
+        "status": 200,
+        "url": "https://aitoshuu.me/LuBirth/"
+      },
+      "aitoshuu.me/OutSet": {
+        "bytes": 12101,
+        "origin": null,
+        "sha256": "0ea5a5d93d2d65402538969d8fbc59edf45044170c807d192dfc7b9cd759729a",
+        "status": 200,
+        "url": "https://aitoshuu.me/OutSet/"
+      },
+      "aitoshuu.me/SonoScope": {
+        "bytes": 15987,
+        "origin": null,
+        "sha256": "724f65c29e2dc03df00de53e03965e17206ed74bfb192c4b642ad6718e60258b",
+        "status": 200,
+        "url": "https://aitoshuu.me/SonoScope"
+      },
+      "tongye.me/": {
+        "bytes": 301542,
+        "origin": null,
+        "sha256": "05c9da6f465e73a0a2785a6b4bebbdc36370e0195288d822bbf04dce00bdc101",
+        "status": 200,
+        "url": "https://tongye.me/"
+      },
+      "tongye.me/ArtDuo": {
+        "bytes": 8799,
+        "origin": null,
+        "sha256": "770295a6d91ec7ba05ad3a22396278a727383f7699c47b828fc68ec452a21129",
+        "status": 200,
+        "url": "https://tongye.me/ArtDuo"
+      },
+      "tongye.me/CoScroll": {
+        "bytes": 48563,
+        "origin": "tencent-shanghai",
+        "sha256": "0574cddc6da392abbabcf071eab0444a5cc00bc477772e56e07b8ae18c68ed1d",
+        "status": 200,
+        "url": "https://tongye.me/CoScroll/"
+      },
+      "tongye.me/CordIndex": {
+        "bytes": 1683,
+        "origin": null,
+        "sha256": "13e3fc3fa1a5953e382ac32a82541a70d5822511367c71def699afe91959736d",
+        "status": 200,
+        "url": "https://tongye.me/CordIndex/"
+      },
+      "tongye.me/FamilyTree": {
+        "bytes": 1016,
+        "origin": null,
+        "sha256": "8fab693920b53bebd04baa43ba69a9895573b7ef0b4615c7c7e29fd95bba6d00",
+        "status": 200,
+        "url": "https://tongye.me/FamilyTree"
+      },
+      "tongye.me/Focuence": {
+        "bytes": 16540,
+        "origin": null,
+        "sha256": "fca04898830a991a2d0c95aec868256c79e26f04cef1b4d76031213f4944c3eb",
+        "status": 200,
+        "url": "https://tongye.me/Focuence"
+      },
+      "tongye.me/LuBirth": {
+        "bytes": 4988,
+        "origin": "tencent-shanghai",
+        "sha256": "9ae491bd392ed72f1bf3bb9fec94a34a2d6dd9f256a0af43b87500c7ef5914a1",
+        "status": 200,
+        "url": "https://tongye.me/LuBirth/"
+      },
+      "tongye.me/OutSet": {
+        "bytes": 12101,
+        "origin": null,
+        "sha256": "0ea5a5d93d2d65402538969d8fbc59edf45044170c807d192dfc7b9cd759729a",
+        "status": 200,
+        "url": "https://tongye.me/OutSet/"
+      },
+      "tongye.me/SonoScope": {
+        "bytes": 15987,
+        "origin": null,
+        "sha256": "724f65c29e2dc03df00de53e03965e17206ed74bfb192c4b642ad6718e60258b",
+        "status": 200,
+        "url": "https://tongye.me/SonoScope"
+      }
+    },
+    "tongye.me": {
+      "assetSetSha256": "00e768a92a12a5d21482b3d99d9c96344b5ea0a209741255c8033d1aaddb4929",
+      "assets": {
+        "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d",
+        "/_next/static/chunks/app/layout-c0c40a07810809d2.js": "4504fa566ddacc534f3b34f1fb274bb06ab0167148642d3fa155296e2ff96dd4",
+        "/_next/static/chunks/commons-21e56b106c13f69f.js": "09624ce993c8e4e706d31edf0360ed1051b8b50078f5405e8e65b1126bd0090d",
+        "/_next/static/chunks/lib-7058dd59-d24b59d10040061a.js": "2b9af25ad64a9b3a09f51df8a4364556adbc712544fddea93ad66860f974d2dd",
+        "/_next/static/chunks/lib-80af1c25-dda263407edfc233.js": "43a302996660239de649699ff0d68f21e2c8402c3a22abb72f5462a680eac99e",
+        "/_next/static/chunks/main-app-1d9f74db2d833336.js": "40b820dc8799dbaaf3136c3ea7939d71846b8b1f7982c5d5942f263d1dfc6340",
+        "/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+        "/_next/static/chunks/shared-c1807312d93902c7.js": "a51b56c80ee0eec3604e7aebc5a7c8530a52f1a81072b890932476ba3f9ea73c",
+        "/_next/static/chunks/webpack-275bdc12f723f642.js": "49598c965e30077ed2b42c15f4ea87dcfb21593a5c5d280c6dbb225ab6a850e5",
+        "/_next/static/css/7f910ce2c51ea1d7.css": "0a662af3185c0d536c25612a31e3add6d3430bc9fde144b8027113bf68f6372d",
+        "/_next/static/css/813e440daaa12562.css": "0f15fb498dcc22c5c4a7a2ed1105c212b248b0dce088f1aed20fd7261d7d053b"
+      },
+      "canonical": "https://tongye.me/InfiDao",
+      "commit": "66e34523588dfa77114fe15f41dda06b0ebb9ae0",
+      "corpusVersion": "guji-core-v1",
+      "entry": {
+        "path": "/_next/static/chunks/app/infidao/page-2dc67406413c9fb1.js",
+        "sha256": "3f96bbc28307774dfd90a20a2607b2cb510431963c7cb5698adfa5ece55b4e4d"
+      },
+      "fontSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+      "fonts": [
+        "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json"
+      ],
+      "htmlContainsReleaseId": false,
+      "manifestSha256": "af92d52ed125fa98f456363e3edd132cec066e7259b2eddcdfc20c1e3207bace",
+      "noModelChecks": {
+        "knownRevision": true,
+        "missingRevisionAndRoutes": true,
+        "signedSession": true,
+        "sources": true,
+        "zeroBudgetRejected": false
+      },
+      "observedAt": "2026-11-26T05:55:58.732583+00:00",
+      "origin": "tencent-shanghai",
+      "release": "infidao-7d41dad93c8dd939",
+      "retainedAssets": 11
+    }
+  },
+  "rollback": {
+    "firstActivationRestoreHealthyAt": "2026-11-26T05:55:05.613520+00:00",
+    "reason": "Python 3.10 URL client did not follow neighbor OutSet pre-existing 308 redirect",
+    "release": "infidao-42d12afceb1f46a1",
+    "retained": true,
+    "sameArtifactReactivatedAndVerified": true
+  },
+  "source": {
+    "commit": "66e34523588dfa77114fe15f41dda06b0ebb9ae0",
+    "fullGitArchiveSha256": "573f14b1e0e7389954c38a022e0dee32cad3d860e908d76dc1b7ceae3284af25",
+    "fullGitArchiveTrackedPaths": 1281,
+    "releaseId": "infidao-7d41dad93c8dd939",
+    "sourceArchive": {
+      "bytes": 31586155,
+      "packagePath": "origin-source.tar.gz",
+      "sha256": "710ba7542ef80e2432e3298a7bd0c5dbc5856d3506aca6ba603f22f902f4d137"
+    },
+    "sourceDigest": "7d41dad93c8dd9390402b26390e5de9e99fdda55a961449a145351efab66c397",
+    "sourceFiles": 822,
+    "sourceMode": "commit"
+  }
+}
