@@ -15,19 +15,40 @@ type Selection = { frameId: string; anchorId?: string; selection?: FlowSelection
 type Part = { text: string; anchorId?: string; selection?: FlowSelection; selected?: boolean };
 type TokenGroup = Array<{ part: Part; index: number }>;
 
+const tokenText = (group: TokenGroup) => group.map(item => item.part.text).join('');
+const shortHan = /^\p{Script=Han}{1,2}$/u;
+
 // Keep short particles with the words they introduce or close. Each canonical
 // link and optical glyph run still has its own node within the layout group.
 function quotePhrases(groups: TokenGroup[]) {
   const phrases: TokenGroup[][] = [];
   for (const [index, group] of groups.entries()) {
     const previous = phrases.at(-1);
-    const leading = previous?.at(-1)?.map(item => item.part.text).join('');
-    const ending = group.map(item => item.part.text).join('');
-    const joined = [...(previous || []), group].flatMap(items => items.map(item => item.part.text)).join('');
-    const followsParticle = /^[于於乎以与與及而则則乃若欲将將不未勿毋先]$/u.test(leading || '');
+    const previousGroup = previous?.at(-1);
+    const leading = previousGroup ? tokenText(previousGroup) : '';
+    const preceding = previous?.map(tokenText).join('') || '';
+    const ending = tokenText(group);
+    const word = ending.replace(/[\p{P}]+$/u, '');
+    const joined = preceding + ending;
+    const followsParticle = /^[于於乎以与與及而则則乃若欲将將不未勿毋先]$/u.test(leading);
     const closesClause = index === groups.length - 1 && /^[之也矣焉哉耳兮耶乎欤歟][\p{P}]*$/u.test(ending);
-    if (previous && (followsParticle || closesClause) && Array.from(joined).length <= 5) previous.push(group);
+    const namesTerm = (/[谓謂]$/u.test(leading) && /^之\p{Script=Han}{0,2}$/u.test(word))
+      || (/[谓謂]之$/u.test(preceding) && shortHan.test(word));
+    if (previous && (followsParticle || closesClause || namesTerm) && Array.from(joined).length <= 5) previous.push(group);
     else phrases.push([group]);
+  }
+
+  // Reserve room for a short ending during normal browser line wrapping.
+  // A complete phrase such as 谓之静 can already form a readable final line.
+  while (phrases.length > 1) {
+    const tail = phrases.at(-1)!;
+    const beforeTail = phrases.at(-2)!;
+    const tailText = tail.map(tokenText).join('');
+    const preceding = beforeTail.map(tokenText).join('');
+    if (!shortHan.test(tailText.replace(/[\p{P}]+$/u, '')) || !/^\p{Script=Han}+$/u.test(preceding)
+      || Array.from(preceding + tailText).length > 5) break;
+    beforeTail.push(...tail);
+    phrases.pop();
   }
   return phrases;
 }
@@ -64,7 +85,7 @@ export function LinkedText({ frame, surface, onSelect, connecting, optical = fal
   for (const group of groups) {
     if (!clauses.length) clauses.push([]);
     clauses[clauses.length - 1]!.push(group);
-    if (surface === 'quote' && /[，。！？；][」』）】》〉”’]*$/u.test(group.map(item => item.part.text).join(''))) clauses.push([]);
+    if (surface === 'quote' && /[，。！？；][」』）】》〉”’]*$/u.test(tokenText(group))) clauses.push([]);
   }
   return (
     <span ref={groupRef} role={first >= 0 ? 'group' : undefined} aria-label={first >= 0 ? '经文接续选词' : undefined} aria-describedby={first >= 0 ? helpId : undefined}

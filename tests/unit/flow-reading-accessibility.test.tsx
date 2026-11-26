@@ -40,6 +40,38 @@ test('keeps a short clause ending together without joining its optical runs or w
     selection: { start: 7, end: 8, textHash: 'hash', corpusVersion: 'v1' } });
 });
 
+test.each([
+  ['谓', [2, 4, 6, 7, 8, 9], ['谓', '之', '静']],
+  ['謂', [2, 4, 6, 8, 9], ['謂之', '静']],
+])('keeps %s之 and the term together at the clause end', (naming, lexicalBreaks, labels) => {
+  const quote = `不以梦剧乱知${naming}之静`;
+  const onSelect = jest.fn();
+  render(<LinkedText frame={{ ...frame, fullText: quote, quote, quoteEnd: quote.length, lexicalBreaks }}
+    surface="quote" optical onSelect={onSelect} />);
+  const words = labels.map(name => screen.getByRole('button', { name }));
+  const runs = words.map(word => word.closest('[data-flow-optic]'));
+  expect(new Set(runs).size).toBe(words.length);
+  expect(new Set(runs.map(run => run?.parentElement)).size).toBe(1);
+  expect(runs[0]?.parentElement?.textContent).toBe(`${naming}之静`);
+  fireEvent.click(words.at(-1)!);
+  expect(onSelect).toHaveBeenCalledWith({ frameId: 'one', anchorId: 'text:8:9', label: '静',
+    selection: { start: 8, end: 9, textHash: 'hash', corpusVersion: 'v1' } });
+});
+
+test('keeps a final ordinary short word with the previous word and its closing punctuation', () => {
+  const quote = '不以梦剧乱知自守。';
+  render(<LinkedText frame={{ ...frame, fullText: quote, quote, quoteEnd: quote.length, lexicalBreaks: [2, 4, 6, 8, 9] }}
+    surface="quote" optical onSelect={jest.fn()} />);
+  expect(screen.getByRole('button', { name: '自守' }).closest('[data-flow-optic]')?.parentElement?.textContent).toBe('乱知自守。');
+});
+
+test('avoids leaving two singleton words on the last line of an otherwise longer clause', () => {
+  const quote = '梦剧乱知而自守。';
+  render(<LinkedText frame={{ ...frame, fullText: quote, quote, quoteEnd: quote.length, lexicalBreaks: [2, 4, 5, 6, 7, 8] }}
+    surface="quote" optical onSelect={jest.fn()} />);
+  expect(screen.getByRole('button', { name: '守' }).closest('[data-flow-optic]')?.parentElement?.textContent).toBe('而自守。');
+});
+
 test('uses one tab stop per passage and arrow/Home/End to choose words', () => {
   render(<LinkedText frame={frame} surface="quote" onSelect={jest.fn()} />);
   const buttons = screen.getAllByRole('button');

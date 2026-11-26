@@ -21,3 +21,7 @@ poetry-*.woff 是本项目生成的字形子集，内部字体名称已改为 In
 另 6 个罕见字来自 HanaMinB（20170904，GlyphWiki Project），选择其 SIL OFL 1.1 授权，见 Hanazono-LICENSE.txt。
 这些许可证仅适用于对应补字文件；原有字体及其版权说明保持各自适用范围。
 源地址、源字体 SHA-256、覆盖与字节统计见 data/poetry/font-coverage.json；构建流程见 scripts/poetry/build-fonts.py。
+
+网页经文的简体字形：
+web-sc/serif-sc-*.woff 是 Noto Serif CJK SC Regular 的子集，保留原文码位。适用 SIL OFL 1.1，见 web-sc/OFL.txt。
+上游 OTF 与 SHA-256 见 data/poetry/font-coverage.json。使用 FontTools 4.68.0 和 ICU 78，运行 python scripts/build-web-flow-sc-fonts.py PATH/TO/NotoSerifCJKsc-Regular.otf 后，再运行 npm run build:flow-release。

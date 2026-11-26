@@ -29,6 +29,7 @@ for (const { asset, bytes } of assets) {
   fs.writeFileSync(path.join(destination, asset.file), bytes);
 }
 fs.writeFileSync(path.join(destination, 'manifest.json'), manifestBytes);
+fs.copyFileSync(path.join(root, 'public/flow-fonts/web-sc/OFL.txt'), path.join(destination, 'OFL.txt'));
 const curated = createRequire(import.meta.url)('../shared/flow/curated-data') as { version: string };
 const corpusHash = corpusDigest.digest('hex');
 const fontHash = hash(manifestBytes);

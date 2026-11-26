@@ -74,11 +74,13 @@ async function loadManifest(baseUrl: string): Promise<{ manifest: FontManifest; 
   return manifests.get(baseUrl)!;
 }
 
-async function registerFace(family: string, data: ArrayBuffer): Promise<void> {
+async function registerFace(family: string, data: ArrayBuffer, characters?: string): Promise<void> {
   const key = family;
   if (loadedFaces.has(key)) return loadedFaces.get(key)!;
   const pending = (async () => {
-    const face = new FontFace(family, data, { style: 'normal', weight: '400' });
+    const descriptors: FontFaceDescriptors = { style: 'normal', weight: '400' };
+    if (characters) descriptors.unicodeRange = Array.from(characters, char => `U+${char.codePointAt(0)!.toString(16)}`).join(',');
+    const face = new FontFace(family, data, descriptors);
     await face.load();
     document.fonts.add(face);
     installedFaces.add(family);
@@ -120,7 +122,7 @@ function prepareBaseFonts(manifest: FontManifest, baseUrl: string): Promise<stri
     const pending = (async () => {
       const buffers = await Promise.all(fonts.map(font => loadFontAsset(font, baseUrl)));
       await Promise.all(fonts.map((font, index) => registerFace(font.family, buffers[index]!)));
-      // Keep native precedence (serif, supplement), including overlapping glyphs.
+      // CSS and the outline registry both try the manifest's base faces in order.
       installBaseFonts(buffers, manifest.baseCharacters || '');
       return fonts.map(font => font.family);
     })().catch(error => { loadedBases.delete(key); throw error; });
@@ -149,13 +151,13 @@ export async function prepareFlowFonts(frames: Array<{ quote: string; fullText?:
   const assets = [...manifest.baseFonts || [], ...needed];
   let loadedAssets = 0;
   report({ phase: 'fonts', loaded: 0, total: assets.length });
-  // Schedule the two base faces first within the same global download cap.
+  // Schedule the base faces first within the same global download cap.
   const basesReady = prepareBaseFonts(manifest, baseUrl);
   const shardsReady = Promise.all(needed.map(async shard => {
     const family = `InfiDao-${shard.id}-${shard.sha256}`;
     const buffer = await loadFontAsset(shard, baseUrl);
     // Every caller waits for the same face, including while another chain is loading it.
-    await registerFace(family, buffer);
+    await registerFace(family, buffer, shard.characters);
     installFont(family, shard.characters, buffer);
     return family;
   }));
