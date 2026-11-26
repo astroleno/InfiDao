@@ -1,0 +1,293 @@
+{
+  "mode": "live",
+  "release": {
+    "entry": "/_next/static/chunks/app/infidao/page-85af3d502c87d0fa.js",
+    "scripts": [
+      "/_next/static/chunks/app/infidao/page-85af3d502c87d0fa.js",
+      "/_next/static/chunks/app/layout-2da3aa91efdae539.js",
+      "/_next/static/chunks/commons-9dc6e0845f53d85a.js",
+      "/_next/static/chunks/lib-0e21a148-9df2cd160486cd4f.js",
+      "/_next/static/chunks/lib-7815f9af-ab8b6dc5c906229c.js",
+      "/_next/static/chunks/main-app-9fbef5e5d4e70271.js",
+      "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+      "/_next/static/chunks/shared-c1807312d93902c7.js",
+      "/_next/static/chunks/webpack-8a873c7cc2baf872.js"
+    ],
+    "fontManifest": "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-42d12afceb1f46a1/flow-assets/v-094d7b612c674ac324e9/manifest.json",
+    "fontRelease": "infidao-42d12afceb1f46a1",
+    "id": "infidao-42d12afceb1f46a1",
+    "commit": "feb1c803f314ed929c1ee88f48e6e61b5f4b4f22",
+    "manifestUrl": "https://aitoshuu.me/flow-releases/infidao-42d12afceb1f46a1.json",
+    "codeSha256": "34a7ee37aec92f200162388117c464c671b1bdd0e912f6e56ceeb84fb132623f",
+    "entrySha256": "9e4ac41c53339178dc68a5f6ac0fe583af1874e1125a8b06e9fc810d04bc0286",
+    "fontSha256": "a7d5cc4fe0c0adf5e682b391efcee04f8cf2913adeb48aa86063622a5453a1f0",
+    "corpusVersion": "guji-core-v1",
+    "corpusSha256": "3ac315b83fbb75f5076e444a09823d243d1237995ba2244eecb43af76c0ce3ec"
+  },
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "dpr": 3
+  },
+  "caps": {
+    "open": 2,
+    "branch": 4
+  },
+  "sent": {
+    "session": 2,
+    "open": 2,
+    "branch": 2
+  },
+  "roots": {
+    "A": {
+      "sessionStatus": 200,
+      "status": 200,
+      "reflectionSha256": "2a337da017621583d9547c6ad7a1a0620e692444508dd88d75fa4ad9fe49f7ab",
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "ready": true,
+      "sent": true
+    },
+    "B": {
+      "sessionStatus": 200,
+      "status": 200,
+      "reflectionSha256": "8b571181526cd535acc5cca32ae8091e89ad470d812bb45499d7fa48119af369",
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "ready": true,
+      "sent": true
+    }
+  },
+  "attempts": [
+    {
+      "root": "A",
+      "word": "止",
+      "expectedRoute": "cold",
+      "selection": {
+        "start": 1,
+        "end": 2,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "pointer": {
+        "x": 131,
+        "y": 198.6846923828125
+      },
+      "goPointer": {
+        "x": 235.15625,
+        "y": 811
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": true,
+      "status": 200,
+      "route": "cold",
+      "relation": "pass",
+      "checkedCorpus": true,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "geometry": {
+        "edges": [
+          199.1199951171875,
+          421.1199951171875,
+          70.203125,
+          319.796875
+        ],
+        "bounds": {
+          "top": 0,
+          "bottom": 844,
+          "left": 0,
+          "right": 390
+        },
+        "ink": "settled",
+        "obstructed": false
+      },
+      "ms": {
+        "request": 130.7999999821186,
+        "firstQuote": 4680.5999999940395,
+        "goAvailable": 4718.5,
+        "go": 4812.899999976158,
+        "rawReadable": 4902.299999982119,
+        "readableConfirmed": 4918.5999999940395,
+        "frame": 5461.5,
+        "done": 5461.5,
+        "goDwell": 94.39999997615814,
+        "readableMinusGoDwell": 4807.9000000059605
+      },
+      "screenshot": "A-止-readable.png"
+    },
+    {
+      "root": "A",
+      "word": "静",
+      "expectedRoute": "cold",
+      "selection": {
+        "start": 11,
+        "end": 12,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "pointer": {
+        "x": 246,
+        "y": 254.1846923828125
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": false,
+      "status": 200,
+      "route": "cold",
+      "relation": "pass",
+      "checkedCorpus": true,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "geometry": {
+        "edges": [
+          718.4346923828125,
+          829.4346923828125,
+          70.203125,
+          319.796875
+        ],
+        "bounds": {
+          "top": 0,
+          "bottom": 844,
+          "left": 0,
+          "right": 390
+        },
+        "ink": "settled",
+        "obstructed": false
+      },
+      "ms": {
+        "request": 134.90000000596046,
+        "firstQuote": 4065.800000011921,
+        "rawReadable": 4109.100000023842,
+        "readableConfirmed": 4126.200000017881,
+        "frame": 4968.200000017881,
+        "done": 4968.200000017881
+      },
+      "screenshot": "A-静-readable.png"
+    }
+  ],
+  "blocked": {
+    "prefetch": 2
+  },
+  "started": "2026-11-26T03:58:43.512Z",
+  "comparison": {
+    "eligible": false,
+    "checks": {
+      "sameOwner": true,
+      "independent": true,
+      "version": true,
+      "seed": true,
+      "focus": true,
+      "graph": true,
+      "contentScope": true,
+      "sourceId": true,
+      "source": true,
+      "chapterLabel": true,
+      "work": true,
+      "corpusVersion": true,
+      "textHash": true,
+      "fullText": true,
+      "quote": true,
+      "quoteStart": true,
+      "quoteEnd": true,
+      "reflection": false
+    },
+    "differingFields": [
+      "reflection"
+    ]
+  },
+  "candidates": [
+    {
+      "word": "止",
+      "selection": {
+        "start": 1,
+        "end": 2,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    },
+    {
+      "word": "静",
+      "selection": {
+        "start": 11,
+        "end": 12,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    },
+    {
+      "word": "得",
+      "selection": {
+        "start": 29,
+        "end": 30,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    },
+    {
+      "word": "定",
+      "selection": {
+        "start": 5,
+        "end": 6,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    }
+  ],
+  "reuse": {
+    "eligible": 0,
+    "reason": "Root signatures differ or are unavailable"
+  },
+  "finished": "2026-11-26T03:59:15.021Z",
+  "summary": {
+    "cold": {
+      "sent": 2,
+      "confirmed": 2,
+      "timed": 2,
+      "final": {
+        "pass": 2,
+        "fail": 0,
+        "unknown": 0
+      },
+      "p50": 4505.70000000298,
+      "range": [
+        4109.100000023842,
+        4902.299999982119
+      ]
+    },
+    "reuse": {
+      "sent": 0,
+      "confirmed": 0,
+      "timed": 0,
+      "final": {
+        "pass": 0,
+        "fail": 0,
+        "unknown": 0
+      },
+      "p50": null,
+      "range": null
+    }
+  }
+}
