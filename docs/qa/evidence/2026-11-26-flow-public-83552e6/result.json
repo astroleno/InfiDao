@@ -1,0 +1,1318 @@
+{
+  "release": {
+    "entry": "/_next/static/chunks/app/infidao/page-25900034ccebf7fa.js",
+    "scripts": [
+      "/_next/static/chunks/app/infidao/page-25900034ccebf7fa.js",
+      "/_next/static/chunks/app/layout-a02c3fbe90920995.js",
+      "/_next/static/chunks/commons-ee6107f47b3fcc3a.js",
+      "/_next/static/chunks/lib-0e1f97f1-685f023a1a46c72d.js",
+      "/_next/static/chunks/lib-76422795-321ae6b56c2f37a4.js",
+      "/_next/static/chunks/main-app-aa1312c9cce89881.js",
+      "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+      "/_next/static/chunks/shared-c1807312d93902c7.js",
+      "/_next/static/chunks/webpack-275bdc12f723f642.js"
+    ],
+    "fontManifest": "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-dc8272afafb1d4fa/flow-assets/v-87a1ae56979cf24934c0/manifest.json",
+    "fontRelease": "infidao-dc8272afafb1d4fa",
+    "id": "infidao-dc8272afafb1d4fa",
+    "commit": "83552e6560082344fa70693118baec1ba2dacb1d",
+    "manifestUrl": "https://aitoshuu.me/flow-releases/infidao-dc8272afafb1d4fa.json",
+    "codeSha256": "f5b05337c6085b9d4f883f1aa6319761fd0d7c644e4c280a3151914016df75ea",
+    "entrySha256": "899e24b7fec9d1ce5d1cc9075fe0b0155c517128570f80664d00f50db00175f8",
+    "fontSha256": "1e7345a1d05cf792e0aef3e2d36f0d1c45b48b2dd999b33bfb86f2777515a75c",
+    "corpusVersion": "guji-core-v1",
+    "corpusSha256": "3ac315b83fbb75f5076e444a09823d243d1237995ba2244eecb43af76c0ce3ec"
+  },
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "dpr": 3
+  },
+  "sent": {
+    "session": 5,
+    "open": 5,
+    "branch": 5
+  },
+  "caps": {
+    "open": 6,
+    "branch": 6
+  },
+  "blocked": {
+    "other": 5,
+    "prefetch": 4
+  },
+  "stop": null,
+  "roots": {
+    "cold-1": {
+      "sent": true,
+      "ready": true,
+      "titleOK": true,
+      "status": 200,
+      "sessionStatus": 200,
+      "health": {
+        "pageErrors": 0,
+        "consoleErrors": 3,
+        "consoleWarnings": 3
+      }
+    },
+    "cold-2": {
+      "sent": true,
+      "ready": true,
+      "titleOK": true,
+      "status": 200,
+      "sessionStatus": 200,
+      "health": {
+        "pageErrors": 0,
+        "consoleErrors": 2,
+        "consoleWarnings": 1
+      }
+    },
+    "cold-3": {
+      "sent": true,
+      "ready": true,
+      "titleOK": true,
+      "status": 200,
+      "sessionStatus": 200,
+      "health": {
+        "pageErrors": 0,
+        "consoleErrors": 1,
+        "consoleWarnings": 1
+      }
+    },
+    "cold-4": {
+      "sent": true,
+      "ready": true,
+      "titleOK": true,
+      "status": 200,
+      "sessionStatus": 200,
+      "health": {
+        "pageErrors": 0,
+        "consoleErrors": 2,
+        "consoleWarnings": 3
+      }
+    },
+    "cold-5": {
+      "sent": true,
+      "ready": true,
+      "titleOK": true,
+      "status": 200,
+      "sessionStatus": 200,
+      "health": {
+        "pageErrors": 0,
+        "consoleErrors": 2,
+        "consoleWarnings": 1
+      }
+    }
+  },
+  "attempts": [
+    {
+      "root": "cold-1",
+      "word": "静",
+      "selection": {
+        "start": 11,
+        "end": 12,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": true,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "ms": {
+        "request": 138.1,
+        "firstQuote": 5153.2,
+        "goAvailable": 5193.4,
+        "go": 5387.3,
+        "rawReadable": 5540.3,
+        "readableConfirmed": 5556,
+        "frame": 6058.5,
+        "done": 6058.6,
+        "goDwell": 193.9,
+        "readableMinusGoDwell": 5346.4
+      },
+      "geometry": {
+        "edges": [
+          374.4,
+          596.4,
+          70.2,
+          319.8
+        ],
+        "bounds": {
+          "top": 0,
+          "bottom": 844,
+          "left": 0,
+          "right": 390
+        },
+        "ink": "settled",
+        "obstructed": false,
+        "hintVisible": false,
+        "hintObstructed": false
+      },
+      "canonical": {
+        "first": {
+          "sourceId": "rysxguji-liji-17-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "470dca85fc58df199fc197b69f06a5a55f422ea3b924a177f1f17007063c3e28",
+          "quoteStart": 0,
+          "quoteEnd": 21,
+          "quoteSha256": "2238ac9c7f137ae1c5ea7b5cc93d8a5be304281a0e74a9134dd4696a09397def"
+        },
+        "final": {
+          "sourceId": "rysxguji-liji-17-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "470dca85fc58df199fc197b69f06a5a55f422ea3b924a177f1f17007063c3e28",
+          "quoteStart": 0,
+          "quoteEnd": 21,
+          "quoteSha256": "2238ac9c7f137ae1c5ea7b5cc93d8a5be304281a0e74a9134dd4696a09397def"
+        },
+        "firstEvent": "head"
+      },
+      "route": "cold",
+      "relation": "pass",
+      "checkedCorpus": true,
+      "firstMatchesFinal": true,
+      "verifiedHead": true,
+      "server": {
+        "operation": "branch",
+        "outcome": "ok",
+        "durationMs": 5112.7,
+        "firstQuoteMs": 4269.9,
+        "reviewToFirstQuoteMs": 1190.3,
+        "phaseSamples": [
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 1176.3
+          },
+          {
+            "phase": "plan",
+            "outcome": "ok",
+            "durationMs": 1177.4
+          },
+          {
+            "phase": "retrieve",
+            "outcome": "ok",
+            "durationMs": 5.8
+          },
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 1884.1
+          },
+          {
+            "phase": "generate",
+            "outcome": "ok",
+            "durationMs": 1886.8
+          },
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 2028.5
+          },
+          {
+            "phase": "review",
+            "outcome": "ok",
+            "durationMs": 2030
+          }
+        ]
+      },
+      "unexpectedReuseHead": false,
+      "usable": true,
+      "journalAttribution": {
+        "messageSha256": "5ec2011cfa1a2b164e3cd4bacd6adff7693ae78f3cbcf924079c5e708eb1d2f9",
+        "branchRecords": 1,
+        "journalWindowStable": true
+      }
+    },
+    {
+      "root": "cold-2",
+      "word": "静",
+      "selection": {
+        "start": 11,
+        "end": 12,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": false,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "ms": {
+        "request": 174.6,
+        "firstQuote": 3583.7,
+        "rawReadable": 3618.4,
+        "readableConfirmed": 3633.8,
+        "frame": 4677.9,
+        "done": 4677.9
+      },
+      "geometry": {
+        "edges": [
+          538.5,
+          649.5,
+          70.2,
+          319.8
+        ],
+        "bounds": {
+          "top": 0,
+          "bottom": 844,
+          "left": 0,
+          "right": 390
+        },
+        "ink": "settled",
+        "obstructed": false,
+        "hintVisible": false,
+        "hintObstructed": false
+      },
+      "canonical": {
+        "first": {
+          "sourceId": "rysxguji-xunzi-22-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "711d92f05206ad3316a5eded0387153ffc85e402c6fcaf4274ed8cc7f3e6fbaa",
+          "quoteStart": 180,
+          "quoteEnd": 189,
+          "quoteSha256": "d46ccb9102f60c7ba30a400fe814c2cbba44d3a53ba2ade9a4743cbe297848b4"
+        },
+        "final": {
+          "sourceId": "rysxguji-xunzi-22-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "711d92f05206ad3316a5eded0387153ffc85e402c6fcaf4274ed8cc7f3e6fbaa",
+          "quoteStart": 180,
+          "quoteEnd": 189,
+          "quoteSha256": "d46ccb9102f60c7ba30a400fe814c2cbba44d3a53ba2ade9a4743cbe297848b4"
+        },
+        "firstEvent": "head"
+      },
+      "route": "cold",
+      "relation": "pass",
+      "checkedCorpus": true,
+      "firstMatchesFinal": true,
+      "verifiedHead": true,
+      "server": {
+        "operation": "branch",
+        "outcome": "ok",
+        "durationMs": 3796.7,
+        "firstQuoteMs": 2825.3,
+        "reviewToFirstQuoteMs": 603.7,
+        "phaseSamples": [
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 1014.5
+          },
+          {
+            "phase": "plan",
+            "outcome": "ok",
+            "durationMs": 1015.3
+          },
+          {
+            "phase": "retrieve",
+            "outcome": "ok",
+            "durationMs": 9
+          },
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 1183.9
+          },
+          {
+            "phase": "generate",
+            "outcome": "ok",
+            "durationMs": 1188.7
+          },
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 1570.5
+          },
+          {
+            "phase": "review",
+            "outcome": "ok",
+            "durationMs": 1571.9
+          }
+        ]
+      },
+      "unexpectedReuseHead": false,
+      "usable": true,
+      "journalAttribution": {
+        "messageSha256": "1cc8c495ce64b48617dbf3501817763cb4531b6b21eded186079c21ada789965",
+        "branchRecords": 1,
+        "journalWindowStable": true
+      }
+    },
+    {
+      "root": "cold-3",
+      "word": "静",
+      "selection": {
+        "start": 11,
+        "end": 12,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": false,
+      "events": [
+        "error"
+      ],
+      "ms": {
+        "request": 147.6
+      },
+      "canonical": {
+        "first": null,
+        "final": null,
+        "firstEvent": null
+      },
+      "route": "cold",
+      "relation": "fail",
+      "checkedCorpus": false,
+      "verifiedHead": true,
+      "server": {
+        "operation": "branch",
+        "outcome": "error",
+        "durationMs": 3825.2,
+        "firstQuoteMs": null,
+        "reviewToFirstQuoteMs": null,
+        "phaseSamples": [
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 1348.3
+          },
+          {
+            "phase": "plan",
+            "outcome": "ok",
+            "durationMs": 1349
+          },
+          {
+            "phase": "retrieve",
+            "outcome": "ok",
+            "durationMs": 4.7
+          },
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 1291.6
+          },
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 1168.2
+          },
+          {
+            "phase": "generate",
+            "outcome": "ok",
+            "durationMs": 2462.8
+          }
+        ]
+      },
+      "unexpectedReuseHead": false,
+      "usable": true,
+      "error": "RELATION_UNVERIFIED",
+      "journalAttribution": {
+        "messageSha256": "b559ad3eba8eb44bd1c4b443cadfe499888c17c1e1174794391f48499e71662c",
+        "branchRecords": 1,
+        "journalWindowStable": true
+      }
+    },
+    {
+      "root": "cold-4",
+      "word": "静",
+      "selection": {
+        "start": 11,
+        "end": 12,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": true,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "ms": {
+        "request": 178.4,
+        "firstQuote": 5806.3,
+        "goAvailable": 5838.1,
+        "go": 5958.4,
+        "rawReadable": 6043.1,
+        "readableConfirmed": 6060,
+        "frame": 6906.2,
+        "done": 6906.2,
+        "goDwell": 120.3,
+        "readableMinusGoDwell": 5922.8
+      },
+      "geometry": {
+        "edges": [
+          237.6,
+          348.6,
+          70.2,
+          319.8
+        ],
+        "bounds": {
+          "top": 0,
+          "bottom": 844,
+          "left": 0,
+          "right": 390
+        },
+        "ink": "settled",
+        "obstructed": false,
+        "hintVisible": false,
+        "hintObstructed": false
+      },
+      "canonical": {
+        "first": {
+          "sourceId": "rysxguji-xunzi-22-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "711d92f05206ad3316a5eded0387153ffc85e402c6fcaf4274ed8cc7f3e6fbaa",
+          "quoteStart": 180,
+          "quoteEnd": 189,
+          "quoteSha256": "d46ccb9102f60c7ba30a400fe814c2cbba44d3a53ba2ade9a4743cbe297848b4"
+        },
+        "final": {
+          "sourceId": "rysxguji-xunzi-22-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "711d92f05206ad3316a5eded0387153ffc85e402c6fcaf4274ed8cc7f3e6fbaa",
+          "quoteStart": 180,
+          "quoteEnd": 189,
+          "quoteSha256": "d46ccb9102f60c7ba30a400fe814c2cbba44d3a53ba2ade9a4743cbe297848b4"
+        },
+        "firstEvent": "head"
+      },
+      "route": "cold",
+      "relation": "pass",
+      "checkedCorpus": true,
+      "firstMatchesFinal": true,
+      "verifiedHead": true,
+      "server": {
+        "operation": "branch",
+        "outcome": "ok",
+        "durationMs": 5227.2,
+        "firstQuoteMs": 4273.5,
+        "reviewToFirstQuoteMs": 942.1,
+        "phaseSamples": [
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 776.1
+          },
+          {
+            "phase": "plan",
+            "outcome": "ok",
+            "durationMs": 776.9
+          },
+          {
+            "phase": "retrieve",
+            "outcome": "ok",
+            "durationMs": 4.5
+          },
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 2540.5
+          },
+          {
+            "phase": "generate",
+            "outcome": "ok",
+            "durationMs": 2542.6
+          },
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 1891.1
+          },
+          {
+            "phase": "review",
+            "outcome": "ok",
+            "durationMs": 1892.8
+          }
+        ]
+      },
+      "unexpectedReuseHead": false,
+      "usable": true,
+      "journalAttribution": {
+        "messageSha256": "5ee42a0b57a5f19f0aeedca61d3eb1816c017ab91dcc96cbba07c42065346d85",
+        "branchRecords": 1,
+        "journalWindowStable": true
+      }
+    },
+    {
+      "root": "cold-5",
+      "word": "静",
+      "selection": {
+        "start": 11,
+        "end": 12,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": false,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "ms": {
+        "request": 136.5,
+        "firstQuote": 4203.6,
+        "rawReadable": 4229.1,
+        "readableConfirmed": 4245.9,
+        "frame": 5361.6,
+        "done": 5361.6
+      },
+      "geometry": {
+        "edges": [
+          567.7,
+          678.7,
+          70.2,
+          319.8
+        ],
+        "bounds": {
+          "top": 0,
+          "bottom": 844,
+          "left": 0,
+          "right": 390
+        },
+        "ink": "settled",
+        "obstructed": false,
+        "hintVisible": false,
+        "hintObstructed": false
+      },
+      "canonical": {
+        "first": {
+          "sourceId": "rysxguji-xunzi-22-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "711d92f05206ad3316a5eded0387153ffc85e402c6fcaf4274ed8cc7f3e6fbaa",
+          "quoteStart": 180,
+          "quoteEnd": 189,
+          "quoteSha256": "d46ccb9102f60c7ba30a400fe814c2cbba44d3a53ba2ade9a4743cbe297848b4"
+        },
+        "final": {
+          "sourceId": "rysxguji-xunzi-22-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "711d92f05206ad3316a5eded0387153ffc85e402c6fcaf4274ed8cc7f3e6fbaa",
+          "quoteStart": 180,
+          "quoteEnd": 189,
+          "quoteSha256": "d46ccb9102f60c7ba30a400fe814c2cbba44d3a53ba2ade9a4743cbe297848b4"
+        },
+        "firstEvent": "head"
+      },
+      "route": "cold",
+      "relation": "pass",
+      "checkedCorpus": true,
+      "firstMatchesFinal": true,
+      "verifiedHead": true,
+      "server": {
+        "operation": "branch",
+        "outcome": "ok",
+        "durationMs": 4518,
+        "firstQuoteMs": 3504.2,
+        "reviewToFirstQuoteMs": 1077.5,
+        "phaseSamples": [
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 1183.8
+          },
+          {
+            "phase": "plan",
+            "outcome": "ok",
+            "durationMs": 1185.2
+          },
+          {
+            "phase": "retrieve",
+            "outcome": "ok",
+            "durationMs": 20.2
+          },
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 1203.8
+          },
+          {
+            "phase": "generate",
+            "outcome": "ok",
+            "durationMs": 1208.2
+          },
+          {
+            "phase": "model",
+            "outcome": "ok",
+            "durationMs": 2081.4
+          },
+          {
+            "phase": "review",
+            "outcome": "ok",
+            "durationMs": 2083.5
+          }
+        ]
+      },
+      "unexpectedReuseHead": false,
+      "usable": true,
+      "journalAttribution": {
+        "messageSha256": "8d88ab62b74ebdc682350e192ef887829e6460bfebd2ad6e789cac07e798fe3a",
+        "branchRecords": 1,
+        "journalWindowStable": true
+      }
+    }
+  ],
+  "summary": {
+    "attempted": 5,
+    "sent": 5,
+    "usable": 5,
+    "attributed": 5,
+    "completeSamples": 4,
+    "measurementSamples": 4,
+    "outcomeDenominator": 5,
+    "unexpectedReuseHeads": 0,
+    "relations": {
+      "pass": 4,
+      "fail": 1,
+      "unknown": 0
+    },
+    "metrics": {
+      "clickToNdjsonQuoteMs": {
+        "n": 4,
+        "p50": 4678.4,
+        "max": 5806.3
+      },
+      "clickToReadableMs": {
+        "n": 4,
+        "p50": 4884.7,
+        "max": 6043.1
+      },
+      "clickToReadableConfirmedMs": {
+        "n": 4,
+        "p50": 4901,
+        "max": 6060
+      },
+      "goDwellMs": {
+        "n": 2,
+        "p50": 157.1,
+        "max": 193.9
+      },
+      "clickToFrameMs": {
+        "n": 4,
+        "p50": 5710.1,
+        "max": 6906.2
+      },
+      "clickToDoneMs": {
+        "n": 4,
+        "p50": 5710.1,
+        "max": 6906.2
+      },
+      "flowTotalMs": {
+        "n": 5,
+        "p50": 4518,
+        "max": 5227.2
+      },
+      "flowStartToFirstQuoteEnqueueMs": {
+        "n": 4,
+        "p50": 3887.1,
+        "max": 4273.5
+      },
+      "reviewStartToFirstQuoteEnqueueMs": {
+        "n": 4,
+        "p50": 1009.8,
+        "max": 1190.3
+      },
+      "planMs": {
+        "n": 5,
+        "p50": 1177.4,
+        "max": 1349
+      },
+      "retrieveMs": {
+        "n": 5,
+        "p50": 5.8,
+        "max": 20.2
+      },
+      "generateMs": {
+        "n": 5,
+        "p50": 1886.8,
+        "max": 2542.6
+      },
+      "reviewMs": {
+        "n": 4,
+        "p50": 1961.4,
+        "max": 2083.5
+      }
+    }
+  },
+  "typography": [
+    {
+      "engine": "chromium",
+      "width": 1280,
+      "quotes": [
+        {
+          "lines": [
+            "不以梦剧乱知谓之静"
+          ],
+          "rect": [
+            692,
+            74
+          ],
+          "overflow": false
+        },
+        {
+          "lines": [
+            "所求乎朋友先施之，",
+            "未能也。"
+          ],
+          "rect": [
+            692,
+            148
+          ],
+          "overflow": false
+        },
+        {
+          "lines": [
+            "卻之卻之为不恭’，",
+            "何哉？"
+          ],
+          "rect": [
+            692,
+            148
+          ],
+          "overflow": false
+        }
+      ],
+      "fontsHTTP": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "cdpFonts": {
+        "不以": [
+          [
+            "nzgrKangxi",
+            true,
+            2
+          ]
+        ],
+        "梦": [
+          [
+            "InfiDaoWebSerifSC-1",
+            true,
+            1
+          ]
+        ],
+        "剧": [
+          [
+            "InfiDaoWebSerifSC-3",
+            true,
+            1
+          ]
+        ],
+        "乱": [
+          [
+            "InfiDaoWebSerifSC-0",
+            true,
+            1
+          ]
+        ],
+        "知": [
+          [
+            "nzgrKangxi",
+            true,
+            1
+          ]
+        ],
+        "谓": [
+          [
+            "InfiDaoWebSerifSC-0",
+            true,
+            1
+          ]
+        ],
+        "之": [
+          [
+            "nzgrKangxi",
+            true,
+            1
+          ]
+        ],
+        "静": [
+          [
+            "InfiDaoWebSerifSC-0",
+            true,
+            1
+          ]
+        ]
+      },
+      "console": {
+        "blockedFixtureGet": 0,
+        "webGLPerformanceWarnings": 0,
+        "other": 0,
+        "fontPreloadWarnings": 0,
+        "emptyResourceResponse": 0
+      },
+      "pageErrors": 0,
+      "blockedNetwork": [],
+      "dryRunFlowCalls": 2
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "quotes": [
+        {
+          "lines": [
+            "不以梦剧乱知",
+            "谓之静"
+          ],
+          "rect": [
+            204.8,
+            111
+          ],
+          "overflow": false
+        },
+        {
+          "lines": [
+            "所求乎朋友",
+            "先施之，",
+            "未能也。"
+          ],
+          "rect": [
+            204.8,
+            166.5
+          ],
+          "overflow": false
+        },
+        {
+          "lines": [
+            "卻之卻之",
+            "为不恭’，",
+            "何哉？"
+          ],
+          "rect": [
+            204.8,
+            166.5
+          ],
+          "overflow": false
+        }
+      ],
+      "fontsHTTP": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "cdpFonts": {
+        "不以": [
+          [
+            "nzgrKangxi",
+            true,
+            2
+          ]
+        ],
+        "梦": [
+          [
+            "InfiDaoWebSerifSC-1",
+            true,
+            1
+          ]
+        ],
+        "剧": [
+          [
+            "InfiDaoWebSerifSC-3",
+            true,
+            1
+          ]
+        ],
+        "乱": [
+          [
+            "InfiDaoWebSerifSC-0",
+            true,
+            1
+          ]
+        ],
+        "知": [
+          [
+            "nzgrKangxi",
+            true,
+            1
+          ]
+        ],
+        "谓": [
+          [
+            "InfiDaoWebSerifSC-0",
+            true,
+            1
+          ]
+        ],
+        "之": [
+          [
+            "nzgrKangxi",
+            true,
+            1
+          ]
+        ],
+        "静": [
+          [
+            "InfiDaoWebSerifSC-0",
+            true,
+            1
+          ]
+        ]
+      },
+      "console": {
+        "blockedFixtureGet": 0,
+        "webGLPerformanceWarnings": 1,
+        "other": 0,
+        "fontPreloadWarnings": 0,
+        "emptyResourceResponse": 0
+      },
+      "pageErrors": 0,
+      "blockedNetwork": [],
+      "dryRunFlowCalls": 2
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "quotes": [
+        {
+          "lines": [
+            "不以梦剧乱知",
+            "谓之静"
+          ],
+          "rect": [
+            249.6,
+            111
+          ],
+          "overflow": false
+        },
+        {
+          "lines": [
+            "所求乎朋友",
+            "先施之，",
+            "未能也。"
+          ],
+          "rect": [
+            249.6,
+            166.5
+          ],
+          "overflow": false
+        },
+        {
+          "lines": [
+            "卻之卻之",
+            "为不恭’，",
+            "何哉？"
+          ],
+          "rect": [
+            249.6,
+            166.5
+          ],
+          "overflow": false
+        }
+      ],
+      "fontsHTTP": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "cdpFonts": {
+        "不以": [
+          [
+            "nzgrKangxi",
+            true,
+            2
+          ]
+        ],
+        "梦": [
+          [
+            "InfiDaoWebSerifSC-1",
+            true,
+            1
+          ]
+        ],
+        "剧": [
+          [
+            "InfiDaoWebSerifSC-3",
+            true,
+            1
+          ]
+        ],
+        "乱": [
+          [
+            "InfiDaoWebSerifSC-0",
+            true,
+            1
+          ]
+        ],
+        "知": [
+          [
+            "nzgrKangxi",
+            true,
+            1
+          ]
+        ],
+        "谓": [
+          [
+            "InfiDaoWebSerifSC-0",
+            true,
+            1
+          ]
+        ],
+        "之": [
+          [
+            "nzgrKangxi",
+            true,
+            1
+          ]
+        ],
+        "静": [
+          [
+            "InfiDaoWebSerifSC-0",
+            true,
+            1
+          ]
+        ]
+      },
+      "traditionalCdpFonts": {
+        "卻": [
+          [
+            "Noto Serif SC ExtraLight",
+            true,
+            1
+          ]
+        ]
+      },
+      "console": {
+        "blockedFixtureGet": 0,
+        "webGLPerformanceWarnings": 0,
+        "other": 0,
+        "fontPreloadWarnings": 3,
+        "emptyResourceResponse": 1
+      },
+      "pageErrors": 0,
+      "blockedNetwork": [],
+      "dryRunFlowCalls": 2
+    },
+    {
+      "engine": "webkit",
+      "width": 1280,
+      "quotes": [
+        {
+          "lines": [
+            "不以梦剧乱知谓之静"
+          ],
+          "rect": [
+            692,
+            74
+          ],
+          "overflow": false
+        },
+        {
+          "lines": [
+            "所求乎朋友先施之，",
+            "未能也。"
+          ],
+          "rect": [
+            692,
+            148
+          ],
+          "overflow": false
+        },
+        {
+          "lines": [
+            "卻之卻之为不恭’，",
+            "何哉？"
+          ],
+          "rect": [
+            692,
+            148
+          ],
+          "overflow": false
+        }
+      ],
+      "fontsHTTP": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "cdpFonts": {},
+      "console": {
+        "blockedFixtureGet": 0,
+        "webGLPerformanceWarnings": 0,
+        "other": 0,
+        "fontPreloadWarnings": 0,
+        "emptyResourceResponse": 0
+      },
+      "pageErrors": 0,
+      "blockedNetwork": [
+        [
+          "GET",
+          "https://aitoshuu.me",
+          "API"
+        ]
+      ],
+      "dryRunFlowCalls": 2
+    },
+    {
+      "engine": "webkit",
+      "width": 320,
+      "quotes": [
+        {
+          "lines": [
+            "不以梦剧乱知",
+            "谓之静"
+          ],
+          "rect": [
+            204.8,
+            111
+          ],
+          "overflow": false
+        },
+        {
+          "lines": [
+            "所求乎朋友",
+            "先施之，",
+            "未能也。"
+          ],
+          "rect": [
+            204.8,
+            166.5
+          ],
+          "overflow": false
+        },
+        {
+          "lines": [
+            "卻之卻之",
+            "为不恭’，",
+            "何哉？"
+          ],
+          "rect": [
+            204.8,
+            166.5
+          ],
+          "overflow": false
+        }
+      ],
+      "fontsHTTP": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "cdpFonts": {},
+      "console": {
+        "blockedFixtureGet": 0,
+        "webGLPerformanceWarnings": 0,
+        "other": 0,
+        "fontPreloadWarnings": 0,
+        "emptyResourceResponse": 0
+      },
+      "pageErrors": 0,
+      "blockedNetwork": [
+        [
+          "GET",
+          "https://aitoshuu.me",
+          "API"
+        ]
+      ],
+      "dryRunFlowCalls": 2
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "quotes": [
+        {
+          "lines": [
+            "不以梦剧乱知",
+            "谓之静"
+          ],
+          "rect": [
+            249.6,
+            111
+          ],
+          "overflow": false
+        },
+        {
+          "lines": [
+            "所求乎朋友",
+            "先施之，",
+            "未能也。"
+          ],
+          "rect": [
+            249.6,
+            166.5
+          ],
+          "overflow": false
+        },
+        {
+          "lines": [
+            "卻之卻之",
+            "为不恭’，",
+            "何哉？"
+          ],
+          "rect": [
+            249.6,
+            166.5
+          ],
+          "overflow": false
+        }
+      ],
+      "fontsHTTP": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "cdpFonts": {},
+      "traditionalCdpFonts": {},
+      "console": {
+        "blockedFixtureGet": 0,
+        "webGLPerformanceWarnings": 0,
+        "other": 0,
+        "fontPreloadWarnings": 3,
+        "emptyResourceResponse": 0
+      },
+      "pageErrors": 0,
+      "blockedNetwork": [],
+      "dryRunFlowCalls": 2
+    }
+  ],
+  "auditedModelCalls": {
+    "open": 10,
+    "branch": 15,
+    "total": 25
+  }
+}
