@@ -1,0 +1,1057 @@
+{
+  "scope": "Diagnostic replay of four archived reading points, including two independent attempts for b2350132.",
+  "sourceSha256": {
+    "baseline": {
+      "service": "7ac4a4a2df00ac0aa113fb5f967647b2d443806b9f43776c73db9b65942528a7",
+      "relations": "ef6d2b5d75d45dd377472b9d57ebac28bd1be615bd20d6a91057f78bc2f5c422",
+      "contracts": "d32644726c05b29e29fac3b30802de7a70f8528e876ea48486a3c5e0e4312b2b",
+      "model": "cb7dd7d96de78b34bc5181fe175d0e77e47233b4998f44cdce680b5d0b5956ee"
+    },
+    "treatment": {
+      "service": "6d1adfaa227dacef86ad020419dcac7ed52107d5d680a87b94f0b83beebd995e",
+      "relations": "2441481a93919036d678f8c353290d67932375a742d7bd9ed1133a1a9e6a2729",
+      "contracts": "e0fd386f3a8417f25decbd74a7f6eb3ea6f14743786a2841f7c51879aab050f9",
+      "model": "cb7dd7d96de78b34bc5181fe175d0e77e47233b4998f44cdce680b5d0b5956ee"
+    }
+  },
+  "frozen": {
+    "historicalCommit": "3c9eb31f81e7792964dc4029d494ab3d0d577eb4",
+    "baselineCommit": "66e34523588dfa77114fe15f41dda06b0ebb9ae0",
+    "matchingRetrievalGitObjects": {
+      "src/lib/flow/candidates.ts": "1e1237588eac1ec8bac729cd4161724b6e6f895b",
+      "src/lib/flow/context.ts": "9fdefcd6ca8dca2c261f866c58cf35568351db23",
+      "src/lib/search/lexical.ts": "a216a9cd968350071d2d615b3a5dfa48d38ac5fa",
+      "src/lib/data/corpus.ts": "8b129084814e91061268f71e36610ce290444c78",
+      "src/lib/content": "60fd9e1695499da4cb4b35b53f3366c24fb33239",
+      "data": "053189b57d76943402bd83330a2b1512dc75dac8",
+      "shared/content": "2155eb6448ffcb056deb76e457ce52b367782664"
+    },
+    "corpusManifestSha256": "e0fb16868d57f3d338375676b54829140daff06388fca77c9b5d91ce665ce56a",
+    "archiveSha256": "02af8e4c1bf7c98e5f7602f9f48b74e18471700f657051fc71ba6d44aa00b736",
+    "archivedContextsSha256": "7a271b7ad04e28915917f296795543fca620b91fe395a8b57964964298454ac6",
+    "cases": [
+      {
+        "link": "e711f64e",
+        "archivePromptVersion": "connected-text-v17-source-stance",
+        "scope": {
+          "packIds": [
+            "core"
+          ],
+          "versions": {
+            "core": "guji-core-v1"
+          },
+          "unavailable": [],
+          "fingerprint": "47c0d2253cfbb2512337c633"
+        },
+        "compactSha256": "7df352d3ebd1b8f1c130465a01164758e8359671eea4339b9a443c560d817310",
+        "windowsSha256": "b4336c2aa2169269f16c0665f1efd249fdfda0d76971627759b6333ee8759ab6",
+        "inputSha256": "108baff3588a4f1cac3a734d70d74556783b548132c6f462b12e34bc27bd4ac2",
+        "n": 12
+      },
+      {
+        "link": "b2350132",
+        "archivePromptVersion": "connected-text-v17-source-stance",
+        "scope": {
+          "packIds": [
+            "core",
+            "poetry"
+          ],
+          "versions": {
+            "core": "guji-core-v1",
+            "poetry": "poetry-63eda33f1cb2bed8"
+          },
+          "unavailable": [],
+          "fingerprint": "8de84a73ddcfdff0a0024250"
+        },
+        "compactSha256": "dc5051c522c4d9eb1876f403ef4e67896219cef0d242ef35b727416c63927986",
+        "windowsSha256": "e4829619a8aa3230b45a180fc1ced57e9ede67f7e1fa9387c3a773c7d69686c4",
+        "inputSha256": "30606580538746ec263d12ab71370e4f2cf968f05a802159fdb78c7b99b8597a",
+        "n": 12
+      },
+      {
+        "link": "f98ee1da",
+        "archivePromptVersion": "connected-text-v17-source-stance",
+        "scope": {
+          "packIds": [
+            "core"
+          ],
+          "versions": {
+            "core": "guji-core-v1"
+          },
+          "unavailable": [],
+          "fingerprint": "47c0d2253cfbb2512337c633"
+        },
+        "compactSha256": "45bdd9bc2cec18d6136056d6f96d41f752f886dd8d8fba3f48ab7af8ce7ced18",
+        "windowsSha256": "5cfed46792dab459405038733b347b7d989c77a06d2293c00cbc2e23a78030eb",
+        "inputSha256": "cf7b9aae848c975788d16438df730050428b9120422d59d79ca2c5328992990c",
+        "n": 12
+      },
+      {
+        "link": "8f7dcd1f",
+        "archivePromptVersion": "connected-text-v17-source-stance",
+        "scope": {
+          "packIds": [
+            "core",
+            "poetry"
+          ],
+          "versions": {
+            "core": "guji-core-v1",
+            "poetry": "poetry-63eda33f1cb2bed8"
+          },
+          "unavailable": [],
+          "fingerprint": "8de84a73ddcfdff0a0024250"
+        },
+        "compactSha256": "f112de28f84068e1de165e4afd79dcd854369e28d7546ff69c852769890171d2",
+        "windowsSha256": "a0b3f02bba2be8184f981dd48f06b99df58148de2bb536424f62aa0140ded03d",
+        "inputSha256": "c04edeeed67c457f592622d3128d4350ee7d24a7c70dbd3ab5b89a8dd5db6015",
+        "n": 12
+      }
+    ]
+  },
+  "reconstructedRecentReadings": "Source and selection ranges verified against the archived contexts. The direct readingContext uses production-style 60 UTF-16 units before/after. Recent source quotes are the archived path; their reflections are fresh glosses because the originals were unavailable. Both arms share one model input digest per case.",
+  "responses": {
+    "cases": [
+      {
+        "id": "b3e267b74bcb",
+        "readingContext": {
+          "word": "恕",
+          "surface": "quote",
+          "source": "论语",
+          "quote": "其恕乎！己所不欲，勿施于人。",
+          "before": "子贡问曰：“有一言而可以终身行之者乎？”子曰：“其",
+          "after": "乎！己所不欲，勿施于人。”"
+        },
+        "recentReadings": [
+          {
+            "source": "论语",
+            "quote": "其恕乎！己所不欲，勿施于人。",
+            "reflection": "恕从自己的体会出发，不把自己也不愿承受的事情加给别人。这是一条可以长久遵守的待人准则。"
+          }
+        ],
+        "delivered": {
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "meaning": "自己不愿承受的，就不要施加到别人身上。",
+          "reflection": "“施”字让恕多了一层动作感：不只是心里不想要，也要检查自己正把什么加给别人。从不愿处先停手，再谈推及他人，恕便有了可把握的起点。"
+        }
+      },
+      {
+        "id": "f17e06a73d28",
+        "readingContext": {
+          "word": "恕",
+          "surface": "quote",
+          "source": "论语",
+          "quote": "其恕乎！己所不欲，勿施于人。",
+          "before": "子贡问曰：“有一言而可以终身行之者乎？”子曰：“其",
+          "after": "乎！己所不欲，勿施于人。”"
+        },
+        "recentReadings": [
+          {
+            "source": "论语",
+            "quote": "其恕乎！己所不欲，勿施于人。",
+            "reflection": "恕从自己的体会出发，不把自己也不愿承受的事情加给别人。这是一条可以长久遵守的待人准则。"
+          }
+        ],
+        "delivered": {
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "meaning": "忠和恕离道不远：自己不愿承受的，也不要施加给别人。",
+          "reflection": "《中庸》把忠与恕并提，又说“违道不远”，并未将恕直接等同于道。这让人看到：推己及人的体谅是接近道的实践，却仍需在具体人事中不断校准，而非一条自动完备的准则。"
+        }
+      },
+      {
+        "id": "8dc8821a008f",
+        "readingContext": {
+          "word": "择",
+          "surface": "quote",
+          "source": "论语",
+          "quote": "三人行，必有我师焉：择其善者而从之，其不善者而改之。",
+          "before": "子曰：“三人行，必有我师焉：",
+          "after": "其善者而从之，其不善者而改之。”"
+        },
+        "recentReadings": [
+          {
+            "source": "论语",
+            "quote": "学而不思，则罔；思而不学，则殆。",
+            "reflection": "只学习而不思考会迷惘，只思考而不学习会陷入困境。"
+          },
+          {
+            "source": "论语",
+            "quote": "三人行，必有我师焉：择其善者而从之，其不善者而改之。",
+            "reflection": "同行的人都可以成为老师，取其善处，发现自己也有的不善之处便改正。"
+          }
+        ],
+        "delivered": {
+          "source": "论语",
+          "chapter": "第7章 述而第七",
+          "quote": "多闻，择其善者而从之",
+          "meaning": "",
+          "reflection": "“择其善者而从之”之前先说“多闻”，可见择取并非凭空判断，而是先有广泛见闻作底，再从中分辨可取之处。与同行者取善相比，这里多了一层次序：见闻先积累，选择才有所凭依。"
+        }
+      },
+      {
+        "id": "c54529af9b27",
+        "readingContext": {
+          "word": "择",
+          "surface": "quote",
+          "source": "论语",
+          "quote": "三人行，必有我师焉：择其善者而从之，其不善者而改之。",
+          "before": "子曰：“三人行，必有我师焉：",
+          "after": "其善者而从之，其不善者而改之。”"
+        },
+        "recentReadings": [
+          {
+            "source": "论语",
+            "quote": "学而不思，则罔；思而不学，则殆。",
+            "reflection": "只学习而不思考会迷惘，只思考而不学习会陷入困境。"
+          },
+          {
+            "source": "论语",
+            "quote": "三人行，必有我师焉：择其善者而从之，其不善者而改之。",
+            "reflection": "同行的人都可以成为老师，取其善处，发现自己也有的不善之处便改正。"
+          }
+        ],
+        "delivered": {
+          "source": "论语",
+          "chapter": "第7章 述而第七",
+          "quote": "多闻，择其善者而从之；多见而识之；知之次也。",
+          "meaning": "多听，选择其中好的来遵从；多看并记住，这是次一等的知。",
+          "reflection": "“择”在这里不是先凭己意定取舍，而是先多闻多见，让可供分辨的材料先到眼前；善与不善是在广收之后才显出可择之处。"
+        }
+      },
+      {
+        "id": "56d197131580",
+        "readingContext": {
+          "word": "愠",
+          "surface": "quote",
+          "source": "论语",
+          "quote": "人不知，而不愠，不亦君子乎？",
+          "before": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不",
+          "after": "，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者"
+        },
+        "recentReadings": [
+          {
+            "source": "论语",
+            "quote": "人不知，而不愠，不亦君子乎？",
+            "reflection": "别人不了解自己时，能够不生怨怒，是这里所说的君子修养。"
+          }
+        ],
+        "delivered": {
+          "source": "论语",
+          "chapter": "第14章 宪问第十四",
+          "quote": "不怨天，不尤人，下学而上达。知我者其天乎！",
+          "meaning": "不怨恨天，也不责怪人，从日常学习逐步上达；了解我的大概只有天吧。",
+          "reflection": "“愠”在这里有了更具体的去向：不是把怨气硬压下去，而是不向天、不向人索要那份了解，转而把心力放在下学上达上。被不被知道，与是否继续用力，被分成了两件事。"
+        }
+      },
+      {
+        "id": "04c6b0543997",
+        "readingContext": {
+          "word": "乐",
+          "surface": "quote",
+          "source": "孟子",
+          "quote": "独乐乐，与人乐乐，孰乐？",
+          "before": "乐也，直好世俗之乐耳。”曰：“王之好乐甚，则齐其庶几乎！今之乐犹古之乐也。”曰：“可得闻与？”曰：“独乐乐，与人乐乐，孰",
+          "after": "？”曰：“不若与人。”曰：“与少乐乐，与众乐乐，孰乐？”曰：“不若与众。”“臣请为王言乐。今王鼓乐於此，百姓闻王钟鼓之声"
+        },
+        "recentReadings": [
+          {
+            "source": "孟子",
+            "quote": "老吾老，以及人之老；幼吾幼，以及人之幼。",
+            "reflection": "敬爱自己的长辈、爱护自己的孩子，也把这份关顾推及他人的长辈和孩子。"
+          },
+          {
+            "source": "孟子",
+            "quote": "独乐乐，与人乐乐，孰乐？",
+            "reflection": "孟子以欣赏音乐为例，比照独自享受音乐和与他人共赏时的快乐。"
+          }
+        ],
+        "delivered": {
+          "source": "孟子",
+          "chapter": "第2章 卷二 梁惠王下",
+          "quote": "此无他，与民同乐也。",
+          "meaning": "这没有别的原因，只因君王能与百姓一同享乐。",
+          "reflection": "前番问“与众乐乐”只是比较哪种更快乐，这里却让百姓出场：他们听见钟鼓、车马之声，便欣欣然相告，庆幸君王安好。快乐之所以须共享，不只因人多热闹，更因一方的欢愉能在另一方心里激起真实的关切与回应。"
+        }
+      },
+      {
+        "id": "444036f29660",
+        "readingContext": {
+          "word": "恕",
+          "surface": "quote",
+          "source": "论语",
+          "quote": "其恕乎！己所不欲，勿施于人。",
+          "before": "子贡问曰：“有一言而可以终身行之者乎？”子曰：“其",
+          "after": "乎！己所不欲，勿施于人。”"
+        },
+        "recentReadings": [
+          {
+            "source": "论语",
+            "quote": "其恕乎！己所不欲，勿施于人。",
+            "reflection": "恕从自己的体会出发，不把自己也不愿承受的事情加给别人。这是一条可以长久遵守的待人准则。"
+          }
+        ],
+        "delivered": {
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "meaning": "忠恕离道不远：自己不愿承受的，也不要加给别人。",
+          "reflection": "“违道不远”给恕一个分寸：它不是高远难行的道理，而是从自己不愿承受处反推待人之道。紧接着列举子、臣、弟、友诸伦的“未能”，可见恕要在具体关系中反复自勉，而非一次性的姿态。"
+        }
+      },
+      {
+        "id": "117b23d45192",
+        "readingContext": {
+          "word": "乐",
+          "surface": "quote",
+          "source": "孟子",
+          "quote": "独乐乐，与人乐乐，孰乐？",
+          "before": "乐也，直好世俗之乐耳。”曰：“王之好乐甚，则齐其庶几乎！今之乐犹古之乐也。”曰：“可得闻与？”曰：“独乐乐，与人乐乐，孰",
+          "after": "？”曰：“不若与人。”曰：“与少乐乐，与众乐乐，孰乐？”曰：“不若与众。”“臣请为王言乐。今王鼓乐於此，百姓闻王钟鼓之声"
+        },
+        "recentReadings": [
+          {
+            "source": "孟子",
+            "quote": "老吾老，以及人之老；幼吾幼，以及人之幼。",
+            "reflection": "敬爱自己的长辈、爱护自己的孩子，也把这份关顾推及他人的长辈和孩子。"
+          },
+          {
+            "source": "孟子",
+            "quote": "独乐乐，与人乐乐，孰乐？",
+            "reflection": "孟子以欣赏音乐为例，比照独自享受音乐和与他人共赏时的快乐。"
+          }
+        ],
+        "delivered": {
+          "source": "孟子",
+          "chapter": "第2章 卷二 梁惠王下",
+          "quote": "此无他，与民同乐也。",
+          "meaning": "没有别的原因，只因君王能与百姓一同享乐。",
+          "reflection": "前番只问独享与共享孰乐，此处才见共享落在何处：百姓听到钟鼓、见到车马，欣欣然相告的是“吾王庶几无疾病”，乐的是君王安康，而非旁观排场。快乐之所以须共享，正在于他人的喜色本身构成乐的内容。"
+        }
+      },
+      {
+        "id": "bcf7b3b20ca9",
+        "readingContext": {
+          "word": "愠",
+          "surface": "quote",
+          "source": "论语",
+          "quote": "人不知，而不愠，不亦君子乎？",
+          "before": "子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不",
+          "after": "，不亦君子乎？”有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者"
+        },
+        "recentReadings": [
+          {
+            "source": "论语",
+            "quote": "人不知，而不愠，不亦君子乎？",
+            "reflection": "别人不了解自己时，能够不生怨怒，是这里所说的君子修养。"
+          }
+        ],
+        "delivered": {
+          "source": "论语",
+          "chapter": "第14章 宪问第十四",
+          "quote": "不怨天，不尤人，下学而上达。知我者其天乎！",
+          "meaning": "不怨恨天，不责怪人；从日常学习向上通达，了解我的大概只有天吧。",
+          "reflection": "“愠”是他人不了解时含着的怨气；这里没有把这股气压回去，而是让它转向“下学上达”——从眼前可学的事做起，向上通达。不被了解仍可成为向学的起点，而非等别人来懂。"
+        }
+      },
+      {
+        "id": "50a326036ac0",
+        "readingContext": {
+          "word": "恕",
+          "surface": "quote",
+          "source": "论语",
+          "quote": "其恕乎！己所不欲，勿施于人。",
+          "before": "子贡问曰：“有一言而可以终身行之者乎？”子曰：“其",
+          "after": "乎！己所不欲，勿施于人。”"
+        },
+        "recentReadings": [
+          {
+            "source": "论语",
+            "quote": "其恕乎！己所不欲，勿施于人。",
+            "reflection": "恕从自己的体会出发，不把自己也不愿承受的事情加给别人。这是一条可以长久遵守的待人准则。"
+          }
+        ],
+        "delivered": {
+          "source": "礼记",
+          "chapter": "第29章 中庸",
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "meaning": "忠恕离道不远：自己不愿承受的，也不要加给别人。",
+          "reflection": "《中庸》说“忠恕违道不远”，把恕放在近道而未至道的位置。它仍是“施诸己而不愿，亦勿施于人”的推己，却提醒这只是一条切近的起点，不必把它当成道的全部；终身行之，也含这份分寸。"
+        }
+      }
+    ]
+  },
+  "gradesBeforeUnmasking": [
+    {
+      "id": "b3e267b74bcb",
+      "Q": true,
+      "R": false,
+      "verdict": "partial",
+      "quoteSpan": "忠恕违道不远",
+      "reflectionSpan": "“施”字让恕多了一层动作感",
+      "note": "忠、恕同列且近于道是新增关系。解读只谈原句已有的施与停手，漏掉此关系。"
+    },
+    {
+      "id": "f17e06a73d28",
+      "Q": true,
+      "R": true,
+      "verdict": "pass",
+      "quoteSpan": "忠恕违道不远",
+      "reflectionSpan": "把忠与恕并提，又说“违道不远”，并未将恕直接等同于道",
+      "note": "忠、恕与道的关系给原先仅有的禁令加上精确分寸；不断校准是引申。"
+    },
+    {
+      "id": "8dc8821a008f",
+      "Q": true,
+      "R": true,
+      "verdict": "pass",
+      "quoteSpan": "多闻，择其善者而从之",
+      "reflectionSpan": "先有广泛见闻作底，再从中分辨可取之处",
+      "note": "多闻作为择善的前提得到直接解释。"
+    },
+    {
+      "id": "c54529af9b27",
+      "Q": true,
+      "R": true,
+      "verdict": "pass",
+      "quoteSpan": "多闻，择其善者而从之",
+      "reflectionSpan": "先多闻多见，让可供分辨的材料先到眼前",
+      "note": "多闻后择善的次序清楚；多见在原句另接识之，解读略将两层合并。"
+    },
+    {
+      "id": "56d197131580",
+      "Q": true,
+      "R": true,
+      "verdict": "pass",
+      "quoteSpan": "不怨天，不尤人，下学而上达",
+      "reflectionSpan": "转而把心力放在下学上达上",
+      "note": "准确对照被人理解与继续向学；不索要了解是从不归咎所作的引申。"
+    },
+    {
+      "id": "04c6b0543997",
+      "Q": true,
+      "R": false,
+      "verdict": "partial",
+      "quoteSpan": "与民同乐",
+      "reflectionSpan": "他们听见钟鼓、车马之声，便欣欣然相告，庆幸君王安好",
+      "note": "王与民的政治关系明示，超出了举例问独享、共赏。解读将新意系于百姓对王安好的关切，所引结句未载那个视角、表情或回应。"
+    },
+    {
+      "id": "444036f29660",
+      "Q": true,
+      "R": false,
+      "verdict": "partial",
+      "quoteSpan": "忠恕违道不远",
+      "reflectionSpan": "它不是高远难行的道理",
+      "note": "违道不远说忠恕与道的距离，和难易是两回事。未能的关系例证在解读而不在展示引文。"
+    },
+    {
+      "id": "117b23d45192",
+      "Q": true,
+      "R": false,
+      "verdict": "partial",
+      "quoteSpan": "与民同乐",
+      "reflectionSpan": "欣欣然相告的是“吾王庶几无疾病”",
+      "note": "王民同乐明示但解读落在百姓庆幸君王安康的具体视角；引文所示仅是结论，未展示用来推得这份喜悦的证据。"
+    },
+    {
+      "id": "bcf7b3b20ca9",
+      "Q": true,
+      "R": false,
+      "verdict": "partial",
+      "quoteSpan": "不怨天，不尤人，下学而上达",
+      "reflectionSpan": "让它转向“下学上达”",
+      "note": "学习作为不被知时仍可做的事读对了。但把说话者写成已经怀怨并把怨气转化为学习，原话表达不怨不尤，未报告这种心理经过。"
+    },
+    {
+      "id": "50a326036ac0",
+      "Q": true,
+      "R": true,
+      "verdict": "pass",
+      "quoteSpan": "忠恕违道不远",
+      "reflectionSpan": "不必把它当成道的全部",
+      "note": "引文新添忠恕同列且近道的关系，解读说清不能将这条准则当作道的全部。近而未至稍强于不远。"
+    }
+  ],
+  "mapping": {
+    "cap": 20,
+    "posted": 20,
+    "stop": null,
+    "cases": [
+      {
+        "id": "b3e267b74bcb",
+        "pair": 1,
+        "arm": "treatment",
+        "link": "b2350132"
+      },
+      {
+        "id": "f17e06a73d28",
+        "pair": 4,
+        "arm": "baseline",
+        "link": "b2350132"
+      },
+      {
+        "id": "8dc8821a008f",
+        "pair": 2,
+        "arm": "baseline",
+        "link": "f98ee1da"
+      },
+      {
+        "id": "c54529af9b27",
+        "pair": 2,
+        "arm": "treatment",
+        "link": "f98ee1da"
+      },
+      {
+        "id": "56d197131580",
+        "pair": 3,
+        "arm": "treatment",
+        "link": "e711f64e"
+      },
+      {
+        "id": "04c6b0543997",
+        "pair": 5,
+        "arm": "treatment",
+        "link": "8f7dcd1f"
+      },
+      {
+        "id": "444036f29660",
+        "pair": 4,
+        "arm": "treatment",
+        "link": "b2350132"
+      },
+      {
+        "id": "117b23d45192",
+        "pair": 5,
+        "arm": "baseline",
+        "link": "8f7dcd1f"
+      },
+      {
+        "id": "bcf7b3b20ca9",
+        "pair": 3,
+        "arm": "baseline",
+        "link": "e711f64e"
+      },
+      {
+        "id": "50a326036ac0",
+        "pair": 1,
+        "arm": "baseline",
+        "link": "b2350132"
+      }
+    ]
+  },
+  "samples": [
+    {
+      "pair": 1,
+      "link": "b2350132",
+      "arm": "baseline",
+      "model": "deepseek-flash",
+      "promptVersion": "connected-text-v17-source-stance",
+      "inputSha256": "30606580538746ec263d12ab71370e4f2cf968f05a802159fdb78c7b99b8597a",
+      "calls": [
+        {
+          "stream": false,
+          "status": 200,
+          "sse": false
+        },
+        {
+          "stream": true,
+          "status": 200,
+          "sse": true
+        }
+      ],
+      "milestone": "done",
+      "elapsedMs": 3372.120084,
+      "progress": [
+        {
+          "ms": 2484.603834,
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "ready": false,
+          "settled": {
+            "meaning": false,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 2559.034542,
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 3206.46475,
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          }
+        }
+      ]
+    },
+    {
+      "pair": 1,
+      "link": "b2350132",
+      "arm": "treatment",
+      "model": "deepseek-flash",
+      "promptVersion": "connected-text-v18-quote-evidence",
+      "inputSha256": "30606580538746ec263d12ab71370e4f2cf968f05a802159fdb78c7b99b8597a",
+      "calls": [
+        {
+          "stream": false,
+          "status": 200,
+          "sse": false
+        },
+        {
+          "stream": true,
+          "status": 200,
+          "sse": true
+        }
+      ],
+      "milestone": "done",
+      "elapsedMs": 5098.0815410000005,
+      "progress": [
+        {
+          "ms": 4041.31375,
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "ready": false,
+          "settled": {
+            "meaning": false,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 4116.5827500000005,
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 4570.733166,
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          }
+        }
+      ]
+    },
+    {
+      "pair": 2,
+      "link": "f98ee1da",
+      "arm": "treatment",
+      "model": "deepseek-flash",
+      "promptVersion": "connected-text-v18-quote-evidence",
+      "inputSha256": "cf7b9aae848c975788d16438df730050428b9120422d59d79ca2c5328992990c",
+      "calls": [
+        {
+          "stream": false,
+          "status": 200,
+          "sse": false
+        },
+        {
+          "stream": true,
+          "status": 200,
+          "sse": true
+        }
+      ],
+      "milestone": "done",
+      "elapsedMs": 3830.1177919999996,
+      "progress": [
+        {
+          "ms": 3110.802208,
+          "quote": "多闻，择其善者而从之；多见而识之；知之次也。",
+          "ready": false,
+          "settled": {
+            "meaning": false,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 3123.6085,
+          "quote": "多闻，择其善者而从之；多见而识之；知之次也。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 3625.7215419999998,
+          "quote": "多闻，择其善者而从之；多见而识之；知之次也。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          }
+        }
+      ]
+    },
+    {
+      "pair": 2,
+      "link": "f98ee1da",
+      "arm": "baseline",
+      "model": "deepseek-flash",
+      "promptVersion": "connected-text-v17-source-stance",
+      "inputSha256": "cf7b9aae848c975788d16438df730050428b9120422d59d79ca2c5328992990c",
+      "calls": [
+        {
+          "stream": false,
+          "status": 200,
+          "sse": false
+        },
+        {
+          "stream": true,
+          "status": 200,
+          "sse": true
+        }
+      ],
+      "milestone": "done",
+      "elapsedMs": 3172.4037080000003,
+      "progress": [
+        {
+          "ms": 2371.2243750000002,
+          "quote": "多闻，择其善者而从之",
+          "ready": false,
+          "settled": {
+            "meaning": false,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 2384.578875,
+          "quote": "多闻，择其善者而从之",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 2843.543541,
+          "quote": "多闻，择其善者而从之",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          }
+        }
+      ]
+    },
+    {
+      "pair": 3,
+      "link": "e711f64e",
+      "arm": "baseline",
+      "model": "deepseek-flash",
+      "promptVersion": "connected-text-v17-source-stance",
+      "inputSha256": "108baff3588a4f1cac3a734d70d74556783b548132c6f462b12e34bc27bd4ac2",
+      "calls": [
+        {
+          "stream": false,
+          "status": 200,
+          "sse": false
+        },
+        {
+          "stream": true,
+          "status": 200,
+          "sse": true
+        }
+      ],
+      "milestone": "done",
+      "elapsedMs": 4789.7063339999995,
+      "progress": [
+        {
+          "ms": 3192.408792,
+          "quote": "不怨天，不尤人，下学而上达。知我者其天乎！",
+          "ready": false,
+          "settled": {
+            "meaning": false,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 3376.618959,
+          "quote": "不怨天，不尤人，下学而上达。知我者其天乎！",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 4280.447416999999,
+          "quote": "不怨天，不尤人，下学而上达。知我者其天乎！",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          }
+        }
+      ]
+    },
+    {
+      "pair": 3,
+      "link": "e711f64e",
+      "arm": "treatment",
+      "model": "deepseek-flash",
+      "promptVersion": "connected-text-v18-quote-evidence",
+      "inputSha256": "108baff3588a4f1cac3a734d70d74556783b548132c6f462b12e34bc27bd4ac2",
+      "calls": [
+        {
+          "stream": false,
+          "status": 200,
+          "sse": false
+        },
+        {
+          "stream": true,
+          "status": 200,
+          "sse": true
+        }
+      ],
+      "milestone": "done",
+      "elapsedMs": 4208.427834,
+      "progress": [
+        {
+          "ms": 2943.39725,
+          "quote": "不怨天，不尤人，下学而上达。知我者其天乎！",
+          "ready": false,
+          "settled": {
+            "meaning": false,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 3156.4547920000005,
+          "quote": "不怨天，不尤人，下学而上达。知我者其天乎！",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 3699.714,
+          "quote": "不怨天，不尤人，下学而上达。知我者其天乎！",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          }
+        }
+      ]
+    },
+    {
+      "pair": 4,
+      "link": "b2350132",
+      "arm": "treatment",
+      "model": "deepseek-flash",
+      "promptVersion": "connected-text-v18-quote-evidence",
+      "inputSha256": "30606580538746ec263d12ab71370e4f2cf968f05a802159fdb78c7b99b8597a",
+      "calls": [
+        {
+          "stream": false,
+          "status": 200,
+          "sse": false
+        },
+        {
+          "stream": true,
+          "status": 200,
+          "sse": true
+        }
+      ],
+      "milestone": "done",
+      "elapsedMs": 4142.159374999999,
+      "progress": [
+        {
+          "ms": 3087.980542,
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "ready": false,
+          "settled": {
+            "meaning": false,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 3096.757708,
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 3665.6415,
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          }
+        }
+      ]
+    },
+    {
+      "pair": 4,
+      "link": "b2350132",
+      "arm": "baseline",
+      "model": "deepseek-flash",
+      "promptVersion": "connected-text-v17-source-stance",
+      "inputSha256": "30606580538746ec263d12ab71370e4f2cf968f05a802159fdb78c7b99b8597a",
+      "calls": [
+        {
+          "stream": false,
+          "status": 200,
+          "sse": false
+        },
+        {
+          "stream": true,
+          "status": 200,
+          "sse": true
+        }
+      ],
+      "milestone": "done",
+      "elapsedMs": 4694.9635,
+      "progress": [
+        {
+          "ms": 3340.116042,
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "ready": false,
+          "settled": {
+            "meaning": false,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 3429.134167,
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 4397.362209,
+          "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          }
+        }
+      ]
+    },
+    {
+      "pair": 5,
+      "link": "8f7dcd1f",
+      "arm": "baseline",
+      "model": "deepseek-flash",
+      "promptVersion": "connected-text-v17-source-stance",
+      "inputSha256": "c04edeeed67c457f592622d3128d4350ee7d24a7c70dbd3ab5b89a8dd5db6015",
+      "calls": [
+        {
+          "stream": false,
+          "status": 200,
+          "sse": false
+        },
+        {
+          "stream": true,
+          "status": 200,
+          "sse": true
+        }
+      ],
+      "milestone": "done",
+      "elapsedMs": 5182.728542,
+      "progress": [
+        {
+          "ms": 3752.8296250000003,
+          "quote": "此无他，与民同乐也。",
+          "ready": false,
+          "settled": {
+            "meaning": false,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 3864.0508340000006,
+          "quote": "此无他，与民同乐也。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 4666.904584,
+          "quote": "此无他，与民同乐也。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          }
+        }
+      ]
+    },
+    {
+      "pair": 5,
+      "link": "8f7dcd1f",
+      "arm": "treatment",
+      "model": "deepseek-flash",
+      "promptVersion": "connected-text-v18-quote-evidence",
+      "inputSha256": "c04edeeed67c457f592622d3128d4350ee7d24a7c70dbd3ab5b89a8dd5db6015",
+      "calls": [
+        {
+          "stream": false,
+          "status": 200,
+          "sse": false
+        },
+        {
+          "stream": true,
+          "status": 200,
+          "sse": true
+        }
+      ],
+      "milestone": "done",
+      "elapsedMs": 4776.673084,
+      "progress": [
+        {
+          "ms": 3723.1705,
+          "quote": "此无他，与民同乐也。",
+          "ready": false,
+          "settled": {
+            "meaning": false,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 3723.734292,
+          "quote": "此无他，与民同乐也。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": false
+          }
+        },
+        {
+          "ms": 4285.507042,
+          "quote": "此无他，与民同乐也。",
+          "ready": false,
+          "settled": {
+            "meaning": true,
+            "reflection": true
+          }
+        }
+      ]
+    }
+  ]
+}
