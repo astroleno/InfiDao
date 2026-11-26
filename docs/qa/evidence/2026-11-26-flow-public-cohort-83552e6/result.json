@@ -1,0 +1,1037 @@
+{
+  "mode": "live",
+  "release": {
+    "entry": "/_next/static/chunks/app/infidao/page-25900034ccebf7fa.js",
+    "scripts": [
+      "/_next/static/chunks/app/infidao/page-25900034ccebf7fa.js",
+      "/_next/static/chunks/app/layout-a02c3fbe90920995.js",
+      "/_next/static/chunks/commons-ee6107f47b3fcc3a.js",
+      "/_next/static/chunks/lib-0e1f97f1-685f023a1a46c72d.js",
+      "/_next/static/chunks/lib-76422795-321ae6b56c2f37a4.js",
+      "/_next/static/chunks/main-app-aa1312c9cce89881.js",
+      "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+      "/_next/static/chunks/shared-c1807312d93902c7.js",
+      "/_next/static/chunks/webpack-275bdc12f723f642.js"
+    ],
+    "fontManifest": "https://assets.aitoshuu.me/releases/aitoshuu-me/infidao-dc8272afafb1d4fa/flow-assets/v-87a1ae56979cf24934c0/manifest.json",
+    "fontRelease": "infidao-dc8272afafb1d4fa",
+    "id": "infidao-dc8272afafb1d4fa",
+    "commit": "83552e6560082344fa70693118baec1ba2dacb1d",
+    "manifestUrl": "https://aitoshuu.me/flow-releases/infidao-dc8272afafb1d4fa.json",
+    "codeSha256": "f5b05337c6085b9d4f883f1aa6319761fd0d7c644e4c280a3151914016df75ea",
+    "entrySha256": "899e24b7fec9d1ce5d1cc9075fe0b0155c517128570f80664d00f50db00175f8",
+    "fontSha256": "1e7345a1d05cf792e0aef3e2d36f0d1c45b48b2dd999b33bfb86f2777515a75c",
+    "corpusVersion": "guji-core-v1",
+    "corpusSha256": "3ac315b83fbb75f5076e444a09823d243d1237995ba2244eecb43af76c0ce3ec"
+  },
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "dpr": 3
+  },
+  "caps": {
+    "open": 10,
+    "branch": 10
+  },
+  "sent": {
+    "session": 7,
+    "open": 7,
+    "branch": 7
+  },
+  "roots": {
+    "P1": {
+      "sessionStatus": 200,
+      "status": 200,
+      "reflectionSha256": "73de7748f3799f51ab38aa548755586fc384f26aa1a9fe33250e09618cba7f2e",
+      "beforeBlank": {
+        "hint": {
+          "at": 11084.60000000149,
+          "present": false,
+          "visible": false,
+          "hitTestable": false,
+          "obstructs": false
+        },
+        "pending": "false",
+        "paused": "false",
+        "rising": false
+      },
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "ready": true,
+      "sent": true
+    },
+    "P2": {
+      "sessionStatus": 200,
+      "status": 200,
+      "reflectionSha256": "d6556808897e388a90a8d838ec1c02f554b3f5d4727a19f60e88b048c56115d1",
+      "beforeBlank": {
+        "hint": {
+          "at": 14449.5,
+          "present": false,
+          "visible": false,
+          "hitTestable": false,
+          "obstructs": false
+        },
+        "pending": "false",
+        "paused": "false",
+        "rising": false
+      },
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "ready": true,
+      "sent": true
+    },
+    "P3": {
+      "sessionStatus": 200,
+      "status": 200,
+      "reflectionSha256": "aacf4d82a631926a4be9e535952e839f4f74ffc9744d2aa650058fa97edcf369",
+      "beforeBlank": {
+        "hint": {
+          "at": 16995.200000001118,
+          "present": false,
+          "visible": false,
+          "hitTestable": false,
+          "obstructs": false
+        },
+        "pending": "false",
+        "paused": "false",
+        "rising": false
+      },
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "ready": true,
+      "sent": true
+    },
+    "P4": {
+      "sessionStatus": 200,
+      "status": 200,
+      "reflectionSha256": "0bd407b89eb4702bb20d6dd18342720acdfeda21e234f0e71bd2f17501b25d13",
+      "beforeBlank": {
+        "hint": {
+          "at": 17848.300000000745,
+          "present": false,
+          "visible": false,
+          "hitTestable": false,
+          "obstructs": false
+        },
+        "pending": "false",
+        "paused": "false",
+        "rising": false
+      },
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "ready": true,
+      "sent": true
+    },
+    "P5": {
+      "sessionStatus": 200,
+      "status": 200,
+      "reflectionSha256": "86aae95d46b35c2cd9f04019d5951c531f78a9d1786cc73df7e1abff58f17a82",
+      "beforeBlank": {
+        "hint": {
+          "at": 18329.5,
+          "present": false,
+          "visible": false,
+          "hitTestable": false,
+          "obstructs": false
+        },
+        "pending": "false",
+        "paused": "false",
+        "rising": false
+      },
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "ready": true,
+      "sent": true
+    },
+    "P6": {
+      "sessionStatus": 200,
+      "status": 200,
+      "reflectionSha256": "84d727db4e1f00ff52679fbbdf8096806194152dd28b3d2e2711c91aa12ca470",
+      "beforeBlank": {
+        "hint": {
+          "at": 18292.799999998882,
+          "present": false,
+          "visible": false,
+          "hitTestable": false,
+          "obstructs": false
+        },
+        "pending": "false",
+        "paused": "false",
+        "rising": false
+      },
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "ready": true,
+      "sent": true
+    },
+    "P7": {
+      "sessionStatus": 200,
+      "status": 200,
+      "reflectionSha256": "3733071c7777cb1747c5ef78d186cfe7d2994720c82610881acd594a77a70956",
+      "beforeBlank": {
+        "hint": {
+          "at": 15328.800000000745,
+          "present": false,
+          "visible": false,
+          "hitTestable": false,
+          "obstructs": false
+        },
+        "pending": "false",
+        "paused": "false",
+        "rising": false
+      },
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "ready": true,
+      "sent": true
+    }
+  },
+  "attempts": [
+    {
+      "root": "P1",
+      "word": "知",
+      "expectedRoute": "cold",
+      "selection": {
+        "start": 0,
+        "end": 1,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "position": "P1",
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "hintBeforeWord": {
+        "expected": "visible",
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "pointer": {
+        "x": 97,
+        "y": 191.34188842773438
+      },
+      "goPointer": {
+        "x": 235.15625,
+        "y": 811
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": true,
+      "status": 200,
+      "route": "cold",
+      "relation": "pass",
+      "checkedCorpus": true,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "first": {
+        "sourceId": "rysxguji-lunyu-2-14",
+        "source": "论语",
+        "chapter": "第2章 为政第二",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+        "start": 12,
+        "end": 27,
+        "quote": "知之为知之，不知为不知，是知也"
+      },
+      "firstEvent": "head",
+      "final": {
+        "sourceId": "rysxguji-lunyu-2-14",
+        "source": "论语",
+        "chapter": "第2章 为政第二",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+        "start": 12,
+        "end": 27,
+        "quote": "知之为知之，不知为不知，是知也"
+      },
+      "hintAtTrustedWord": {
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "trustedHintClicks": 0,
+      "hintCovered": false,
+      "geometry": {
+        "bounds": {
+          "top": 0,
+          "bottom": 844,
+          "left": 0,
+          "right": 390
+        },
+        "ink": "settled",
+        "obstructed": false,
+        "hintVisible": false,
+        "hintObstructed": false,
+        "glyphs": {
+          "count": 15,
+          "visible": true
+        },
+        "edges": [
+          198.9627685546875,
+          365.4627685546875,
+          70.203125,
+          319.796875
+        ]
+      },
+      "ms": {
+        "request": 150.09999999962747,
+        "firstQuote": 4996.5999999996275,
+        "goAvailable": 5047.5999999996275,
+        "go": 5221.9000000003725,
+        "rawReadable": 5348.4000000003725,
+        "readableConfirmed": 5364.4000000003725,
+        "frame": 5773.699999999255,
+        "done": 5773.699999999255,
+        "goDwell": 174.30000000074506,
+        "readableMinusGoDwell": 5174.0999999996275
+      },
+      "screenshot": "P1-知-readable.png"
+    },
+    {
+      "root": "P2",
+      "word": "而后",
+      "expectedRoute": "cold",
+      "selection": {
+        "start": 2,
+        "end": 4,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "position": "P2",
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "hintBeforeWord": {
+        "expected": "visible",
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "pointer": {
+        "x": 180,
+        "y": 186.15309143066406
+      },
+      "goPointer": {
+        "x": 241.15625,
+        "y": 811
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": true,
+      "status": 200,
+      "route": "cold",
+      "relation": "pass",
+      "checkedCorpus": true,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "first": {
+        "sourceId": "rysxguji-liji-40-1",
+        "source": "礼记",
+        "chapter": "第40章 大学",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "0833a4fff64ad9664be8757ae18bca0529cfe13f68c736c979c8ada0a5de1689",
+        "start": 51,
+        "end": 71,
+        "quote": "物有本末，事有终始，知所先后，则近道矣。"
+      },
+      "firstEvent": "head",
+      "final": {
+        "sourceId": "rysxguji-liji-40-1",
+        "source": "礼记",
+        "chapter": "第40章 大学",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "0833a4fff64ad9664be8757ae18bca0529cfe13f68c736c979c8ada0a5de1689",
+        "start": 51,
+        "end": 71,
+        "quote": "物有本末，事有终始，知所先后，则近道矣。"
+      },
+      "hintAtTrustedWord": {
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "trustedHintClicks": 0,
+      "hintCovered": false,
+      "geometry": {
+        "bounds": {
+          "top": 0,
+          "bottom": 844,
+          "left": 0,
+          "right": 390
+        },
+        "ink": "settled",
+        "obstructed": false,
+        "hintVisible": false,
+        "hintObstructed": false,
+        "glyphs": {
+          "count": 20,
+          "visible": true
+        },
+        "edges": [
+          199.151611328125,
+          421.151611328125,
+          70.203125,
+          319.796875
+        ]
+      },
+      "ms": {
+        "request": 232,
+        "firstQuote": 4278,
+        "goAvailable": 4333.699999999255,
+        "go": 4554.5999999996275,
+        "rawReadable": 4734.5,
+        "readableConfirmed": 4750.5,
+        "frame": 5619.5,
+        "done": 5619.5,
+        "goDwell": 220.90000000037253,
+        "readableMinusGoDwell": 4513.5999999996275
+      },
+      "screenshot": "P2-而后-readable.png"
+    },
+    {
+      "root": "P3",
+      "word": "定",
+      "expectedRoute": "cold",
+      "selection": {
+        "start": 5,
+        "end": 6,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "position": "P3",
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "hintBeforeWord": {
+        "expected": "visible",
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "pointer": {
+        "x": 263,
+        "y": 191.74148559570312
+      },
+      "goPointer": {
+        "x": 235.15625,
+        "y": 811
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": true,
+      "status": 200,
+      "route": "cold",
+      "relation": "pass",
+      "checkedCorpus": true,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "first": {
+        "sourceId": "rysxguji-mengzi-2-23",
+        "source": "孟子",
+        "chapter": "第2章 卷二 梁惠王下",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "0e09866d27e385792d9120bf704763d759bc86f8ee7f8a4aebd63619b0201c08",
+        "start": 172,
+        "end": 210,
+        "quote": "夫志，气之帅也；气，体之充也。夫志至焉，气次焉；故曰：‘持其志，无暴其气。’"
+      },
+      "firstEvent": "head",
+      "final": {
+        "sourceId": "rysxguji-mengzi-2-23",
+        "source": "孟子",
+        "chapter": "第2章 卷二 梁惠王下",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "0e09866d27e385792d9120bf704763d759bc86f8ee7f8a4aebd63619b0201c08",
+        "start": 172,
+        "end": 210,
+        "quote": "夫志，气之帅也；气，体之充也。夫志至焉，气次焉；故曰：‘持其志，无暴其气。’"
+      },
+      "hintAtTrustedWord": {
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "trustedHintClicks": 0,
+      "hintCovered": false,
+      "geometry": {
+        "bounds": {
+          "top": 0,
+          "bottom": 844,
+          "left": 0,
+          "right": 390
+        },
+        "ink": "settled",
+        "obstructed": false,
+        "hintVisible": false,
+        "hintObstructed": false,
+        "glyphs": {
+          "count": 38,
+          "visible": true
+        },
+        "edges": [
+          199.063232421875,
+          698.563232421875,
+          70.203125,
+          319.796875
+        ]
+      },
+      "ms": {
+        "request": 294.7999999988824,
+        "firstQuote": 5227.0999999996275,
+        "goAvailable": 5294.5999999996275,
+        "go": 6047.299999998882,
+        "rawReadable": 6261.5,
+        "readableConfirmed": 6279.199999999255,
+        "frame": 6244.799999998882,
+        "done": 6244.89999999851,
+        "goDwell": 752.6999999992549,
+        "readableMinusGoDwell": 5508.800000000745
+      },
+      "screenshot": "P3-定-readable.png"
+    },
+    {
+      "root": "P4",
+      "word": "能",
+      "expectedRoute": "cold",
+      "selection": {
+        "start": 10,
+        "end": 11,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "position": "P4",
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "hintBeforeWord": {
+        "expected": "visible",
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "pointer": {
+        "x": 212,
+        "y": 248.06228637695312
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": false,
+      "status": 200,
+      "route": "cold",
+      "relation": "pass",
+      "checkedCorpus": true,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "first": {
+        "sourceId": "rysxguji-lunyu-17-8",
+        "source": "论语",
+        "chapter": "第17章 阳货第十七",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "54e846374f4c9f566107231bd3170d9056d30f5cf04dfc2738fd73c32d6d5040",
+        "start": 65,
+        "end": 75,
+        "quote": "能行五者于天下为仁矣"
+      },
+      "firstEvent": "head",
+      "final": {
+        "sourceId": "rysxguji-lunyu-17-8",
+        "source": "论语",
+        "chapter": "第17章 阳货第十七",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "54e846374f4c9f566107231bd3170d9056d30f5cf04dfc2738fd73c32d6d5040",
+        "start": 65,
+        "end": 75,
+        "quote": "能行五者于天下为仁矣"
+      },
+      "hintAtTrustedWord": {
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "trustedHintClicks": 0,
+      "hintCovered": false,
+      "geometry": {
+        "bounds": {
+          "top": 0,
+          "bottom": 844,
+          "left": 0,
+          "right": 390
+        },
+        "ink": "settled",
+        "obstructed": false,
+        "hintVisible": false,
+        "hintObstructed": false,
+        "glyphs": {
+          "count": 10,
+          "visible": true
+        },
+        "edges": [
+          712.312255859375,
+          823.312255859375,
+          70.203125,
+          319.796875
+        ]
+      },
+      "ms": {
+        "request": 213.80000000074506,
+        "firstQuote": 6120.5,
+        "rawReadable": 6170.5999999996275,
+        "readableConfirmed": 6185.0999999996275,
+        "frame": 7122.700000001118,
+        "done": 7122.700000001118
+      },
+      "screenshot": "P4-能-readable.png"
+    },
+    {
+      "root": "P5",
+      "word": "静",
+      "expectedRoute": "cold",
+      "selection": {
+        "start": 13,
+        "end": 14,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "position": "P5",
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "hintBeforeWord": {
+        "expected": "visible",
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "pointer": {
+        "x": 114,
+        "y": 300.77227783203125
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": false,
+      "status": 200,
+      "route": "cold",
+      "relation": "fail",
+      "error": "RELATION_UNVERIFIED",
+      "checkedCorpus": false,
+      "events": [
+        "error"
+      ],
+      "hintAtTrustedWord": {
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "trustedHintClicks": 0,
+      "hintCovered": false,
+      "ms": {
+        "request": 242.09999999962747
+      }
+    },
+    {
+      "root": "P6",
+      "word": "能",
+      "expectedRoute": "cold",
+      "selection": {
+        "start": 16,
+        "end": 17,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "position": "P6",
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "hintBeforeWord": {
+        "expected": "visible",
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "pointer": {
+        "x": 212,
+        "y": 297.139892578125
+      },
+      "goPointer": {
+        "x": 247,
+        "y": 811
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": true,
+      "status": 200,
+      "route": "cold",
+      "relation": "pass",
+      "checkedCorpus": true,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "first": {
+        "sourceId": "rysxguji-liji-30-14",
+        "source": "礼记",
+        "chapter": "第30章 表记",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "e9d0dc2187bde8c7b3d2a4cb6b030a974ef14fb6010dc8d95bc4f8bfe8d30238",
+        "start": 41,
+        "end": 57,
+        "quote": "仁者安仁，知者利仁，畏罪者强仁。"
+      },
+      "firstEvent": "head",
+      "final": {
+        "sourceId": "rysxguji-liji-30-14",
+        "source": "礼记",
+        "chapter": "第30章 表记",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "e9d0dc2187bde8c7b3d2a4cb6b030a974ef14fb6010dc8d95bc4f8bfe8d30238",
+        "start": 41,
+        "end": 57,
+        "quote": "仁者安仁，知者利仁，畏罪者强仁。"
+      },
+      "hintAtTrustedWord": {
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "trustedHintClicks": 0,
+      "hintCovered": false,
+      "geometry": {
+        "bounds": {
+          "top": 0,
+          "bottom": 844,
+          "left": 0,
+          "right": 390
+        },
+        "ink": "settled",
+        "obstructed": false,
+        "hintVisible": false,
+        "hintObstructed": false,
+        "glyphs": {
+          "count": 16,
+          "visible": true
+        },
+        "edges": [
+          199.164794921875,
+          365.664794921875,
+          70.203125,
+          319.796875
+        ]
+      },
+      "ms": {
+        "request": 499.80000000074506,
+        "firstQuote": 5259.200000001118,
+        "goAvailable": 5399.5,
+        "go": 6569.300000000745,
+        "rawReadable": 7309.300000000745,
+        "readableConfirmed": 7314.9000000003725,
+        "frame": 6487.200000001118,
+        "done": 6487.200000001118,
+        "goDwell": 1169.800000000745,
+        "readableMinusGoDwell": 6139.5
+      },
+      "screenshot": "P6-能-readable.png"
+    },
+    {
+      "root": "P7",
+      "word": "安",
+      "expectedRoute": "cold",
+      "selection": {
+        "start": 19,
+        "end": 20,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      },
+      "position": "P7",
+      "blank": {
+        "x": 15.6,
+        "y": 422
+      },
+      "hintBeforeWord": {
+        "expected": "visible",
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "pointer": {
+        "x": 114,
+        "y": 350.7090759277344
+      },
+      "sent": true,
+      "trustedWord": true,
+      "trustedGo": false,
+      "status": 200,
+      "route": "unknown",
+      "relation": "unknown",
+      "error": "BUDGET_REACHED",
+      "checkedCorpus": false,
+      "events": [
+        "error"
+      ],
+      "hintAtTrustedWord": {
+        "present": false,
+        "visible": false,
+        "hitTestable": false,
+        "obstructs": false
+      },
+      "trustedHintClicks": 0,
+      "hintCovered": false,
+      "ms": {
+        "request": 278.09999999962747
+      }
+    }
+  ],
+  "blocked": {
+    "prefetch": 7
+  },
+  "started": "2026-11-26T15:29:43.399Z",
+  "cohort": [
+    {
+      "id": "P1",
+      "word": "知",
+      "buttonIndex": 0,
+      "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+      "pack": "core",
+      "sourceId": "rysxguji-daxue-1-2",
+      "field": "quote",
+      "selection": {
+        "start": 0,
+        "end": 1,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    },
+    {
+      "id": "P2",
+      "word": "而后",
+      "buttonIndex": 2,
+      "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+      "pack": "core",
+      "sourceId": "rysxguji-daxue-1-2",
+      "field": "quote",
+      "selection": {
+        "start": 2,
+        "end": 4,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    },
+    {
+      "id": "P3",
+      "word": "定",
+      "buttonIndex": 4,
+      "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+      "pack": "core",
+      "sourceId": "rysxguji-daxue-1-2",
+      "field": "quote",
+      "selection": {
+        "start": 5,
+        "end": 6,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    },
+    {
+      "id": "P4",
+      "word": "能",
+      "buttonIndex": 7,
+      "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+      "pack": "core",
+      "sourceId": "rysxguji-daxue-1-2",
+      "field": "quote",
+      "selection": {
+        "start": 10,
+        "end": 11,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    },
+    {
+      "id": "P5",
+      "word": "静",
+      "buttonIndex": 9,
+      "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+      "pack": "core",
+      "sourceId": "rysxguji-daxue-1-2",
+      "field": "quote",
+      "selection": {
+        "start": 13,
+        "end": 14,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    },
+    {
+      "id": "P6",
+      "word": "能",
+      "buttonIndex": 11,
+      "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+      "pack": "core",
+      "sourceId": "rysxguji-daxue-1-2",
+      "field": "quote",
+      "selection": {
+        "start": 16,
+        "end": 17,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    },
+    {
+      "id": "P7",
+      "word": "安",
+      "buttonIndex": 13,
+      "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+      "pack": "core",
+      "sourceId": "rysxguji-daxue-1-2",
+      "field": "quote",
+      "selection": {
+        "start": 19,
+        "end": 20,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    },
+    {
+      "id": "P8",
+      "word": "虑",
+      "buttonIndex": 16,
+      "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+      "pack": "core",
+      "sourceId": "rysxguji-daxue-1-2",
+      "field": "quote",
+      "selection": {
+        "start": 23,
+        "end": 24,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    },
+    {
+      "id": "P9",
+      "word": "而后",
+      "buttonIndex": 18,
+      "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+      "pack": "core",
+      "sourceId": "rysxguji-daxue-1-2",
+      "field": "quote",
+      "selection": {
+        "start": 26,
+        "end": 28,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    },
+    {
+      "id": "P10",
+      "word": "得",
+      "buttonIndex": 20,
+      "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+      "pack": "core",
+      "sourceId": "rysxguji-daxue-1-2",
+      "field": "quote",
+      "selection": {
+        "start": 29,
+        "end": 30,
+        "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+        "corpusVersion": "guji-core-v1"
+      }
+    }
+  ],
+  "cohortSha256": "af6aca88f881c9bfac79ec4013aaf5a68d3eed29e6505b0478b8a8d3f0344b90",
+  "stop": "Production budget or rate limit",
+  "finished": "2026-11-26T15:32:57.250Z",
+  "summary": {
+    "cold": {
+      "sent": 7,
+      "confirmed": 6,
+      "unverified": 1,
+      "readableEligible": 5,
+      "timed": 5,
+      "final": {
+        "pass": 5,
+        "fail": 1,
+        "unknown": 0
+      },
+      "p50": 6170.5999999996275,
+      "range": [
+        4734.5,
+        7309.300000000745
+      ]
+    },
+    "reuse": {
+      "sent": 0,
+      "confirmed": 0,
+      "unverified": 0,
+      "readableEligible": 0,
+      "timed": 0,
+      "final": {
+        "pass": 0,
+        "fail": 0,
+        "unknown": 0
+      },
+      "p50": null,
+      "range": null
+    }
+  },
+  "reuse": {
+    "eligible": 0,
+    "reason": "Production budget or rate limit"
+  }
+}

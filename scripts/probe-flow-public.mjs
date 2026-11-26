@@ -13,6 +13,7 @@ const cdn = 'https://assets.aitoshuu.me';
 const reader = origin + '/InfiDao';
 const repository = fileURLToPath(new URL('../', import.meta.url));
 const seedQuote = '知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。';
+const seedSourceId = 'rysxguji-daxue-1-2';
 const candidates = ['静', '止', '得', '定'];
 const ownerName = '__Host-infidao_flow';
 const viewport = { width: 390, height: 844 };
@@ -31,10 +32,14 @@ const safeCode = code => typeof code === 'string' && /^[A-Z][A-Z_0-9]{1,59}$/.te
 function options() {
   const { values } = parseArgs({ options: {
     live: { type: 'boolean' }, commit: { type: 'string' }, release: { type: 'string' },
-    'entry-sha': { type: 'string' }, 'cold-only': { type: 'boolean' }, output: { type: 'string' }, help: { type: 'boolean' },
+    'entry-sha': { type: 'string' }, 'cold-only': { type: 'boolean' }, cohort: { type: 'string' },
+    output: { type: 'string' }, help: { type: 'boolean' },
   } });
   if (values.help) return values;
   if (values['cold-only'] && !values.live) throw new Error('--cold-only requires --live');
+  if (values.cohort !== undefined && (!values.live || values['cold-only'] || !/^(?:1[0-9]|20)$/.test(values.cohort))) {
+    throw new Error('--cohort requires --live and a size from 10 to 20, and replaces --cold-only');
+  }
   if (values.live && (!values.commit || !values.release || !values['entry-sha'] || !values.output)) {
     throw new Error('Live requires --commit, --release, --entry-sha, and --output');
   }
@@ -211,7 +216,8 @@ function instrument(settleMs) {
     const at = clock();
     if (button?.textContent.trim() === '知道了') probe.clicks.push({ kind: 'hint', at, trusted: true });
     else if (target && parent?.dataset.flowFrame === target.parentId && button.closest('[data-flow-heading]') &&
-        button.textContent.trim() === target.word) {
+        button.textContent.trim() === target.word && (target.buttonIndex === undefined ||
+          [...button.closest('[data-flow-heading]').querySelectorAll('button')][target.buttonIndex] === button)) {
       target.clickedAt ??= at;
       target.hintAtClick ??= probe.hint();
       probe.clicks.push({ kind: 'word', at, trusted: true });
@@ -278,12 +284,13 @@ function instrument(settleMs) {
     const article = articles.length === 1 ? articles[0] : null;
     const heading = article?.querySelector('[data-flow-heading]');
     // Optical token groups contain exactly the quote, without the hidden keyboard help.
-    const exact = heading && [...heading.querySelectorAll('[data-flow-optic]')].map(el => el.textContent).join('') === frame.quote;
+    const optics = heading ? [...heading.querySelectorAll('[data-flow-optic]')] : [];
+    const exact = heading && optics.map(el => el.textContent).join('') === frame.quote;
     const bounds = boundsOf(panel);
     const hint = hintState(panel, bounds, exact ? heading : null);
     const ink = heading?.dataset.inkPhase;
     const settledInk = ink === 'settled' && !heading.querySelector('[data-flow-ink], [data-flow-bent]');
-    if (exact || target.hintAudit) {
+    if (!target.cohort && (exact || target.hintAudit)) {
       const settled = panel.parentElement.dataset.pending === 'false' && (terminal?.event.type === 'error' ||
         !!exact && article.dataset.flowReady === 'true' && settledInk && displayed(heading));
       trackHint(target, frame, hint, source, terminal, settled, clock());
@@ -299,9 +306,36 @@ function instrument(settleMs) {
     const obstructed = hint.obstructs || overlays.some(el => displayed(el) && overlaps(rect, el.getBoundingClientRect(), bounds));
     const geometry = { edges: [rect.top, rect.bottom, rect.left, rect.right], bounds, ink, obstructed,
       hintVisible: hint.visible, hintObstructed: hint.obstructs };
+    if (target.cohort && settledInk) {
+      const range = document.createRange();
+      const glyphs = [];
+      let shown = true;
+      for (const optic of optics) {
+        const nodes = document.createTreeWalker(optic, NodeFilter.SHOW_TEXT);
+        for (let node = nodes.nextNode(); node; node = nodes.nextNode()) {
+          const nodeStyle = getComputedStyle(node.parentElement);
+          const opticStyle = getComputedStyle(optic);
+          let offset = 0;
+          for (const glyph of node.textContent) {
+            range.setStart(node, offset);
+            offset += glyph.length;
+            range.setEnd(node, offset);
+            if (/\s/u.test(glyph)) continue;
+            const box = range.getBoundingClientRect();
+            glyphs.push(box.top, box.bottom, box.left, box.right);
+            shown &&= displayed(node.parentElement) && Number(opticStyle.opacity) >= 0.8 &&
+              Number(nodeStyle.opacity) >= 0.8 && box.width > 0 && box.height > 0 &&
+              box.top >= bounds.top && box.bottom <= bounds.bottom && box.left >= bounds.left && box.right <= bounds.right;
+          }
+        }
+      }
+      geometry.glyphs = { count: glyphs.length / 4, visible: shown && glyphs.length > 0 };
+      geometry.edges.push(...glyphs);
+    }
     target.lastGeometry = geometry;
     const visible = rect.width > 0 && rect.height > 0 && rect.top >= bounds.top && rect.bottom <= bounds.bottom &&
-      rect.left >= bounds.left && rect.right <= bounds.right && !obstructed && settledInk && displayed(heading);
+      rect.left >= bounds.left && rect.right <= bounds.right && !obstructed && settledInk && displayed(heading) &&
+      (!target.cohort || geometry.glyphs?.visible);
     target.currentlyReadable = visible;
     if (target.visual) return;
     if (!visible) {
@@ -309,7 +343,8 @@ function instrument(settleMs) {
       return;
     }
     if (target.previous?.id === frame.id && geometry.edges.every((value, index) => Math.abs(value - target.previous.geometry.edges[index]) < 0.5)) {
-      target.visual = { ...target.previous, verifiedAt: clock() };
+      const { edges, ...readable } = target.previous.geometry;
+      target.visual = { ...target.previous, geometry: { ...readable, edges: edges.slice(0, 4) }, verifiedAt: clock() };
     } else target.previous = {
       ...frameKey(frame), at: clock(), geometry,
     };
@@ -466,8 +501,10 @@ async function openRoot(slot, report) {
     await heading(slot).waitFor({ state: 'visible', timeout: 12000 });
     // Before pausing the moving root, give its opening reveal a chance to
     // expose the hint. An absent hint makes the hint trial inconclusive.
-    await page.waitForFunction(() => window.flowPublicProbe.hint()?.hitTestable,
-      null, { timeout: 12000 }).catch(() => {});
+    if (!report.cohort) {
+      await page.waitForFunction(() => window.flowPublicProbe.hint()?.hitTestable,
+        null, { timeout: 12000 }).catch(() => {});
+    }
     result.beforeBlank = await page.evaluate(() => {
       const panel = document.querySelector('[data-flow-viewport]');
       const stream = panel?.parentElement;
@@ -513,8 +550,24 @@ function wordSlot(slot, word) {
   return anchor ? { word, selection, reason: 'Existing root quotation anchor' } : { word, selection };
 }
 
+function freezeCohort(size, corpus, release) {
+  const text = corpus.get(seedSourceId);
+  if (text !== seedQuote) throw new Error('Published root text differs from the cohort source');
+  const lexicalBreaks = [...new Intl.Segmenter('zh-Hans', { granularity: 'word' }).segment(text)]
+    .map(part => part.index + part.segment.length);
+  const frame = { fullText: text, corpusVersion: release.corpusVersion, textHash: sha(text), lexicalBreaks };
+  const ranges = classicText.ranges(frame);
+  if (ranges.length < size) throw new Error('Insufficient distinct eligible lexical positions');
+  return Array.from({ length: size }, (_, index) => {
+    const buttonIndex = Math.round(index * (ranges.length - 1) / (size - 1));
+    const range = ranges[buttonIndex];
+    return { id: 'P' + (index + 1), word: range.text, buttonIndex, build: release.commit, pack: 'core',
+      sourceId: seedSourceId, field: 'quote', selection: classicText.selectionFor(frame, range) };
+  });
+}
+
 function canonicalKey(frame) {
-  return [frame.sourceId, frame.corpusVersion, frame.textHash, frame.quoteStart, frame.quoteEnd, frame.quote];
+  return [frame.sourceId, frame.corpusVersion, frame.textHash, frame.quoteStart ?? frame.start, frame.quoteEnd ?? frame.end, frame.quote];
 }
 
 function branchEvidence(call, slot, word, corpus, release, cold) {
@@ -526,7 +579,7 @@ function branchEvidence(call, slot, word, corpus, release, cold) {
     chain.parentChainId === slot.chain.chainId && chain.entry?.fromFrameId === slot.parent.id &&
     chain.entry.label === word.word && chain.entry.anchorId === 'text:' + word.selection.start + ':' + word.selection.end;
   const relationError = safeCode(errors(call).find(Boolean));
-  const passed = call?.status === 200 && call.end && !call.captureFailed && !relationError && childOf(done) &&
+  const passed = call?.status === 200 && call.end && !call.captureFailed && !relationError && call.events.at(-1)?.event.type === 'done' && childOf(done) &&
     childOf(frame) && frame.chainId === done.chainId && ready?.ready === true && final?.ready === true &&
     isCanonical(final) && equal(ready, final);
   const checkedCorpus = !!final && isCanonical(final) && final.fullText === corpus.get(final.sourceId) && final.corpusVersion === release.corpusVersion;
@@ -551,7 +604,7 @@ function branchEvidence(call, slot, word, corpus, release, cold) {
       terminal.requestId === call.request.requestId && (!frame || matchesHead(frame)) && (!done || matchesHead(done));
     if (completedReuse || rejectedReuse) route = 'reuse';
   }
-  return { route, relation: passed ? 'pass' : failed ? 'fail' : 'unknown', reuseHeadObserved,
+  return { route, relation: passed && checkedCorpus ? 'pass' : failed ? 'fail' : 'unknown', reuseHeadObserved,
     relationError, checkedCorpus, first, firstFrame, final, childId: done?.chainId };
 }
 
@@ -572,6 +625,7 @@ function hintEvidence(audit, click) {
 async function tryBranch(slot, word, report, corpus, cold) {
   const { page, parent, chain } = slot;
   const attempt = { root: slot.label, word: word.word, expectedRoute: cold ? 'reuse' : 'cold', selection: word.selection };
+  if (word.id) attempt.position = word.id;
   report.attempts.push(attempt);
   const permit = { op: 'branch', parentId: parent.id, chainId: chain.chainId, selection: word.selection, packs: chain.contentScope.packIds };
   const dispatched = new Promise(done => { permit.signal = done; });
@@ -587,22 +641,25 @@ async function tryBranch(slot, word, report, corpus, cold) {
       await page.waitForFunction(path => history.state?.flowPathId === path, slot.rootPath, { timeout: 8000 });
     }
     const fresh = !slot.hasSentWord;
-    if (fresh && await page.evaluate(() => window.flowPublicProbe.hint()?.hitTestable)) {
+    if (!report.cohort && fresh && await page.evaluate(() => window.flowPublicProbe.hint()?.hitTestable)) {
       rootHintScreenshot = await page.screenshot({ timeout: 4500 }).catch(() => null);
     }
     checkpoint = 'pausing by blank click';
-    attempt.blank = await trustedBlank(page);
+    attempt.blank = report.cohort ? report.roots[slot.label].blank : await trustedBlank(page);
     attempt.hintBeforeWord = { expected: fresh ? 'visible' : 'dismissed', ...await page.evaluate(() => {
       const { at, ...state } = window.flowPublicProbe.hint() || {};
       return state;
     }) };
     checkpoint = 'clicking canonical word';
     const title = '沿「' + word.word + '」接续';
-    const button = heading(slot).getByTitle(title, { exact: true }).first();
+    const button = report.cohort ? heading(slot).locator('button').nth(word.buttonIndex)
+      : heading(slot).getByTitle(title, { exact: true }).first();
+    if (report.cohort && await button.getAttribute('title', { timeout: 4500 }) !== title) throw new Error('Frozen DOM position changed');
     await page.evaluate(target => {
       const probe = window.flowPublicProbe;
       probe.target = { ...target, clickIndex: probe.clicks.length };
     }, { parentId: parent.id, chainId: chain.chainId, word: word.word,
+      buttonIndex: word.buttonIndex, cohort: !!report.cohort,
       anchorId: 'text:' + word.selection.start + ':' + word.selection.end });
     armed = true;
     slot.permit = permit;
@@ -641,7 +698,7 @@ async function tryBranch(slot, word, report, corpus, cold) {
     checkpoint = 'observing hint after stream terminal';
     const terminal = await page.evaluate(() => window.flowPublicProbe.call()?.events
       .find(({ event }) => event.type === 'done' || event.type === 'error')?.event.type);
-    if (terminal) {
+    if (terminal && !report.cohort) {
       await page.waitForFunction(() => {
         const probe = window.flowPublicProbe;
         const audit = probe.target.hintAudit;
@@ -676,6 +733,11 @@ async function tryBranch(slot, word, report, corpus, cold) {
   attempt.error = result.relationError;
   attempt.checkedCorpus = result.checkedCorpus;
   attempt.events = call?.events.map(({ event: e }) => e.type);
+  const describe = frame => frame && { sourceId: frame.sourceId, source: frame.source, chapter: frame.chapterLabel,
+    corpusVersion: frame.corpusVersion, textHash: frame.textHash, start: frame.quoteStart, end: frame.quoteEnd, quote: frame.quote };
+  attempt.first = describe(result.firstFrame);
+  attempt.firstEvent = result.first?.event.type;
+  attempt.final = describe(result.final);
   const visual = frameMatches(target?.visual, result.firstFrame) ? target.visual : null;
   if (click && target.hintAtClick) {
     const { at, ...state } = target.hintAtClick;
@@ -718,12 +780,15 @@ async function tryBranch(slot, word, report, corpus, cold) {
   return { result, attempt };
 }
 
-function summarize(report) {
+export function summarize(report) {
   return Object.fromEntries(['cold', 'reuse'].map(route => {
     const sent = report.attempts.filter(item => item.sent && item.expectedRoute === route);
     const confirmed = sent.filter(item => item.route === route);
-    const times = confirmed.flatMap(item => Number.isFinite(item.ms?.rawReadable) ? [item.ms.rawReadable] : []).sort((a, b) => a - b);
-    return [route, { sent: sent.length, confirmed: confirmed.length, unverified: sent.length - confirmed.length, timed: times.length,
+    const readableEligible = confirmed.filter(item => item.relation === 'pass' && item.first && item.final &&
+      equal(canonicalKey(item.first), canonicalKey(item.final)));
+    const times = readableEligible.flatMap(item => Number.isFinite(item.ms?.rawReadable) ? [item.ms.rawReadable] : []).sort((a, b) => a - b);
+    return [route, { sent: sent.length, confirmed: confirmed.length, unverified: sent.length - confirmed.length,
+      readableEligible: readableEligible.length, timed: times.length,
       final: Object.fromEntries(['pass', 'fail', 'unknown'].map(outcome => [outcome, confirmed.filter(item => item.relation === outcome).length])),
       p50: times.length ? (times[Math.floor((times.length - 1) / 2)] + times[Math.floor(times.length / 2)]) / 2 : null,
       range: times.length ? [times[0], times.at(-1)] : null }];
@@ -736,6 +801,31 @@ async function liveRun(report, corpus) {
   const blind = [];
   const browser = await chromium.launch({ headless: false });
   try {
+    if (report.cohort) {
+      for (const word of report.cohort) {
+        if (report.stop) break;
+        const slot = await browserSlot(browser, undefined, report, word.id);
+        try {
+          await openRoot(slot, report);
+          if (report.stop || !slot.rootPath) continue;
+          const range = classicText.ranges(slot.parent)[word.buttonIndex];
+          const anchor = slot.parent.anchors.some(item => item.surface === 'quote' &&
+            item.start + slot.parent.quoteStart === range?.start && item.end + slot.parent.quoteStart === range?.end);
+          if (slot.parent.sourceId !== word.sourceId || slot.parent.quoteStart !== 0 || slot.parent.quoteEnd !== seedQuote.length ||
+              slot.chain.contentScope.versions.core !== word.selection.corpusVersion || !range || range.text !== word.word ||
+              !equal(classicText.selectionFor(slot.parent, range), word.selection) || anchor) {
+            report.roots[word.id].ineligible = 'Frozen quote position could not be matched as an unprepared root word';
+            continue;
+          }
+          const { result } = await tryBranch(slot, word, report, corpus);
+          if (result.final) blind.push({ id: word.id, word: word.word, from: blindFrame(slot.parent),
+            to: { ...blindFrame(result.final), meaning: result.final.meaning } });
+        } finally {
+          await slot.context.close();
+        }
+      }
+      return;
+    }
     const a = await browserSlot(browser, undefined, report, 'A');
     await openRoot(a, report);
     if (report.stop || !a.owner) return;
@@ -800,17 +890,26 @@ async function main() {
     console.log('Dry: node scripts/probe-flow-public.mjs [--commit <git-sha>] [--release <release-id>] [--entry-sha <sha256>] [--output <new-dir>]');
     console.log('Live: add --live and supply all four options. Chromium uses a foreground 390 × 844 viewport.');
     console.log('Add --cold-only to limit a live run to one fresh root and one cold 静 branch.');
+    console.log('Add --cohort <10-20> to predeclare distinct cold positions and test each in a fresh anonymous context.');
     return;
   }
   const release = await verifyRelease(config);
   const coldOnly = config['cold-only'];
+  const cohortSize = Number(config.cohort) || 0;
   const report = { mode: config.live ? 'live' : 'dry', coldOnly, release, viewport: { ...viewport, dpr: 3 },
-    caps: coldOnly ? { open: 1, branch: 1 } : caps, sent: { session: 0, open: 0, branch: 0 },
+    caps: cohortSize ? { open: cohortSize, branch: cohortSize } : coldOnly ? { open: 1, branch: 1 } : caps,
+    sent: { session: 0, open: 0, branch: 0 },
     roots: {}, attempts: [], blocked: {}, started: new Date().toISOString(), output: config.output };
   if (config.output) await mkdir(config.output, { mode: 0o700 });
   try {
     if (config.live) {
       const corpus = loadCorpus(release);
+      if (cohortSize) {
+        report.cohort = freezeCohort(cohortSize, corpus, release);
+        const frozen = JSON.stringify(report.cohort, null, 2) + '\n';
+        report.cohortSha256 = sha(frozen);
+        await writeFile(resolve(config.output, 'cohort.json'), frozen, { flag: 'wx', mode: 0o600 });
+      }
       await writeFile(resolve(config.output, 'run.lock'), 'Production probe started\n', { flag: 'wx', mode: 0o600 });
       await liveRun(report, corpus);
     }
@@ -831,7 +930,9 @@ async function main() {
   }
 }
 
-main().catch(error => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch(error => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}

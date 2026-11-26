@@ -1,0 +1,261 @@
+{
+  "kind": "authentic-local-model",
+  "model": "deepseek-flash",
+  "packRevision": "poetry-63eda33f1cb2bed8",
+  "planned": 3,
+  "maxCallsPerInvocation": 12,
+  "sourceCommit": "2c5689ce98cf47de188c6743a726adae1018d5be",
+  "node": "v22.22.0",
+  "launches": 2,
+  "initiated": 4,
+  "verifiedCharged": 9,
+  "unscored": [
+    {
+      "id": "P1",
+      "charged": null,
+      "reason": "Recorder failed at the independent source lookup. The outcome and provider call count were not captured."
+    }
+  ],
+  "cases": [
+    {
+      "id": "P1",
+      "title": "春望",
+      "word": "城",
+      "selection": {
+        "start": 6,
+        "end": 7,
+        "corpusVersion": "poetry:e6798ef8b1433f3856cdea16",
+        "textHash": "afc4f2446ced4828d6f3f78a63145f5e8bc8b35ff919c19708e3f85dec326cd6"
+      },
+      "frozenEvidence": [
+        {
+          "sourceId": "poetry-8ce5f36e07de00875cbec6676886c8a7-0",
+          "start": 13,
+          "end": 24,
+          "quote": "感時花濺淚，恨別鳥驚心"
+        },
+        {
+          "sourceId": "poetry-8ce5f36e07de00875cbec6676886c8a7-0",
+          "start": 26,
+          "end": 37,
+          "quote": "烽火連三月，家書抵萬金"
+        }
+      ],
+      "plannerTerms": [
+        "城春草木深",
+        "城郭",
+        "黍离",
+        "彼黍离离",
+        "宫室宗庙"
+      ],
+      "recalledCount": 40,
+      "compactCount": 12,
+      "ownWindow": {
+        "sourceId": "poetry-8ce5f36e07de00875cbec6676886c8a7-0",
+        "corpusVersion": "poetry:e6798ef8b1433f3856cdea16",
+        "textHash": "afc4f2446ced4828d6f3f78a63145f5e8bc8b35ff919c19708e3f85dec326cd6",
+        "start": 13,
+        "end": 25,
+        "quote": "感時花濺淚，恨別鳥驚心。"
+      },
+      "frozenEvidenceWindowRanks": [
+        1
+      ],
+      "selectedSameWork": false,
+      "exactFrozenEvidence": false,
+      "containsFrozenEvidence": false,
+      "quoteVerified": true,
+      "relation": "pass",
+      "final": {
+        "source": "诗经",
+        "chapter": "第66章 国风 王风 黍离",
+        "sourceId": "rysxguji-shijing-66-1",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "91faf956ea7a7269222501149d230b94ee7edfbb386d7a1b44632ceba58d4e8a",
+        "start": 0,
+        "end": 20,
+        "quote": "彼黍离离，彼稷之苗。行迈靡靡，中心摇摇。"
+      },
+      "error": null,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "receipts": [
+        {
+          "phase": "plan",
+          "status": 200
+        },
+        {
+          "phase": "generate",
+          "candidateOk": true,
+          "status": 200
+        },
+        {
+          "phase": "review",
+          "status": 200
+        }
+      ],
+      "charged": 3,
+      "elapsedMs": 17069
+    },
+    {
+      "id": "P2",
+      "title": "杜少府之任蜀州",
+      "word": "海內存知己",
+      "selection": {
+        "start": 26,
+        "end": 31,
+        "corpusVersion": "poetry:e96d7a7f1bad38daec892fc9",
+        "textHash": "bcf77c221603d0587d3f27079b9a248fca3cf6d6155af5d75981f3118622d5dc"
+      },
+      "frozenEvidence": [
+        {
+          "sourceId": "poetry-97345017d330dc5a0f464e3102192660-0",
+          "start": 13,
+          "end": 24,
+          "quote": "與君離別意，同是宦遊人"
+        }
+      ],
+      "plannerTerms": [
+        "德不孤，必有邻",
+        "海内存知己",
+        "天涯若比邻",
+        "友其德也"
+      ],
+      "recalledCount": 40,
+      "compactCount": 12,
+      "ownWindow": {
+        "sourceId": "poetry-97345017d330dc5a0f464e3102192660-0",
+        "corpusVersion": "poetry:e96d7a7f1bad38daec892fc9",
+        "textHash": "bcf77c221603d0587d3f27079b9a248fca3cf6d6155af5d75981f3118622d5dc",
+        "start": 39,
+        "end": 51,
+        "quote": "無爲在岐路，兒女共霑巾。"
+      },
+      "frozenEvidenceWindowRanks": [],
+      "selectedSameWork": false,
+      "exactFrozenEvidence": false,
+      "containsFrozenEvidence": false,
+      "quoteVerified": true,
+      "relation": "pass",
+      "final": {
+        "source": "孟子",
+        "chapter": "第8章 卷九 万章上",
+        "sourceId": "rysxguji-mengzi-8-27",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "e3989a8168e761a5ac6607e10b7b558fc0be76aa7dd007515b9c28254ea6c9bc",
+        "start": 16,
+        "end": 47,
+        "quote": "不挟长，不挟贵，不挟兄弟而友。友也者，友其德也，不可以有挟也。"
+      },
+      "error": null,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "receipts": [
+        {
+          "phase": "plan",
+          "status": 200
+        },
+        {
+          "phase": "generate",
+          "candidateOk": true,
+          "status": 200
+        },
+        {
+          "phase": "review",
+          "status": 200
+        }
+      ],
+      "charged": 3,
+      "elapsedMs": 9229
+    },
+    {
+      "id": "P3",
+      "title": "楓橋夜泊",
+      "word": "月",
+      "selection": {
+        "start": 0,
+        "end": 1,
+        "corpusVersion": "poetry:8f9ef03622d2c3e497e3af27",
+        "textHash": "4ce896e6a3265f48ddfe7d987b8faf0f8aa9d1736e53768c1a4eecd7fb52ab7e"
+      },
+      "frozenEvidence": [
+        {
+          "sourceId": "poetry-cedb67bbf0dc83598068d2845c4f0dfc-0",
+          "start": 17,
+          "end": 32,
+          "quote": "姑蘇城外寒山寺，夜半鐘聲到客船"
+        }
+      ],
+      "plannerTerms": [
+        "月出皎兮",
+        "月落",
+        "夜半",
+        "霜滿天",
+        "客船"
+      ],
+      "recalledCount": 40,
+      "compactCount": 12,
+      "ownWindow": {
+        "sourceId": "poetry-cedb67bbf0dc83598068d2845c4f0dfc-0",
+        "corpusVersion": "poetry:8f9ef03622d2c3e497e3af27",
+        "textHash": "4ce896e6a3265f48ddfe7d987b8faf0f8aa9d1736e53768c1a4eecd7fb52ab7e",
+        "start": 17,
+        "end": 33,
+        "quote": "姑蘇城外寒山寺，夜半鐘聲到客船。"
+      },
+      "frozenEvidenceWindowRanks": [
+        1
+      ],
+      "selectedSameWork": false,
+      "exactFrozenEvidence": false,
+      "containsFrozenEvidence": false,
+      "quoteVerified": true,
+      "relation": "pass",
+      "final": {
+        "source": "诗经",
+        "chapter": "第143章 国风 陈风 月出",
+        "sourceId": "rysxguji-shijing-143-1",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "6da7e252aa1cdf33294c99440236b1e349535a76b06fd20feb653ecb668cc56c",
+        "start": 0,
+        "end": 20,
+        "quote": "月出皎兮。佼人僚兮。舒窈纠兮。劳心悄兮。"
+      },
+      "error": null,
+      "events": [
+        "head",
+        "progress",
+        "progress",
+        "frame",
+        "done"
+      ],
+      "receipts": [
+        {
+          "phase": "plan",
+          "status": 200
+        },
+        {
+          "phase": "generate",
+          "candidateOk": true,
+          "status": 200
+        },
+        {
+          "phase": "review",
+          "status": 200
+        }
+      ],
+      "charged": 3,
+      "elapsedMs": 9107
+    }
+  ]
+}

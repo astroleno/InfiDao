@@ -1,0 +1,152 @@
+[
+  {
+    "id": "P1",
+    "word": "知",
+    "buttonIndex": 0,
+    "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+    "pack": "core",
+    "sourceId": "rysxguji-daxue-1-2",
+    "field": "quote",
+    "selection": {
+      "start": 0,
+      "end": 1,
+      "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+      "corpusVersion": "guji-core-v1"
+    }
+  },
+  {
+    "id": "P2",
+    "word": "而后",
+    "buttonIndex": 2,
+    "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+    "pack": "core",
+    "sourceId": "rysxguji-daxue-1-2",
+    "field": "quote",
+    "selection": {
+      "start": 2,
+      "end": 4,
+      "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+      "corpusVersion": "guji-core-v1"
+    }
+  },
+  {
+    "id": "P3",
+    "word": "定",
+    "buttonIndex": 4,
+    "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+    "pack": "core",
+    "sourceId": "rysxguji-daxue-1-2",
+    "field": "quote",
+    "selection": {
+      "start": 5,
+      "end": 6,
+      "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+      "corpusVersion": "guji-core-v1"
+    }
+  },
+  {
+    "id": "P4",
+    "word": "能",
+    "buttonIndex": 7,
+    "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+    "pack": "core",
+    "sourceId": "rysxguji-daxue-1-2",
+    "field": "quote",
+    "selection": {
+      "start": 10,
+      "end": 11,
+      "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+      "corpusVersion": "guji-core-v1"
+    }
+  },
+  {
+    "id": "P5",
+    "word": "静",
+    "buttonIndex": 9,
+    "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+    "pack": "core",
+    "sourceId": "rysxguji-daxue-1-2",
+    "field": "quote",
+    "selection": {
+      "start": 13,
+      "end": 14,
+      "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+      "corpusVersion": "guji-core-v1"
+    }
+  },
+  {
+    "id": "P6",
+    "word": "能",
+    "buttonIndex": 11,
+    "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+    "pack": "core",
+    "sourceId": "rysxguji-daxue-1-2",
+    "field": "quote",
+    "selection": {
+      "start": 16,
+      "end": 17,
+      "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+      "corpusVersion": "guji-core-v1"
+    }
+  },
+  {
+    "id": "P7",
+    "word": "安",
+    "buttonIndex": 13,
+    "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+    "pack": "core",
+    "sourceId": "rysxguji-daxue-1-2",
+    "field": "quote",
+    "selection": {
+      "start": 19,
+      "end": 20,
+      "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+      "corpusVersion": "guji-core-v1"
+    }
+  },
+  {
+    "id": "P8",
+    "word": "虑",
+    "buttonIndex": 16,
+    "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+    "pack": "core",
+    "sourceId": "rysxguji-daxue-1-2",
+    "field": "quote",
+    "selection": {
+      "start": 23,
+      "end": 24,
+      "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+      "corpusVersion": "guji-core-v1"
+    }
+  },
+  {
+    "id": "P9",
+    "word": "而后",
+    "buttonIndex": 18,
+    "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+    "pack": "core",
+    "sourceId": "rysxguji-daxue-1-2",
+    "field": "quote",
+    "selection": {
+      "start": 26,
+      "end": 28,
+      "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+      "corpusVersion": "guji-core-v1"
+    }
+  },
+  {
+    "id": "P10",
+    "word": "得",
+    "buttonIndex": 20,
+    "build": "83552e6560082344fa70693118baec1ba2dacb1d",
+    "pack": "core",
+    "sourceId": "rysxguji-daxue-1-2",
+    "field": "quote",
+    "selection": {
+      "start": 29,
+      "end": 30,
+      "textHash": "2d3448b7e6ce9e07e50fd76c13c3b1e61aec75f9b1dc98fcc6e6a1bb557affa7",
+      "corpusVersion": "guji-core-v1"
+    }
+  }
+]
