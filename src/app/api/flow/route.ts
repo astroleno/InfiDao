@@ -4,6 +4,7 @@ import { requestIPKey, requestSession } from "@/lib/flow/session-identity";
 import { serverSessionStore } from "@/lib/flow/session-store-server";
 import { serverFlowBudget } from "@/lib/flow/request-budget";
 import { withFlowModelBudget } from "@/lib/flow/model-budget";
+import { recordFlowStreamEmission } from "@/lib/flow/timings";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -63,7 +64,11 @@ export async function POST(request: Request): Promise<Response> {
     let closed = false;
     const stream = new ReadableStream<Uint8Array>({
       async start(streamController) {
-        const emit = (event: FlowEvent) => { if (!closed) streamController.enqueue(encoder.encode(JSON.stringify(event) + "\n")); };
+        const emit = (event: FlowEvent) => {
+          if (closed) return;
+          streamController.enqueue(encoder.encode(JSON.stringify(event) + "\n"));
+          recordFlowStreamEmission(event);
+        };
         try { await execute(emit); }
         catch (error) { if (!controller.signal.aborted || timedOut) emit(failure(error)); }
         finally { await finish(); if (!closed) { closed = true; streamController.close(); } }
