@@ -2,16 +2,22 @@ import { FlowError, type FlowChain, type FlowFrame, type FlowReadingContext } fr
 import { retainSemantics, type SemanticEntry } from './semantic-index';
 import type { RecentReading } from './reading-history';
 import type { VerifiedBranch, VerifiedBranchDraft } from './verified-branch';
+import type { WorkReference } from '@/lib/content/contracts';
 
 export const SESSION_TTL_MS = 6 * 60 * 60 * 1000;
 export const OPERATION_LEASE_MS = 45_000;
 const VERIFIED_BRANCH_LIMIT = 24;
+export type PoetrySelection = Pick<FlowFrame, 'sourceId' | 'corpusVersion' | 'textHash' | 'quoteStart' | 'quoteEnd'> & {
+  work: WorkReference;
+  word: { start: number; end: number; label: string };
+};
 export type StoredChain = {
   owner: string; chain: FlowChain; terms: string[]; seen: string[];
   nodes: Record<string, FlowFrame>; branches: Record<string, string>;
   initial?: FlowChain; fromQuote?: string; priorQuotes?: string[]; generationKey: string; updated: number;
   priorQuotesComplete?: boolean;
   readingContext?: FlowReadingContext;
+  poetrySelection?: PoetrySelection;
   recentReadings?: RecentReading[];
   pendingVerifiedBranch?: VerifiedBranchDraft;
 };

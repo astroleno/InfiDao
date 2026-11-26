@@ -28,13 +28,13 @@ test('repeated poetry is scored at the position supplied to the model after the 
     work: { packId: 'poetry', workId: 'poem', revision: 'v1', start: 0, end: text.length,
       title: '篇', author: '', dynasty: '', genre: '' } } as PassageRecord;
   const compact = compactCandidates([passage], [], undefined, [read]);
-  expect(compact.input[0]).toMatchObject({ text: quote, excerptStart: 3 });
-  expect(compact.windows).toEqual([{ ...identity, start: 3, end: 3 + quote.length, selectedStart: read.length }]);
+  expect(compact.input[0]).toMatchObject({ text: quote, excerptStart: read.length });
+  expect(compact.windows).toEqual([{ ...identity, start: read.length, end: read.length + quote.length }]);
   const retrieved = [{ ...identity, start: 0, end: text.length }];
   expect(scoreGoldGroup([{ ...identity, start: read.length, end: read.length + quote.length, quote }], retrieved, compact.windows))
-    .toBe('windowMiss');
-  expect(scoreGoldGroup([{ ...identity, start: 3, end: 3 + quote.length, quote }], retrieved, compact.windows))
     .toBe('hit12');
+  expect(scoreGoldGroup([{ ...identity, start: 3, end: 3 + quote.length, quote }], retrieved, compact.windows))
+    .toBe('windowMiss');
 });
 
 test('fixture evidence is checked against the version, hash and UTF-16 source text before recall', async () => {

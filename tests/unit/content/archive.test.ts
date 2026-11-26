@@ -1,5 +1,5 @@
 /** @jest-environment node */
-import { poetryPassage, poetryWork, resetContentStore } from '@/lib/content/store';
+import { activePoetryPassage, poetryPassage, poetryWork, resetContentStore } from '@/lib/content/store';
 import { contentCatalog, readPoetryManifest, verifyPoetryFiles } from '@/lib/content/registry';
 import { openContentDatabase } from '@/lib/content/sqlite';
 const { packJSON } = require('../../../shared/content/codec.cjs');
@@ -16,6 +16,7 @@ test('a corrupt active package cannot hide a verified archived work and passage'
   jest.mocked(openContentDatabase).mockImplementation(() => ({ close: jest.fn(), prepare: (sql: string) => ({ get: () => sql.includes('meta') ? { value: 'poetry-ngram-v2:64:deflate-1' } : { json: packJSON(sql.includes('FROM works') ? work : passage) } }) }) as any);
   expect(await poetryWork(id, revision)).toEqual(work);
   expect(await poetryPassage(passageId, revision)).toEqual(passage);
+  await expect(activePoetryPassage(passageId, 'current')).rejects.toThrow('Checksum mismatch');
   expect(openContentDatabase).toHaveBeenCalledTimes(1);
   expect(openContentDatabase).toHaveBeenCalledWith('/test/data/archived.sqlite');
   resetContentStore();

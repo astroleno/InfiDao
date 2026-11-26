@@ -1,6 +1,7 @@
 import type { PassageRecord } from '@/types';
 import type { ContentPackId } from '@/lib/content/contracts';
 import coreManifest from '../../../data/corpus-manifest.json';
+const { normalize: normalizePoetry } = require('../../../shared/content/text.cjs') as { normalize: (text: string) => string };
 
 export const planningScopeGuidance = 'targetScope 是本次新目标的可用来源。terms 必须包含这些来源中可检索的原文短语。已读诗句可以作为理解起点；当 poetryEnabled=false 时，应将当前词义或问题转向 coreSources 中相近或可对照的原文，不再用唐宋诗句或来路原句反复检索。不要仅凭同字联系，不承诺一定存在合适目标。';
 export function planningScope(contentPacks: ContentPackId[] = ['core']) {
@@ -88,8 +89,33 @@ export type CandidateRange = {
 
 export const CANDIDATE_EXCERPT_LIMIT = 480;
 
-export function compactCandidates(rows: PassageRecord[], terms: string[], head?: { sourceId: string; quote: string }, avoidQuotes: string[] = []) {
-  const excerpts = new Map(rows.map(row => [row.id, excerptWindow(row.text, terms, row.id === head?.sourceId ? head.quote : '', CANDIDATE_EXCERPT_LIMIT, avoidQuotes)]));
+type Excerpt = ReturnType<typeof excerptWindow>;
+type PoemExcerpt = Excerpt & { score: number; distance: number; backward: boolean };
+
+export function comparePoemExcerpts(left: PoemExcerpt, right: PoemExcerpt) {
+  return right.score - left.score || left.distance - right.distance || Number(left.backward) - Number(right.backward);
+}
+
+export function unreadPoemExcerpt(text: string, terms: string[], avoidQuotes: string[], origin: { start: number; end: number }): PoemExcerpt | undefined {
+  const matches = [...new Set(terms.map(term => normalizePoetry(quotationKey(term))).filter(term => [...term].length >= 2))];
+  let best: PoemExcerpt | undefined;
+  for (const line of text.matchAll(/[^\r\n。！？!?]+[。！？!?]*/gu)) {
+    const [text] = line, start = line.index, end = start + text.length;
+    if (end > origin.start && start < origin.end) continue;
+    const key = normalizePoetry(quotationKey(text));
+    if ([...key].length < 2 || text.length > CANDIDATE_EXCERPT_LIMIT || repeatsQuotation(text, avoidQuotes)) continue;
+    const score = matches.reduce((total, term) => total + (key.includes(term) ? [...term].length : 0), 0);
+    const backward = end <= origin.start;
+    const excerpt = { text, start, end, score, distance: backward ? origin.start - end : start - origin.end, backward };
+    if (!best || comparePoemExcerpts(excerpt, best) < 0) best = excerpt;
+  }
+  return best;
+}
+
+export function compactCandidates(rows: PassageRecord[], terms: string[], head?: { sourceId: string; quote: string }, avoidQuotes: string[] = [],
+  samePoem?: { sourceId: string; excerpt: Excerpt }) {
+  const excerpts = new Map(rows.map(row => [row.id, row.id === samePoem?.sourceId ? samePoem.excerpt :
+    excerptWindow(row.text, terms, row.id === head?.sourceId ? head.quote : '', CANDIDATE_EXCERPT_LIMIT, avoidQuotes)]));
   rows = rows.filter(row => excerpts.get(row.id)?.text);
   const selected: PassageRecord[] = [], seen = new Set<string>(), books = new Map<string, number>();
   const add = (row: PassageRecord) => {
@@ -103,22 +129,16 @@ export function compactCandidates(rows: PassageRecord[], terms: string[], head?:
   for (const row of rows) if ((books.get(row.source) || 0) < 3) add(row);
   rows.forEach(add);
   const input = selected.map(row => {
-    const { text } = excerpts.get(row.id)!;
+    const { text, start } = excerpts.get(row.id)!;
     return { sourceId: row.id, source: row.source, chapter: row.chapter,
-      text, ...(row.work ? { work: row.work, excerptStart: row.text.indexOf(text) } : {}) };
+      text, ...(row.work ? { work: row.work, excerptStart: start } : {}) };
   });
   return {
     passages: selected, input,
     get windows(): CandidateRange[] {
-      return selected.map((row, index) => {
-        const { start: selectedStart, end: selectedEnd } = excerpts.get(row.id)!;
-        // Poetry asks the model for a position relative to the supplied excerptStart.
-        const start = input[index]!.excerptStart ?? selectedStart;
-        return {
-          sourceId: row.id, corpusVersion: row.corpusVersion, textHash: row.textHash,
-          start, end: start + (selectedEnd - selectedStart),
-          ...(start !== selectedStart ? { selectedStart } : {}),
-        };
+      return selected.map(row => {
+        const { start, end } = excerpts.get(row.id)!;
+        return { sourceId: row.id, corpusVersion: row.corpusVersion, textHash: row.textHash, start, end };
       });
     },
   };

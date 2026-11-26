@@ -62,6 +62,42 @@ export async function poetryPassage(id: string, revision?: string): Promise<Pass
   }
   return undefined;
 }
+
+export async function activePoetryPassage(id: string, version: string): Promise<PassageRecord | undefined> {
+  const match = /^poetry-([a-f0-9]{32})-[a-f0-9]+$/.exec(id);
+  if (!match) return undefined;
+  const manifest = await activePoetryManifest();
+  if (manifest.version !== version) return undefined;
+  const row = database(manifest, parseInt(match[1]![0]!, 16)).prepare('SELECT json FROM passages WHERE id=?').get(id);
+  return row?.json ? unpackJSON(row.json as Uint8Array) as PassageRecord : undefined;
+}
+
+export async function activeAdjacentPoetryPassages(passage: PassageRecord, version: string): Promise<PassageRecord[]> {
+  const ref = passage.work;
+  if (!ref || !/^[a-f0-9]{32}$/.test(ref.workId)) return [];
+  const manifest = await activePoetryManifest();
+  if (manifest.version !== version) return [];
+  const db = database(manifest, parseInt(ref.workId[0]!, 16));
+  const row = db.prepare('SELECT json FROM works WHERE id=? AND revision=?').get(ref.workId, ref.revision);
+  if (!row?.json) return [];
+  const work = unpackJSON(row.json as Uint8Array) as PoetryWork;
+  const index = work.passages.findIndex(item => item.id === passage.id && item.textHash === passage.textHash &&
+    item.start === ref.start && item.end === ref.end && work.text.slice(item.start, item.end) === passage.text);
+  if (index < 0) return [];
+
+  const neighbors: PassageRecord[] = [];
+  for (const range of [work.passages[index + 1], work.passages[index - 1]]) {
+    if (!range) continue;
+    const next = db.prepare('SELECT json FROM passages WHERE id=?').get(range.id);
+    if (!next?.json) continue;
+    const candidate = unpackJSON(next.json as Uint8Array) as PassageRecord;
+    if (candidate.id === range.id && candidate.corpusVersion === passage.corpusVersion && candidate.textHash === range.textHash &&
+        candidate.work?.workId === ref.workId && candidate.work.revision === ref.revision &&
+        candidate.work.start === range.start && candidate.work.end === range.end &&
+        candidate.text === work.text.slice(range.start, range.end)) neighbors.push(candidate);
+  }
+  return neighbors;
+}
 export interface PoetryCandidate { passage: PassageRecord; score: number; matchedTerms: string[] }
 export async function searchPoetry(query: string, limit = 20): Promise<PoetryCandidate[]> {
   // Seasonal or travel words do not turn a concrete operational question into
