@@ -1,0 +1,1021 @@
+{
+  "oldRuns": [
+    {
+      "id": "word-recognition-core",
+      "repeat": 1,
+      "options": 116,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-lunyu-1-12",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "3729cc6e597832895f9402a508814b07cd32860ba69ae95ec814670b86a24e7e",
+        "start": 0,
+        "end": 18,
+        "source": "论语",
+        "chapter": "第1章 学而第一",
+        "text": "子曰：“不患人之不己知，患不知人也。",
+        "id": "f927a1eedd0bd7de",
+        "rank": 1,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-lunyu-1-12",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "3729cc6e597832895f9402a508814b07cd32860ba69ae95ec814670b86a24e7e",
+        "start": 0,
+        "end": 18,
+        "source": "论语",
+        "chapter": "第1章 学而第一",
+        "text": "子曰：“不患人之不己知，患不知人也。",
+        "id": "f927a1eedd0bd7de",
+        "rank": 1,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "word-recognition-core",
+      "repeat": 2,
+      "options": 116,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-lunyu-1-12",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "3729cc6e597832895f9402a508814b07cd32860ba69ae95ec814670b86a24e7e",
+        "start": 0,
+        "end": 18,
+        "source": "论语",
+        "chapter": "第1章 学而第一",
+        "text": "子曰：“不患人之不己知，患不知人也。",
+        "id": "f927a1eedd0bd7de",
+        "rank": 1,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-lunyu-1-12",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "3729cc6e597832895f9402a508814b07cd32860ba69ae95ec814670b86a24e7e",
+        "start": 0,
+        "end": 18,
+        "source": "论语",
+        "chapter": "第1章 学而第一",
+        "text": "子曰：“不患人之不己知，患不知人也。",
+        "id": "f927a1eedd0bd7de",
+        "rank": 1,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "word-recognition-core",
+      "repeat": 3,
+      "options": 78,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-lunyu-1-12",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "3729cc6e597832895f9402a508814b07cd32860ba69ae95ec814670b86a24e7e",
+        "start": 0,
+        "end": 18,
+        "source": "论语",
+        "chapter": "第1章 学而第一",
+        "text": "子曰：“不患人之不己知，患不知人也。",
+        "id": "f927a1eedd0bd7de",
+        "rank": 1,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-lunyu-1-12",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "3729cc6e597832895f9402a508814b07cd32860ba69ae95ec814670b86a24e7e",
+        "start": 0,
+        "end": 18,
+        "source": "论语",
+        "chapter": "第1章 学而第一",
+        "text": "子曰：“不患人之不己知，患不知人也。",
+        "id": "f927a1eedd0bd7de",
+        "rank": 1,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "word-empathy-poetry",
+      "repeat": 1,
+      "options": 177,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-liji-29-13",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+        "start": 66,
+        "end": 86,
+        "source": "礼记",
+        "chapter": "第29章 中庸",
+        "text": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "id": "8f836062a5ef8626",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-liji-29-13",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+        "start": 66,
+        "end": 86,
+        "source": "礼记",
+        "chapter": "第29章 中庸",
+        "text": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "id": "8f836062a5ef8626",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "word-empathy-poetry",
+      "repeat": 2,
+      "options": 184,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-liji-29-13",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+        "start": 66,
+        "end": 86,
+        "source": "礼记",
+        "chapter": "第29章 中庸",
+        "text": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "id": "8f836062a5ef8626",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-liji-29-13",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+        "start": 66,
+        "end": 86,
+        "source": "礼记",
+        "chapter": "第29章 中庸",
+        "text": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "id": "8f836062a5ef8626",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "word-empathy-poetry",
+      "repeat": 3,
+      "options": 170,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-liji-29-13",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+        "start": 66,
+        "end": 86,
+        "source": "礼记",
+        "chapter": "第29章 中庸",
+        "text": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "id": "8f836062a5ef8626",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-liji-29-13",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+        "start": 66,
+        "end": 86,
+        "source": "礼记",
+        "chapter": "第29章 中庸",
+        "text": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "id": "8f836062a5ef8626",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "deep-discernment-core",
+      "repeat": 1,
+      "options": 88,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-lunyu-7-26",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "1600aeb54c78544c6d0ef74e7f3254ae110101ed23493477541a4caac9412014",
+        "start": 18,
+        "end": 40,
+        "source": "论语",
+        "chapter": "第7章 述而第七",
+        "text": "多闻，择其善者而从之；多见而识之；知之次也。",
+        "id": "32df627e47c2a397",
+        "rank": 1,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-lunyu-7-26",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "1600aeb54c78544c6d0ef74e7f3254ae110101ed23493477541a4caac9412014",
+        "start": 18,
+        "end": 40,
+        "source": "论语",
+        "chapter": "第7章 述而第七",
+        "text": "多闻，择其善者而从之；多见而识之；知之次也。",
+        "id": "32df627e47c2a397",
+        "rank": 1,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "deep-discernment-core",
+      "repeat": 2,
+      "options": 100,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-lunyu-4-14",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "3a012832b760c2136407cad0f95167af49738c0d5ab1687aebeb25f385b9437e",
+        "start": 0,
+        "end": 19,
+        "source": "论语",
+        "chapter": "第4章 里仁第四",
+        "text": "子曰：“见贤思齐焉，见不贤而内自省也。",
+        "id": "413dde3e41d78791",
+        "rank": 1,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-lunyu-4-14",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "3a012832b760c2136407cad0f95167af49738c0d5ab1687aebeb25f385b9437e",
+        "start": 0,
+        "end": 19,
+        "source": "论语",
+        "chapter": "第4章 里仁第四",
+        "text": "子曰：“见贤思齐焉，见不贤而内自省也。",
+        "id": "413dde3e41d78791",
+        "rank": 1,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "deep-discernment-core",
+      "repeat": 3,
+      "options": 45,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-lunyu-4-14",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "3a012832b760c2136407cad0f95167af49738c0d5ab1687aebeb25f385b9437e",
+        "start": 0,
+        "end": 19,
+        "source": "论语",
+        "chapter": "第4章 里仁第四",
+        "text": "子曰：“见贤思齐焉，见不贤而内自省也。",
+        "id": "413dde3e41d78791",
+        "rank": 1,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-lunyu-4-14",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "3a012832b760c2136407cad0f95167af49738c0d5ab1687aebeb25f385b9437e",
+        "start": 0,
+        "end": 19,
+        "source": "论语",
+        "chapter": "第4章 里仁第四",
+        "text": "子曰：“见贤思齐焉，见不贤而内自省也。",
+        "id": "413dde3e41d78791",
+        "rank": 1,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "deep-shared-joy-poetry",
+      "repeat": 1,
+      "options": 246,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-lunyu-16-8",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "a44238fdb4d229186c0f312da5c08218de12f099a6d0b945b51301f8c811c196",
+        "start": 15,
+        "end": 34,
+        "source": "论语",
+        "chapter": "第16章 季氏第十六",
+        "text": "乐节礼乐，乐道人之善，乐多贤友，益矣。",
+        "id": "b05d06a0e63c7238",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-lunyu-16-8",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "a44238fdb4d229186c0f312da5c08218de12f099a6d0b945b51301f8c811c196",
+        "start": 15,
+        "end": 34,
+        "source": "论语",
+        "chapter": "第16章 季氏第十六",
+        "text": "乐节礼乐，乐道人之善，乐多贤友，益矣。",
+        "id": "b05d06a0e63c7238",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "deep-shared-joy-poetry",
+      "repeat": 2,
+      "options": 211,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-mengzi-2-2",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "213c2b2e5863b48319a95165a631d5e95a2efaf177b5ab8ae1b063f6c46b49be",
+        "start": 0,
+        "end": 51,
+        "source": "孟子",
+        "chapter": "第2章 卷二 梁惠王下",
+        "text": "今王鼓乐於此，百姓闻王钟鼓之声，管籥之音，举欣欣然有喜色而相告曰：‘吾王庶几无疾病与，何以能鼓乐也？’",
+        "id": "763e7f780a3702da",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-mengzi-2-2",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "213c2b2e5863b48319a95165a631d5e95a2efaf177b5ab8ae1b063f6c46b49be",
+        "start": 0,
+        "end": 51,
+        "source": "孟子",
+        "chapter": "第2章 卷二 梁惠王下",
+        "text": "今王鼓乐於此，百姓闻王钟鼓之声，管籥之音，举欣欣然有喜色而相告曰：‘吾王庶几无疾病与，何以能鼓乐也？’",
+        "id": "763e7f780a3702da",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "deep-shared-joy-poetry",
+      "repeat": 3,
+      "options": 239,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-mengzi-2-2",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "213c2b2e5863b48319a95165a631d5e95a2efaf177b5ab8ae1b063f6c46b49be",
+        "start": 103,
+        "end": 113,
+        "source": "孟子",
+        "chapter": "第2章 卷二 梁惠王下",
+        "text": "此无他，与民同乐也。",
+        "id": "684d11954f720cf7",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-mengzi-2-2",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "213c2b2e5863b48319a95165a631d5e95a2efaf177b5ab8ae1b063f6c46b49be",
+        "start": 103,
+        "end": 113,
+        "source": "孟子",
+        "chapter": "第2章 卷二 梁惠王下",
+        "text": "此无他，与民同乐也。",
+        "id": "684d11954f720cf7",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "word-learning-joy-core",
+      "repeat": 1,
+      "options": 90,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-mengzi-11-4",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "c1eb999e0b02f5792eeb718ffed272a490a184712f8a4e830e0458469fca0864",
+        "start": 13,
+        "end": 23,
+        "source": "孟子",
+        "chapter": "第11章 卷十三 尽心上",
+        "text": "反身而诚，乐莫大焉。",
+        "id": "699ccc852020cfc6",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-mengzi-11-4",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "c1eb999e0b02f5792eeb718ffed272a490a184712f8a4e830e0458469fca0864",
+        "start": 13,
+        "end": 23,
+        "source": "孟子",
+        "chapter": "第11章 卷十三 尽心上",
+        "text": "反身而诚，乐莫大焉。",
+        "id": "699ccc852020cfc6",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "word-learning-joy-core",
+      "repeat": 2,
+      "options": 90,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-mengzi-11-4",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "c1eb999e0b02f5792eeb718ffed272a490a184712f8a4e830e0458469fca0864",
+        "start": 13,
+        "end": 23,
+        "source": "孟子",
+        "chapter": "第11章 卷十三 尽心上",
+        "text": "反身而诚，乐莫大焉。",
+        "id": "699ccc852020cfc6",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-mengzi-11-4",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "c1eb999e0b02f5792eeb718ffed272a490a184712f8a4e830e0458469fca0864",
+        "start": 13,
+        "end": 23,
+        "source": "孟子",
+        "chapter": "第11章 卷十三 尽心上",
+        "text": "反身而诚，乐莫大焉。",
+        "id": "699ccc852020cfc6",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "word-learning-joy-core",
+      "repeat": 3,
+      "options": 86,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-liji-16-7",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "e6df1c3c983f86b22cccae84e6e9fa42d0088d398a81722c881da371dc4b11f2",
+        "start": 78,
+        "end": 108,
+        "source": "礼记",
+        "chapter": "第16章 学记",
+        "text": "夫然，故安其学而亲其师，乐其友而信其道，是以虽离师辅而不反。",
+        "id": "6401e6b77d508f48",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-liji-16-7",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "e6df1c3c983f86b22cccae84e6e9fa42d0088d398a81722c881da371dc4b11f2",
+        "start": 78,
+        "end": 108,
+        "source": "礼记",
+        "chapter": "第16章 学记",
+        "text": "夫然，故安其学而亲其师，乐其友而信其道，是以虽离师辅而不反。",
+        "id": "6401e6b77d508f48",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "word-practice-poetry",
+      "repeat": 1,
+      "options": 177,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-liji-29-29",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "4ce71b75ce149d811c9a11788d64fde7a177277e3e777ad3db76259eae5b9377",
+        "start": 58,
+        "end": 97,
+        "source": "礼记",
+        "chapter": "第29章 中庸",
+        "text": "故君子尊德性而道问学，致广大而尽精微，极高明而道中庸，温故而知新，敦厚以崇礼。",
+        "id": "e55e224dcf44daaa",
+        "rank": 4,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-liji-29-29",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "4ce71b75ce149d811c9a11788d64fde7a177277e3e777ad3db76259eae5b9377",
+        "start": 58,
+        "end": 97,
+        "source": "礼记",
+        "chapter": "第29章 中庸",
+        "text": "故君子尊德性而道问学，致广大而尽精微，极高明而道中庸，温故而知新，敦厚以崇礼。",
+        "id": "e55e224dcf44daaa",
+        "rank": 4,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "word-practice-poetry",
+      "repeat": 2,
+      "options": 164,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-liji-16-7",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "e6df1c3c983f86b22cccae84e6e9fa42d0088d398a81722c881da371dc4b11f2",
+        "start": 0,
+        "end": 20,
+        "source": "礼记",
+        "chapter": "第16章 学记",
+        "text": "大学之教也，时教必有正业，退息必有居学。",
+        "id": "04c2685dd6d8fdb8",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-liji-16-7",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "e6df1c3c983f86b22cccae84e6e9fa42d0088d398a81722c881da371dc4b11f2",
+        "start": 0,
+        "end": 20,
+        "source": "礼记",
+        "chapter": "第16章 学记",
+        "text": "大学之教也，时教必有正业，退息必有居学。",
+        "id": "04c2685dd6d8fdb8",
+        "rank": 2,
+        "tier": 1,
+        "repeated": false
+      }
+    },
+    {
+      "id": "word-practice-poetry",
+      "repeat": 3,
+      "options": 213,
+      "repeatedOptions": 0,
+      "reorderedOptions": 0,
+      "baseline": {
+        "sourceId": "rysxguji-liji-29-29",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "4ce71b75ce149d811c9a11788d64fde7a177277e3e777ad3db76259eae5b9377",
+        "start": 58,
+        "end": 97,
+        "source": "礼记",
+        "chapter": "第29章 中庸",
+        "text": "故君子尊德性而道问学，致广大而尽精微，极高明而道中庸，温故而知新，敦厚以崇礼。",
+        "id": "e55e224dcf44daaa",
+        "rank": 4,
+        "tier": 1,
+        "repeated": false
+      },
+      "trial": {
+        "sourceId": "rysxguji-liji-29-29",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "4ce71b75ce149d811c9a11788d64fde7a177277e3e777ad3db76259eae5b9377",
+        "start": 58,
+        "end": 97,
+        "source": "礼记",
+        "chapter": "第29章 中庸",
+        "text": "故君子尊德性而道问学，致广大而尽精微，极高明而道中庸，温故而知新，敦厚以崇礼。",
+        "id": "e55e224dcf44daaa",
+        "rank": 4,
+        "tier": 1,
+        "repeated": false
+      }
+    }
+  ],
+  "v18": {
+    "deliveries": [
+      {
+        "id": "b3e267b74bcb",
+        "pair": 1,
+        "arm": "treatment",
+        "link": "b2350132",
+        "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "repeated": false
+      },
+      {
+        "id": "f17e06a73d28",
+        "pair": 4,
+        "arm": "baseline",
+        "link": "b2350132",
+        "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "repeated": false
+      },
+      {
+        "id": "8dc8821a008f",
+        "pair": 2,
+        "arm": "baseline",
+        "link": "f98ee1da",
+        "quote": "多闻，择其善者而从之",
+        "repeated": false
+      },
+      {
+        "id": "c54529af9b27",
+        "pair": 2,
+        "arm": "treatment",
+        "link": "f98ee1da",
+        "quote": "多闻，择其善者而从之；多见而识之；知之次也。",
+        "repeated": false
+      },
+      {
+        "id": "56d197131580",
+        "pair": 3,
+        "arm": "treatment",
+        "link": "e711f64e",
+        "quote": "不怨天，不尤人，下学而上达。知我者其天乎！",
+        "repeated": false
+      },
+      {
+        "id": "04c6b0543997",
+        "pair": 5,
+        "arm": "treatment",
+        "link": "8f7dcd1f",
+        "quote": "此无他，与民同乐也。",
+        "repeated": false
+      },
+      {
+        "id": "444036f29660",
+        "pair": 4,
+        "arm": "treatment",
+        "link": "b2350132",
+        "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "repeated": false
+      },
+      {
+        "id": "117b23d45192",
+        "pair": 5,
+        "arm": "baseline",
+        "link": "8f7dcd1f",
+        "quote": "此无他，与民同乐也。",
+        "repeated": false
+      },
+      {
+        "id": "bcf7b3b20ca9",
+        "pair": 3,
+        "arm": "baseline",
+        "link": "e711f64e",
+        "quote": "不怨天，不尤人，下学而上达。知我者其天乎！",
+        "repeated": false
+      },
+      {
+        "id": "50a326036ac0",
+        "pair": 1,
+        "arm": "baseline",
+        "link": "b2350132",
+        "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "repeated": false
+      }
+    ],
+    "proposals": []
+  },
+  "v20": {
+    "deliveries": [
+      {
+        "id": "af3b88a5a32b",
+        "pair": 4,
+        "link": "b2350132",
+        "arm": "v17",
+        "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "repeated": false
+      },
+      {
+        "id": "cff32a79f974",
+        "pair": 2,
+        "link": "f98ee1da",
+        "arm": "v17",
+        "quote": "多闻，择其善者而从之",
+        "repeated": false
+      },
+      {
+        "id": "d3f46cefb2df",
+        "pair": 5,
+        "link": "8f7dcd1f",
+        "arm": "v17",
+        "quote": "此无他，与民同乐也。",
+        "repeated": false
+      },
+      {
+        "id": "1b3a789d6966",
+        "pair": 5,
+        "link": "8f7dcd1f",
+        "arm": "v20",
+        "quote": "今王鼓乐於此，百姓闻王钟鼓之声，管籥之音，举欣欣然有喜色而相告曰：‘吾王庶几无疾病与，何以能鼓乐也？’",
+        "repeated": false
+      },
+      {
+        "id": "53d7a8e632aa",
+        "pair": 1,
+        "link": "b2350132",
+        "arm": "v20",
+        "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "repeated": false
+      },
+      {
+        "id": "48bc54020e8d",
+        "pair": 2,
+        "link": "f98ee1da",
+        "arm": "v20",
+        "quote": "多闻，择其善者而从之",
+        "repeated": false
+      },
+      {
+        "id": "49513e57251a",
+        "pair": 4,
+        "link": "b2350132",
+        "arm": "v20",
+        "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "repeated": false
+      },
+      {
+        "id": "402ea72b1435",
+        "pair": 1,
+        "link": "b2350132",
+        "arm": "v17",
+        "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+        "repeated": false
+      }
+    ],
+    "proposals": [
+      {
+        "pair": 1,
+        "original": [
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 66,
+            "quoteEnd": 86,
+            "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。"
+          }
+        ],
+        "options": [
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 0,
+            "quoteEnd": 23,
+            "quote": "子曰：“道不远人，人之为道而远人，不可以为道。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 23,
+            "quoteEnd": 38,
+            "quote": "诗云：‘伐柯伐柯，其则不远。’",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 38,
+            "quoteEnd": 54,
+            "quote": "执柯以伐柯，睨而视之，犹以为远。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 54,
+            "quoteEnd": 66,
+            "quote": "故君子以人治人，改而止。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 66,
+            "quoteEnd": 86,
+            "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 86,
+            "quoteEnd": 147,
+            "quote": "君子之道四，丘未能一焉：所求乎子以事父，未能也；所求乎臣以事君，未能也；所求乎弟以事兄，未能也；所求乎朋友先施之，未能也。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 147,
+            "quoteEnd": 167,
+            "quote": "庸德之行，庸言之谨，有所不足，不敢不勉。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 167,
+            "quoteEnd": 190,
+            "quote": "有余，不敢尽，言顾行，行顾言，君子胡不慥慥尔。",
+            "repeated": false
+          }
+        ]
+      },
+      {
+        "pair": 4,
+        "original": [
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 66,
+            "quoteEnd": 86,
+            "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。"
+          }
+        ],
+        "options": [
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 0,
+            "quoteEnd": 23,
+            "quote": "子曰：“道不远人，人之为道而远人，不可以为道。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 23,
+            "quoteEnd": 38,
+            "quote": "诗云：‘伐柯伐柯，其则不远。’",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 38,
+            "quoteEnd": 54,
+            "quote": "执柯以伐柯，睨而视之，犹以为远。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 54,
+            "quoteEnd": 66,
+            "quote": "故君子以人治人，改而止。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 66,
+            "quoteEnd": 86,
+            "quote": "忠恕违道不远，施诸己而不愿，亦勿施于人。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 86,
+            "quoteEnd": 147,
+            "quote": "君子之道四，丘未能一焉：所求乎子以事父，未能也；所求乎臣以事君，未能也；所求乎弟以事兄，未能也；所求乎朋友先施之，未能也。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 147,
+            "quoteEnd": 167,
+            "quote": "庸德之行，庸言之谨，有所不足，不敢不勉。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-liji-29-13",
+            "textHash": "0b121c5b780e3aa89c0bbfdc46a52b680eee1aac07fcb1f0a3d64f8cbd0a5e41",
+            "quoteStart": 167,
+            "quoteEnd": 190,
+            "quote": "有余，不敢尽，言顾行，行顾言，君子胡不慥慥尔。",
+            "repeated": false
+          }
+        ]
+      },
+      {
+        "pair": 2,
+        "original": [
+          {
+            "sourceId": "rysxguji-lunyu-7-26",
+            "textHash": "1600aeb54c78544c6d0ef74e7f3254ae110101ed23493477541a4caac9412014",
+            "quoteStart": 18,
+            "quoteEnd": 28,
+            "quote": "多闻，择其善者而从之"
+          }
+        ],
+        "options": [
+          {
+            "sourceId": "rysxguji-lunyu-7-26",
+            "textHash": "1600aeb54c78544c6d0ef74e7f3254ae110101ed23493477541a4caac9412014",
+            "quoteStart": 0,
+            "quoteEnd": 18,
+            "quote": "子曰：“盖有不知而作之者，我无是也。",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-lunyu-7-26",
+            "textHash": "1600aeb54c78544c6d0ef74e7f3254ae110101ed23493477541a4caac9412014",
+            "quoteStart": 18,
+            "quoteEnd": 28,
+            "quote": "多闻，择其善者而从之",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-lunyu-7-26",
+            "textHash": "1600aeb54c78544c6d0ef74e7f3254ae110101ed23493477541a4caac9412014",
+            "quoteStart": 18,
+            "quoteEnd": 40,
+            "quote": "多闻，择其善者而从之；多见而识之；知之次也。",
+            "repeated": false
+          }
+        ]
+      },
+      {
+        "pair": 5,
+        "original": [
+          {
+            "sourceId": "rysxguji-mengzi-2-2",
+            "textHash": "213c2b2e5863b48319a95165a631d5e95a2efaf177b5ab8ae1b063f6c46b49be",
+            "quoteStart": 103,
+            "quoteEnd": 113,
+            "quote": "此无他，与民同乐也。"
+          }
+        ],
+        "options": [
+          {
+            "sourceId": "rysxguji-mengzi-2-2",
+            "textHash": "213c2b2e5863b48319a95165a631d5e95a2efaf177b5ab8ae1b063f6c46b49be",
+            "quoteStart": 0,
+            "quoteEnd": 51,
+            "quote": "今王鼓乐於此，百姓闻王钟鼓之声，管籥之音，举欣欣然有喜色而相告曰：‘吾王庶几无疾病与，何以能鼓乐也？’",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-mengzi-2-2",
+            "textHash": "213c2b2e5863b48319a95165a631d5e95a2efaf177b5ab8ae1b063f6c46b49be",
+            "quoteStart": 51,
+            "quoteEnd": 103,
+            "quote": "今王田猎於此，百姓闻王车马之音，见羽旄之美，举欣欣然有喜色而相告曰：‘吾王庶几无疾病与，何以能田猎也？’",
+            "repeated": false
+          },
+          {
+            "sourceId": "rysxguji-mengzi-2-2",
+            "textHash": "213c2b2e5863b48319a95165a631d5e95a2efaf177b5ab8ae1b063f6c46b49be",
+            "quoteStart": 103,
+            "quoteEnd": 113,
+            "quote": "此无他，与民同乐也。",
+            "repeated": false
+          }
+        ]
+      }
+    ]
+  }
+}

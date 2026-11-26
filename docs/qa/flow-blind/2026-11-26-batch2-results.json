@@ -1,0 +1,3621 @@
+{
+  "summary": {
+    "points": 18,
+    "blindedItems": 18,
+    "baseline": {
+      "D": 15,
+      "P": 3,
+      "N": 0
+    },
+    "trial": {
+      "D": 15,
+      "P": 3,
+      "N": 0
+    },
+    "byGroup": {
+      "open": {
+        "points": 3,
+        "baseline": {
+          "D": 3,
+          "P": 0,
+          "N": 0
+        },
+        "trial": {
+          "D": 3,
+          "P": 0,
+          "N": 0
+        }
+      },
+      "lexical": {
+        "points": 3,
+        "baseline": {
+          "D": 3,
+          "P": 0,
+          "N": 0
+        },
+        "trial": {
+          "D": 3,
+          "P": 0,
+          "N": 0
+        }
+      },
+      "function": {
+        "points": 3,
+        "baseline": {
+          "D": 3,
+          "P": 0,
+          "N": 0
+        },
+        "trial": {
+          "D": 3,
+          "P": 0,
+          "N": 0
+        }
+      },
+      "poetry": {
+        "points": 3,
+        "baseline": {
+          "D": 0,
+          "P": 3,
+          "N": 0
+        },
+        "trial": {
+          "D": 0,
+          "P": 3,
+          "N": 0
+        }
+      },
+      "deep": {
+        "points": 6,
+        "baseline": {
+          "D": 6,
+          "P": 0,
+          "N": 0
+        },
+        "trial": {
+          "D": 6,
+          "P": 0,
+          "N": 0
+        }
+      }
+    },
+    "options": 1498,
+    "repeatedOptions": 0,
+    "downweightedOptions": 0,
+    "changedLeads": [],
+    "repeatedRemoved": [],
+    "netDirect": 0,
+    "directLoss": [],
+    "loweredEvidence": [],
+    "noEvidenceInPool": [
+      "P1"
+    ],
+    "noEvidenceInWindow": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "noEvidenceInOption": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "passes": false
+  },
+  "points": [
+    {
+      "id": "O1",
+      "group": "open",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-lunyu-2-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+          "start": 0,
+          "end": 82
+        },
+        {
+          "sourceId": "rysxguji-xunzi-6-11",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1bbd7c5c019bfd9b7de6ebdabb91894516d30e0566e3cec12bb6330f1103f700",
+          "start": 0,
+          "end": 235
+        },
+        {
+          "sourceId": "rysxguji-lunyu-16-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "7756c05fb5a85df32fa771b5c49815183c783e00324a17d86f07b9b9d82ebc27",
+          "start": 0,
+          "end": 49
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-18-15",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "00c42dcc624aa42f0c39e42439d85d39448908f9cd6d65c43f49e14e693b7eb7",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-45-2",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "04ef4b388d25dbc1ea1204ddd4dd7d4f218fee7e01ec00ef4bb77d8369f83795",
+          "start": 0,
+          "end": 332
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-79-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "853e38cfb6f97076e82b78acfe724ee0e0ffd080da3f628379dfa56ff2340ea2",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-130-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1102906795ac9f3b3be8546b9e6e778b6edcf12daec77308d85b77cb4562ec17",
+          "start": 0,
+          "end": 239
+        },
+        {
+          "sourceId": "rysxguji-liji-31-12",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "e9e0402fbe297b5bc89f1fb1a4e1bb82ef8dbce92b1647d90417f91b0661cf0f",
+          "start": 0,
+          "end": 117
+        },
+        {
+          "sourceId": "rysxguji-mozi-23-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "cab303156e616768ef9ff80017bc858e7df25746fa175581cbb7df9a43f2d1a5",
+          "start": 0,
+          "end": 226
+        },
+        {
+          "sourceId": "rysxguji-mengzi-10-18",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1d592d0d1ba3c9e155d491ba68cc8f955dcf462254b0883b63081fc550bae887",
+          "start": 0,
+          "end": 84
+        },
+        {
+          "sourceId": "rysxguji-shangshu-20-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "4f0636f4ab7a7a470fab698aef15b9ebb3fad5d9185e063b71a3a0db4c54429a",
+          "start": 0,
+          "end": 112
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-201-13",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "5ce0e411409be5abd6d35909d38e8078e2431edb760322f4dc52b77b53048421",
+          "start": 0,
+          "end": 205
+        }
+      ],
+      "clickable": [],
+      "options": 70,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-2-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+          "start": 12,
+          "end": 29,
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "知之为知之，不知为不知，是知也！”",
+          "id": "d8619284cb3086cf",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "d8619284cb3086cf",
+          "verdict": "D",
+          "reason": "原文把知道和不知道分别说清，将如实承认这条界线本身视为知。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-2-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+          "start": 12,
+          "end": 29,
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "知之为知之，不知为不知，是知也！”",
+          "id": "d8619284cb3086cf",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "d8619284cb3086cf",
+          "verdict": "D",
+          "reason": "原文把知道和不知道分别说清，将如实承认这条界线本身视为知。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-2-14",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+            "source": "论语",
+            "chapter": "第2章 为政第二",
+            "text": "知之为知之，不知为不知，是知也",
+            "start": 12,
+            "end": 27
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "d8619284cb3086cf"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-2-14",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+            "source": "论语",
+            "chapter": "第2章 为政第二",
+            "text": "多闻阙疑，慎言其余",
+            "start": 39,
+            "end": 48
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "5a35a69817aca5e7"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-16-14",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "7756c05fb5a85df32fa771b5c49815183c783e00324a17d86f07b9b9d82ebc27",
+            "source": "论语",
+            "chapter": "第16章 季氏第十六",
+            "text": "疑思问",
+            "start": 35,
+            "end": 38
+          },
+          "poolRank": 3,
+          "windowRank": 3,
+          "optionIds": [
+            "7f858dc4c203848b"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-xunzi-6-11",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "1bbd7c5c019bfd9b7de6ebdabb91894516d30e0566e3cec12bb6330f1103f700",
+            "source": "荀子",
+            "chapter": "第6章 非十二子篇第六",
+            "text": "不知则问，不能则学",
+            "start": 47,
+            "end": 56
+          },
+          "poolRank": 2,
+          "windowRank": 2,
+          "optionIds": [
+            "543ab08a45c1b67e"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "O2",
+      "group": "open",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-xunzi-1-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+          "start": 0,
+          "end": 265
+        },
+        {
+          "sourceId": "rysxguji-xunzi-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "82b7db130e63e7ba67e1e6d90027f6f1497ea98ea7da0f8384030fd51296526f",
+          "start": 0,
+          "end": 338
+        },
+        {
+          "sourceId": "rysxguji-lunyu-9-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abd7a02fa2b2f409ca9dc0131228531eb50d63f613749a9e1b84ed974e80cc3a",
+          "start": 0,
+          "end": 37
+        },
+        {
+          "sourceId": "rysxguji-xunzi-12-17",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "ac3df2b10d4c32fb1a308c861fe5c5b9fbae52e8a10834388e32f04babc4e499",
+          "start": 0,
+          "end": 71
+        },
+        {
+          "sourceId": "rysxguji-xunzi-22-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "6ba780d9773310cc091bf07ce2f0039387520e9fb27bf172882558f6a35ef0c5",
+          "start": 0,
+          "end": 264
+        },
+        {
+          "sourceId": "lunyu-1-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1a5eb80288b08db40d73ca005f567150962d220f4381294f903a5104bf7b6a69",
+          "start": 0,
+          "end": 36
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-10-9",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "0b25de550a4368760422e59c3be676529f23eaca631ea706f732330ef03d1f13",
+          "start": 0,
+          "end": 105
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-75-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "b3d48e716bf93ee0ea2407720a9aa25bba529f62edd4b7798d54a7ec28737f87",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-liji-22-37",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "2ca8c5c52c10b64fec46995e5d36a41a094429c173cd6579cfd44f3f328a8f86",
+          "start": 0,
+          "end": 255
+        },
+        {
+          "sourceId": "lunyu-1-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "156dc5d3985e63318b423ae2f5b2dc6ac09aa344cbbe00f4ac4412507cb30450",
+          "start": 0,
+          "end": 29
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-102-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "a6e73cae6cb9a463fd558396e3907c1e96268894c685ff863da626b7d0a62e77",
+          "start": 0,
+          "end": 83
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-104-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "34c8e362b7891f6afeeaf24b06686e11db5d230555cc9b3a47270eaca76007d9",
+          "start": 0,
+          "end": 175
+        }
+      ],
+      "clickable": [],
+      "options": 92,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-xunzi-1-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+          "start": 36,
+          "end": 59,
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "故不积蹞步，无以致千里；不积小流，无以成江海。",
+          "id": "2ee2c76b9875ba67",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "2ee2c76b9875ba67",
+          "verdict": "D",
+          "reason": "千里由小步累积、江海由细流汇成，两个尺度清楚呈现长程目标与持续小行动的关系。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-xunzi-1-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+          "start": 36,
+          "end": 59,
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "故不积蹞步，无以致千里；不积小流，无以成江海。",
+          "id": "2ee2c76b9875ba67",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "2ee2c76b9875ba67",
+          "verdict": "D",
+          "reason": "千里由小步累积、江海由细流汇成，两个尺度清楚呈现长程目标与持续小行动的关系。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-xunzi-1-5",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+            "source": "荀子",
+            "chapter": "第1章 劝学篇第一",
+            "text": "不积蹞步，无以致千里",
+            "start": 37,
+            "end": 47
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "2ee2c76b9875ba67"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-xunzi-1-5",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+            "source": "荀子",
+            "chapter": "第1章 劝学篇第一",
+            "text": "锲而不舍，金石可镂",
+            "start": 89,
+            "end": 98
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "18beae8acd96d6b5"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-9-14",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "abd7a02fa2b2f409ca9dc0131228531eb50d63f613749a9e1b84ed974e80cc3a",
+            "source": "论语",
+            "chapter": "第9章 子罕第九",
+            "text": "未成一篑，止，吾止也",
+            "start": 9,
+            "end": 19
+          },
+          "poolRank": 3,
+          "windowRank": 3,
+          "optionIds": [
+            "2e5f8482ec7b7c83"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-xunzi-2-8",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "82b7db130e63e7ba67e1e6d90027f6f1497ea98ea7da0f8384030fd51296526f",
+            "source": "荀子",
+            "chapter": "第2章 修身篇第二",
+            "text": "蹞步而不休，跛鳖千里",
+            "start": 206,
+            "end": 216
+          },
+          "poolRank": 2,
+          "windowRank": 2,
+          "optionIds": [
+            "cc11b231ad40d26e"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "O3",
+      "group": "open",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-lunyu-13-23",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d5c68e956f667ca1f7792b68ca7a51780521385d9c6c505322bdcf0b2e76550e",
+          "start": 0,
+          "end": 19
+        },
+        {
+          "sourceId": "lunyu-1-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "a83b5e292ad81e3936591320d6a0cd868504bfb75ee2b808d7f39e1d54c73e81",
+          "start": 0,
+          "end": 30
+        },
+        {
+          "sourceId": "rysxguji-lunyu-1-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "cd653306281e4cee290f9964536b4b8e97cc95b7ddd802d7f58b56668a15f733",
+          "start": 0,
+          "end": 36
+        },
+        {
+          "sourceId": "lunyu-1-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "156dc5d3985e63318b423ae2f5b2dc6ac09aa344cbbe00f4ac4412507cb30450",
+          "start": 0,
+          "end": 29
+        },
+        {
+          "sourceId": "rysxguji-liji-16-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "e03fed59833bef7e782e3ac26d2d7c8d685461372df04ec17a5cb3fbfed509ce",
+          "start": 0,
+          "end": 74
+        },
+        {
+          "sourceId": "rysxguji-lunyu-7-20",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "8ab19344ff60bcba95a4099a33f69b13908b3d3158996b27ba3bf15f04f20fa4",
+          "start": 0,
+          "end": 31
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-7-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "29ba22b0e9dca29211db39dc51ae63f0f9dc75c8936c48f72017e6aaf2c8bdf6",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-mozi-10-13",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "ca0164123c02aa56ff9c64f50c67374f3b8201ed8cc039ccf64de7fff5d4dc63",
+          "start": 0,
+          "end": 344
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-117-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d6bbc846a80dbdb36c1d76889c7cb69dcd0bdceb0845cfc8c684106eefcd2d14",
+          "start": 0,
+          "end": 72
+        },
+        {
+          "sourceId": "rysxguji-xunzi-14-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "0f436cf9f8818ca1d1f9d28e9780caa3692fbd33b336a16ae84a003efd580031",
+          "start": 0,
+          "end": 357
+        },
+        {
+          "sourceId": "rysxguji-daxue-1-27",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3c20074db39eabafaf5b666cf50e25eb4976d326e12a1d81940230e354ca0ce9",
+          "start": 0,
+          "end": 276
+        },
+        {
+          "sourceId": "rysxguji-zhongyong-1-44",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "4c8402abc133c1b6e7a48ec58054e8e2e189505617cc0ffe06b053a82ccc1728",
+          "start": 0,
+          "end": 211
+        }
+      ],
+      "clickable": [],
+      "options": 67,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-13-23",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d5c68e956f667ca1f7792b68ca7a51780521385d9c6c505322bdcf0b2e76550e",
+          "start": 0,
+          "end": 19,
+          "source": "论语",
+          "chapter": "第13章 子路第十三",
+          "text": "子曰：“君子和而不同，小人同而不和。”",
+          "id": "ae37e99065dfea63",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "ae37e99065dfea63",
+          "verdict": "D",
+          "reason": "“和而不同”直接说明可以保有分歧且和睦相处，回应了和朋友意见不同能否共事。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-13-23",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d5c68e956f667ca1f7792b68ca7a51780521385d9c6c505322bdcf0b2e76550e",
+          "start": 0,
+          "end": 19,
+          "source": "论语",
+          "chapter": "第13章 子路第十三",
+          "text": "子曰：“君子和而不同，小人同而不和。”",
+          "id": "ae37e99065dfea63",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "ae37e99065dfea63",
+          "verdict": "D",
+          "reason": "“和而不同”直接说明可以保有分歧且和睦相处，回应了和朋友意见不同能否共事。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-13-23",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "d5c68e956f667ca1f7792b68ca7a51780521385d9c6c505322bdcf0b2e76550e",
+            "source": "论语",
+            "chapter": "第13章 子路第十三",
+            "text": "君子和而不同，小人同而不和",
+            "start": 4,
+            "end": 17
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "ae37e99065dfea63"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-7-20",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "8ab19344ff60bcba95a4099a33f69b13908b3d3158996b27ba3bf15f04f20fa4",
+            "source": "论语",
+            "chapter": "第7章 述而第七",
+            "text": "择其善者而从之，其不善者而改之",
+            "start": 14,
+            "end": 29
+          },
+          "poolRank": 6,
+          "windowRank": 6,
+          "optionIds": [
+            "3884d03c6fac8b59"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-4-14",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "3a012832b760c2136407cad0f95167af49738c0d5ab1687aebeb25f385b9437e",
+            "source": "论语",
+            "chapter": "第4章 里仁第四",
+            "text": "见贤思齐焉，见不贤而内自省也",
+            "start": 4,
+            "end": 18
+          },
+          "poolRank": 11,
+          "windowRank": null,
+          "optionIds": [],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "L1",
+      "group": "lexical",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-lunyu-4-20",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "a9a959b81b9278ad895972ddb38e14d5dff59cc489033b7fc975186398023bc8",
+          "start": 0,
+          "end": 28
+        },
+        {
+          "sourceId": "rysxguji-lunyu-14-29",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "2e1924d701bbbd74e465696b8f1909e085616cdb924c20cc667b3d8006f64459",
+          "start": 0,
+          "end": 14
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-90-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1401730c34725b877dc2f012fe61412a7314cdb9a19dc2ed8cbb35a68b2b0bcb",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-liji-31-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "ef0c4eab8988a54d3d2f2093d7a5ab4f3da95f5bc0b8e64fc93588514ab8dee6",
+          "start": 0,
+          "end": 72
+        },
+        {
+          "sourceId": "rysxguji-shangshu-19-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "75c2d8cc4e1c80e178493582a6fc9312df8e64d9b1b3bbfdb4802713d77ed58b",
+          "start": 0,
+          "end": 65
+        },
+        {
+          "sourceId": "rysxguji-xunzi-30-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "352ef052b0ff9a43c1b1847d2aac0b22d65a700292faae6b0630bd6d0e406afd",
+          "start": 0,
+          "end": 205
+        },
+        {
+          "sourceId": "rysxguji-mozi-16-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3be13a2cab063902fc6653e442f5b4009dbb5727fffdbacf266b1f38a666d612",
+          "start": 0,
+          "end": 359
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-172-17",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3feff1d53dbf3e87f338b14418dd41c8f22d29375d6f24ed9627bef60f472669",
+          "start": 0,
+          "end": 70
+        },
+        {
+          "sourceId": "rysxguji-shijing-206-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "0fbe9f226291a69ac3e915e34cf66837d2134fc1e656afcb13c14b8e973a5b60",
+          "start": 0,
+          "end": 24
+        },
+        {
+          "sourceId": "rysxguji-yili-8-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "19c91b3449cc265b368f52c842969c949f677ed9cd6aa2632e6ec7d7c5ef367c",
+          "start": 0,
+          "end": 110
+        },
+        {
+          "sourceId": "rysxguji-zhouyi-36-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "89ef72f3ac31936f549279b131b44f4961c094b85110289740dd5d9a6edeeda3",
+          "start": 0,
+          "end": 31
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-10-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "a28255792b2cfb43b88050e0cdf82c6fb183be0fd2092426ea707e552bd6599c",
+          "start": 0,
+          "end": 201
+        }
+      ],
+      "clickable": [
+        {
+          "start": 16,
+          "end": 17,
+          "text": "敏"
+        }
+      ],
+      "options": 53,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-4-20",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "a9a959b81b9278ad895972ddb38e14d5dff59cc489033b7fc975186398023bc8",
+          "start": 13,
+          "end": 28,
+          "source": "论语",
+          "chapter": "第4章 里仁第四",
+          "text": "子曰：“君子欲讷于言而敏于行。",
+          "id": "0e1124ac5dd61623",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "0e1124ac5dd61623",
+          "verdict": "D",
+          "reason": "读者专要另一条言行对照的原文，“讷于言而敏于行”以说话持重与办事勤敏相配，提供了所需的异句旁证。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-4-20",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "a9a959b81b9278ad895972ddb38e14d5dff59cc489033b7fc975186398023bc8",
+          "start": 13,
+          "end": 28,
+          "source": "论语",
+          "chapter": "第4章 里仁第四",
+          "text": "子曰：“君子欲讷于言而敏于行。",
+          "id": "0e1124ac5dd61623",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "0e1124ac5dd61623",
+          "verdict": "D",
+          "reason": "读者专要另一条言行对照的原文，“讷于言而敏于行”以说话持重与办事勤敏相配，提供了所需的异句旁证。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-4-20",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "a9a959b81b9278ad895972ddb38e14d5dff59cc489033b7fc975186398023bc8",
+            "source": "论语",
+            "chapter": "第4章 里仁第四",
+            "text": "君子欲讷于言而敏于行",
+            "start": 17,
+            "end": 27
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "0e1124ac5dd61623"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-14-29",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "2e1924d701bbbd74e465696b8f1909e085616cdb924c20cc667b3d8006f64459",
+            "source": "论语",
+            "chapter": "第14章 宪问第十四",
+            "text": "君子耻其言而过其行",
+            "start": 4,
+            "end": 13
+          },
+          "poolRank": 2,
+          "windowRank": 2,
+          "optionIds": [
+            "71ea8d654fd6b045"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "L2",
+      "group": "lexical",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "lunyu-1-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "a83b5e292ad81e3936591320d6a0cd868504bfb75ee2b808d7f39e1d54c73e81",
+          "start": 0,
+          "end": 30
+        },
+        {
+          "sourceId": "rysxguji-lunyu-1-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "cd653306281e4cee290f9964536b4b8e97cc95b7ddd802d7f58b56668a15f733",
+          "start": 0,
+          "end": 35
+        },
+        {
+          "sourceId": "rysxguji-lunyu-9-19",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "eebc707a5ef12501d93e8a3445557de57d32373314f5317761741ba8474c078a",
+          "start": 0,
+          "end": 21
+        },
+        {
+          "sourceId": "rysxguji-lunyu-19-17",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "41e4b6252ecb3b2e4417b6ab0fbb708ed78624234ce530a4d0ef8148aae450b3",
+          "start": 0,
+          "end": 32
+        },
+        {
+          "sourceId": "rysxguji-zhouyi-66-13",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "2fa7c90362532151137a94a686460a853fa0b86ea6e7406e7d7ad129bed0f84c",
+          "start": 0,
+          "end": 98
+        },
+        {
+          "sourceId": "rysxguji-mengzi-3-13",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "077d416414f2a452a157d2487dac50e8b3e88b4147d427f708f6bc0a390cd164",
+          "start": 0,
+          "end": 46
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-165-20",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "f281c7d161758d1e637de03676b4cbb5526ac45f45d6f8dca1628006f58e5b3a",
+          "start": 0,
+          "end": 244
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-55-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "12a9c59d4e2540a89917b339b91c9f30a96e2454cf707182d6fd9643bc558971",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-mozi-16-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "dcd917f9092946294dfc121111abd70d8ad0a19ad734039edb1e8f5668744e51",
+          "start": 0,
+          "end": 289
+        },
+        {
+          "sourceId": "rysxguji-xunzi-22-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "711d92f05206ad3316a5eded0387153ffc85e402c6fcaf4274ed8cc7f3e6fbaa",
+          "start": 0,
+          "end": 354
+        },
+        {
+          "sourceId": "rysxguji-liji-1-66",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "c75b754f1bd8de78d74a4ed05a9dbd9bb54fac0e6a718e7f76b76193b7460cf0",
+          "start": 0,
+          "end": 36
+        },
+        {
+          "sourceId": "rysxguji-shangshu-44-9",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "b0df9b6aa6a93b1549b846d0e9d0384a821a27a7f2094f90e48608e8d4b1e0f0",
+          "start": 0,
+          "end": 78
+        }
+      ],
+      "clickable": [
+        {
+          "start": 6,
+          "end": 8,
+          "text": "不改"
+        }
+      ],
+      "options": 69,
+      "baseline": {
+        "option": {
+          "sourceId": "lunyu-1-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "a83b5e292ad81e3936591320d6a0cd868504bfb75ee2b808d7f39e1d54c73e81",
+          "start": 13,
+          "end": 30,
+          "source": "论语",
+          "chapter": "学而篇",
+          "text": "主忠信，无友不如己者，过则勿惮改。",
+          "id": "5e3447ea2f3131d3",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "5e3447ea2f3131d3",
+          "verdict": "D",
+          "reason": "“过则勿惮改”从过错的定义进到面对更正的态度，明确劝人克服畏难去改。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "lunyu-1-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "a83b5e292ad81e3936591320d6a0cd868504bfb75ee2b808d7f39e1d54c73e81",
+          "start": 13,
+          "end": 30,
+          "source": "论语",
+          "chapter": "学而篇",
+          "text": "主忠信，无友不如己者，过则勿惮改。",
+          "id": "5e3447ea2f3131d3",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "5e3447ea2f3131d3",
+          "verdict": "D",
+          "reason": "“过则勿惮改”从过错的定义进到面对更正的态度，明确劝人克服畏难去改。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-9-19",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "eebc707a5ef12501d93e8a3445557de57d32373314f5317761741ba8474c078a",
+            "source": "论语",
+            "chapter": "第9章 子罕第九",
+            "text": "过则勿惮改",
+            "start": 15,
+            "end": 20
+          },
+          "poolRank": 3,
+          "windowRank": 3,
+          "optionIds": [
+            "b6f3c280b16145d6"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-1-4",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "cd653306281e4cee290f9964536b4b8e97cc95b7ddd802d7f58b56668a15f733",
+            "source": "论语",
+            "chapter": "第1章 学而第一",
+            "text": "过则勿惮改",
+            "start": 29,
+            "end": 34
+          },
+          "poolRank": 2,
+          "windowRank": 2,
+          "optionIds": [
+            "17c4fe4f52bbc955"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-19-17",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "41e4b6252ecb3b2e4417b6ab0fbb708ed78624234ce530a4d0ef8148aae450b3",
+            "source": "论语",
+            "chapter": "第19章 子张第十九",
+            "text": "过也人皆见之，更也人皆仰之",
+            "start": 18,
+            "end": 31
+          },
+          "poolRank": 4,
+          "windowRank": 4,
+          "optionIds": [
+            "eafb9080d7c30772"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-zhouyi-66-13",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "2fa7c90362532151137a94a686460a853fa0b86ea6e7406e7d7ad129bed0f84c",
+            "source": "周易",
+            "chapter": "第66章 系辞下",
+            "text": "有不善未尝不知，知之未尝复行也",
+            "start": 15,
+            "end": 30
+          },
+          "poolRank": 5,
+          "windowRank": 5,
+          "optionIds": [
+            "d894ee705f3ecd84"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "L3",
+      "group": "lexical",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-shangshu-30-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "10cb6877b6dc5a0eeeb4ae865426c121aee9f9a06d22d82a09ae44959006e37a",
+          "start": 0,
+          "end": 238
+        },
+        {
+          "sourceId": "rysxguji-lunyu-15-23",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "fe9647a6fdf97d8d3b591a0173181f727b11348b9c30f9ff170cc191dcae9c89",
+          "start": 0,
+          "end": 45
+        },
+        {
+          "sourceId": "rysxguji-lunyu-14-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "caf895ed3273ce651e5047b83f6f26a2933d2383637b412ae1731358cba8f3f9",
+          "start": 0,
+          "end": 77
+        },
+        {
+          "sourceId": "rysxguji-lunyu-16-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "7756c05fb5a85df32fa771b5c49815183c783e00324a17d86f07b9b9d82ebc27",
+          "start": 0,
+          "end": 48
+        },
+        {
+          "sourceId": "rysxguji-lunyu-19-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "fe6c39c562c736b78a79946c19ee4ef27b804ea8738bedb7fdbdf08178f185bf",
+          "start": 0,
+          "end": 29
+        },
+        {
+          "sourceId": "rysxguji-lunyu-14-13",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "ae8e63ae1bc163d82e9ddfe348d5bac52f57887551c6c1e60aa1de4bf6046796",
+          "start": 0,
+          "end": 88
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-213-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "9aed182e2732e4f8cfebc99cb259bf6fde465ecc50a8da94f5c469413b564175",
+          "start": 0,
+          "end": 350
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-79-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "caee441f25cc53e56c28d408729f2b9c2d81ad653e5805c3820bdb10d93cc7b7",
+          "start": 0,
+          "end": 349
+        },
+        {
+          "sourceId": "rysxguji-liji-2-96",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "8be63061272bdbe6520d5211214625ced0b54573c16dbc8734786e38adf34d00",
+          "start": 0,
+          "end": 85
+        },
+        {
+          "sourceId": "rysxguji-mengzi-11-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "e9476de14c61aa8015279b7275dcadf8c9f7740f3da13adf42aa36e07f130228",
+          "start": 0,
+          "end": 53
+        },
+        {
+          "sourceId": "rysxguji-xunzi-19-35",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "2cd7b8cbce3c0dbad4a7f015aa7118692ef7af1834092e88bacfb2b2ef9b065e",
+          "start": 0,
+          "end": 283
+        },
+        {
+          "sourceId": "rysxguji-shijing-235-2",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "55a1f1e58251e04e2f78a4c2a4e89ea9fd12d9121952cef68dbf8cf699f24115",
+          "start": 0,
+          "end": 20
+        }
+      ],
+      "clickable": [
+        {
+          "start": 21,
+          "end": 22,
+          "text": "利"
+        }
+      ],
+      "options": 74,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-shangshu-30-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "10cb6877b6dc5a0eeeb4ae865426c121aee9f9a06d22d82a09ae44959006e37a",
+          "start": 131,
+          "end": 155,
+          "source": "尚书",
+          "chapter": "第30章 周书 旅獒第七",
+          "text": "不作无益害有益，功乃成；不贵异物贱用物，民乃足。",
+          "id": "7f66ef7290bc8677",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "7f66ef7290bc8677",
+          "verdict": "D",
+          "reason": "“不贵异物贱用物，民乃足”把看重奇物、轻视实用品与民生能否充足联系起来，给“大事不成”补上了具体的取舍和后果。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-shangshu-30-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "10cb6877b6dc5a0eeeb4ae865426c121aee9f9a06d22d82a09ae44959006e37a",
+          "start": 131,
+          "end": 155,
+          "source": "尚书",
+          "chapter": "第30章 周书 旅獒第七",
+          "text": "不作无益害有益，功乃成；不贵异物贱用物，民乃足。",
+          "id": "7f66ef7290bc8677",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "7f66ef7290bc8677",
+          "verdict": "D",
+          "reason": "“不贵异物贱用物，民乃足”把看重奇物、轻视实用品与民生能否充足联系起来，给“大事不成”补上了具体的取舍和后果。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-shangshu-30-3",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "10cb6877b6dc5a0eeeb4ae865426c121aee9f9a06d22d82a09ae44959006e37a",
+            "source": "尚书",
+            "chapter": "第30章 周书 旅獒第七",
+            "text": "不作无益害有益，功乃成",
+            "start": 131,
+            "end": 142
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "7f66ef7290bc8677"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-shangshu-30-3",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "10cb6877b6dc5a0eeeb4ae865426c121aee9f9a06d22d82a09ae44959006e37a",
+            "source": "尚书",
+            "chapter": "第30章 周书 旅獒第七",
+            "text": "不矜细行，终累大德",
+            "start": 203,
+            "end": 212
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "a8dd76ec51785c92"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-15-23",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "fe9647a6fdf97d8d3b591a0173181f727b11348b9c30f9ff170cc191dcae9c89",
+            "source": "论语",
+            "chapter": "第15章 卫灵公第十五",
+            "text": "小不忍则乱大谋",
+            "start": 37,
+            "end": 44
+          },
+          "poolRank": 2,
+          "windowRank": 2,
+          "optionIds": [
+            "b74dcad6ed54a7ae"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "F1",
+      "group": "function",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-lunyu-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+          "start": 0,
+          "end": 46
+        },
+        {
+          "sourceId": "rysxguji-mengzi-6-18",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "6fc9e575108830bc668f970f9a36c03ed5089ed5656127b61cfc1595ff86f484",
+          "start": 0,
+          "end": 264
+        },
+        {
+          "sourceId": "rysxguji-lunyu-13-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "09b08b04bb7b94d8340cc78f818883bd1fba9791b7af8bce4b0f8f639a80f337",
+          "start": 0,
+          "end": 133
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-187-11",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "98ffd21468b2778b632e8b58b2fe961e1e24c46cb0f4d3fbf82817c37d7b3b28",
+          "start": 0,
+          "end": 223
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-200-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3c2cdcd6685edbefd6800ce989e781807e679816773dc5f8ea457a4e6f26bfaf",
+          "start": 0,
+          "end": 202
+        },
+        {
+          "sourceId": "rysxguji-liji-2-145",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "211b63b97a14f792a67294448a9a5b3780573a69b18bccc26477b0e7e2a6fad9",
+          "start": 0,
+          "end": 104
+        },
+        {
+          "sourceId": "rysxguji-mozi-31-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "e6c5426d586c080e2207bcd252ddd8178249545d6d76abac84e13c620ff13a20",
+          "start": 0,
+          "end": 170
+        },
+        {
+          "sourceId": "rysxguji-xunzi-21-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "6663132a1c5d3dbdff60aa63556448e74c640ce9913edbc2f720b415643b756d",
+          "start": 0,
+          "end": 324
+        },
+        {
+          "sourceId": "rysxguji-lunyu-11-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "77214b77fc98e1636ce6f1bd5171caef8898a1ec28c07f9c7fdc33480712cb54",
+          "start": 0,
+          "end": 111
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-103-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "305f3075326b0af71471892af943db2ccd79e11679c6a49495320be3f417c8ba",
+          "start": 0,
+          "end": 302
+        },
+        {
+          "sourceId": "rysxguji-lunyu-13-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "8cbd638537134bc3c97654f0080e1623b52b76f4f73ea271e9bc725f2d1e5632",
+          "start": 0,
+          "end": 185
+        },
+        {
+          "sourceId": "rysxguji-lunyu-9-16",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "35d3150f19556b6868298ce944419bf1ca7d84c7af1ab0461e69e40440c897ec",
+          "start": 0,
+          "end": 45
+        }
+      ],
+      "clickable": [
+        {
+          "start": 55,
+          "end": 57,
+          "text": "焉知"
+        }
+      ],
+      "options": 136,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+          "start": 0,
+          "end": 24,
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "子曰：“视其所以，观其所由，察其所安，人焉廋哉？",
+          "id": "681287e7ea7a8e3e",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "681287e7ea7a8e3e",
+          "verdict": "D",
+          "reason": "“人焉廋哉”问人在这样的察看之下还能往哪里藏，焉置于动词廋前，给出另一个可判读的疑问用例。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+          "start": 0,
+          "end": 24,
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "子曰：“视其所以，观其所由，察其所安，人焉廋哉？",
+          "id": "681287e7ea7a8e3e",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "681287e7ea7a8e3e",
+          "verdict": "D",
+          "reason": "“人焉廋哉”问人在这样的察看之下还能往哪里藏，焉置于动词廋前，给出另一个可判读的疑问用例。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-13-7",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "09b08b04bb7b94d8340cc78f818883bd1fba9791b7af8bce4b0f8f639a80f337",
+            "source": "论语",
+            "chapter": "第13章 子路第十三",
+            "text": "焉用稼",
+            "start": 67,
+            "end": 70
+          },
+          "poolRank": 3,
+          "windowRank": 3,
+          "optionIds": [
+            "5c3babc4d5d376d1"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-2-8",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+            "source": "论语",
+            "chapter": "第2章 为政第二",
+            "text": "人焉廋哉",
+            "start": 19,
+            "end": 23
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "681287e7ea7a8e3e"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "F2",
+      "group": "function",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-lunyu-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+          "start": 0,
+          "end": 46
+        },
+        {
+          "sourceId": "rysxguji-mengzi-6-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "326c5a0b02a2dc22ec89e0f73d16dd51869df5ff15f32d3e0e216236924c1927",
+          "start": 0,
+          "end": 108
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-18-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "aefa03af58ce1c3132b66b63c4248129cb419508172f082a0d3e3e858ef97a31",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-34-2",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "19be049941fe7768b5f37f277f06a67eae540cc3322be349d53011b77c7a8cbf",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-15-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "b6a368f37f634283976e84364e102f52aaee44fa21d4c8f9aba6c4c3461180d3",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-18-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "ae531f3f9cacbcbe6c1c134b9ff8e688168b89afc0e8fec8a91e99a739f6683c",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-daxue-1-20",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "0e2c43745eb5d538bc4b1b700fd19de32854b8d8f8c5c1cf9b97afad6bbb417f",
+          "start": 0,
+          "end": 342
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-178-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1173706c6a8fd39427a6898b7e8c3e25300d6e47eb6c64c4afc372219560d848",
+          "start": 0,
+          "end": 223
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-187-11",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "98ffd21468b2778b632e8b58b2fe961e1e24c46cb0f4d3fbf82817c37d7b3b28",
+          "start": 0,
+          "end": 223
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-202-24",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "0ed81a8c201cbf27b7e52960200708fc87d0d70e8177ceb5385f0a0757a0a545",
+          "start": 0,
+          "end": 359
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-20-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "e99477b510ccb1d07ac659580bf9ceb06f59c7ec115099b96a245bd225f398ca",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-27-12",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1fbe21e0d75ff4bcf6a387178b218e2aab498562a2165eb0c40acf473687ba3f",
+          "start": 0,
+          "end": 360
+        }
+      ],
+      "clickable": [
+        {
+          "start": 114,
+          "end": 115,
+          "text": "其"
+        }
+      ],
+      "options": 81,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+          "start": 0,
+          "end": 24,
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "子曰：“视其所以，观其所由，察其所安，人焉廋哉？",
+          "id": "316ac5b59d2ed4ad",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "316ac5b59d2ed4ad",
+          "verdict": "D",
+          "reason": "“其所以”“其所由”“其所安”中的其均指被观察的人，句末“人焉廋哉”也点明了这个对象。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+          "start": 0,
+          "end": 24,
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "子曰：“视其所以，观其所由，察其所安，人焉廋哉？",
+          "id": "316ac5b59d2ed4ad",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "316ac5b59d2ed4ad",
+          "verdict": "D",
+          "reason": "“其所以”“其所由”“其所安”中的其均指被观察的人，句末“人焉廋哉”也点明了这个对象。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-2-8",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+            "source": "论语",
+            "chapter": "第2章 为政第二",
+            "text": "视其所以，观其所由，察其所安",
+            "start": 4,
+            "end": 18
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "316ac5b59d2ed4ad"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-mengzi-6-6",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "326c5a0b02a2dc22ec89e0f73d16dd51869df5ff15f32d3e0e216236924c1927",
+            "source": "孟子",
+            "chapter": "第6章 卷七 离娄上",
+            "text": "爱人不亲，反其仁；治人不治，反其智；礼人不答，反其敬",
+            "start": 5,
+            "end": 31
+          },
+          "poolRank": 2,
+          "windowRank": 2,
+          "optionIds": [
+            "4df93707afeee1a3"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "F3",
+      "group": "function",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-lunyu-15-26",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3bfdb3039a895829e7deb7a82015422eaaea079f2cb133d2afe3a8e400e2240c",
+          "start": 0,
+          "end": 14
+        },
+        {
+          "sourceId": "rysxguji-xunzi-1-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "7196eac49ea3f4faebda3da15ba189cf983f3b74fd3790eede98666655ddaa4d",
+          "start": 0,
+          "end": 213
+        },
+        {
+          "sourceId": "rysxguji-lunyu-14-13",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "ae8e63ae1bc163d82e9ddfe348d5bac52f57887551c6c1e60aa1de4bf6046796",
+          "start": 0,
+          "end": 88
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-117-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "0e966b588943baa30b0ff5daa5087954b28a71f017a5119279c09494b526b863",
+          "start": 0,
+          "end": 243
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-183-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "58796b8669d60a4b9187b0de797334ebfd5f6b848b95fcbc4384a391003af734",
+          "start": 0,
+          "end": 349
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-194-18",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "fa7e4a901d06ca63475267200f03b8ff4cd03c86cb58cdc06841a4eca2aca623",
+          "start": 0,
+          "end": 288
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-18-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "4eed55da53bd90aaf76b2ebeb95a4820d2ad3b6a3eec6410c85a3a2b2bfdac80",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-liji-41-2",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "26fdd2463e8c2a52f711692b9d4ab43d570d796c9855cd4fa91df3fcf2c6cad0",
+          "start": 0,
+          "end": 295
+        },
+        {
+          "sourceId": "rysxguji-mengzi-10-2",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "c706a9529bd6ec201b24b9b29a4b1f43687c2ccb3498b1e92ad0e3af69b2260e",
+          "start": 0,
+          "end": 291
+        },
+        {
+          "sourceId": "rysxguji-zhouli-6-36",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "268a1026aad3c7b14d8063a2c82b58caf3a81e3fa62a8379189d5cabb4771661",
+          "start": 0,
+          "end": 328
+        },
+        {
+          "sourceId": "rysxguji-mozi-51-30",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "8a930ca492de597039a7d62a3663da2a5e2aa5f7ebb20b611120dba705ab5d54",
+          "start": 0,
+          "end": 350
+        },
+        {
+          "sourceId": "rysxguji-lunyu-12-17",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "368af6dbc6a9e8bd90f39bbca3c738b04aba1a80ea1a8d416d58e2d04ca57f41",
+          "start": 0,
+          "end": 45
+        }
+      ],
+      "clickable": [
+        {
+          "start": 44,
+          "end": 45,
+          "text": "矣"
+        }
+      ],
+      "options": 140,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-15-26",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3bfdb3039a895829e7deb7a82015422eaaea079f2cb133d2afe3a8e400e2240c",
+          "start": 0,
+          "end": 14,
+          "source": "论语",
+          "chapter": "第15章 卫灵公第十五",
+          "text": "子曰：“过而不改，是谓过矣。",
+          "id": "4a46bc0ad3fa5f1a",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "4a46bc0ad3fa5f1a",
+          "verdict": "D",
+          "reason": "“过而不改”给出条件，“是谓过矣”以矣收住对这种行为的判断，正好能与“可以为师矣”对读。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-15-26",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3bfdb3039a895829e7deb7a82015422eaaea079f2cb133d2afe3a8e400e2240c",
+          "start": 0,
+          "end": 14,
+          "source": "论语",
+          "chapter": "第15章 卫灵公第十五",
+          "text": "子曰：“过而不改，是谓过矣。",
+          "id": "4a46bc0ad3fa5f1a",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "4a46bc0ad3fa5f1a",
+          "verdict": "D",
+          "reason": "“过而不改”给出条件，“是谓过矣”以矣收住对这种行为的判断，正好能与“可以为师矣”对读。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-15-26",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "3bfdb3039a895829e7deb7a82015422eaaea079f2cb133d2afe3a8e400e2240c",
+            "source": "论语",
+            "chapter": "第15章 卫灵公第十五",
+            "text": "过而不改，是谓过矣",
+            "start": 4,
+            "end": 13
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "4a46bc0ad3fa5f1a"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-xunzi-1-1",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "7196eac49ea3f4faebda3da15ba189cf983f3b74fd3790eede98666655ddaa4d",
+            "source": "荀子",
+            "chapter": "第1章 劝学篇第一",
+            "text": "则知明而行无过矣",
+            "start": 88,
+            "end": 96
+          },
+          "poolRank": 2,
+          "windowRank": 2,
+          "optionIds": [
+            "7438eedd521da3da"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-14-13",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "ae8e63ae1bc163d82e9ddfe348d5bac52f57887551c6c1e60aa1de4bf6046796",
+            "source": "论语",
+            "chapter": "第14章 宪问第十四",
+            "text": "亦可以为成人矣",
+            "start": 40,
+            "end": 47
+          },
+          "poolRank": 3,
+          "windowRank": 3,
+          "optionIds": [
+            "7aaf3d353788e4b7"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "P1",
+      "group": "poetry",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "poetry-8ee5afc9bc0bcdf9b5aa818133b341e0-0",
+          "corpusVersion": "poetry:a07280f02908e09fada99a64",
+          "textHash": "8db0cbc00f2f85a079162d0225e938d0a9c9a0f05c548cadf3d2f0caf24fdd91",
+          "start": 0,
+          "end": 51
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-10-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "62ffd2534ebaf760e61820306606cc39b1524dc59dfefb2fd75f40057b753b19",
+          "start": 0,
+          "end": 33
+        },
+        {
+          "sourceId": "poetry-e744a95692ed6d0a05e11add8bc627c3-0",
+          "corpusVersion": "poetry:2ad1517a72d119711538cfd3",
+          "textHash": "5d9d4c0cb512a1e1b2c1969ec81b1f8feb7bf93a3ca78564849ec8a8dd6f80d2",
+          "start": 0,
+          "end": 67
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-10-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "525883b492c22090d8cf39cab5103d7b6982a144f14dc46ff2f8882c9238447d",
+          "start": 0,
+          "end": 34
+        },
+        {
+          "sourceId": "poetry-d308aba7ed9ff19487880c3e8fa18628-0",
+          "corpusVersion": "poetry:05dc08f59961653bf59650e4",
+          "textHash": "34d06ae3ec72a48d2cd2718126928a3e949baea8390c3ad6855c42f76932fe4f",
+          "start": 0,
+          "end": 129
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-102-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "f780e2da4d3a77d802f06f4a205a35fd0650c7fa6c52cca1a1d8dd3f1bb753b0",
+          "start": 0,
+          "end": 71
+        },
+        {
+          "sourceId": "poetry-311d6f8d9c79e10093614f7943446cd0-0",
+          "corpusVersion": "poetry:4458947deff3274710d223db",
+          "textHash": "c5886af8df259a30d24d0c5c4d05755d772a26b8c2d5c5c7a7ae3a412caa8355",
+          "start": 0,
+          "end": 33
+        },
+        {
+          "sourceId": "poetry-55c946f8925d80310ef973be6fc1a1a6-0",
+          "corpusVersion": "poetry:70176c8b39b8a84d25b23069",
+          "textHash": "8878687896d6a6a54b4c7a693c07d9a709a1ae8546259f9d4115a84b0bcd9498",
+          "start": 0,
+          "end": 155
+        },
+        {
+          "sourceId": "poetry-ff06c3cdfdafe1cc5d3695f778c6a7b7-0",
+          "corpusVersion": "poetry:3077b9be91909afb98d456e5",
+          "textHash": "31aa99fe8de27140047ec883d42c3eeb3bc66baba3f6248348e00850fd9a7369",
+          "start": 0,
+          "end": 101
+        },
+        {
+          "sourceId": "poetry-fde1524cd4733a9e0bf0bc11ed54434b-0",
+          "corpusVersion": "poetry:1aea48f3695f358f12bf3139",
+          "textHash": "bc61355b5870759bc02edf0a18cdc897b23361bfb6047e9a3501ecb098cd9740",
+          "start": 0,
+          "end": 135
+        },
+        {
+          "sourceId": "poetry-a80c74546308fceae5d8f811e8e5e37d-0",
+          "corpusVersion": "poetry:574e2f61101571ff17f775ae",
+          "textHash": "dc6ad647900e11b4cffcfa6b92de641a582ce7bb25fa878c58a7fb2235c29b50",
+          "start": 0,
+          "end": 142
+        },
+        {
+          "sourceId": "poetry-e9a3ea221b37a7e55edda7ceb2907f95-0",
+          "corpusVersion": "poetry:475276f91ed498bb0ed7f1de",
+          "textHash": "61f585f80fee42de2dd019e8284d35b1a344714ed9c292ac175f4265caf63208",
+          "start": 0,
+          "end": 129
+        }
+      ],
+      "clickable": [
+        {
+          "start": 6,
+          "end": 7,
+          "text": "城"
+        },
+        {
+          "start": 7,
+          "end": 8,
+          "text": "春"
+        },
+        {
+          "start": 8,
+          "end": 10,
+          "text": "草木"
+        },
+        {
+          "start": 10,
+          "end": 11,
+          "text": "深"
+        }
+      ],
+      "options": 79,
+      "baseline": {
+        "option": {
+          "sourceId": "poetry-8ee5afc9bc0bcdf9b5aa818133b341e0-0",
+          "corpusVersion": "poetry:a07280f02908e09fada99a64",
+          "textHash": "8db0cbc00f2f85a079162d0225e938d0a9c9a0f05c548cadf3d2f0caf24fdd91",
+          "start": 0,
+          "end": 12,
+          "source": "書邊事",
+          "chapter": "唐 · 張喬",
+          "text": "調角斷清秋，征人倚戍樓。",
+          "id": "cff1890ec5a667c3",
+          "rank": 1,
+          "tier": 0,
+          "repeated": false
+        },
+        "grade": {
+          "id": "cff1890ec5a667c3",
+          "verdict": "P",
+          "reason": "戍楼、征人与军旅处境有关，但画面在清秋，句中没有杜甫见春景而感时恨别的情由。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "poetry-8ee5afc9bc0bcdf9b5aa818133b341e0-0",
+          "corpusVersion": "poetry:a07280f02908e09fada99a64",
+          "textHash": "8db0cbc00f2f85a079162d0225e938d0a9c9a0f05c548cadf3d2f0caf24fdd91",
+          "start": 0,
+          "end": 12,
+          "source": "書邊事",
+          "chapter": "唐 · 張喬",
+          "text": "調角斷清秋，征人倚戍樓。",
+          "id": "cff1890ec5a667c3",
+          "rank": 1,
+          "tier": 0,
+          "repeated": false
+        },
+        "grade": {
+          "id": "cff1890ec5a667c3",
+          "verdict": "P",
+          "reason": "戍楼、征人与军旅处境有关，但画面在清秋，句中没有杜甫见春景而感时恨别的情由。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "poetry-8ce5f36e07de00875cbec6676886c8a7-0",
+            "corpusVersion": "poetry:e6798ef8b1433f3856cdea16",
+            "textHash": "afc4f2446ced4828d6f3f78a63145f5e8bc8b35ff919c19708e3f85dec326cd6",
+            "source": "春望",
+            "chapter": "唐 · 杜甫",
+            "text": "感時花濺淚，恨別鳥驚心",
+            "start": 13,
+            "end": 24
+          },
+          "poolRank": null,
+          "windowRank": null,
+          "optionIds": [],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "poetry-8ce5f36e07de00875cbec6676886c8a7-0",
+            "corpusVersion": "poetry:e6798ef8b1433f3856cdea16",
+            "textHash": "afc4f2446ced4828d6f3f78a63145f5e8bc8b35ff919c19708e3f85dec326cd6",
+            "source": "春望",
+            "chapter": "唐 · 杜甫",
+            "text": "烽火連三月，家書抵萬金",
+            "start": 26,
+            "end": 37
+          },
+          "poolRank": null,
+          "windowRank": null,
+          "optionIds": [],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "P2",
+      "group": "poetry",
+      "poolCount": 33,
+      "windows": [
+        {
+          "sourceId": "poetry-9446fbe659492ea89a24d66d503fdb2a-0",
+          "corpusVersion": "poetry:3486b2d0f6cb0027eada1796",
+          "textHash": "13fee81141bda7e2a1e783704f3d24ac4d55efc4ebd25bfab9397a17d89e2cfd",
+          "start": 0,
+          "end": 90
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-18-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "cea3a5f62c3b49631c76e074a9b7aecbc998a6f7544391de31261fba9bd58448",
+          "start": 0,
+          "end": 277
+        },
+        {
+          "sourceId": "poetry-b5f746534705cccf9f0cceac0b4a084c-0",
+          "corpusVersion": "poetry:5b201c64b0dd0c4ea6cff758",
+          "textHash": "4b69da47bfed60487010688d5b5e4fdbecdb486969bd4bece48f742b73164c31",
+          "start": 0,
+          "end": 33
+        },
+        {
+          "sourceId": "poetry-9d1578a67caf5428e66ec898084f2295-0",
+          "corpusVersion": "poetry:a8399da81a7f3b2d18d7061e",
+          "textHash": "8be47f6b195291ecad6eee4ad9a379cdfd57a61e188206274d3edfd57d6bc5b6",
+          "start": 0,
+          "end": 33
+        },
+        {
+          "sourceId": "poetry-1c87cc5ac5f2f155a17aed151e8eb315-0",
+          "corpusVersion": "poetry:a0f929a17823689ecb2650f1",
+          "textHash": "a7eafe0ff81a2b57db781090b23ed3d3d207a37105aa03cd77973d2efe2f4fd9",
+          "start": 0,
+          "end": 51
+        },
+        {
+          "sourceId": "poetry-7bcbdcb737ca9b5543139c3f63b8e106-0",
+          "corpusVersion": "poetry:5fede6e30d50da972641871d",
+          "textHash": "6152e6fd29b7ac96b1b705267cc608df73f84aa2f6ed83cd4a82f04dc8532c2a",
+          "start": 0,
+          "end": 51
+        },
+        {
+          "sourceId": "poetry-8a646e196adad9b67627723fcd6d3f70-0",
+          "corpusVersion": "poetry:080a0a8cd3f023250e2c8124",
+          "textHash": "88c35b396799d593d6b9074c9e0168c493e197993370afc651a589605f3ee7b4",
+          "start": 0,
+          "end": 67
+        },
+        {
+          "sourceId": "poetry-2d060b447c0336086fd2ad6c6bfb8109-0",
+          "corpusVersion": "poetry:030948f7e85ae76c6cca59dd",
+          "textHash": "e931cbd4eba28c5843e53f202f35143fe615d8764e15200a7022fb42f0b14fca",
+          "start": 0,
+          "end": 168
+        },
+        {
+          "sourceId": "poetry-6309b5b65352d38c5179e155b1beef27-0",
+          "corpusVersion": "poetry:2c4a0671c171d9f930ae6d4e",
+          "textHash": "fd2f448a18eb9c8f6a9ce2885835dc279058f7faf104f63066dcc57050e37c22",
+          "start": 0,
+          "end": 415
+        },
+        {
+          "sourceId": "poetry-68e4f099dc32e85fb50d9da74ebc1de6-0",
+          "corpusVersion": "poetry:bf88039568f17cc172f8a4ed",
+          "textHash": "1a2aba3e67ad28cb2f9f0266e3d96740778709bb47c7b1dada8c91ec05b29927",
+          "start": 0,
+          "end": 356
+        },
+        {
+          "sourceId": "poetry-da7c46521837e352d1159806b231b3f8-0",
+          "corpusVersion": "poetry:500942002c8c7e7f48d9db02",
+          "textHash": "012889dd4392d22284b8a9b2b4365813f26a2dcf20476ea5880d58cd6fee41d9",
+          "start": 0,
+          "end": 33
+        },
+        {
+          "sourceId": "poetry-1a780b3dbc6cbe11b47c3c74e0e32802-0",
+          "corpusVersion": "poetry:2eb75a401b1816c9c9f68838",
+          "textHash": "a2dffd2184ff0f2910ee5dbc0e79de5a4fd861a29a5bd3acf3c540f64a0b9289",
+          "start": 0,
+          "end": 33
+        }
+      ],
+      "clickable": [
+        {
+          "start": 26,
+          "end": 31,
+          "text": "海內存知己"
+        }
+      ],
+      "options": 93,
+      "baseline": {
+        "option": {
+          "sourceId": "poetry-9446fbe659492ea89a24d66d503fdb2a-0",
+          "corpusVersion": "poetry:3486b2d0f6cb0027eada1796",
+          "textHash": "13fee81141bda7e2a1e783704f3d24ac4d55efc4ebd25bfab9397a17d89e2cfd",
+          "start": 0,
+          "end": 12,
+          "source": "寄盧庾",
+          "chapter": "唐 · 韋應物",
+          "text": "悠悠遠離別，分此歡會難。",
+          "id": "a7650b95cbecc348",
+          "rank": 1,
+          "tier": 0,
+          "repeated": false
+        },
+        "grade": {
+          "id": "a7650b95cbecc348",
+          "verdict": "P",
+          "reason": "“远离别”“欢会难”写出分离之情，所引为韦应物另一首诗，亦没有点出王勃与友人同为宦游者的身份。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "poetry-9446fbe659492ea89a24d66d503fdb2a-0",
+          "corpusVersion": "poetry:3486b2d0f6cb0027eada1796",
+          "textHash": "13fee81141bda7e2a1e783704f3d24ac4d55efc4ebd25bfab9397a17d89e2cfd",
+          "start": 0,
+          "end": 12,
+          "source": "寄盧庾",
+          "chapter": "唐 · 韋應物",
+          "text": "悠悠遠離別，分此歡會難。",
+          "id": "a7650b95cbecc348",
+          "rank": 1,
+          "tier": 0,
+          "repeated": false
+        },
+        "grade": {
+          "id": "a7650b95cbecc348",
+          "verdict": "P",
+          "reason": "“远离别”“欢会难”写出分离之情，所引为韦应物另一首诗，亦没有点出王勃与友人同为宦游者的身份。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "poetry-97345017d330dc5a0f464e3102192660-0",
+            "corpusVersion": "poetry:e96d7a7f1bad38daec892fc9",
+            "textHash": "bcf77c221603d0587d3f27079b9a248fca3cf6d6155af5d75981f3118622d5dc",
+            "source": "杜少府之任蜀州",
+            "chapter": "唐 · 王勃",
+            "text": "與君離別意，同是宦遊人",
+            "start": 13,
+            "end": 24
+          },
+          "poolRank": 23,
+          "windowRank": null,
+          "optionIds": [],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "P3",
+      "group": "poetry",
+      "poolCount": 36,
+      "windows": [
+        {
+          "sourceId": "poetry-1a780b3dbc6cbe11b47c3c74e0e32802-0",
+          "corpusVersion": "poetry:2eb75a401b1816c9c9f68838",
+          "textHash": "a2dffd2184ff0f2910ee5dbc0e79de5a4fd861a29a5bd3acf3c540f64a0b9289",
+          "start": 0,
+          "end": 33
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-245-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "ebfec7d9f88acba6f0ac4ae4ba34e3c342fb46c8f036b4a559e740c034a3489a",
+          "start": 0,
+          "end": 150
+        },
+        {
+          "sourceId": "poetry-2d007f1f55d5572ef5f7e07d52d6f99b-0",
+          "corpusVersion": "poetry:a7d97cb45fc44efffa1a0c8e",
+          "textHash": "0083a866d23d30f697105a5b62e28d34e71a5fc166d2d24144131cd575c912fc",
+          "start": 0,
+          "end": 69
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-61-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "47bf9ed342c4f332bf16a70a962e871e5929b115b6beb8162386b30cf803e9ee",
+          "start": 0,
+          "end": 210
+        },
+        {
+          "sourceId": "poetry-9aeb825021ea601edcd3ed379a818806-0",
+          "corpusVersion": "poetry:8777d07cc7de7cb05f3e379b",
+          "textHash": "416cf83ee8805a867ac9dce99a90eadca057b673e07dec8824613433b15e716e",
+          "start": 0,
+          "end": 33
+        },
+        {
+          "sourceId": "rysxguji-mozi-44-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "117b9be24789b50a37c57514c28bcabfac76638fec68a788550f37266d755479",
+          "start": 0,
+          "end": 180
+        },
+        {
+          "sourceId": "poetry-6c8bae8451fb6678f46826790ffb889a-0",
+          "corpusVersion": "poetry:5d8c60be2dd680db4465e97b",
+          "textHash": "48bfcc96683f4318db247a62210699795db769ffdf0e3cdfedb7866c321fa334",
+          "start": 0,
+          "end": 133
+        },
+        {
+          "sourceId": "poetry-8c2dbec2cdd90f48ada04bdba16ee341-0",
+          "corpusVersion": "poetry:a24c56200214ddb518d669ee",
+          "textHash": "caa2c2472c000917f746b6f1dafafed40bf9f992fae8781c185c8acba431dea0",
+          "start": 0,
+          "end": 67
+        },
+        {
+          "sourceId": "poetry-609e18037e3b883cf20764a09046e7af-0",
+          "corpusVersion": "poetry:d9c08319b8f9b72ec6b161da",
+          "textHash": "fc30900ff8c611ff33fa8ca34b5c88b40f9e362ac48da2d54db6f43611f72776",
+          "start": 0,
+          "end": 338
+        },
+        {
+          "sourceId": "poetry-c25c1782e2fb664e0a62de8e7c51719c-0",
+          "corpusVersion": "poetry:c9986643d2ef2cabac546677",
+          "textHash": "7c3d8672fca165cc19c438edd0ccaf8b7170c43e1d17a0829f02f208ca4592e3",
+          "start": 0,
+          "end": 34
+        },
+        {
+          "sourceId": "poetry-fec53c4afe04129ba78a07ba0c5ae98f-0",
+          "corpusVersion": "poetry:70356a580aaf0eea5d794885",
+          "textHash": "f12d1757751f56d327454e7ae109bcea7c95316da7e8425fc7c6ff41ee98f7a7",
+          "start": 0,
+          "end": 51
+        },
+        {
+          "sourceId": "poetry-00e42bbadb6ab414289083d9fad857cc-0",
+          "corpusVersion": "poetry:3bde3e4869466aeec234804d",
+          "textHash": "4ddba65f2efeeb0657793e8b0d9892afe6ab895b631b42b27be14b3aa10a6700",
+          "start": 0,
+          "end": 134
+        }
+      ],
+      "clickable": [
+        {
+          "start": 0,
+          "end": 1,
+          "text": "月"
+        },
+        {
+          "start": 1,
+          "end": 2,
+          "text": "落"
+        },
+        {
+          "start": 2,
+          "end": 3,
+          "text": "烏"
+        },
+        {
+          "start": 3,
+          "end": 4,
+          "text": "啼"
+        }
+      ],
+      "options": 78,
+      "baseline": {
+        "option": {
+          "sourceId": "poetry-1a780b3dbc6cbe11b47c3c74e0e32802-0",
+          "corpusVersion": "poetry:2eb75a401b1816c9c9f68838",
+          "textHash": "a2dffd2184ff0f2910ee5dbc0e79de5a4fd861a29a5bd3acf3c540f64a0b9289",
+          "start": 0,
+          "end": 16,
+          "source": "泊秦淮",
+          "chapter": "唐 · 杜牧",
+          "text": "煙籠寒水月籠沙，夜泊秦淮近酒家。",
+          "id": "44ad6c32e2057c6e",
+          "rank": 1,
+          "tier": 0,
+          "repeated": false
+        },
+        "grade": {
+          "id": "44ad6c32e2057c6e",
+          "verdict": "P",
+          "reason": "引句虽同写夜泊，却是杜牧在秦淮近酒家所见，句中没有声音，也无法据此定位张继夜半所乘的客船。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "poetry-1a780b3dbc6cbe11b47c3c74e0e32802-0",
+          "corpusVersion": "poetry:2eb75a401b1816c9c9f68838",
+          "textHash": "a2dffd2184ff0f2910ee5dbc0e79de5a4fd861a29a5bd3acf3c540f64a0b9289",
+          "start": 0,
+          "end": 16,
+          "source": "泊秦淮",
+          "chapter": "唐 · 杜牧",
+          "text": "煙籠寒水月籠沙，夜泊秦淮近酒家。",
+          "id": "44ad6c32e2057c6e",
+          "rank": 1,
+          "tier": 0,
+          "repeated": false
+        },
+        "grade": {
+          "id": "44ad6c32e2057c6e",
+          "verdict": "P",
+          "reason": "引句虽同写夜泊，却是杜牧在秦淮近酒家所见，句中没有声音，也无法据此定位张继夜半所乘的客船。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "poetry-cedb67bbf0dc83598068d2845c4f0dfc-0",
+            "corpusVersion": "poetry:8f9ef03622d2c3e497e3af27",
+            "textHash": "4ce896e6a3265f48ddfe7d987b8faf0f8aa9d1736e53768c1a4eecd7fb52ab7e",
+            "source": "楓橋夜泊",
+            "chapter": "唐 · 張繼",
+            "text": "姑蘇城外寒山寺，夜半鐘聲到客船",
+            "start": 17,
+            "end": 32
+          },
+          "poolRank": 21,
+          "windowRank": null,
+          "optionIds": [],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "D1",
+      "group": "deep",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-lunyu-2-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+          "start": 28,
+          "end": 81
+        },
+        {
+          "sourceId": "rysxguji-lunyu-16-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "7756c05fb5a85df32fa771b5c49815183c783e00324a17d86f07b9b9d82ebc27",
+          "start": 0,
+          "end": 48
+        },
+        {
+          "sourceId": "rysxguji-lunyu-7-26",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1600aeb54c78544c6d0ef74e7f3254ae110101ed23493477541a4caac9412014",
+          "start": 0,
+          "end": 40
+        },
+        {
+          "sourceId": "rysxguji-xunzi-2-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "749c04416c850aaf6e30a9b6b463522fea1d8c332e7936408ede0826acfce7e6",
+          "start": 0,
+          "end": 149
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-201-13",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "5ce0e411409be5abd6d35909d38e8078e2431edb760322f4dc52b77b53048421",
+          "start": 0,
+          "end": 205
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-14-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d6cf1b686bc0910619d52fe9b85beba355d9b57b3200f844fbc4bdc7895f85ee",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-mozi-23-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "cab303156e616768ef9ff80017bc858e7df25746fa175581cbb7df9a43f2d1a5",
+          "start": 0,
+          "end": 225
+        },
+        {
+          "sourceId": "rysxguji-liji-31-19",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "b476eba8d3471920f95572c9454e7932ac56afcaaa5c4b0d0d78274a4f127bac",
+          "start": 0,
+          "end": 87
+        },
+        {
+          "sourceId": "rysxguji-mengzi-10-18",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1d592d0d1ba3c9e155d491ba68cc8f955dcf462254b0883b63081fc550bae887",
+          "start": 0,
+          "end": 83
+        },
+        {
+          "sourceId": "rysxguji-shangshu-20-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "4f0636f4ab7a7a470fab698aef15b9ebb3fad5d9185e063b71a3a0db4c54429a",
+          "start": 0,
+          "end": 111
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-18-15",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "00c42dcc624aa42f0c39e42439d85d39448908f9cd6d65c43f49e14e693b7eb7",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-4-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "983267348639935c2cbdac82291ccf0fd1b79e2b131ec57b2e451b72d47c2072",
+          "start": 0,
+          "end": 210
+        }
+      ],
+      "clickable": [
+        {
+          "start": 12,
+          "end": 17,
+          "text": "知之为知之"
+        }
+      ],
+      "options": 61,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-2-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+          "start": 35,
+          "end": 67,
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "子曰：“多闻阙疑，慎言其余，则寡尤；多见阙殆，慎行其余，则寡悔。",
+          "id": "623afc521117b145",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "623afc521117b145",
+          "verdict": "D",
+          "reason": "“阙疑”“阙殆”交代可疑处先存而待考，其余所闻所见也须慎言慎行，把承认未知落实为做法。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-2-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+          "start": 35,
+          "end": 67,
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "子曰：“多闻阙疑，慎言其余，则寡尤；多见阙殆，慎行其余，则寡悔。",
+          "id": "623afc521117b145",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "623afc521117b145",
+          "verdict": "D",
+          "reason": "“阙疑”“阙殆”交代可疑处先存而待考，其余所闻所见也须慎言慎行，把承认未知落实为做法。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-2-14",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+            "source": "论语",
+            "chapter": "第2章 为政第二",
+            "text": "多闻阙疑，慎言其余",
+            "start": 39,
+            "end": 48
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "623afc521117b145"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-2-14",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+            "source": "论语",
+            "chapter": "第2章 为政第二",
+            "text": "多见阙殆，慎行其余",
+            "start": 53,
+            "end": 62
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "623afc521117b145"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-16-14",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "7756c05fb5a85df32fa771b5c49815183c783e00324a17d86f07b9b9d82ebc27",
+            "source": "论语",
+            "chapter": "第16章 季氏第十六",
+            "text": "疑思问",
+            "start": 35,
+            "end": 38
+          },
+          "poolRank": 2,
+          "windowRank": 2,
+          "optionIds": [
+            "c9f2aa8924504802"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "D2",
+      "group": "deep",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-lunyu-7-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "bb7e0a82091db81e93385b523e8c83e3b97b937fd9898082f6534db404b49fa1",
+          "start": 0,
+          "end": 28
+        },
+        {
+          "sourceId": "rysxguji-lunyu-13-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "09b08b04bb7b94d8340cc78f818883bd1fba9791b7af8bce4b0f8f639a80f337",
+          "start": 109,
+          "end": 133
+        },
+        {
+          "sourceId": "rysxguji-mengzi-6-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "326c5a0b02a2dc22ec89e0f73d16dd51869df5ff15f32d3e0e216236924c1927",
+          "start": 0,
+          "end": 108
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-151-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "18183525ac366775f2ba19e87b0952ecfe924041d3c01be297841f5d226ab9f7",
+          "start": 0,
+          "end": 247
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-154-2",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1008e2fd52b9328f4f37eda99dc448119759e87600ef754c89ddb6377544ef57",
+          "start": 0,
+          "end": 146
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-165-12",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "4f1d1cccc545b310dcc47e830453e29593fb6f3301faeed41dfca66abb093f6a",
+          "start": 0,
+          "end": 33
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-27-22",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "fb17a41af671cf9204e3495926bef7f228d58addc65a8336c2b844b365ab84f2",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-liji-12-30",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "022bcd01caf55894c608ef2647913cc107e2f2083079ece018c1b685d0b39ead",
+          "start": 0,
+          "end": 21
+        },
+        {
+          "sourceId": "rysxguji-mozi-18-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "5d75bd71c6610403b8ef44604b8213bac1213e741cf58527a04d37ee2fe6bd48",
+          "start": 0,
+          "end": 336
+        },
+        {
+          "sourceId": "daxue-2-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "2772943f8e13468cf7b5a6864e67c290c5ce0a9ac614731c56934046bef72ad9",
+          "start": 0,
+          "end": 38
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-45-27",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "6b4744a8551f19b4fc9c750057f0bdde4d3294d7b70ed956b326b9969be5e3c2",
+          "start": 0,
+          "end": 74
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-71-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "82fbcf8f9ec9bc76e3cd340cb0112a861b9d32816191bee7e5c4221e6074bc3b",
+          "start": 0,
+          "end": 180
+        }
+      ],
+      "clickable": [
+        {
+          "start": 98,
+          "end": 99,
+          "text": "专"
+        },
+        {
+          "start": 99,
+          "end": 100,
+          "text": "对"
+        }
+      ],
+      "options": 50,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-7-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "bb7e0a82091db81e93385b523e8c83e3b97b937fd9898082f6534db404b49fa1",
+          "start": 0,
+          "end": 28,
+          "source": "论语",
+          "chapter": "第7章 述而第七",
+          "text": "子曰：“不愤不启，不悱不发，举一隅不以三隅反，则不复也。",
+          "id": "d5bdf28695f1a1da",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "d5bdf28695f1a1da",
+          "verdict": "D",
+          "reason": "“举一隅不以三隅反，则不复也”要求学习者能从一个已教的例子推出其余情形，提供了背诵之外可练习的迁移方法。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-7-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "bb7e0a82091db81e93385b523e8c83e3b97b937fd9898082f6534db404b49fa1",
+          "start": 0,
+          "end": 28,
+          "source": "论语",
+          "chapter": "第7章 述而第七",
+          "text": "子曰：“不愤不启，不悱不发，举一隅不以三隅反，则不复也。",
+          "id": "d5bdf28695f1a1da",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "d5bdf28695f1a1da",
+          "verdict": "D",
+          "reason": "“举一隅不以三隅反，则不复也”要求学习者能从一个已教的例子推出其余情形，提供了背诵之外可练习的迁移方法。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-13-7",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "09b08b04bb7b94d8340cc78f818883bd1fba9791b7af8bce4b0f8f639a80f337",
+            "source": "论语",
+            "chapter": "第13章 子路第十三",
+            "text": "其身正，不令而行",
+            "start": 114,
+            "end": 122
+          },
+          "poolRank": 2,
+          "windowRank": 2,
+          "optionIds": [
+            "ffd8e54d46fa70a5"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-7-7",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "bb7e0a82091db81e93385b523e8c83e3b97b937fd9898082f6534db404b49fa1",
+            "source": "论语",
+            "chapter": "第7章 述而第七",
+            "text": "举一隅不以三隅反，则不复也",
+            "start": 14,
+            "end": 27
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "d5bdf28695f1a1da"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "D3",
+      "group": "deep",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-mengzi-6-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "326c5a0b02a2dc22ec89e0f73d16dd51869df5ff15f32d3e0e216236924c1927",
+          "start": 0,
+          "end": 32
+        },
+        {
+          "sourceId": "rysxguji-liji-44-11",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "008e2347892d0c220419ecaaed633acde57d9d55644fe2365fa4d6c53a0965b0",
+          "start": 0,
+          "end": 71
+        },
+        {
+          "sourceId": "rysxguji-mengzi-2-34",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "033d110fc9aeb456dab0dc9bb7ca527551d610fa4bab7d863aaecdf4a23498b2",
+          "start": 0,
+          "end": 32
+        },
+        {
+          "sourceId": "rysxguji-daxue-1-20",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "0e2c43745eb5d538bc4b1b700fd19de32854b8d8f8c5c1cf9b97afad6bbb417f",
+          "start": 0,
+          "end": 342
+        },
+        {
+          "sourceId": "rysxguji-liji-40-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "99feb032ceebbba8b5e440cbdd0f37e266a5e5512b1bd7c536b1ed867dc0b91e",
+          "start": 0,
+          "end": 328
+        },
+        {
+          "sourceId": "rysxguji-lunyu-15-18",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "94ee9379b81120368ed8f9269bb1656639a3d377d65866d36a7e81fb0c2f5e5e",
+          "start": 0,
+          "end": 16
+        },
+        {
+          "sourceId": "rysxguji-zhongyong-1-18",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d0c2a0683122742f3f62bab8c07155ccf36ae1832b165523721327c491711a82",
+          "start": 0,
+          "end": 30
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-127-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3bd1f3cdda1a44c5d091b468342d290fc2634d8ae60d975eb181ed2bd5515dc6",
+          "start": 0,
+          "end": 317
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-27-28",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "dc8e6e1b177e38f5509d9dbb9d278405c00be72fd5c8e38839d38838ef8236d9",
+          "start": 0,
+          "end": 345
+        },
+        {
+          "sourceId": "rysxguji-liji-29-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "246f5c3be7601e359e88d824efe5a9e8df255f49bf7eec0c6953f406dc0641f3",
+          "start": 0,
+          "end": 131
+        },
+        {
+          "sourceId": "rysxguji-mengzi-7-19",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "148ba7d91ac61702ffa52743d731aa0cacd9ea97c3a198b2938e754b2ff6ec36",
+          "start": 0,
+          "end": 120
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-136-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "08723ee277c4f8343707a2512966dfbfa144f3e57831c5d3b63ef37213fc2e45",
+          "start": 0,
+          "end": 49
+        }
+      ],
+      "clickable": [
+        {
+          "start": 38,
+          "end": 39,
+          "text": "反"
+        },
+        {
+          "start": 39,
+          "end": 40,
+          "text": "求"
+        },
+        {
+          "start": 40,
+          "end": 41,
+          "text": "诸"
+        },
+        {
+          "start": 41,
+          "end": 42,
+          "text": "己"
+        }
+      ],
+      "options": 80,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-mengzi-6-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "326c5a0b02a2dc22ec89e0f73d16dd51869df5ff15f32d3e0e216236924c1927",
+          "start": 0,
+          "end": 32,
+          "source": "孟子",
+          "chapter": "第6章 卷七 离娄上",
+          "text": "孟子曰：“爱人不亲，反其仁；治人不治，反其智；礼人不答，反其敬。",
+          "id": "e2159a5ed8ab69e6",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "e2159a5ed8ab69e6",
+          "verdict": "D",
+          "reason": "“礼人不答，反其敬”点出得不到回应时检查自己的敬意，另两组也分别给出可检视的仁与智。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-mengzi-6-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "326c5a0b02a2dc22ec89e0f73d16dd51869df5ff15f32d3e0e216236924c1927",
+          "start": 0,
+          "end": 32,
+          "source": "孟子",
+          "chapter": "第6章 卷七 离娄上",
+          "text": "孟子曰：“爱人不亲，反其仁；治人不治，反其智；礼人不答，反其敬。",
+          "id": "e2159a5ed8ab69e6",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "e2159a5ed8ab69e6",
+          "verdict": "D",
+          "reason": "“礼人不答，反其敬”点出得不到回应时检查自己的敬意，另两组也分别给出可检视的仁与智。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-mengzi-6-6",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "326c5a0b02a2dc22ec89e0f73d16dd51869df5ff15f32d3e0e216236924c1927",
+            "source": "孟子",
+            "chapter": "第6章 卷七 离娄上",
+            "text": "反其仁；治人不治，反其智；礼人不答，反其敬",
+            "start": 10,
+            "end": 31
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "e2159a5ed8ab69e6"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-mengzi-2-34",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "033d110fc9aeb456dab0dc9bb7ca527551d610fa4bab7d863aaecdf4a23498b2",
+            "source": "孟子",
+            "chapter": "第2章 卷二 梁惠王下",
+            "text": "发而不中，不怨胜己者，反求诸己",
+            "start": 13,
+            "end": 28
+          },
+          "poolRank": 3,
+          "windowRank": 3,
+          "optionIds": [
+            "4a0d09e7a47910ee"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-liji-44-11",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "008e2347892d0c220419ecaaed633acde57d9d55644fe2365fa4d6c53a0965b0",
+            "source": "礼记",
+            "chapter": "第44章 射义",
+            "text": "发而不中，则不怨胜己者，反求诸己",
+            "start": 20,
+            "end": 36
+          },
+          "poolRank": 2,
+          "windowRank": 2,
+          "optionIds": [
+            "ede9d620c80b21b9"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "D4",
+      "group": "deep",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-xunzi-1-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+          "start": 0,
+          "end": 79
+        },
+        {
+          "sourceId": "rysxguji-xunzi-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "82b7db130e63e7ba67e1e6d90027f6f1497ea98ea7da0f8384030fd51296526f",
+          "start": 0,
+          "end": 338
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-129-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "7efe6bbe6e84bb37d6c070edb3f296b4a023d8ffab661df78adc167f585edccc",
+          "start": 0,
+          "end": 140
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-130-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "c21f8a1d790a0fbe8c77fa1f881b6dcd5e9a4b88723fa657a2bb28658ca48f0d",
+          "start": 0,
+          "end": 209
+        },
+        {
+          "sourceId": "rysxguji-xunzi-18-12",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "b389cf67142424e3dd70b5593fba2ff25201020df02e4244b34c0b9acba7e99c",
+          "start": 0,
+          "end": 231
+        },
+        {
+          "sourceId": "rysxguji-xunzi-3-9",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "9bdad7f51404eb6a0594b0a015a8bb63c305a1d548882d81bdc54649704aebe7",
+          "start": 0,
+          "end": 322
+        },
+        {
+          "sourceId": "lunyu-1-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1a5eb80288b08db40d73ca005f567150962d220f4381294f903a5104bf7b6a69",
+          "start": 0,
+          "end": 36
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-77-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "34b64375d318b936b0b98e5cea40115e2d4039f67443731e795cef0fc8be30a8",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-liji-22-37",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "2ca8c5c52c10b64fec46995e5d36a41a094429c173cd6579cfd44f3f328a8f86",
+          "start": 0,
+          "end": 254
+        },
+        {
+          "sourceId": "lunyu-1-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "156dc5d3985e63318b423ae2f5b2dc6ac09aa344cbbe00f4ac4412507cb30450",
+          "start": 0,
+          "end": 29
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-10-9",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "0b25de550a4368760422e59c3be676529f23eaca631ea706f732330ef03d1f13",
+          "start": 0,
+          "end": 105
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-75-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "b3d48e716bf93ee0ea2407720a9aa25bba529f62edd4b7798d54a7ec28737f87",
+          "start": 0,
+          "end": 360
+        }
+      ],
+      "clickable": [
+        {
+          "start": 89,
+          "end": 93,
+          "text": "锲而不舍"
+        }
+      ],
+      "options": 95,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-xunzi-1-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+          "start": 36,
+          "end": 59,
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "故不积蹞步，无以致千里；不积小流，无以成江海。",
+          "id": "7402c0ace61ca514",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "7402c0ace61ca514",
+          "verdict": "D",
+          "reason": "小步积而至千里、小流积而成江海，是雕刻与堆山之外的两个例子，写出积少成多和长远结果的关系。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-xunzi-1-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+          "start": 36,
+          "end": 59,
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "故不积蹞步，无以致千里；不积小流，无以成江海。",
+          "id": "7402c0ace61ca514",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "7402c0ace61ca514",
+          "verdict": "D",
+          "reason": "小步积而至千里、小流积而成江海，是雕刻与堆山之外的两个例子，写出积少成多和长远结果的关系。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-xunzi-1-5",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+            "source": "荀子",
+            "chapter": "第1章 劝学篇第一",
+            "text": "骐骥一跃，不能十步；驽马十驾，功在不舍",
+            "start": 59,
+            "end": 78
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "26bfcb20483dc460"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-xunzi-1-5",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+            "source": "荀子",
+            "chapter": "第1章 劝学篇第一",
+            "text": "不积小流，无以成江海",
+            "start": 48,
+            "end": 58
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "7402c0ace61ca514"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-xunzi-1-5",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+            "source": "荀子",
+            "chapter": "第1章 劝学篇第一",
+            "text": "用心一也",
+            "start": 121,
+            "end": 125
+          },
+          "poolRank": 1,
+          "windowRank": null,
+          "optionIds": [],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-xunzi-2-8",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "82b7db130e63e7ba67e1e6d90027f6f1497ea98ea7da0f8384030fd51296526f",
+            "source": "荀子",
+            "chapter": "第2章 修身篇第二",
+            "text": "蹞步而不休，跛鳖千里",
+            "start": 206,
+            "end": 216
+          },
+          "poolRank": 2,
+          "windowRank": 2,
+          "optionIds": [
+            "b3ed823684167a67"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "D5",
+      "group": "deep",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-lunyu-6-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "005cb648f2eb262774cdb745bb99fd899c74051912383626e64c3dfe6818fae6",
+          "start": 0,
+          "end": 78
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-208-18",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "4a15eac4da087640c2f8d79c989649cedf3858dd595ad0c2322d2af6c93651a3",
+          "start": 0,
+          "end": 355
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-183-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "92fb6dcef324c78fe358c6d247945557edaffc4db9e68476ac2f6a6051dae32b",
+          "start": 0,
+          "end": 349
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-186-19",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "7ecefdaf201e8adddea6b2fd3042e15a5716b8d5e5a12fa5f030c5d47411f560",
+          "start": 0,
+          "end": 263
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-16-12",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "e95151e3ffa6bfc8e67e24b8cae15569110aab14e77770a36baf30e42896fbde",
+          "start": 0,
+          "end": 158
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-90-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "ecf7120548751f82ba0028a8380390ffeb73ae53b28f972e7cb8cae52230ad63",
+          "start": 0,
+          "end": 360
+        },
+        {
+          "sourceId": "rysxguji-liji-14-11",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "c567ef73be2ef60913ac0801e06051589b32657183670ff9f7ad8548c192d967",
+          "start": 0,
+          "end": 117
+        },
+        {
+          "sourceId": "rysxguji-mozi-38-2",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "b931669d1eb21242def020036446f0408fa37420a7bbc5e9710db140758ad7a1",
+          "start": 0,
+          "end": 252
+        },
+        {
+          "sourceId": "rysxguji-mengzi-11-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "0b5333fdd54eed32140f544589debcf8a65d307b175cca56a82a326238d83c35",
+          "start": 0,
+          "end": 55
+        },
+        {
+          "sourceId": "rysxguji-shangshu-39-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d9560bebe5d5b43a35efd0ed28456f59939467b3685da8e5536c0456cea4e407",
+          "start": 0,
+          "end": 82
+        },
+        {
+          "sourceId": "rysxguji-xunzi-18-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "2e020f2fc04cfed6dd4ee3cfa9592dbe17dfe6ee023c143cccfd16178c898d60",
+          "start": 0,
+          "end": 196
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-95-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "2cd916d0e81f515c931a1a79a69142ac7e74f5aa1351e7b2962e6d4501e28ed6",
+          "start": 0,
+          "end": 360
+        }
+      ],
+      "clickable": [
+        {
+          "start": 39,
+          "end": 40,
+          "text": "忿"
+        },
+        {
+          "start": 40,
+          "end": 41,
+          "text": "思"
+        },
+        {
+          "start": 41,
+          "end": 42,
+          "text": "难"
+        }
+      ],
+      "options": 105,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-6-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "005cb648f2eb262774cdb745bb99fd899c74051912383626e64c3dfe6818fae6",
+          "start": 57,
+          "end": 78,
+          "source": "论语",
+          "chapter": "第6章 雍也第六",
+          "text": "孔子对曰：“有颜回者好学，不迁怒，不贰过。",
+          "id": "e32c555a5485f7f6",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "e32c555a5485f7f6",
+          "verdict": "D",
+          "reason": "颜回的“不迁怒”明确说到不把怒气移给别人，补足了已读“忿思难”尚未指出的待人做法。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-lunyu-6-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "005cb648f2eb262774cdb745bb99fd899c74051912383626e64c3dfe6818fae6",
+          "start": 57,
+          "end": 78,
+          "source": "论语",
+          "chapter": "第6章 雍也第六",
+          "text": "孔子对曰：“有颜回者好学，不迁怒，不贰过。",
+          "id": "e32c555a5485f7f6",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "e32c555a5485f7f6",
+          "verdict": "D",
+          "reason": "颜回的“不迁怒”明确说到不把怒气移给别人，补足了已读“忿思难”尚未指出的待人做法。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-6-3",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "005cb648f2eb262774cdb745bb99fd899c74051912383626e64c3dfe6818fae6",
+            "source": "论语",
+            "chapter": "第6章 雍也第六",
+            "text": "不迁怒，不贰过",
+            "start": 70,
+            "end": 77
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "e32c555a5485f7f6"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    },
+    {
+      "id": "D6",
+      "group": "deep",
+      "poolCount": 40,
+      "windows": [
+        {
+          "sourceId": "rysxguji-xunzi-1-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "c2ddeb49ce2cdc17c1cc363cc453bf07df0058aa2e84fa38272e5c8eca52a0b6",
+          "start": 112,
+          "end": 172
+        },
+        {
+          "sourceId": "rysxguji-lunyu-15-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "246d12e1344fc621dbe4ffbb7cc17bdf7a7315efff72849e1ae39450973bd840",
+          "start": 0,
+          "end": 42
+        },
+        {
+          "sourceId": "rysxguji-liji-2-78",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "081dfe655664977a7fe6695edf0fdb2c9b78a3d444cc1ad1eb508940c4ab245a",
+          "start": 0,
+          "end": 347
+        },
+        {
+          "sourceId": "rysxguji-liji-29-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3453f28237cef44c2d9c3678e7bdd496e6461c34c35255ebb69a82e44db860aa",
+          "start": 0,
+          "end": 115
+        },
+        {
+          "sourceId": "rysxguji-liji-29-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "246f5c3be7601e359e88d824efe5a9e8df255f49bf7eec0c6953f406dc0641f3",
+          "start": 0,
+          "end": 131
+        },
+        {
+          "sourceId": "rysxguji-lunyu-9-11",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "cac23b0580d9c2564e51262c0a84883c4d973b901a31784c087fbf897ec50676",
+          "start": 0,
+          "end": 59
+        },
+        {
+          "sourceId": "rysxguji-mengzi-11-31",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "866e5fd3c69db6623db87dfc377d79c744a1e35ec730cd27888c215e7c6c2b01",
+          "start": 0,
+          "end": 145
+        },
+        {
+          "sourceId": "rysxguji-mozi-39-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "98ed874e67a0647a01b7ec5e069f2508de293731d8dd662d37c6c7889577eae5",
+          "start": 0,
+          "end": 138
+        },
+        {
+          "sourceId": "rysxguji-zhongyong-1-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "aea403c24e941c7119b9a6f8f2cfe95d1ec641547eb7b52c3ebd7cc0358ce8e0",
+          "start": 0,
+          "end": 68
+        },
+        {
+          "sourceId": "rysxguji-zhouyi-65-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "09fc2380f46952024e519f2df7dca4b6b59248cc5d4c070528b22856e3554e8f",
+          "start": 0,
+          "end": 103
+        },
+        {
+          "sourceId": "rysxguji-chunqiu-zuozhuan-100-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "b26f49ad0b7aa44c2c52dc0a32fceb48c90260f4d9d9c6dc3888787cac43b608",
+          "start": 0,
+          "end": 133
+        },
+        {
+          "sourceId": "rysxguji-hanfeizi-77-2",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "2ca62d81f5085f4a3ae3e4e2a7f9f64a00bbdbecfa48bad5fb98dfc6c964c8bf",
+          "start": 0,
+          "end": 360
+        }
+      ],
+      "clickable": [
+        {
+          "start": 92,
+          "end": 94,
+          "text": "蓬生"
+        },
+        {
+          "start": 94,
+          "end": 95,
+          "text": "麻"
+        },
+        {
+          "start": 95,
+          "end": 96,
+          "text": "中"
+        }
+      ],
+      "options": 75,
+      "baseline": {
+        "option": {
+          "sourceId": "rysxguji-xunzi-1-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "c2ddeb49ce2cdc17c1cc363cc453bf07df0058aa2e84fa38272e5c8eca52a0b6",
+          "start": 148,
+          "end": 172,
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "故君子居必择乡，游必就士，所以防邪辟而近中正也。",
+          "id": "af8caf00682c3f29",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "af8caf00682c3f29",
+          "verdict": "D",
+          "reason": "“居必择乡，游必就士”明确给出选择居处和交往对象两种行动，回应了读者在环境喻之后的追问。"
+        },
+        "productionRepeatGuard": false
+      },
+      "trial": {
+        "option": {
+          "sourceId": "rysxguji-xunzi-1-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "c2ddeb49ce2cdc17c1cc363cc453bf07df0058aa2e84fa38272e5c8eca52a0b6",
+          "start": 148,
+          "end": 172,
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "故君子居必择乡，游必就士，所以防邪辟而近中正也。",
+          "id": "af8caf00682c3f29",
+          "rank": 1,
+          "tier": 1,
+          "repeated": false
+        },
+        "grade": {
+          "id": "af8caf00682c3f29",
+          "verdict": "D",
+          "reason": "“居必择乡，游必就士”明确给出选择居处和交往对象两种行动，回应了读者在环境喻之后的追问。"
+        },
+        "productionRepeatGuard": false
+      },
+      "evidence": [
+        {
+          "span": {
+            "sourceId": "rysxguji-xunzi-1-3",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "c2ddeb49ce2cdc17c1cc363cc453bf07df0058aa2e84fa38272e5c8eca52a0b6",
+            "source": "荀子",
+            "chapter": "第1章 劝学篇第一",
+            "text": "君子居必择乡，游必就士",
+            "start": 149,
+            "end": 160
+          },
+          "poolRank": 1,
+          "windowRank": 1,
+          "optionIds": [
+            "af8caf00682c3f29"
+          ],
+          "downweighted": []
+        },
+        {
+          "span": {
+            "sourceId": "rysxguji-lunyu-15-10",
+            "corpusVersion": "guji-core-v1",
+            "textHash": "246d12e1344fc621dbe4ffbb7cc17bdf7a7315efff72849e1ae39450973bd840",
+            "source": "论语",
+            "chapter": "第15章 卫灵公第十五",
+            "text": "友其士之仁者",
+            "start": 35,
+            "end": 41
+          },
+          "poolRank": 2,
+          "windowRank": 2,
+          "optionIds": [
+            "a98251cfb8720219"
+          ],
+          "downweighted": []
+        }
+      ],
+      "repeatedCount": 0,
+      "downweighted": []
+    }
+  ]
+}

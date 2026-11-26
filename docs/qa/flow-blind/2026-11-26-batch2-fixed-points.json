@@ -1,0 +1,1231 @@
+{
+  "schemaVersion": 1,
+  "inputs": {
+    "data/rysxguji/guji-core-v1.jsonl": "596df3e835e2ba53971ffa303bfe480ebe808f6692533073be8d460ebd2ed431",
+    "data/sixclassics-sample.jsonl": "46eba6e46169a1ad701ad8c9ed3b4108b0fa184b77d1893e77bcac4572d9ab37",
+    "data/poetry/selected-1000-v10/manifest.json": "54ae00e1466ed7a21fad18c26379e151b3003e3cfa9e3440fea540d6b954ed60",
+    "data/content-packs/manifest.json": "bb6ed11595cbc5fb92b47b66444ace62984450c79be733492bc15de7818255f1",
+    "src/lib/flow/candidates.ts": "77fe6dda4fb144ab839678cee0e9058c3a9fcd87b6f6081300496caeea908f27",
+    "src/lib/flow/context.ts": "fd79179beb53e10916519a46bc58c0e074fb637aea93acfebb136a9b9863788d"
+  },
+  "cases": [
+    {
+      "id": "O1",
+      "group": "open",
+      "op": "open",
+      "scope": [
+        "core"
+      ],
+      "seed": "我发现自己常把不确定的事讲得很肯定，古人怎么看承认不知道？",
+      "need": "读一条分清已知与未知，或说明有疑先保留的古文。",
+      "terms": [
+        "知之为知之",
+        "多闻阙疑",
+        "疑思问",
+        "不知则问"
+      ],
+      "prior": [],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-lunyu-2-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "知之为知之，不知为不知，是知也",
+          "start": 12,
+          "end": 27
+        },
+        {
+          "sourceId": "rysxguji-lunyu-2-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "多闻阙疑，慎言其余",
+          "start": 39,
+          "end": 48
+        },
+        {
+          "sourceId": "rysxguji-lunyu-16-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "7756c05fb5a85df32fa771b5c49815183c783e00324a17d86f07b9b9d82ebc27",
+          "source": "论语",
+          "chapter": "第16章 季氏第十六",
+          "text": "疑思问",
+          "start": 35,
+          "end": 38
+        },
+        {
+          "sourceId": "rysxguji-xunzi-6-11",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "1bbd7c5c019bfd9b7de6ebdabb91894516d30e0566e3cec12bb6330f1103f700",
+          "source": "荀子",
+          "chapter": "第6章 非十二子篇第六",
+          "text": "不知则问，不能则学",
+          "start": 47,
+          "end": 56
+        }
+      ]
+    },
+    {
+      "id": "O2",
+      "group": "open",
+      "op": "open",
+      "scope": [
+        "core"
+      ],
+      "seed": "很长的计划做到一半就容易停，想读古人怎么写一点一点累积。",
+      "need": "原文要说明小量的累积或前进多少在自己持续行动。",
+      "terms": [
+        "不积蹞步",
+        "锲而不舍",
+        "未成一篑",
+        "蹞步而不休"
+      ],
+      "prior": [],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-xunzi-1-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "不积蹞步，无以致千里",
+          "start": 37,
+          "end": 47
+        },
+        {
+          "sourceId": "rysxguji-xunzi-1-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "锲而不舍，金石可镂",
+          "start": 89,
+          "end": 98
+        },
+        {
+          "sourceId": "rysxguji-lunyu-9-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abd7a02fa2b2f409ca9dc0131228531eb50d63f613749a9e1b84ed974e80cc3a",
+          "source": "论语",
+          "chapter": "第9章 子罕第九",
+          "text": "未成一篑，止，吾止也",
+          "start": 9,
+          "end": 19
+        },
+        {
+          "sourceId": "rysxguji-xunzi-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "82b7db130e63e7ba67e1e6d90027f6f1497ea98ea7da0f8384030fd51296526f",
+          "source": "荀子",
+          "chapter": "第2章 修身篇第二",
+          "text": "蹞步而不休，跛鳖千里",
+          "start": 206,
+          "end": 216
+        }
+      ]
+    },
+    {
+      "id": "O3",
+      "group": "open",
+      "op": "open",
+      "scope": [
+        "core"
+      ],
+      "seed": "和朋友一起做事，有很不一样的想法，还能好好相处吗？",
+      "need": "原文要容纳分歧，或给出不同意见如何作为判断材料的做法。",
+      "terms": [
+        "和而不同",
+        "择其善者而从之",
+        "见不贤而内自省",
+        "独学而无友"
+      ],
+      "prior": [],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-lunyu-13-23",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d5c68e956f667ca1f7792b68ca7a51780521385d9c6c505322bdcf0b2e76550e",
+          "source": "论语",
+          "chapter": "第13章 子路第十三",
+          "text": "君子和而不同，小人同而不和",
+          "start": 4,
+          "end": 17
+        },
+        {
+          "sourceId": "rysxguji-lunyu-7-20",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "8ab19344ff60bcba95a4099a33f69b13908b3d3158996b27ba3bf15f04f20fa4",
+          "source": "论语",
+          "chapter": "第7章 述而第七",
+          "text": "择其善者而从之，其不善者而改之",
+          "start": 14,
+          "end": 29
+        },
+        {
+          "sourceId": "rysxguji-lunyu-4-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3a012832b760c2136407cad0f95167af49738c0d5ab1687aebeb25f385b9437e",
+          "source": "论语",
+          "chapter": "第4章 里仁第四",
+          "text": "见贤思齐焉，见不贤而内自省也",
+          "start": 4,
+          "end": 18
+        }
+      ]
+    },
+    {
+      "id": "L1",
+      "group": "lexical",
+      "op": "branch",
+      "scope": [
+        "core"
+      ],
+      "need": "用另一条原文说明行动勤敏与言语谨慎如何相配。",
+      "terms": [
+        "敏于行",
+        "讷于言",
+        "言而过其行"
+      ],
+      "point": {
+        "sourceId": "rysxguji-lunyu-1-9",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "eef9c2f1744d2a22804a0254c8902e46ecfa0163f53253ef95ab4ecee1f8b91e",
+        "source": "论语",
+        "chapter": "第1章 学而第一",
+        "text": "敏于事而慎于言",
+        "start": 16,
+        "end": 23,
+        "passage": "子曰：“君子食无求饱，居无求安，敏于事而慎于言，就有道而正焉，可谓好学也已。”",
+        "token": "敏",
+        "tokenStart": 16,
+        "tokenEnd": 17
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-lunyu-1-9",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "eef9c2f1744d2a22804a0254c8902e46ecfa0163f53253ef95ab4ecee1f8b91e",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "text": "敏于事而慎于言",
+          "start": 16,
+          "end": 23
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-lunyu-4-20",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "a9a959b81b9278ad895972ddb38e14d5dff59cc489033b7fc975186398023bc8",
+          "source": "论语",
+          "chapter": "第4章 里仁第四",
+          "text": "君子欲讷于言而敏于行",
+          "start": 17,
+          "end": 27
+        },
+        {
+          "sourceId": "rysxguji-lunyu-14-29",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "2e1924d701bbbd74e465696b8f1909e085616cdb924c20cc667b3d8006f64459",
+          "source": "论语",
+          "chapter": "第14章 宪问第十四",
+          "text": "君子耻其言而过其行",
+          "start": 4,
+          "end": 13
+        }
+      ]
+    },
+    {
+      "id": "L2",
+      "group": "lexical",
+      "op": "branch",
+      "scope": [
+        "core"
+      ],
+      "need": "从定义过错转到怎样对待改错、怎样看公开更正，或怎样避免重犯。",
+      "terms": [
+        "过则勿惮改",
+        "更也人皆仰之",
+        "知之未尝复行"
+      ],
+      "point": {
+        "sourceId": "rysxguji-lunyu-15-26",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "3bfdb3039a895829e7deb7a82015422eaaea079f2cb133d2afe3a8e400e2240c",
+        "source": "论语",
+        "chapter": "第15章 卫灵公第十五",
+        "text": "过而不改，是谓过矣",
+        "start": 4,
+        "end": 13,
+        "passage": "子曰：“过而不改，是谓过矣。”",
+        "token": "改",
+        "tokenStart": 7,
+        "tokenEnd": 8
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-lunyu-15-26",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3bfdb3039a895829e7deb7a82015422eaaea079f2cb133d2afe3a8e400e2240c",
+          "source": "论语",
+          "chapter": "第15章 卫灵公第十五",
+          "text": "过而不改，是谓过矣",
+          "start": 4,
+          "end": 13
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-lunyu-9-19",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "eebc707a5ef12501d93e8a3445557de57d32373314f5317761741ba8474c078a",
+          "source": "论语",
+          "chapter": "第9章 子罕第九",
+          "text": "过则勿惮改",
+          "start": 15,
+          "end": 20
+        },
+        {
+          "sourceId": "rysxguji-lunyu-1-4",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "cd653306281e4cee290f9964536b4b8e97cc95b7ddd802d7f58b56668a15f733",
+          "source": "论语",
+          "chapter": "第1章 学而第一",
+          "text": "过则勿惮改",
+          "start": 29,
+          "end": 34
+        },
+        {
+          "sourceId": "rysxguji-lunyu-19-17",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "41e4b6252ecb3b2e4417b6ab0fbb708ed78624234ce530a4d0ef8148aae450b3",
+          "source": "论语",
+          "chapter": "第19章 子张第十九",
+          "text": "过也人皆见之，更也人皆仰之",
+          "start": 18,
+          "end": 31
+        },
+        {
+          "sourceId": "rysxguji-zhouyi-66-13",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "2fa7c90362532151137a94a686460a853fa0b86ea6e7406e7d7ad129bed0f84c",
+          "source": "周易",
+          "chapter": "第66章 系辞下",
+          "text": "有不善未尝不知，知之未尝复行也",
+          "start": 15,
+          "end": 30
+        }
+      ]
+    },
+    {
+      "id": "L3",
+      "group": "lexical",
+      "op": "branch",
+      "scope": [
+        "core"
+      ],
+      "need": "想读一条具体说明为什么着眼小处或短期成果会损失更大目标的例子。",
+      "terms": [
+        "小不忍则乱大谋",
+        "不作无益害有益",
+        "不矜细行",
+        "见利思义"
+      ],
+      "point": {
+        "sourceId": "rysxguji-lunyu-13-15",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "c814efd5f7b23e94482d0080a2ff44e7a53da3c019c6d949a3da891e67b259e2",
+        "source": "论语",
+        "chapter": "第13章 子路第十三",
+        "text": "无欲速，无见小利。欲速则不达，见小利则大事不成",
+        "start": 14,
+        "end": 37,
+        "passage": "子夏为莒父宰，问政。子曰：“无欲速，无见小利。欲速则不达，见小利则大事不成。”",
+        "token": "利",
+        "tokenStart": 21,
+        "tokenEnd": 22
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-lunyu-13-15",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "c814efd5f7b23e94482d0080a2ff44e7a53da3c019c6d949a3da891e67b259e2",
+          "source": "论语",
+          "chapter": "第13章 子路第十三",
+          "text": "无欲速，无见小利。欲速则不达，见小利则大事不成",
+          "start": 14,
+          "end": 37
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-shangshu-30-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "10cb6877b6dc5a0eeeb4ae865426c121aee9f9a06d22d82a09ae44959006e37a",
+          "source": "尚书",
+          "chapter": "第30章 周书 旅獒第七",
+          "text": "不作无益害有益，功乃成",
+          "start": 131,
+          "end": 142
+        },
+        {
+          "sourceId": "rysxguji-shangshu-30-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "10cb6877b6dc5a0eeeb4ae865426c121aee9f9a06d22d82a09ae44959006e37a",
+          "source": "尚书",
+          "chapter": "第30章 周书 旅獒第七",
+          "text": "不矜细行，终累大德",
+          "start": 203,
+          "end": 212
+        },
+        {
+          "sourceId": "rysxguji-lunyu-15-23",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "fe9647a6fdf97d8d3b591a0173181f727b11348b9c30f9ff170cc191dcae9c89",
+          "source": "论语",
+          "chapter": "第15章 卫灵公第十五",
+          "text": "小不忍则乱大谋",
+          "start": 37,
+          "end": 44
+        }
+      ]
+    },
+    {
+      "id": "F1",
+      "group": "function",
+      "op": "branch",
+      "scope": [
+        "core"
+      ],
+      "need": "找另一处带动词的疑问用法，让焉能读作怎么、何必、何处，而非句末语气。",
+      "terms": [
+        "焉用稼",
+        "人焉廋哉",
+        "焉知"
+      ],
+      "point": {
+        "sourceId": "rysxguji-lunyu-9-16",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "35d3150f19556b6868298ce944419bf1ca7d84c7af1ab0461e69e40440c897ec",
+        "source": "论语",
+        "chapter": "第9章 子罕第九",
+        "text": "焉知来者之不如今也",
+        "start": 55,
+        "end": 64,
+        "passage": "子谓颜渊曰：“惜乎！吾见其进也，未见其止也！”子曰：“苗而不秀者有矣夫！秀而不实者有矣夫！”子曰：“后生可畏，焉知来者之不如今也？四十、五十而无闻焉，斯亦不足畏也已。”",
+        "token": "焉",
+        "tokenStart": 55,
+        "tokenEnd": 56
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-lunyu-9-16",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "35d3150f19556b6868298ce944419bf1ca7d84c7af1ab0461e69e40440c897ec",
+          "source": "论语",
+          "chapter": "第9章 子罕第九",
+          "text": "焉知来者之不如今也",
+          "start": 55,
+          "end": 64
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-lunyu-13-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "09b08b04bb7b94d8340cc78f818883bd1fba9791b7af8bce4b0f8f639a80f337",
+          "source": "论语",
+          "chapter": "第13章 子路第十三",
+          "text": "焉用稼",
+          "start": 67,
+          "end": 70
+        },
+        {
+          "sourceId": "rysxguji-lunyu-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "人焉廋哉",
+          "start": 19,
+          "end": 23
+        }
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "function",
+      "op": "branch",
+      "scope": [
+        "core"
+      ],
+      "need": "找另一处其加名词或其加所字结构指回某个人或对象的例句。",
+      "terms": [
+        "视其所以",
+        "察其所安",
+        "反其仁",
+        "其身"
+      ],
+      "point": {
+        "sourceId": "rysxguji-lunyu-13-7",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "09b08b04bb7b94d8340cc78f818883bd1fba9791b7af8bce4b0f8f639a80f337",
+        "source": "论语",
+        "chapter": "第13章 子路第十三",
+        "text": "其身正，不令而行",
+        "start": 114,
+        "end": 122,
+        "passage": "樊迟出。子曰：“小人哉，樊须也！上好礼，则民莫敢不敬；上好义，则民莫敢不服；上好信，则民莫敢不用情。夫如是，则四方之民襁负其子而至矣，焉用稼？”子曰：“诵《诗》三百，授之以政，不达；使于四方，不能专对；虽多，亦奚以为？”子曰：“其身正，不令而行；其身不正，虽令不从。”",
+        "token": "其",
+        "tokenStart": 114,
+        "tokenEnd": 115
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-lunyu-13-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "09b08b04bb7b94d8340cc78f818883bd1fba9791b7af8bce4b0f8f639a80f337",
+          "source": "论语",
+          "chapter": "第13章 子路第十三",
+          "text": "其身正，不令而行",
+          "start": 114,
+          "end": 122
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-lunyu-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "视其所以，观其所由，察其所安",
+          "start": 4,
+          "end": 18
+        },
+        {
+          "sourceId": "rysxguji-mengzi-6-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "326c5a0b02a2dc22ec89e0f73d16dd51869df5ff15f32d3e0e216236924c1927",
+          "source": "孟子",
+          "chapter": "第6章 卷七 离娄上",
+          "text": "爱人不亲，反其仁；治人不治，反其智；礼人不答，反其敬",
+          "start": 5,
+          "end": 31
+        }
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "function",
+      "op": "branch",
+      "scope": [
+        "core"
+      ],
+      "need": "找另一条以矣收束判断或说明行为条件达到后结果成立的原文。",
+      "terms": [
+        "是谓过矣",
+        "知明而行无过矣",
+        "亦可以为成人矣"
+      ],
+      "point": {
+        "sourceId": "rysxguji-lunyu-2-8",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+        "source": "论语",
+        "chapter": "第2章 为政第二",
+        "text": "温故而知新，可以为师矣",
+        "start": 34,
+        "end": 45,
+        "passage": "子曰：“视其所以，观其所由，察其所安，人焉廋哉？人焉廋哉？”子曰：“温故而知新，可以为师矣。”",
+        "token": "矣",
+        "tokenStart": 44,
+        "tokenEnd": 45
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-lunyu-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "d6e97852e1cd63fa4dd2911b96b72afaf1a68057455614c7731683479b08fdcc",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "温故而知新，可以为师矣",
+          "start": 34,
+          "end": 45
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-lunyu-15-26",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3bfdb3039a895829e7deb7a82015422eaaea079f2cb133d2afe3a8e400e2240c",
+          "source": "论语",
+          "chapter": "第15章 卫灵公第十五",
+          "text": "过而不改，是谓过矣",
+          "start": 4,
+          "end": 13
+        },
+        {
+          "sourceId": "rysxguji-xunzi-1-1",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "7196eac49ea3f4faebda3da15ba189cf983f3b74fd3790eede98666655ddaa4d",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "则知明而行无过矣",
+          "start": 88,
+          "end": 96
+        },
+        {
+          "sourceId": "rysxguji-lunyu-14-13",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "ae8e63ae1bc163d82e9ddfe348d5bac52f57887551c6c1e60aa1de4bf6046796",
+          "source": "论语",
+          "chapter": "第14章 宪问第十四",
+          "text": "亦可以为成人矣",
+          "start": 40,
+          "end": 47
+        }
+      ]
+    },
+    {
+      "id": "P1",
+      "group": "poetry",
+      "op": "branch",
+      "scope": [
+        "core",
+        "poetry"
+      ],
+      "need": "接着读战乱中的春景为何触发悲伤，而不是单纯赏景。",
+      "terms": [
+        "感時花濺淚",
+        "恨別鳥驚心",
+        "烽火連三月"
+      ],
+      "point": {
+        "sourceId": "poetry-8ce5f36e07de00875cbec6676886c8a7-0",
+        "corpusVersion": "poetry:e6798ef8b1433f3856cdea16",
+        "textHash": "afc4f2446ced4828d6f3f78a63145f5e8bc8b35ff919c19708e3f85dec326cd6",
+        "source": "春望",
+        "chapter": "唐 · 杜甫",
+        "text": "國破山河在，城春草木深。",
+        "start": 0,
+        "end": 12,
+        "passage": "國破山河在，城春草木深。\n感時花濺淚，恨別鳥驚心。\n烽火連三月，家書抵萬金。\n白頭搔更短，渾欲不勝簪。",
+        "token": "城春草木深",
+        "tokenStart": 6,
+        "tokenEnd": 11
+      },
+      "prior": [
+        {
+          "sourceId": "poetry-8ce5f36e07de00875cbec6676886c8a7-0",
+          "corpusVersion": "poetry:e6798ef8b1433f3856cdea16",
+          "textHash": "afc4f2446ced4828d6f3f78a63145f5e8bc8b35ff919c19708e3f85dec326cd6",
+          "source": "春望",
+          "chapter": "唐 · 杜甫",
+          "text": "國破山河在，城春草木深。",
+          "start": 0,
+          "end": 12
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "poetry-8ce5f36e07de00875cbec6676886c8a7-0",
+          "corpusVersion": "poetry:e6798ef8b1433f3856cdea16",
+          "textHash": "afc4f2446ced4828d6f3f78a63145f5e8bc8b35ff919c19708e3f85dec326cd6",
+          "source": "春望",
+          "chapter": "唐 · 杜甫",
+          "text": "感時花濺淚，恨別鳥驚心",
+          "start": 13,
+          "end": 24
+        },
+        {
+          "sourceId": "poetry-8ce5f36e07de00875cbec6676886c8a7-0",
+          "corpusVersion": "poetry:e6798ef8b1433f3856cdea16",
+          "textHash": "afc4f2446ced4828d6f3f78a63145f5e8bc8b35ff919c19708e3f85dec326cd6",
+          "source": "春望",
+          "chapter": "唐 · 杜甫",
+          "text": "烽火連三月，家書抵萬金",
+          "start": 26,
+          "end": 37
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "group": "poetry",
+      "op": "branch",
+      "scope": [
+        "core",
+        "poetry"
+      ],
+      "need": "从名句回到诗中的送别处境，读出说话人和友人共同的远行身份。",
+      "terms": [
+        "與君離別意",
+        "同是宦遊人",
+        "天涯若比隣"
+      ],
+      "point": {
+        "sourceId": "poetry-97345017d330dc5a0f464e3102192660-0",
+        "corpusVersion": "poetry:e96d7a7f1bad38daec892fc9",
+        "textHash": "bcf77c221603d0587d3f27079b9a248fca3cf6d6155af5d75981f3118622d5dc",
+        "source": "杜少府之任蜀州",
+        "chapter": "唐 · 王勃",
+        "text": "海內存知己，天涯若比隣。",
+        "start": 26,
+        "end": 38,
+        "passage": "城闕輔三秦，風煙望五津。\n與君離別意，同是宦遊人。\n海內存知己，天涯若比隣。\n無爲在岐路，兒女共霑巾。",
+        "token": "海內存知己",
+        "tokenStart": 26,
+        "tokenEnd": 31
+      },
+      "prior": [
+        {
+          "sourceId": "poetry-97345017d330dc5a0f464e3102192660-0",
+          "corpusVersion": "poetry:e96d7a7f1bad38daec892fc9",
+          "textHash": "bcf77c221603d0587d3f27079b9a248fca3cf6d6155af5d75981f3118622d5dc",
+          "source": "杜少府之任蜀州",
+          "chapter": "唐 · 王勃",
+          "text": "海內存知己，天涯若比隣。",
+          "start": 26,
+          "end": 38
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "poetry-97345017d330dc5a0f464e3102192660-0",
+          "corpusVersion": "poetry:e96d7a7f1bad38daec892fc9",
+          "textHash": "bcf77c221603d0587d3f27079b9a248fca3cf6d6155af5d75981f3118622d5dc",
+          "source": "杜少府之任蜀州",
+          "chapter": "唐 · 王勃",
+          "text": "與君離別意，同是宦遊人",
+          "start": 13,
+          "end": 24
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "group": "poetry",
+      "op": "branch",
+      "scope": [
+        "core",
+        "poetry"
+      ],
+      "need": "找同夜另一联，以可听的声音定位夜半的客船。",
+      "terms": [
+        "夜半鐘聲",
+        "寒山寺",
+        "客船"
+      ],
+      "point": {
+        "sourceId": "poetry-cedb67bbf0dc83598068d2845c4f0dfc-0",
+        "corpusVersion": "poetry:8f9ef03622d2c3e497e3af27",
+        "textHash": "4ce896e6a3265f48ddfe7d987b8faf0f8aa9d1736e53768c1a4eecd7fb52ab7e",
+        "source": "楓橋夜泊",
+        "chapter": "唐 · 張繼",
+        "text": "月落烏啼霜滿天，江楓漁父對愁眠。",
+        "start": 0,
+        "end": 16,
+        "passage": "月落烏啼霜滿天，江楓漁父對愁眠。\n姑蘇城外寒山寺，夜半鐘聲到客船。",
+        "token": "月落烏啼",
+        "tokenStart": 0,
+        "tokenEnd": 4
+      },
+      "prior": [
+        {
+          "sourceId": "poetry-cedb67bbf0dc83598068d2845c4f0dfc-0",
+          "corpusVersion": "poetry:8f9ef03622d2c3e497e3af27",
+          "textHash": "4ce896e6a3265f48ddfe7d987b8faf0f8aa9d1736e53768c1a4eecd7fb52ab7e",
+          "source": "楓橋夜泊",
+          "chapter": "唐 · 張繼",
+          "text": "月落烏啼霜滿天，江楓漁父對愁眠。",
+          "start": 0,
+          "end": 16
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "poetry-cedb67bbf0dc83598068d2845c4f0dfc-0",
+          "corpusVersion": "poetry:8f9ef03622d2c3e497e3af27",
+          "textHash": "4ce896e6a3265f48ddfe7d987b8faf0f8aa9d1736e53768c1a4eecd7fb52ab7e",
+          "source": "楓橋夜泊",
+          "chapter": "唐 · 張繼",
+          "text": "姑蘇城外寒山寺，夜半鐘聲到客船",
+          "start": 17,
+          "end": 32
+        }
+      ]
+    },
+    {
+      "id": "D1",
+      "group": "deep",
+      "op": "branch",
+      "scope": [
+        "core"
+      ],
+      "need": "承认不知道之后怎么对待听见或看见的可疑材料，找一条有明确做法的证据。",
+      "terms": [
+        "知之为知之",
+        "多闻阙疑",
+        "多见阙殆",
+        "疑思问"
+      ],
+      "point": {
+        "sourceId": "rysxguji-lunyu-2-14",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+        "source": "论语",
+        "chapter": "第2章 为政第二",
+        "text": "知之为知之，不知为不知，是知也！",
+        "start": 12,
+        "end": 28,
+        "passage": "子曰：“由，诲女知之乎？知之为知之，不知为不知，是知也！”子张学干禄。子曰：“多闻阙疑，慎言其余，则寡尤；多见阙殆，慎行其余，则寡悔。言寡尤，行寡悔，禄在其中矣。”",
+        "token": "知之为知之",
+        "tokenStart": 12,
+        "tokenEnd": 17
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-lunyu-2-12",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "68b0ecb1364dbe40fd729ffb91b44682d8f171973d2e7f2c5316ab56b8218fe5",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "学而不思，则罔；思而不学，则殆。",
+          "start": 4,
+          "end": 20
+        },
+        {
+          "sourceId": "rysxguji-lunyu-2-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "知之为知之，不知为不知，是知也！",
+          "start": 12,
+          "end": 28
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-lunyu-2-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "多闻阙疑，慎言其余",
+          "start": 39,
+          "end": 48
+        },
+        {
+          "sourceId": "rysxguji-lunyu-2-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abb4c963bc1e9adbb1453ddc6479182841f327765e35398dbed89b22731c3724",
+          "source": "论语",
+          "chapter": "第2章 为政第二",
+          "text": "多见阙殆，慎行其余",
+          "start": 53,
+          "end": 62
+        },
+        {
+          "sourceId": "rysxguji-lunyu-16-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "7756c05fb5a85df32fa771b5c49815183c783e00324a17d86f07b9b9d82ebc27",
+          "source": "论语",
+          "chapter": "第16章 季氏第十六",
+          "text": "疑思问",
+          "start": 35,
+          "end": 38
+        }
+      ]
+    },
+    {
+      "id": "D2",
+      "group": "deep",
+      "op": "branch",
+      "scope": [
+        "core"
+      ],
+      "need": "已知背得多未必能办事，找应对实际情势的学习方法，或用自身行为取得实际效果的具体对照。",
+      "terms": [
+        "诵《诗》三百",
+        "其身正",
+        "举一隅"
+      ],
+      "point": {
+        "sourceId": "rysxguji-lunyu-13-7",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "09b08b04bb7b94d8340cc78f818883bd1fba9791b7af8bce4b0f8f639a80f337",
+        "source": "论语",
+        "chapter": "第13章 子路第十三",
+        "text": "诵《诗》三百，授之以政，不达；使于四方，不能专对；虽多，亦奚以为？",
+        "start": 76,
+        "end": 109,
+        "passage": "樊迟出。子曰：“小人哉，樊须也！上好礼，则民莫敢不敬；上好义，则民莫敢不服；上好信，则民莫敢不用情。夫如是，则四方之民襁负其子而至矣，焉用稼？”子曰：“诵《诗》三百，授之以政，不达；使于四方，不能专对；虽多，亦奚以为？”子曰：“其身正，不令而行；其身不正，虽令不从。”",
+        "token": "专对",
+        "tokenStart": 98,
+        "tokenEnd": 100
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-liji-16-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "e03fed59833bef7e782e3ac26d2d7c8d685461372df04ec17a5cb3fbfed509ce",
+          "source": "礼记",
+          "chapter": "第16章 学记",
+          "text": "独学而无友，则孤陋而寡闻。",
+          "start": 38,
+          "end": 51
+        },
+        {
+          "sourceId": "rysxguji-lunyu-13-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "09b08b04bb7b94d8340cc78f818883bd1fba9791b7af8bce4b0f8f639a80f337",
+          "source": "论语",
+          "chapter": "第13章 子路第十三",
+          "text": "诵《诗》三百，授之以政，不达；使于四方，不能专对；虽多，亦奚以为？",
+          "start": 76,
+          "end": 109
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-lunyu-13-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "09b08b04bb7b94d8340cc78f818883bd1fba9791b7af8bce4b0f8f639a80f337",
+          "source": "论语",
+          "chapter": "第13章 子路第十三",
+          "text": "其身正，不令而行",
+          "start": 114,
+          "end": 122
+        },
+        {
+          "sourceId": "rysxguji-lunyu-7-7",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "bb7e0a82091db81e93385b523e8c83e3b97b937fd9898082f6534db404b49fa1",
+          "source": "论语",
+          "chapter": "第7章 述而第七",
+          "text": "举一隅不以三隅反，则不复也",
+          "start": 14,
+          "end": 27
+        }
+      ]
+    },
+    {
+      "id": "D3",
+      "group": "deep",
+      "op": "branch",
+      "scope": [
+        "core"
+      ],
+      "need": "读对方没有回应时可以分辨哪些自身行为，或一次失败后自查的具体场景。",
+      "terms": [
+        "反求诸己",
+        "反其仁",
+        "反其智",
+        "反其敬",
+        "发而不中"
+      ],
+      "point": {
+        "sourceId": "rysxguji-mengzi-6-6",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "326c5a0b02a2dc22ec89e0f73d16dd51869df5ff15f32d3e0e216236924c1927",
+        "source": "孟子",
+        "chapter": "第6章 卷七 离娄上",
+        "text": "行有不得者皆反求诸己，其身正而天下归之。",
+        "start": 32,
+        "end": 52,
+        "passage": "孟子曰：“爱人不亲，反其仁；治人不治，反其智；礼人不答，反其敬。行有不得者皆反求诸己，其身正而天下归之。《诗》云：‘永言配命，自求多福。’”孟子曰：“人有恒言，皆曰‘天下国家’。天下之本在国，国之本在家，家之本在身。”",
+        "token": "反求诸己",
+        "tokenStart": 38,
+        "tokenEnd": 42
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-lunyu-15-18",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "94ee9379b81120368ed8f9269bb1656639a3d377d65866d36a7e81fb0c2f5e5e",
+          "source": "论语",
+          "chapter": "第15章 卫灵公第十五",
+          "text": "君子求诸己，小人求诸人。",
+          "start": 4,
+          "end": 16
+        },
+        {
+          "sourceId": "rysxguji-mengzi-6-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "326c5a0b02a2dc22ec89e0f73d16dd51869df5ff15f32d3e0e216236924c1927",
+          "source": "孟子",
+          "chapter": "第6章 卷七 离娄上",
+          "text": "行有不得者皆反求诸己，其身正而天下归之。",
+          "start": 32,
+          "end": 52
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-mengzi-6-6",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "326c5a0b02a2dc22ec89e0f73d16dd51869df5ff15f32d3e0e216236924c1927",
+          "source": "孟子",
+          "chapter": "第6章 卷七 离娄上",
+          "text": "反其仁；治人不治，反其智；礼人不答，反其敬",
+          "start": 10,
+          "end": 31
+        },
+        {
+          "sourceId": "rysxguji-mengzi-2-34",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "033d110fc9aeb456dab0dc9bb7ca527551d610fa4bab7d863aaecdf4a23498b2",
+          "source": "孟子",
+          "chapter": "第2章 卷二 梁惠王下",
+          "text": "发而不中，不怨胜己者，反求诸己",
+          "start": 13,
+          "end": 28
+        },
+        {
+          "sourceId": "rysxguji-liji-44-11",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "008e2347892d0c220419ecaaed633acde57d9d55644fe2365fa4d6c53a0965b0",
+          "source": "礼记",
+          "chapter": "第44章 射义",
+          "text": "发而不中，则不怨胜己者，反求诸己",
+          "start": 20,
+          "end": 36
+        }
+      ]
+    },
+    {
+      "id": "D4",
+      "group": "deep",
+      "op": "branch",
+      "scope": [
+        "core"
+      ],
+      "need": "已经读过雕刻喻，想看另一种例子具体说清天分、用力分散或累积与结果的关系。",
+      "terms": [
+        "锲而不舍",
+        "功在不舍",
+        "不积小流",
+        "用心一也",
+        "蹞步而不休"
+      ],
+      "point": {
+        "sourceId": "rysxguji-xunzi-1-5",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+        "source": "荀子",
+        "chapter": "第1章 劝学篇第一",
+        "text": "锲而舍之，朽木不折；锲而不舍，金石可镂。",
+        "start": 79,
+        "end": 99,
+        "passage": "积土成山，风雨兴焉；积水成渊，蛟龙生焉；积善成德，而神明自得，圣心备焉。故不积蹞步，无以致千里；不积小流，无以成江海。骐骥一跃，不能十步；驽马十驾，功在不舍。锲而舍之，朽木不折；锲而不舍，金石可镂。螾无爪牙之利，筋骨之强，上食埃土，下饮黄泉，用心一也。蟹八跪而二螯，非蛇蟺之穴，无可寄托者，用心躁也。是故无冥冥之志者，无昭昭之明；无惛惛之事者，无赫赫之功。行衢道者不至，事两君者不容。目不能两视而明，耳不能两听而聪。螣蛇无足而飞，梧鼠五技而穷。诗曰：\"尸鸠在桑，其子七兮。淑人君子，其仪一兮。其仪一兮，心如结兮。\"故君子结于一也。",
+        "token": "不舍",
+        "tokenStart": 91,
+        "tokenEnd": 93
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-lunyu-9-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "abd7a02fa2b2f409ca9dc0131228531eb50d63f613749a9e1b84ed974e80cc3a",
+          "source": "论语",
+          "chapter": "第9章 子罕第九",
+          "text": "譬如为山，未成一篑，止，吾止也。",
+          "start": 4,
+          "end": 20
+        },
+        {
+          "sourceId": "rysxguji-xunzi-1-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "锲而舍之，朽木不折；锲而不舍，金石可镂。",
+          "start": 79,
+          "end": 99
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-xunzi-1-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "骐骥一跃，不能十步；驽马十驾，功在不舍",
+          "start": 59,
+          "end": 78
+        },
+        {
+          "sourceId": "rysxguji-xunzi-1-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "不积小流，无以成江海",
+          "start": 48,
+          "end": 58
+        },
+        {
+          "sourceId": "rysxguji-xunzi-1-5",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "56927f4566a207ca24f21072a1b84f64a8cbe89ca9ad5501966e33ef867d052c",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "用心一也",
+          "start": 121,
+          "end": 125
+        },
+        {
+          "sourceId": "rysxguji-xunzi-2-8",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "82b7db130e63e7ba67e1e6d90027f6f1497ea98ea7da0f8384030fd51296526f",
+          "source": "荀子",
+          "chapter": "第2章 修身篇第二",
+          "text": "蹞步而不休，跛鳖千里",
+          "start": 206,
+          "end": 216
+        }
+      ]
+    },
+    {
+      "id": "D5",
+      "group": "deep",
+      "op": "branch",
+      "scope": [
+        "core"
+      ],
+      "need": "已经知道发怒前要想后果，再找一处说明怒气不要转到别人身上的明确做法。",
+      "terms": [
+        "忿思难",
+        "不迁怒",
+        "不贰过"
+      ],
+      "point": {
+        "sourceId": "rysxguji-lunyu-16-14",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "7756c05fb5a85df32fa771b5c49815183c783e00324a17d86f07b9b9d82ebc27",
+        "source": "论语",
+        "chapter": "第16章 季氏第十六",
+        "text": "疑思问，忿思难，见得思义。",
+        "start": 35,
+        "end": 48,
+        "passage": "孔子曰：“君子有九思：视思明，听思聪，色思温，貌思恭，言思忠，事思敬，疑思问，忿思难，见得思义。”",
+        "token": "忿思难",
+        "tokenStart": 39,
+        "tokenEnd": 42
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-lunyu-15-26",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "3bfdb3039a895829e7deb7a82015422eaaea079f2cb133d2afe3a8e400e2240c",
+          "source": "论语",
+          "chapter": "第15章 卫灵公第十五",
+          "text": "过而不改，是谓过矣。",
+          "start": 4,
+          "end": 14
+        },
+        {
+          "sourceId": "rysxguji-lunyu-16-14",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "7756c05fb5a85df32fa771b5c49815183c783e00324a17d86f07b9b9d82ebc27",
+          "source": "论语",
+          "chapter": "第16章 季氏第十六",
+          "text": "疑思问，忿思难，见得思义。",
+          "start": 35,
+          "end": 48
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-lunyu-6-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "005cb648f2eb262774cdb745bb99fd899c74051912383626e64c3dfe6818fae6",
+          "source": "论语",
+          "chapter": "第6章 雍也第六",
+          "text": "不迁怒，不贰过",
+          "start": 70,
+          "end": 77
+        }
+      ]
+    },
+    {
+      "id": "D6",
+      "group": "deep",
+      "op": "branch",
+      "scope": [
+        "core"
+      ],
+      "need": "环境会改变人已在比喻里见过，再找如何主动选择环境与交游的行动。",
+      "terms": [
+        "蓬生麻中",
+        "君子居必择乡",
+        "游必就士",
+        "友其士之仁者"
+      ],
+      "point": {
+        "sourceId": "rysxguji-xunzi-1-3",
+        "corpusVersion": "guji-core-v1",
+        "textHash": "c2ddeb49ce2cdc17c1cc363cc453bf07df0058aa2e84fa38272e5c8eca52a0b6",
+        "source": "荀子",
+        "chapter": "第1章 劝学篇第一",
+        "text": "蓬生麻中，不扶而直；白沙在涅，与之俱黑。",
+        "start": 92,
+        "end": 112,
+        "passage": "南方有鸟焉，名曰蒙鸠，以羽为巢，而编之以发，系之苇苕，风至苕折，卵破子死。巢非不完也，所系者然也。西方有木焉，名曰射干，茎长四寸，生于高山之上，而临百仞之渊，木茎非能长也，所立者然也。蓬生麻中，不扶而直；白沙在涅，与之俱黑。兰槐之根是为芷，其渐之滫，君子不近，庶人不服。其质非不美也，所渐者然也。故君子居必择乡，游必就士，所以防邪辟而近中正也。",
+        "token": "蓬生麻中",
+        "tokenStart": 92,
+        "tokenEnd": 96
+      },
+      "prior": [
+        {
+          "sourceId": "rysxguji-liji-16-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "e03fed59833bef7e782e3ac26d2d7c8d685461372df04ec17a5cb3fbfed509ce",
+          "source": "礼记",
+          "chapter": "第16章 学记",
+          "text": "独学而无友，则孤陋而寡闻。",
+          "start": 38,
+          "end": 51
+        },
+        {
+          "sourceId": "rysxguji-xunzi-1-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "c2ddeb49ce2cdc17c1cc363cc453bf07df0058aa2e84fa38272e5c8eca52a0b6",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "蓬生麻中，不扶而直；白沙在涅，与之俱黑。",
+          "start": 92,
+          "end": 112
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "rysxguji-xunzi-1-3",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "c2ddeb49ce2cdc17c1cc363cc453bf07df0058aa2e84fa38272e5c8eca52a0b6",
+          "source": "荀子",
+          "chapter": "第1章 劝学篇第一",
+          "text": "君子居必择乡，游必就士",
+          "start": 149,
+          "end": 160
+        },
+        {
+          "sourceId": "rysxguji-lunyu-15-10",
+          "corpusVersion": "guji-core-v1",
+          "textHash": "246d12e1344fc621dbe4ffbb7cc17bdf7a7315efff72849e1ae39450973bd840",
+          "source": "论语",
+          "chapter": "第15章 卫灵公第十五",
+          "text": "友其士之仁者",
+          "start": 35,
+          "end": 41
+        }
+      ]
+    }
+  ]
+}
