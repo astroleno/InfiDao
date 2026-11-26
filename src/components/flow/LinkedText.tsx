@@ -1,8 +1,9 @@
 'use client';
 
-import { Fragment, useId, useRef, useState } from 'react';
+import { Fragment, useId, useRef, useState, type ClipboardEvent } from 'react';
 import type { FlowFrame, FlowSelection } from '@/lib/flow/contracts';
 import styles from './flow.module.css';
+import { projectClassicText } from '@/lib/flow-browser/classic-display';
 
 const { classicSpans } = require('../../../shared/flow/classic-text') as {
   classicSpans: (frame: FlowFrame, surface?: 'quote' | 'fullText') => Array<{ text: string; anchorId?: string; selection?: { start: number; end: number; textHash: string; corpusVersion: string }; selected?: boolean }>;
@@ -12,8 +13,59 @@ const { textSpans } = require('../../../shared/flow/text-spans') as {
 };
 
 type Selection = { frameId: string; anchorId?: string; selection?: FlowSelection; label: string };
-type Part = { text: string; anchorId?: string; selection?: FlowSelection; selected?: boolean };
+type Part = { text: string; sourceText?: string; anchorId?: string; selection?: FlowSelection; selected?: boolean };
 type TokenGroup = Array<{ part: Part; index: number }>;
+
+function displayedParts(frame: FlowFrame, surface: 'quote' | 'fullText'): Part[] {
+  const parts = classicSpans(frame, surface);
+  const original = frame.fullText;
+  if (typeof original !== 'string') return parts;
+  let start = surface === 'fullText' ? 0 : frame.quoteStart;
+  const end = surface === 'fullText' ? original.length : frame.quoteEnd;
+  const expected = surface === 'fullText' ? original : frame.quote;
+  if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end > original.length ||
+      original.slice(start, end) !== expected || parts.map(part => part.text).join('') !== expected) return [{ text: expected }];
+  const projection = projectClassicText(original);
+  if (!projection || projection.text === original) return parts;
+  const projected: Part[] = [];
+  for (const part of parts) {
+    const next = start + part.text.length;
+    const text = projection.slice(start, next);
+    if (text === null) return [{ text: expected }];
+    projected.push(text === part.text ? part : { ...part, text, sourceText: part.text });
+    start = next;
+  }
+  return projected;
+}
+
+function copyCanonical(event: ClipboardEvent<HTMLSpanElement>) {
+  const content = event.currentTarget;
+  const selection = content.ownerDocument.getSelection();
+  if (!selection || selection.isCollapsed || selection.rangeCount !== 1 ||
+      !content.contains(selection.anchorNode) || !content.contains(selection.focusNode)) return;
+  const range = selection.getRangeAt(0);
+  let copied = '';
+  for (const element of content.querySelectorAll<HTMLElement>('[data-flow-classic-part]')) {
+    const node = element.firstChild;
+    if (!(node instanceof Text) || !range.intersectsNode(node)) continue;
+    const from = node === range.startContainer ? range.startOffset : 0;
+    const to = node === range.endContainer ? range.endOffset : node.length;
+    if (from === to) continue;
+    const source = element.dataset.flowSourceText;
+    if (source === undefined) copied += node.data.slice(from, to);
+    else {
+      const a = Array.from(node.data.slice(0, from)).length;
+      const b = Array.from(node.data.slice(0, to)).length;
+      copied += Array.from(source).slice(a, b).join('');
+    }
+  }
+  // Browser wrapping can add line breaks to copied text even when the
+  // display and authority use the same script.
+  if (copied) {
+    event.clipboardData.setData('text/plain', copied);
+    event.preventDefault();
+  }
+}
 
 const tokenText = (group: TokenGroup) => group.map(item => item.part.text).join('');
 const shortHan = /^\p{Script=Han}{1,2}$/u;
@@ -56,7 +108,8 @@ function quotePhrases(groups: TokenGroup[]) {
 type Props = { frame: FlowFrame; surface: 'quote' | 'fullText' | 'meaning' | 'reflection'; onSelect: (selection: Selection) => void; connecting?: Pick<Selection, 'frameId' | 'anchorId'> | null; optical?: boolean };
 
 export function LinkedText({ frame, surface, onSelect, connecting, optical = false }: Props) {
-  const parts: Part[] = surface === 'quote' || surface === 'fullText' ? classicSpans(frame, surface) : textSpans(frame, surface, true);
+  const classical = surface === 'quote' || surface === 'fullText';
+  const parts: Part[] = classical ? displayedParts(frame, surface) : textSpans(frame, surface, true);
   const helpId = useId();
   const groupRef = useRef<HTMLSpanElement>(null);
   const [focused, setFocused] = useState<{ frameId: string; index: number } | null>(null);
@@ -67,7 +120,7 @@ export function LinkedText({ frame, surface, onSelect, connecting, optical = fal
   const groups: TokenGroup[] = [];
   let opening = '';
   parts.forEach((part, index) => {
-    if (part.anchorId) {
+    if (part.anchorId || part.sourceText !== undefined || part.selected) {
       groups.push([...(opening ? [{ part: { text: opening }, index: -index - 1 }] : []), { part, index }]);
       opening = '';
       return;
@@ -89,7 +142,8 @@ export function LinkedText({ frame, surface, onSelect, connecting, optical = fal
   }
   return (
     <span ref={groupRef} role={first >= 0 ? 'group' : undefined} aria-label={first >= 0 ? '经文接续选词' : undefined} aria-describedby={first >= 0 ? helpId : undefined}
-      className={surface === 'quote' || surface === 'fullText' ? styles.classicText : undefined}
+      className={classical ? styles.classicText : undefined} lang={classical ? 'zh-Hant' : undefined}
+      onCopy={classical ? copyCanonical : undefined}
       onKeyDown={event => {
         if (event.altKey || event.ctrlKey || event.metaKey || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
         const buttons = Array.from(groupRef.current?.querySelectorAll<HTMLButtonElement>('button') || []);
@@ -102,15 +156,15 @@ export function LinkedText({ frame, surface, onSelect, connecting, optical = fal
       {first >= 0 && <span id={helpId} className={styles.srOnly}>左右方向键选词，Home 和 End 到首尾，回车接续，Tab 离开选词。</span>}
       {clauses.filter(clause => clause.length).map((clause, clauseIndex) => <span key={clauseIndex} className={surface === 'quote' ? styles.quoteClause : undefined}>{(optical && surface === 'quote' ? quotePhrases(clause) : [clause]).map((phrase, phraseIndex) => {
         const words = phrase.map((group, groupIndex) => <span key={groupIndex} data-flow-optic={optical || undefined} className={optical || group.some(item => item.part.anchorId) ? styles.tokenGroup : undefined}>{group.map(({ part, index }) => {
-        if (!part.anchorId) return <span key={`${index}:${part.text}`} data-source-quote={part.selected || undefined} className={part.selected ? styles.selectedQuote : undefined}>{part.text}</span>;
+        if (!part.anchorId) return <span key={`${index}:${part.text}`} data-flow-classic-part={classical || undefined} data-flow-source-text={part.sourceText} data-source-quote={part.selected || undefined} className={part.selected ? styles.selectedQuote : undefined}>{part.text}</span>;
         const choose = () => {
-          const selected: Selection = { frameId: frame.id, label: part.text };
+          const selected: Selection = { frameId: frame.id, label: part.sourceText ?? part.text };
           if (part.anchorId) selected.anchorId = part.anchorId;
           if (part.selection) selected.selection = part.selection;
           onSelect(selected);
         };
         return (
-          <button key={`${index}:${part.anchorId}`} tabIndex={index === current ? 0 : -1} onFocus={() => setFocused({ frameId: frame.id, index })} title={`沿「${part.text}」接续`} data-source-quote={part.selected || undefined} data-connecting={connecting?.frameId === frame.id && connecting.anchorId === part.anchorId || undefined} className={`${styles.linkedToken} ${part.selected ? styles.selectedQuote : ''}`} type="button" onClick={choose}>
+          <button key={`${index}:${part.anchorId}`} tabIndex={index === current ? 0 : -1} onFocus={() => setFocused({ frameId: frame.id, index })} title={`沿「${part.sourceText ?? part.text}」接续`} data-flow-anchor-id={classical ? part.anchorId : undefined} data-flow-classic-part={classical || undefined} data-flow-source-text={part.sourceText} data-source-quote={part.selected || undefined} data-connecting={connecting?.frameId === frame.id && connecting.anchorId === part.anchorId || undefined} className={`${styles.linkedToken} ${part.selected ? styles.selectedQuote : ''}`} type="button" onClick={choose}>
             {part.text}
           </button>
         );

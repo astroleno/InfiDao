@@ -78,7 +78,7 @@ def plan(root: Path) -> tuple[str, list[dict]]:
         file = checked_file(root, name)
         if file.stat().st_size != entry.get("bytes") or digest(file) != entry.get("sha256"):
             raise RuntimeError("font package hash mismatch")
-        if entry.get("bytes", 0) <= 0 or entry.get("cacheControl") != CACHE or entry.get("mime") not in ("font/woff", "application/json; charset=utf-8"):
+        if entry.get("bytes", 0) <= 0 or entry.get("cacheControl") != CACHE or entry.get("mime") not in ("font/woff", "application/json; charset=utf-8", "text/plain; charset=utf-8"):
             raise RuntimeError("invalid immutable metadata")
         checked.append({**entry, "localPath": file})
     checked.append({

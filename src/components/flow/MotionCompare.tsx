@@ -6,6 +6,7 @@ import { MOTION_COMPARE_ENTRIES } from './motion-compare-data';
 import { readCompareOptions, type CompareOptions } from './motion-compare-options';
 import { entryKey } from '@/lib/flow-browser/continuity';
 import { prepareFlowFonts } from '@/lib/flow-browser/fonts';
+import { displayClassicQuote } from '@/lib/flow-browser/classic-display';
 import type { StreamMotionVariant } from '@/lib/flow-browser/motion-profile';
 import styles from './motion-compare.module.css';
 
@@ -55,7 +56,7 @@ export function MotionCompare() {
   useEffect(() => {
     let disposed = false;
     setFontState('loading');
-    void prepareFlowFonts(MOTION_COMPARE_ENTRIES.map(entry => entry.frame)).then(() => {
+    void prepareFlowFonts(MOTION_COMPARE_ENTRIES.map(({ frame }) => ({ quote: displayClassicQuote(frame) }))).then(() => {
       if (!disposed) {
         motionSeedRef.current ??= optionsRef.current?.seed ?? Math.random() * 289;
         setFontState('ready');

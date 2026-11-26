@@ -15,6 +15,7 @@ import { LibrarySheet } from './LibrarySheet';
 import { FlowLoading } from './FlowLoading';
 import { useLoadingHandoff } from './useLoadingHandoff';
 import { prepareFlowFonts, type FontProgress } from '@/lib/flow-browser/fonts';
+import { displayClassicQuote, displayClassicText } from '@/lib/flow-browser/classic-display';
 import { readingStorage } from '@/lib/flow-browser/storage';
 import { noteContext, quoteKey, snapshotFrame, type SavedTarget } from '@/lib/flow-browser/library';
 import { useMotionCandidate } from '@/lib/flow-browser/motion-candidate';
@@ -246,7 +247,7 @@ export function FlowExperience() {
     if (!sourceOpen || !active) return;
     // Full-source typography is optional work after the reader asks for it.
     // A system serif remains readable if a supplementary face is unavailable.
-    void prepareFlowFonts([{ quote: active.quote, fullText: active.fullText }]).catch(() => {});
+    void prepareFlowFonts([{ quote: displayClassicQuote(active), fullText: displayClassicText(active.fullText) }]).catch(() => {});
   }, [sourceOpen, active]);
 
   useEffect(() => {
@@ -564,7 +565,7 @@ export function FlowExperience() {
   }
 
   const currentFrame = active || frames[0] || null;
-  const loadingQuote = currentFrame?.quote || preparingQuote;
+  const loadingQuote = currentFrame ? displayClassicQuote(currentFrame) : preparingQuote;
   const handoff = useLoadingHandoff(loadingQuote, reducedMotion);
   const loadingActive = !handoff.ready && !flowError;
   const showHint = hint && handoff.revealed && !loadingOverlayVisible && !loading && !pending && !flowError &&
@@ -655,7 +656,7 @@ export function FlowExperience() {
       {!entries.length && errorFeedback && <div className={styles.notice}>{errorFeedback}</div>}
       {storageWarning && <p className={styles.storageNotice} role="status">本机存储暂不可用；当前阅读仍可继续，刷新后可能无法恢复。</p>}
 
-      <span className={styles.srOnly} aria-live="polite">{currentFrame ? `${currentFrame.source}，${currentFrame.chapterLabel}。${currentFrame.quote}` : ''}</span>
+      <span className={styles.srOnly} aria-live="polite">{currentFrame && <>{`${currentFrame.source}，${currentFrame.chapterLabel}。`}<span lang="zh-Hant">{loadingQuote}</span></>}</span>
       </div>
       <SeedSheet open={seedOpen} value={seed} busy={seedBusy} continuing={!!seedTarget.current} error={seedError} onChange={changeDraft} onSubmit={() => void startThought()} onClose={closeSeed} onCancel={cancelSeed} />
       {keepsakeSource && <ReadingKeepsakeSheet source={keepsakeSource} onClose={closeKeepsake} />}

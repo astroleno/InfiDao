@@ -100,7 +100,7 @@ async function main() {
   const sourceDigest = sourceHash.digest('hex');
   const releaseId = `infidao-${sourceDigest.slice(0, 16)}`;
   const { createWebFontRelease } = createRequire(import.meta.url)('../scripts/web-flow-font-assets.cjs');
-  const { manifest: fontManifest, manifestBytes, assets } = createWebFontRelease(source);
+  const { manifest: fontManifest, manifestBytes, assets, licenses } = createWebFontRelease(source);
   if (!/^[a-zA-Z0-9_-]{10,64}$/.test(fontManifest.version) || !Array.isArray(fontManifest.shards)) {
     fail('invalid font manifest');
   }
@@ -110,7 +110,7 @@ async function main() {
   const entries = [];
   for (const { file: filename, bytes, asset } of [
     { file: 'manifest.json', bytes: manifestBytes },
-    ...assets.map(item => ({ file: item.asset.file, bytes: item.bytes, asset: item.asset })),
+    ...[...assets, ...licenses].map(item => ({ file: item.asset.file, bytes: item.bytes, asset: item.asset })),
   ]) {
     if (!/^[a-zA-Z0-9._-]+$/.test(filename)) fail('invalid font filename');
     const generated = join(source, 'public', versionPath, filename);
@@ -122,7 +122,7 @@ async function main() {
     await cp(generated, target);
     entries.push({
       channel: 'fonts', packagePath, objectKey: `${objectPrefix}${versionPath}/${filename}`,
-      bytes: bytes.length, sha256: sha(bytes), mime: filename.endsWith('.woff') ? 'font/woff' : 'application/json; charset=utf-8',
+      bytes: bytes.length, sha256: sha(bytes), mime: filename.endsWith('.woff') ? 'font/woff' : filename.endsWith('.txt') ? 'text/plain; charset=utf-8' : 'application/json; charset=utf-8',
       cacheControl: immutable,
     });
   }

@@ -1,6 +1,6 @@
 type FontAsset = { id: string; file: string; bytes: number; sha256: string };
 type FontShard = FontAsset & { characters: string };
-type FontManifest = { version: string; shards: FontShard[]; unsupported?: string; baseCharacters?: string; baseFonts?: Array<FontAsset & { family: string }> };
+type FontManifest = { schemaVersion?: number; version: string; shards: FontShard[]; unsupported?: string; baseCharacters?: string; baseFonts?: Array<FontAsset & { family: string }> };
 type FontReady = { version: string; family: string; families: string[]; characters: string };
 export type FontProgress = { phase: 'manifest' | 'fonts' | 'ready'; loaded: number; total: number };
 import { FLOW_RELEASE } from './release.generated';
@@ -20,6 +20,8 @@ const loadedBases = new Map<string, Promise<string[]>>();
 const localBase = FLOW_FONT_LOCAL_BASE;
 const cdnBase = FLOW_FONT_CDN_BASE;
 const preferredBase = FLOW_FONT_BASE;
+const systemSerif = ['"Songti TC"', '"Noto Serif CJK TC"', 'serif'];
+const lineControl = /^[\r\n\t]$/u;
 let activeDownloads = 0;
 const downloadQueue: Array<() => void> = [];
 const ASSET_TIMEOUT_MS = 8_000;
@@ -61,8 +63,18 @@ async function loadManifest(baseUrl: string): Promise<{ manifest: FontManifest; 
   if (!manifests.has(baseUrl)) {
     const pending = fetchAsset(`${baseUrl}/manifest.json`, async response => {
         if (!response.ok) throw new Error('FONT_MANIFEST_UNAVAILABLE');
-        const manifest = await response.json() as FontManifest;
-        if ((baseUrl === localBase || baseUrl === cdnBase) && manifest.version !== FLOW_RELEASE.fontVersion) throw new Error('FONT_VERSION_CHANGED');
+        const pinned = baseUrl === localBase || baseUrl === cdnBase;
+        let manifest: FontManifest;
+        if (pinned) {
+          const bytes = await response.arrayBuffer();
+          if (!globalThis.crypto?.subtle) throw new Error('FONT_INTEGRITY_UNAVAILABLE');
+          const hash = hex(await crypto.subtle.digest('SHA-256', bytes));
+          if (hash !== FLOW_RELEASE.fontManifestSha256) throw new Error('FONT_MANIFEST_INTEGRITY');
+          manifest = JSON.parse(new TextDecoder().decode(bytes)) as FontManifest;
+          if (manifest.version !== FLOW_RELEASE.fontVersion) throw new Error('FONT_VERSION_CHANGED');
+        } else {
+          manifest = await response.json() as FontManifest;
+        }
         return { manifest, baseUrl };
       }).catch(error => {
         manifests.delete(baseUrl);
@@ -142,8 +154,10 @@ export async function prepareFlowFonts(frames: Array<{ quote: string; fullText?:
   // every shard back to a CDN which has already failed this preparation.
   baseUrl = loaded.baseUrl;
   const supported = new Set([...Array.from(manifest.baseCharacters || ''), ...manifest.shards.flatMap(shard => Array.from(shard.characters))]);
-  const missing = Array.from(new Set(Array.from(text).filter(char => !/[\r\n\t]/u.test(char) && !supported.has(char) && !hasGlyph(char))));
-  if (missing.length) throw new Error('FONT_UNCOVERED');
+  // A saved authority revision may contain a character outside the release.
+  // Browser text and Canvas 2D both keep it in the platform serif stack.
+  const needsOutline = (char: string) => !lineControl.test(char) && (manifest.schemaVersion !== 2 || supported.has(char));
+  if (Array.from(text).some(char => needsOutline(char) && !supported.has(char) && !hasGlyph(char))) throw new Error('FONT_UNCOVERED');
 
   const baseCoverage = new Set(Array.from(manifest.baseCharacters || ''));
   const extraCharacters = new Set(Array.from(text).filter(char => !baseCoverage.has(char)));
@@ -170,15 +184,14 @@ export async function prepareFlowFonts(frames: Array<{ quote: string; fullText?:
   // Keep the manifest order even when downloads finish in a different order.
   const families = [...baseFamilies, ...shardFamilies];
 
-  const uncovered = Array.from(new Set(Array.from(text).filter(char => !hasGlyph(char))));
-  if (uncovered.length) throw new Error('FONT_UNCOVERED');
-  const family = [...families.map(name => `"${name}"`), '"Songti SC"', '"Noto Serif CJK SC"', 'serif'].join(', ');
+  if (Array.from(text).some(char => needsOutline(char) && !hasGlyph(char))) throw new Error('FONT_UNCOVERED');
+  const family = [...families.map(name => `"${name}"`), ...systemSerif].join(', ');
   // Late work for a previous chain may add faces, but must never remove faces
   // used by the current quotation or by an expanded source paragraph.
   const available = [...(manifest.baseFonts || []).map(font => font.family),
     ...manifest.shards.map(shard => `InfiDao-${shard.id}-${shard.sha256}`)].filter(name => installedFaces.has(name));
   document.documentElement.style.setProperty('--flow-classic-family',
-    [...available.map(name => `"${name}"`), '"Songti SC"', '"Noto Serif CJK SC"', 'serif'].join(', '));
+    [...available.map(name => `"${name}"`), ...systemSerif].join(', '));
   report({ phase: 'ready', loaded: assets.length, total: assets.length });
   return { version: manifest.version, family, families, characters: text };
 }

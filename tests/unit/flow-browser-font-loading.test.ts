@@ -1,3 +1,4 @@
+import { TextDecoder } from 'node:util';
 jest.mock('@/lib/flow-browser/glyph-outline', () => ({ installFont: jest.fn(), installBaseFonts: jest.fn(), hasGlyph: () => true }));
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -10,6 +11,7 @@ describe('font asset readiness', () => {
   const previousFontFace = Object.getOwnPropertyDescriptor(global, 'FontFace');
   const previousFonts = Object.getOwnPropertyDescriptor(document, 'fonts');
   const previousCrypto = Object.getOwnPropertyDescriptor(global, 'crypto');
+  const previousTextDecoder = Object.getOwnPropertyDescriptor(global, 'TextDecoder');
   const testHash = createHash('sha256').update(Buffer.alloc(2)).digest('hex');
   const manifest = { version: 'v1', shards: [{ id: 'one', file: 'one.ttf', characters: '甲', bytes: 2, sha256: testHash }] };
   let fetchMock: jest.Mock;
@@ -26,6 +28,7 @@ describe('font asset readiness', () => {
     Object.defineProperty(global, 'FontFace', { configurable: true, value: faceMock });
     Object.defineProperty(document, 'fonts', { configurable: true, value: { add: jest.fn() } });
     Object.defineProperty(global, 'crypto', { configurable: true, value: webcrypto });
+    Object.defineProperty(global, 'TextDecoder', { configurable: true, value: TextDecoder });
     const original = require('@/lib/flow-browser/fonts').prepareFlowFonts as typeof prepare;
     prepare = (frames, baseUrl = '/test-fonts', onProgress) => original(frames, baseUrl, onProgress);
   });
@@ -33,7 +36,7 @@ describe('font asset readiness', () => {
   afterEach(() => {
     jest.useRealTimers();
     for (const [object, key, descriptor] of [
-      [global, 'fetch', previousFetch], [global, 'FontFace', previousFontFace], [document, 'fonts', previousFonts], [global, 'crypto', previousCrypto],
+      [global, 'fetch', previousFetch], [global, 'FontFace', previousFontFace], [document, 'fonts', previousFonts], [global, 'crypto', previousCrypto], [global, 'TextDecoder', previousTextDecoder],
     ] as const) {
       if (descriptor) Object.defineProperty(object, key, descriptor);
       else Reflect.deleteProperty(object, key);
@@ -184,6 +187,14 @@ describe('font asset readiness', () => {
     expect(a.family).toBe(b.family);
   });
 
+  test('keeps an unknown historical character available through the browser serif fallback', async () => {
+    fetchMock.mockResolvedValueOnce({ ok: true, json: async () => ({ schemaVersion: 2, ...manifest }) });
+    const result = await prepare([{ quote: '𠔉' }]);
+    expect(result.characters).toBe('𠔉');
+    expect(result.family).toContain('Songti TC');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   test('a failed CDN shard loads the pinned same-origin copy with the same integrity metadata', async () => {
     const original = process.env.NEXT_PUBLIC_FLOW_FONT_CDN_BASE;
     const manifest = JSON.parse(readFileSync(path.join(process.cwd(), 'public', FLOW_RELEASE.fontBasePath, 'manifest.json'), 'utf8'));
@@ -192,9 +203,9 @@ describe('font asset readiness', () => {
     jest.resetModules();
     const fallback = require('@/lib/flow-browser/fonts').prepareFlowFonts as typeof prepare;
     fetchMock.mockImplementation(async (url: string) => {
-      if (url.endsWith('manifest.json')) return { ok: true, json: async () => manifest };
-      if (url.startsWith('https://cdn.example.invalid/')) return { ok: false };
-      const bytes = readFileSync(path.join(process.cwd(), 'public', url));
+      if (!url.endsWith('manifest.json') && url.startsWith('https://cdn.example.invalid/')) return { ok: false };
+      const asset = url.replace('https://cdn.example.invalid', '').replace('/flow/v-', '/flow-assets/v-');
+      const bytes = readFileSync(path.join(process.cwd(), 'public', asset));
       return { ok: true, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) };
     });
     try {
@@ -218,7 +229,6 @@ describe('font asset readiness', () => {
     fetchMock.mockImplementation(async (url: string, options: RequestInit) => {
       if (url.startsWith('https://cdn.example.invalid/')) return new Promise<never>((_, reject) =>
         options.signal!.addEventListener('abort', () => reject(new Error('stalled CDN')), { once: true }));
-      if (url.endsWith('manifest.json')) return { ok: true, json: async () => manifest };
       const bytes = readFileSync(path.join(process.cwd(), 'public', url));
       return { ok: true, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) };
     });

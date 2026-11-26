@@ -634,7 +634,7 @@
 }
 
 .classicText {
-  font-family: var(--flow-classic-family, "RunZhiJiaKangXiZidian", "InfiDaoSerifSupplement", "Songti SC", "Noto Serif CJK SC", serif);
+  font-family: var(--flow-classic-family, "Songti TC", "Noto Serif CJK TC", serif);
   font-weight: var(--flow-weight-regular);
 }
 

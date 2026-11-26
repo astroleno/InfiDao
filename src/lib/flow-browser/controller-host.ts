@@ -1,6 +1,7 @@
 import { createCuratedFlowProvider, createRemoteFlowProvider, type BrowserFlowBatch } from './provider';
 import { createFlowHistory } from './history';
 import { prepareFlowFonts, type FontProgress } from './fonts';
+import { displayClassicQuote } from './classic-display';
 import { createPathId, readingStorage, type FlowPathRecord, type ReadingSnapshot } from './storage';
 import { savedSnapshot, type SavedTarget } from './library';
 import type { FlowSelection as TextSelection } from '../flow/contracts';
@@ -64,8 +65,9 @@ export function createBrowserController(host: Host) {
       const version = controller.getState().version;
       // Verified text is immediately readable with the fallback serif. The
       // same semantic stream picks up the cached optical face when it arrives.
-      void prepareFlowFonts(chain.frames.map(frame => ({ quote: frame.quote })), undefined, progress => {
-        if (controller.getState().version === version) host.preparation?.(chain.frames[0]?.quote || '', progress);
+      const quotes = chain.frames.map(frame => ({ quote: displayClassicQuote(frame) }));
+      void prepareFlowFonts(quotes, undefined, progress => {
+        if (controller.getState().version === version) host.preparation?.(quotes[0]?.quote || '', progress);
       }).catch(() => { /* WheelCanvas reports asset failures without hiding text. */ })
         .finally(() => { preparations--; host.preparingFonts?.(preparations > 0); });
       return chain;

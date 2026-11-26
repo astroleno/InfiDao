@@ -6,6 +6,7 @@ import { LinkedText } from './LinkedText';
 import styles from './flow.module.css';
 import { selectedSourceFrame } from '@/lib/content/references';
 import { prepareFlowFonts } from '@/lib/flow-browser/fonts';
+import { displayClassicText } from '@/lib/flow-browser/classic-display';
 
 type Props = { frame: FlowFrame; onSelect: (frame: FlowFrame, selection: FlowSelection, label: string) => void };
 type WorkDetail = Omit<PoetryWork, 'passages'> & { passages: Array<PoetryWork['passages'][number] & { lexicalBreaks?: number[] }> };
@@ -44,12 +45,22 @@ export function PoetrySource({ frame, onSelect }: Props) {
     }).catch(() => { if (!controller.signal.aborted) setError(true); });
     return () => controller.abort();
   }, [ref.workId, ref.revision, attempt]);
-  useEffect(() => { if(work) void prepareFlowFonts([{quote:frame.quote,fullText:work.text}]).catch(()=>{}); },[work,frame.quote]);
+  useEffect(() => {
+    if (!work) return;
+    void prepareFlowFonts(work.passages.map(({ start, end }) => ({
+      quote: displayClassicText(work.text.slice(start, end)),
+    }))).catch(() => {});
+  }, [work]);
+  function chooseSource(source: FlowFrame, chosen: { selection?: FlowSelection; label: string }) {
+    if (!chosen.selection) return;
+    try { onSelect(selectedSourceFrame(source, chosen.selection), chosen.selection, chosen.label); }
+    catch { setError(true); }
+  }
   return <div data-poetry-source>
     <p className={styles.sectionLabel}>{ref.title} · {ref.dynasty} · {ref.author}{work ? (/^(句|残句|佚句)(?:\s|$)/u.test(ref.title) ? ' · 传世片段' : ' · 作品全文') : ' · 已读片段'}</p>
     {!work && <>
       <p role="status" className={styles.muted}>{error ? '整首暂不可用，已读片段仍可阅读。' : '正在读取整首…'}</p>
-      <p className={styles.fullSource} style={{ whiteSpace: 'pre-wrap' }}>{frame.fullText}</p>
+      <p className={styles.fullSource} style={{ whiteSpace: 'pre-wrap' }}><LinkedText frame={frame} surface="fullText" onSelect={chosen => chooseSource(frame, chosen)} /></p>
       {error && <button type="button" className={styles.textButton} onClick={() => setAttempt(value => value + 1)}>重试读取整首</button>}
     </>}
     {work && <div className={styles.fullSource} style={{ whiteSpace: 'pre-wrap' }}>{work.passages.map(passage => {
@@ -59,11 +70,7 @@ export function PoetrySource({ frame, onSelect }: Props) {
         corpusVersion: `poetry:${work.revision}`, quote: current ? frame.quote : '', quoteStart: current ? frame.quoteStart : 0,
         quoteEnd: current ? frame.quoteEnd : 0, lexicalBreaks: passage.lexicalBreaks || [], anchors: [],
         work: { ...ref, start: passage.start, end: passage.end } };
-      return <span key={passage.id}><LinkedText frame={source} surface="fullText" onSelect={chosen => {
-        if (!chosen.selection) return;
-        try { onSelect(selectedSourceFrame(source,chosen.selection),chosen.selection,chosen.label); }
-        catch { setError(true); }
-      }} /></span>;
+      return <span key={passage.id}><LinkedText frame={source} surface="fullText" onSelect={chosen => chooseSource(source, chosen)} /></span>;
     })}</div>}
     <p className={styles.streamProvenance}>原文与作者信息来自诗词资料库；释义与回响由 AI 生成，供参照。</p>
     {work?.sourceUrl?.startsWith('https://github.com/palemoky/chinese-poetry/blob/') && <a className={styles.textButton} href={work.sourceUrl} target="_blank" rel="noopener noreferrer">查看资料来源</a>}

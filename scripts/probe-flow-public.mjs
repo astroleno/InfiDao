@@ -96,7 +96,8 @@ async function verifyRelease(config) {
   }
   if (config['entry-sha'] && entrySha256 !== config['entry-sha']) throw new Error('Active reader entry did not match the expected SHA-256');
   return { ...assets, id, commit: manifest.commit, manifestUrl, codeSha256: manifest.codeSha256, entrySha256, fontSha256,
-    corpusVersion: manifest.corpusVersion, corpusSha256: manifest.corpusSha256 };
+    corpusVersion: manifest.corpusVersion, corpusSha256: manifest.corpusSha256,
+    ...(manifest.classicalDisplaySha256 ? { classicalDisplaySha256: manifest.classicalDisplaySha256 } : {}) };
 }
 
 function loadCorpus(release) {
@@ -120,10 +121,39 @@ function loadCorpus(release) {
   return rows;
 }
 
+const displayProjections = new Map();
+function loadDisplayProjection(release) {
+  if (!release.classicalDisplaySha256) return null;
+  const key = release.commit + ':' + release.classicalDisplaySha256;
+  if (!displayProjections.has(key)) {
+    const source = gitFile(release.commit, 'src/lib/flow-browser/classic-display-projector.cjs');
+    const data = gitFile(release.commit, 'src/lib/flow-browser/classic-display.generated.json');
+    const digest = createHash('sha256').update(source).update(data).digest('hex');
+    if (release.classicalDisplaySha256 !== digest) throw new Error('Display projection did not match the verified release');
+    displayProjections.set(key, { source: source.toString(), data: JSON.parse(data) });
+  }
+  return displayProjections.get(key);
+}
+
+export function browserProbeScript(settleMs, projection) {
+  return `(() => {
+    const module = { exports: {} };
+    ${projection?.source || ''}
+    (${instrument.toString()})(${settleMs}, ${projection ? `module.exports.createClassicProjector(${JSON.stringify(projection.data)})` : 'null'});
+  })();`;
+}
+
 // This function is serialized into each isolated browser context. Raw response
 // records stay in memory so opaque request and chain IDs never reach disk.
-function instrument(settleMs) {
+function instrument(settleMs, projectDisplay = null) {
   const probe = window.flowPublicProbe = { calls: [], clicks: [], target: null };
+  probe.displayWord = ({ fullText, start, end, word }) => projectDisplay?.(fullText)?.slice(start, end) ?? word;
+  probe.matchesWord = (button, target) => {
+    const displayed = button.textContent.trim();
+    const canonical = projectDisplay ? button.dataset.flowSourceText ?? displayed : displayed;
+    return canonical === target.word && displayed === target.displayWord &&
+      (!projectDisplay || button.dataset.flowAnchorId === target.anchorId);
+  };
   const clock = () => performance.now();
   const boundsOf = panel => {
     const rect = panel.getBoundingClientRect();
@@ -216,7 +246,7 @@ function instrument(settleMs) {
     const at = clock();
     if (button?.textContent.trim() === '知道了') probe.clicks.push({ kind: 'hint', at, trusted: true });
     else if (target && parent?.dataset.flowFrame === target.parentId && button.closest('[data-flow-heading]') &&
-        button.textContent.trim() === target.word && (target.buttonIndex === undefined ||
+        probe.matchesWord(button, target) && (target.buttonIndex === undefined ||
           [...button.closest('[data-flow-heading]').querySelectorAll('button')][target.buttonIndex] === button)) {
       target.clickedAt ??= at;
       target.hintAtClick ??= probe.hint();
@@ -285,7 +315,10 @@ function instrument(settleMs) {
     const heading = article?.querySelector('[data-flow-heading]');
     // Optical token groups contain exactly the quote, without the hidden keyboard help.
     const optics = heading ? [...heading.querySelectorAll('[data-flow-optic]')] : [];
-    const exact = heading && optics.map(el => el.textContent).join('') === frame.quote;
+    const displayQuote = projectDisplay
+      ? (target.displayQuote ??= projectDisplay(frame.fullText)?.slice(frame.quoteStart, frame.quoteEnd) ?? frame.quote)
+      : frame.quote;
+    const exact = heading && optics.map(el => el.textContent).join('') === displayQuote;
     const bounds = boundsOf(panel);
     const hint = hintState(panel, bounds, exact ? heading : null);
     const ink = heading?.dataset.inkPhase;
@@ -418,7 +451,9 @@ async function browserSlot(browser, owner, report, label) {
     permit.signal?.();
     return route.continue();
   });
-  await page.addInitScript(instrument, postDoneMs);
+  const projection = loadDisplayProjection(report.release);
+  if (projection) await page.addInitScript({ content: browserProbeScript(postDoneMs, projection) });
+  else await page.addInitScript(instrument, postDoneMs);
   return slot;
 }
 
@@ -622,6 +657,23 @@ function hintEvidence(audit, click) {
     settledConfirmedMs: relative(audit.confirmedAt), postTerminalMs: audit.lastAt - audit.terminalAt || null };
 }
 
+function canonicalButton(slot, word, cohort, projected) {
+  const buttons = heading(slot);
+  if (cohort) return buttons.locator('button').nth(word.buttonIndex);
+  if (projected) return buttons.locator(`button[data-flow-anchor-id="text:${word.selection.start}:${word.selection.end}"]`);
+  return buttons.getByTitle('沿「' + word.word + '」接续', { exact: true }).first();
+}
+
+async function verifyWordButton(slot, word, button) {
+  const { start, end } = word.selection;
+  const target = await slot.page.evaluate(({ fullText, start, end, word }) => ({
+    word, anchorId: 'text:' + start + ':' + end,
+    displayWord: window.flowPublicProbe.displayWord({ fullText, start, end, word }),
+  }), { fullText: slot.parent.fullText, start, end, word: word.word });
+  const verified = await button.evaluate((element, target) => window.flowPublicProbe.matchesWord(element, target), target);
+  return verified ? target : null;
+}
+
 async function tryBranch(slot, word, report, corpus, cold) {
   const { page, parent, chain } = slot;
   const attempt = { root: slot.label, word: word.word, expectedRoute: cold ? 'reuse' : 'cold', selection: word.selection };
@@ -651,16 +703,15 @@ async function tryBranch(slot, word, report, corpus, cold) {
       return state;
     }) };
     checkpoint = 'clicking canonical word';
-    const title = '沿「' + word.word + '」接续';
-    const button = report.cohort ? heading(slot).locator('button').nth(word.buttonIndex)
-      : heading(slot).getByTitle(title, { exact: true }).first();
-    if (report.cohort && await button.getAttribute('title', { timeout: 4500 }) !== title) throw new Error('Frozen DOM position changed');
+    const button = canonicalButton(slot, word, report.cohort, report.release.classicalDisplaySha256);
+    await button.waitFor({ state: 'attached', timeout: 4500 });
+    const target = await verifyWordButton(slot, word, button);
+    if (!target) throw new Error('Canonical word position changed');
     await page.evaluate(target => {
       const probe = window.flowPublicProbe;
       probe.target = { ...target, clickIndex: probe.clicks.length };
-    }, { parentId: parent.id, chainId: chain.chainId, word: word.word,
-      buttonIndex: word.buttonIndex, cohort: !!report.cohort,
-      anchorId: 'text:' + word.selection.start + ':' + word.selection.end });
+    }, { ...target, parentId: parent.id, chainId: chain.chainId,
+      buttonIndex: word.buttonIndex, cohort: !!report.cohort });
     armed = true;
     slot.permit = permit;
     attempt.pointer = await hitButton(page, button);
@@ -844,7 +895,8 @@ async function liveRun(report, corpus) {
     // slots that could not start, never retry an operation sent to production.
     for (const word of report.candidates) {
       if (word.reason) continue;
-      if (!await heading(root).getByTitle('沿「' + word.word + '」接续', { exact: true }).count()) word.reason = 'Word button missing';
+      const button = canonicalButton(root, word, false, report.release.classicalDisplaySha256);
+      if (!await button.count() || !await verifyWordButton(root, word, button)) word.reason = 'Word button missing';
       else planned.push(word);
     }
     const completed = [];

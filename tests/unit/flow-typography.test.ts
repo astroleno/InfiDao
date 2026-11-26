@@ -20,7 +20,7 @@ describe('the confirmed reading typography scale',()=>{
   });
   it('keeps the primary quotation size and classical font stack',()=>{
     expect(values('.streamQuote','font-size')).toEqual(['clamp(30px, 4.4vw, 40px)','30px']);
-    expect(source).toContain('"RunZhiJiaKangXiZidian", "InfiDaoSerifSupplement"');
+    expect(values('.classicText','font-family')).toEqual(['var(--flow-classic-family, "Songti TC", "Noto Serif CJK TC", serif)']);
   });
   it.each(['.streamReflection','.meaningBody','.sourcePanel','.noteItem','.libraryNote','.libraryQuote'])('maps %s to reading prose',selector=>{
     expect(values(selector,'font-size').every(value=>value==='var(--flow-size-body)')).toBe(true);

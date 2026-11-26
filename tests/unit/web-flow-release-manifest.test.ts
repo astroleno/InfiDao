@@ -3,31 +3,39 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { FLOW_RELEASE } from '@/lib/flow-browser/release.generated';
+
 const root = process.cwd();
 const read = (file: string) => readFileSync(path.join(root, file));
 const digest = (value: Buffer) => createHash('sha256').update(value).digest('hex');
+const base = 'public' + FLOW_RELEASE.fontBasePath;
+type Asset = { id: string; file: string; characters: string; bytes: number; sha256: string; family?: string };
+type FontManifest = { schemaVersion: number; version: string; baseCharacters: string; baseFonts: Asset[]; shards: Asset[]; licenses: Asset[]; unsupported: string };
 
-test('the release binds the exact verified font shards, corpus manifest, and curated content', () => {
-  const base = 'public' + FLOW_RELEASE.fontBasePath;
-  const original = read('public/flow-fonts/manifest.json'), pinned = read(base + '/manifest.json');
+test('the release binds the verified assets, corpus manifest, and curated content', () => {
+  const pinned = read(base + '/manifest.json');
+  const manifest: FontManifest = JSON.parse(pinned.toString());
   expect(digest(pinned)).toBe(FLOW_RELEASE.fontManifestSha256);
+  expect(createHash('sha256').update(read('src/lib/flow-browser/classic-display-projector.cjs'))
+    .update(read('src/lib/flow-browser/classic-display.generated.json')).digest('hex')).toBe(FLOW_RELEASE.classicalDisplaySha256);
   const { manifestBytes } = require('../../scripts/web-flow-font-assets.cjs').createWebFontRelease(root);
   expect(pinned.equals(manifestBytes)).toBe(true);
-  const manifest = JSON.parse(pinned.toString());
   expect(manifest.version).toBe(FLOW_RELEASE.fontVersion);
-  expect(manifest.originalVersion).toBe(JSON.parse(original.toString()).version);
-  expect(manifest.baseFonts.map(({ family }: { family: string }) => family)).toEqual([
-    'InfiDaoWebSerifSC', 'RunZhiJiaKangXiZidian', 'InfiDaoSerifSupplement',
-  ]);
-  for (const shard of [...manifest.baseFonts, ...manifest.shards]) {
-    const bytes = read(base + '/' + shard.file);
-    expect(bytes.byteLength).toBe(shard.bytes);
-    expect(digest(bytes)).toBe(shard.sha256);
+  expect(manifest.schemaVersion).toBe(2);
+  expect(manifest.baseFonts.map(({ family }) => family)).toEqual(['InfiDao WenKai TC']);
+  expect(manifest.baseFonts.map(({ file }) => file)).toEqual(FLOW_RELEASE.fontPreloads);
+  const faces = [...manifest.baseFonts, ...manifest.shards];
+  for (const asset of [...faces, ...manifest.licenses]) {
+    const bytes = read(base + '/' + asset.file);
+    expect(bytes.byteLength).toBe(asset.bytes);
+    expect(digest(bytes)).toBe(asset.sha256);
   }
-  expect(manifest.baseFonts[0].sha256).toBe('1366af1c5bc671f86f5dd7b57507fa30b8a4068ec99719c90542cf8e8609eb18');
-  for (const [index, name] of ['serif', 'supplement'].entries()) {
-    expect(read(base + '/' + manifest.baseFonts[index + 1].file).equals(Buffer.from(require(`../../miniprogram/assets/fonts/${name}-data`), 'base64'))).toBe(true);
-  }
+  expect(pinned.byteLength + manifest.baseFonts[0]!.bytes).toBeLessThanOrEqual(96 * 1024);
+  expect(Math.max(...faces.map(asset => asset.bytes))).toBeLessThanOrEqual(256 * 1024);
+  expect(pinned.byteLength + [...faces, ...manifest.licenses].reduce((total, asset) => total + asset.bytes, 0)).toBeLessThanOrEqual(8 * 1024 * 1024);
+  expect(manifest.licenses.map(({ file }) => file)).toContain('WenKaiTC-OFL.txt');
+  expect(read(base + '/WenKaiTC-OFL.txt').toString()).toMatch(/SIL OPEN FONT LICENSE Version 1\.1/);
+  expect(JSON.parse(read('public/flow-assets/v-6dba935d9fdbbf4d92bb/manifest.json').toString()).version).toBe('6dba935d9fdbbf4d92bb');
+
   const corpus = JSON.parse(read('data/corpus-manifest.json').toString());
   const hash = createHash('sha256').update(read('data/corpus-manifest.json'));
   for (const file of corpus.files) hash.update(read(file.path));
@@ -37,43 +45,27 @@ test('the release binds the exact verified font shards, corpus manifest, and cur
   expect(JSON.parse(read('public/flow-releases/' + FLOW_RELEASE.id + '.json').toString())).toMatchObject(FLOW_RELEASE);
 });
 
-test('the reviewed simplified codepoints use corrected outlines and keep legacy coverage', () => {
-  const base = 'public' + FLOW_RELEASE.fontBasePath;
-  const manifest = JSON.parse(read(base + '/manifest.json').toString());
-  const previous = JSON.parse(read('public/flow-assets/v-094d7b612c674ac324e9/manifest.json').toString());
-  const coverage = ({ baseCharacters, shards }: typeof manifest) => new Set([
-    ...Array.from(baseCharacters), ...shards.flatMap(({ characters }: { characters: string }) => Array.from(characters)),
-  ]);
-  expect(coverage(manifest)).toEqual(coverage(previous));
-
-  const { createGlyphRuntime, createGlyphSource } = require('../../miniprogram/flow/glyph-core');
+test('classical and rare glyphs use real Unicode outlines with disjoint downloadable coverage', () => {
+  const manifest: FontManifest = JSON.parse(read(base + '/manifest.json').toString());
+  const { createGlyphRuntime } = require('../../miniprogram/flow/glyph-core');
   const runtime = createGlyphRuntime();
-  const baseBuffers = manifest.baseFonts.map(({ file }: { file: string }) => read(base + '/' + file));
-  const opentype = require('../../miniprogram/flow/vendor/opentype');
-  const correctionCmap = opentype.parse(Uint8Array.from(baseBuffers[0]).buffer, { lowMemory: true }).tables.cmap.glyphIndexMap;
-  expect(Object.keys(correctionCmap).map(cp => String.fromCodePoint(Number(cp))).sort()).toEqual(Array.from('静剧谓虑乐终').sort());
-  expect(manifest.baseFonts[0].characters).toBe('静剧谓虑乐终');
-  const legacy = createGlyphSource(baseBuffers.slice(1));
-  const correction = createGlyphSource(baseBuffers.slice(0, 1));
+  const baseBuffers = manifest.baseFonts.map(({ file }) => read(base + '/' + file));
   runtime.installBaseFonts(baseBuffers, manifest.baseCharacters);
-  for (const shard of manifest.shards) runtime.installFont(shard.id, shard.characters, read(base + '/' + shard.file));
-
-  for (const [char, traditional] of Object.entries({ 静: '靜', 剧: '劇', 谓: '謂', 虑: '慮', 乐: '樂', 终: '終' })) {
+  const coverage = new Set(Array.from(manifest.baseCharacters));
+  for (const shard of manifest.shards) {
+    for (const char of shard.characters) {
+      expect(coverage.has(char)).toBe(false);
+      coverage.add(char);
+    }
+    runtime.installFont(shard.id, shard.characters, read(base + '/' + shard.file));
+  }
+  for (const char of '知止而後有定能靜夢劇亂謂') {
     expect(manifest.baseCharacters).toContain(char);
-    expect(manifest.shards.some(({ characters }: { characters: string }) => characters.includes(char))).toBe(false);
-    const originalAsset = previous.shards.find(({ characters }: { characters: string }) => characters.includes(char));
-    const previousOutline = previous.baseCharacters.includes(char) ? legacy :
-      createGlyphSource([read('public/flow-assets/v-094d7b612c674ac324e9/' + originalAsset.file)]);
-    expect(runtime.glyphOutline(char)).toEqual(correction(char));
-    expect(runtime.glyphOutline(char).commands).not.toEqual(previousOutline(char).commands);
-    expect(runtime.glyphOutline(char).commands).not.toEqual(runtime.glyphOutline(traditional).commands);
+    expect(runtime.glyphOutline(char).commands.length).toBeGreaterThan(0);
   }
-  for (const char of '后乱梦不以知之') {
-    expect(() => correction(char)).toThrow('Missing font glyph');
-    const originalAsset = previous.shards.find(({ characters }: { characters: string }) => characters.includes(char));
-    const previousOutline = previous.baseCharacters.includes(char) ? legacy :
-      createGlyphSource([read('public/flow-assets/v-094d7b612c674ac324e9/' + originalAsset.file)]);
-    expect(runtime.glyphOutline(char)).toEqual(previousOutline(char));
-  }
-  for (const char of coverage(manifest)) runtime.glyphOutline(char);
+  const rare = manifest.shards.find(({ id }) => !id.startsWith('wenkai-tc-'))!;
+  expect(rare).toBeDefined();
+  const char = Array.from(rare.characters).find(value => /\p{Script=Han}/u.test(value))!;
+  expect(runtime.glyphOutline(char).commands.length).toBeGreaterThan(0);
+  expect(manifest.unsupported).not.toContain(char);
 });

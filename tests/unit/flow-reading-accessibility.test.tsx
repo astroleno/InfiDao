@@ -13,10 +13,14 @@ test('keeps punctuation attached visually and preserves exact canonical selectio
   render(<LinkedText frame={frame} surface="quote" onSelect={onSelect} />);
   const word = screen.getByRole('button', { name: '之' });
   expect(word.parentElement).toHaveTextContent('之，');
-  expect(screen.getByRole('button', { name: '学' }).parentElement).toHaveTextContent('「学');
+  const learning = screen.getByRole('button', { name: '學' });
+  expect(learning.parentElement).toHaveTextContent('「學');
   expect(screen.getByRole('button', { name: '乎' }).parentElement).toHaveTextContent('乎？」');
   fireEvent.click(word);
   expect(onSelect).toHaveBeenCalledWith({ frameId: 'one', anchorId: 'text:5:6', label: '之', selection: { start: 5, end: 6, textHash: 'hash', corpusVersion: 'v1' } });
+  fireEvent.click(learning);
+  expect(onSelect).toHaveBeenLastCalledWith({ frameId: 'one', anchorId: 'text:1:2', label: '学',
+    selection: { start: 1, end: 2, textHash: 'hash', corpusVersion: 'v1' } });
 });
 
 test('keeps a short clause ending together without joining its optical runs or word selections', () => {
@@ -41,8 +45,8 @@ test('keeps a short clause ending together without joining its optical runs or w
 });
 
 test.each([
-  ['谓', [2, 4, 6, 7, 8, 9], ['谓', '之', '静']],
-  ['謂', [2, 4, 6, 8, 9], ['謂之', '静']],
+  ['谓', [2, 4, 6, 7, 8, 9], ['謂', '之', '靜']],
+  ['謂', [2, 4, 6, 8, 9], ['謂之', '靜']],
 ])('keeps %s之 and the term together at the clause end', (naming, lexicalBreaks, labels) => {
   const quote = `不以梦剧乱知${naming}之静`;
   const onSelect = jest.fn();
@@ -52,7 +56,7 @@ test.each([
   const runs = words.map(word => word.closest('[data-flow-optic]'));
   expect(new Set(runs).size).toBe(words.length);
   expect(new Set(runs.map(run => run?.parentElement)).size).toBe(1);
-  expect(runs[0]?.parentElement?.textContent).toBe(`${naming}之静`);
+  expect(runs[0]?.parentElement?.textContent).toBe('謂之靜');
   fireEvent.click(words.at(-1)!);
   expect(onSelect).toHaveBeenCalledWith({ frameId: 'one', anchorId: 'text:8:9', label: '静',
     selection: { start: 8, end: 9, textHash: 'hash', corpusVersion: 'v1' } });
@@ -62,7 +66,7 @@ test('keeps a final ordinary short word with the previous word and its closing p
   const quote = '不以梦剧乱知自守。';
   render(<LinkedText frame={{ ...frame, fullText: quote, quote, quoteEnd: quote.length, lexicalBreaks: [2, 4, 6, 8, 9] }}
     surface="quote" optical onSelect={jest.fn()} />);
-  expect(screen.getByRole('button', { name: '自守' }).closest('[data-flow-optic]')?.parentElement?.textContent).toBe('乱知自守。');
+  expect(screen.getByRole('button', { name: '自守' }).closest('[data-flow-optic]')?.parentElement?.textContent).toBe('亂知自守。');
 });
 
 test('avoids leaving two singleton words on the last line of an otherwise longer clause', () => {
