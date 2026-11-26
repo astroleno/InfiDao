@@ -1170,6 +1170,54 @@ describe('quality tiers reach the glass', () => {
     expect(shape.maxDpr).toBeUndefined();
   });
 
+  test('parked reading quiets transmission once the ink and scroll settle', () => {
+    jest.spyOn(HTMLElement.prototype, 'offsetTop', 'get').mockReturnValue(200);
+    jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(50);
+    const draw = jest.fn<void, Parameters<StreamGlass['draw']>>();
+    jest.mocked(StreamGlass).mockImplementationOnce((canvas: HTMLCanvasElement) => {
+      canvas.dataset.optics = 'ready';
+      return { draw, destroy: jest.fn() } as unknown as StreamGlass;
+    });
+    const options = { ...props, reducedMotion: false, autoScroll: false, motionSeed: 12 };
+    const view = render(<FlowStream {...options} />);
+    const panel = screen.getByRole('generic', { name: '经文阅读' });
+    Object.defineProperty(panel, 'scrollHeight', { value: 1200 });
+    const latest = () => {
+      const [, , , , shape, fontRevision, plan] = draw.mock.calls.at(-1)!;
+      return { echoQuiet: shape?.echoQuiet, ripple: shape?.ripple, fontRevision, ...plan };
+    };
+
+    act(() => { jest.advanceTimersByTime(128); });
+    expect(view.container.querySelector('[data-flow-heading]')).toHaveAttribute('data-ink-phase', 'entering');
+    const entering = latest();
+    expect(entering.echoQuiet).toBe(.8);
+
+    act(() => { jest.advanceTimersByTime(1000); });
+    const parked = latest();
+    expect(parked).toMatchObject({ echoQuiet: .98, ripple: .25, fontRevision: entering.fontRevision, sourceChanged: false });
+    expect(parked.sourceRevision).toBeGreaterThan(entering.sourceRevision!);
+    act(() => { jest.advanceTimersByTime(1000); });
+    expect(latest().sourceRevision).toBe(parked.sourceRevision);
+
+    view.rerender(<FlowStream {...options} paused={false} />);
+    act(() => { jest.advanceTimersByTime(16); });
+    expect(latest()).toMatchObject({ echoQuiet: .8, sourceChanged: true, fontRevision: parked.fontRevision });
+
+    view.rerender(<FlowStream {...options} />);
+    act(() => { jest.advanceTimersByTime(16); });
+    expect(latest().echoQuiet).toBe(.98);
+    panel.scrollTop = 40;
+    fireEvent.scroll(panel);
+    act(() => { jest.advanceTimersByTime(96); });
+    expect(latest()).toMatchObject({ echoQuiet: .8, ripple: .25 });
+    act(() => { jest.advanceTimersByTime(5000); });
+    expect(latest().echoQuiet).toBe(.98);
+
+    view.rerender(<FlowStream {...options} motionVariant="liquid-live-before" />);
+    act(() => { jest.advanceTimersByTime(16); });
+    expect(latest().echoQuiet).toBeUndefined();
+  });
+
   test.each([[320, 740], [390, 844]])('a still %i × %i glass keeps the prose within frame and resolves the displayed word', (width, height) => {
     sized('clientWidth', width);
     sized('clientHeight', height);

@@ -31,6 +31,7 @@ import styles from './flow.module.css';
 // passage. The same buttons keep their identity and keyboard focus.
 const RetainedLinkedText = memo(LinkedText);
 const VISUAL_READY_TIMEOUT_MS = 1400;
+const PARKED_ECHO_QUIET = .98;
 
 export type FlowArrival = { id: string; sourceKey: string; targetKey: string; label: string; kind?: 'word' };
 export type FlowArrivalAction = { id: string; kind: 'stop' | 'resume'; onAction: () => void } | {
@@ -384,6 +385,7 @@ export function FlowStream(props: Props) {
     const rise = new ArrivalRise();
     let openingLanded = false;
     let calmGlass = false;
+    let parkedGlass = false;
     let protectedQuote: Part | undefined, protectedReflection: Part | undefined;
     const cadence = new IdleCadence();
     let idleTimer = 0, fullRatePending = false, lastTop = Infinity, lensWasActive = false, lastLens = 0;
@@ -534,6 +536,7 @@ export function FlowStream(props: Props) {
         readingFold.current = fold;
         scheduleArrivalCheck();
       }
+      let readingStill = !moving && !fastManualScroll && !lensActive;
       if (variant === 'liquid-live' || variant === 'liquid-live-before') {
         let motion = surfaceMotions.get(variant);
         if (!motion) {
@@ -542,11 +545,22 @@ export function FlowStream(props: Props) {
         }
         const sample = motion.sample(scrollTop, time, staticGlass || nativeFallback || document.hidden);
         bend.noisePhase = sample.phase;
+        readingStill = readingStill && !sample.settling;
         moving = sample.moving || moving;
       } else if (bend.perlin) {
         liquidNoise ??= new ScrollNoiseMotion(live.current.motionSeed);
         bend.noisePhase = liquidNoise.advance(scrollTop);
       }
+      const parked = variant === 'liquid-live' && calmGlass && live.current.paused && readingStill &&
+        !arrivalCovered.current && (!arrival || arrivalDismissed.current === arrival.id) &&
+        visibleParts.length > 0 && visibleParts.every(part => part.motion.done && part.inkPhase === 'settled');
+      if (parked !== parkedGlass) {
+        parkedGlass = parked;
+        // Transmission lives in the retained composite. Rebuild it once
+        // when reading parks or resumes, retaining the cached glyph rasters.
+        planner.invalidate('motion');
+      }
+      if (parkedGlass) bend.echoQuiet = PARKED_ECHO_QUIET;
       const plan = planner.frame({ scrollTop, width, height, reducedMotion: staticGlass, variant,
         surfacePhase: Math.round((bend.noisePhase ?? 0) * 1e6), focus: activeElement, canvasReady: canvasOwnsGlyphs });
       if (!plan.surfaceChanged) return moving;
@@ -688,7 +702,8 @@ export function FlowStream(props: Props) {
           scrollTop: top, nativeScrollTop: panel.scrollTop, scrollRemainder: remainder,
           fastManualScroll, opticalEnergy: energy.value, idle: cadence.delay(time) > 0, moved, qualityTier: budget.tier, lens: lastLens,
           material: drawn && { calm: calmGlass, zone: drawn.settings.zone, flare: drawn.settings.flare,
-            adhesion: drawn.settings.adhesion, ripple: drawn.settings.ripple, dispersion: drawn.settings.dispersion },
+            adhesion: drawn.settings.adhesion, ripple: drawn.settings.ripple, dispersion: drawn.settings.dispersion,
+            echoQuiet: drawn.settings.echoQuiet },
           drawMs, sceneMs: cpuMs - drawMs, layout: { ...layoutProbe }, render: glass?.diagnostics });
       }
     };
